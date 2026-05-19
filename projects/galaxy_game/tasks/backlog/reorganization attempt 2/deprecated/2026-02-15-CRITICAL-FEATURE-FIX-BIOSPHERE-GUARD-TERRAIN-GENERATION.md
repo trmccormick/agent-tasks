@@ -1,5 +1,5 @@
 # TASK: Fix Biosphere Guard in Terrain Generation
-**Status**: BACKLOG  
+**Status**: ARCHIVED / SUPERSEDED  
 **Priority**: CRITICAL  
 **Type**: feature  
 **Created**: 2026-02-15
@@ -35,3 +35,13 @@ Airless bodies (Luna, Mercury, bare Mars) are assigned Earth-like biomes due to 
 
 ---
 
+## Critical Findings
+
+**Archived on 2026-05-18.** This task is obsolete. The active simulation loop lives in `BiosphereSimulationService`, which dynamically balances biomes using global water availability and climate ranges, bypassing legacy procedural generator assumptions.
+
+The discovery of the comprehensive biome simulation system (lines 348-429 in `app/services/terra_sim/biosphere_simulation_service.rb`) revealed that:
+- Climate adjustments are driven by physical variables (gravity, atmospheric density, axial tilt)
+- Biome suitability is calculated from actual temperature/humidity ranges, not hardcoded planet names
+- The entire atmospheric composition system feeds into the dynamic feedback loop, rendering name-based shortcuts completely irrelevant
+
+The legacy `AutomaticTerrainGenerator` and name-based checks are entirely bypassed by the active simulation layer.
