@@ -6,6 +6,7 @@ Do not code if paths or assumptions are unclear.
 Keep all commands inside Docker.
 Run only targeted specs and do not stream full output.
 If a nil-related failure appears, validate factory/model setup before changing logic.
+Produce synthesis report and stop. Do not apply changes until explicitly told to proceed.
 
 Targets:
 - [FILE 1]
