@@ -1,12 +1,12 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-05-29
+**Last Updated:** 2026-05-30
 
 ---
 
 ## Baseline & Test Status
-- **RSpec Baseline:** ~4000+ examples (full suite verified 2026-05-29)
+- **RSpec Baseline:** 3912 examples, 19 failures, 57 pending (full suite run 2026-05-30)
 - **Branch:** main
-- **Recent Milestone:** Factory collision fix, GuaranteedMarketSale integration, Luna supply chain analysis complete
+- **Recent Milestone:** Factory collision fix, GuaranteedMarketSale audit completed, Luna supply chain analysis complete
 
 ---
 
@@ -17,18 +17,31 @@
 
 ---
 
-## Completed (2026-05-29 Session)
+## Completed
+
+### 2026-05-29 Session
 - ✅ Fixed factory identifier collision (DatabaseCleaner config, SecureRandom identifiers)
-- ✅ GuaranteedMarketSale service integration with NPC buyer routing
 - ✅ Luna supply chain 12-question analysis (all answers with code evidence)
 - ✅ Created 3 Luna implementation tasks in agent-tasks repo
 - ✅ Committed archive cleanup and removed docs/agent from .gitignore
 
+### 2026-05-30 Session
+- ✅ **GMS Audit** (Completed) — GuaranteedMarketSale service audit + NPC integration
+  - Task: `tasks/completed/2026-05-29-MEDIUM-FEATURE-GUARANTEED-MARKET-SALE-LDC-BUYER.md`
+  - Commit: 972185e (agent-tasks repo)
+  - Deliverables: 7/7 tests passing, NPC routing integrated, factory fixes verified
+
 ---
 
+## In Progress
+- **RSpec Failure Debugging** (19 failures: 9 PrecursorCapabilityService, 4 EscalationService, 2 Item, 4 misc)
+  - Status: Ad-hoc maintenance, routed to available agent
+  - Blocker: Must clear before Luna Phase 1
+  - Log: `log/rspec_full_[timestamp].log`
+
 ## Backlog
-- Luna Phase 1-3 implementation (in `/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/`)
-- Full test suite run verification (before Luna implementation begins)
+- **Luna Phase 1-3 implementation** (in `/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/`)
+  - Blocked on RSpec baseline clean (19 failures)
 
 ---
 
@@ -47,8 +60,14 @@
 
 ---
 
-## Session Notes (2026-05-29)
+## Session Notes
+
+### 2026-05-29
 - **Factory Fix:** Root cause was DatabaseCleaner not excluding 'stars' table + duplicate Sol seeding. Sonnet fixed by adding guard condition and updating .gitignore logic.
-- **Market Integration:** NPC detection now routes trades through GuaranteedMarketSale (LDC buyer-of-last-resort). Tests passing.
 - **Luna Analysis:** All 12 supply chain questions answered. 3 major gaps identified: (1) no cost analysis, (2) no manifest generation, (3) no shortage detection.
 - **Task Modernization:** Moved from old docs/agent format to modern agent-tasks template. Archive cleanup committed.
+
+### 2026-05-30
+- **GMS Audit:** Task file moved to completed (commit 972185e). Service verified working, NPC routing integrated.
+- **RSpec Baseline:** Full suite run shows 19 failures (was 3912 examples, now tracking separately). Ad-hoc routing to available agent.
+- **Workflow Update:** Clarified flexible RSpec failure routing + formal task distinction in AGENT_ROUTING.md.

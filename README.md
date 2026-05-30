@@ -1,7 +1,28 @@
 # Galaxy Game — Agent Workspace (Project-Specific)
-**Last Updated**: 2026-05-29
+**Last Updated**: 2026-05-30
 
 **Important**: The shared agent infrastructure lives in a separate repository.
+
+---
+
+## File Organization Pattern
+
+### Shared Infrastructure Across Projects
+**Location**: `/Users/tam0013/Documents/git/agent-tasks/`  
+**Scope**: Rules, task templates, routing, protocols for ALL projects (Galaxy Game, Samvera, WVU)  
+**Ownership**: Agent tooling (updated when workflow rules change)
+
+### Project-Specific Data
+**Location**: Each project repo (e.g., `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/`)  
+**Scope**: Project baseline, session status, blockers, domain context  
+**Ownership**: Project-specific (updated during each session)  
+**Key File**: `status.md` — Living document tracking RSpec baseline, completed work, in-progress tasks, blockers
+
+### Task Files
+**Location**: `/Users/tam0013/Documents/git/agent-tasks/projects/[project]/tasks/[backlog|active|completed]/`  
+**Scope**: Formal feature/refactor assignments with detailed specs  
+**Status**: Lifecycle tracked via YAML header (backlog → active → completed)  
+**Assignment**: Agents move tasks between states and fill completion reports
 
 ---
 
@@ -119,8 +140,20 @@ LDC established → GCC minted
 
 ---
 
-## Current Baseline (update each session)
-See `projects/galaxy_game/status.md` for current state.
+## Current Baseline & Session Status
+
+**Location**: `projects/galaxy_game/status.md`
+
+**What it contains:**
+- RSpec baseline (example count, failure count, pending count)
+- Completed work with commit hashes
+- In-progress tasks and blockers
+- Backlog (formal tasks, not yet active)
+- Session notes and decisions
+
+**Update rule**: Strategist updates at end of each session (mandatory).
+
+**For other projects**: Look in `projects/[project_name]/status.md` (same structure, per-project).
 
 ---
 
