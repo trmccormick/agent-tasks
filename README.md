@@ -218,7 +218,49 @@ docs/new_agent/
 - Stop conditions
 - Output format expected
 
-### Before Starting: Checklist
+---
+
+## Strategist Guide: Creating Handoffs
+
+**These templates are for YOU (strategist) to guide agent assignments.** They help structure how you communicate task scope and requirements to executors. Choose based on task complexity:
+
+### Use SIMPLE_HANDOFF_TEMPLATE.md
+- Straightforward, single-feature tasks
+- Well-defined scope (2-3 target files)
+- No architectural risk
+- Examples: Cost Analyzer service, isolated spec updates
+- **Format**: ~15 lines, concise
+
+### Use HANDOFF_TEMPLATE.md
+- Complex refactors or integrations
+- Multi-system dependencies
+- Factory/model validation steps needed
+- Risk of nil-related failures
+- **Format**: ~40 lines, detailed context
+
+**Always include in both**:
+1. Task file location (agent will read full specs)
+2. "Move task from backlog → active BEFORE starting work"
+3. Update YAML header: `status: backlog` → `status: active`
+4. Commit move before any code changes
+5. Reinforce: "Do not skip this step"
+
+---
+
+### Strategist Handoff Workflow
+
+1. **Assess task complexity** → Pick template (simple or advanced)
+2. **Read the template** → Understand placeholders
+3. **Fill in blanks** → Task path, target files, scope bullets, requirements
+4. **Add task lifecycle** → Always include "move to active" instruction (already in templates)
+5. **Provide as text** → Paste into conversation, do NOT store as file
+6. **Update status.md** → Mark task "In Progress"
+7. **Monitor** → Watch for completion report or blockers
+8. **Post-completion** → Move task file to completed/, update status.md
+
+---
+
+## Before Starting Any Task (Executor Checklist)
 
 1. **Read shared agent workspace**: `~/Documents/git/agent-tasks/README.md`
 2. **Read your session role**: section above — STRATEGIST, EXECUTOR, REVIEWER, or DOMAIN EXPERT
