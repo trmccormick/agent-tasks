@@ -1,18 +1,21 @@
 # Task Overview — Current Session
-**Last Updated**: 2026-05-14
-**Branch**: `regional-view-phase2`
-**Baseline**: 3956 examples, 22 failures, 57 pending
+**Last Updated**: 2026-05-30
+**Branch**: `main`
+**Baseline**: 3912 examples, 19 failures, 57 pending
+**RSpec Status**: 19 failures pending (routed to available maintenance agent)
 
-> This file tracks the current session's task stack.
-> It is written by the planning agent (Claude or Gemini) at session start
-> and updated as tasks complete. Individual task files live in `tasks/active/`.
+> This file is a LIVING DOCUMENT for the current session.
+> Updated at session start by strategist, updated during session as tasks complete/move.
+> Task specifications live in `/Documents/git/agent-tasks/projects/galaxy_game/tasks/[status]/`
+> This file tracks what's in-progress, completed, and ready-to-start this session.
 
 ---
 
 ## Session Goal
 
-Reduce RSpec failures from 22 toward 0.
-Monthly milestone: Luna settled, ISRU producing, AI Manager trained on pattern.
+**Primary**: Complete Luna Phase 1 implementation (Cost Analysis Service) with clean baseline.
+**Maintenance**: RSpec failures fixed opportunistically by available agent (currently Claude (free) @ 1:40pm).
+**Monthly**: Luna MVP complete, ISRU producing, LDC buyer-of-last-resort operational.
 
 ---
 
@@ -21,9 +24,13 @@ Monthly milestone: Luna settled, ISRU producing, AI Manager trained on pattern.
 Tasks are listed in execution order. Do not skip ahead — later tasks may
 depend on earlier ones passing specs cleanly.
 
-| Priority | Task File | Agent | Status |
-|---|---|---|---|
-| — | *(populate at session start)* | — | — |
+| Priority | Task | Agent | Status | Notes |
+|---|---|---|---|---|
+| **MAINTENANCE** | Fix 19 RSpec failures (overnight run) | Available maintenance agent | In progress | routed Claude (free) @ 1:40pm; failures across PrecursorCapabilityService, EscalationService, Item, fixtures |
+| 1 | GuaranteedMarketSale audit (verify + move to completed) | GPT-4.1 | Approved | task file deleted after handoff; service verified, tests 7/7 passing |
+| 2 | **Luna Phase 1**: Cost Analysis Service (`Settlements::CostAnalyzer`) | GPT-4.1 | Backlog (ready) | Ready for handoff after RSpec baseline clean |
+| 3 | **Luna Phase 2**: Manifest Generation Service | GPT-4.1 | Backlog | Depends on Phase 1 |
+| 4 | **Luna Phase 3**: Shortage Detection & Import Requests | GPT-4.1 | Backlog | Depends on Phase 1 & 2 |
 
 ---
 

@@ -1,7 +1,7 @@
 # Agent Routing
-**Last Updated**: 2026-05-18
-**Maintained By**: Session Strategist (Claude)
-**Token Strategy**: Maximize free tier usage. Premium reserved for complex work only.
+**Last Updated**: 2026-05-30
+**Maintained By**: Session Strategist (Haiku)
+**Token Strategy**: Maximize free tier usage. Premium reserved for complex work only. **Flexible maintenance routing** for RSpec failures.
 
 > Read DECISIONS.md before this file.
 > Routing decisions here are based on actual model capabilities AND token cost.
@@ -23,6 +23,22 @@
 |---|---|---|---|---|
 | **Qwen3.5 27B** | M4 | Continue | 0 tokens | Heavy auditing, complex multi-file reasoning |
 | **Qwen3.5 9B** | M4 / Windows | Continue | 0 tokens | Template conformance, implementation detail |
+
+---
+
+### RSpec Failure Debugging (Flexible Maintenance Routing)
+**Principle**: RSpec failures are ad-hoc maintenance, NOT formal tasks. Route based on agent availability.
+
+| Failure Type | Route To | Notes |
+|---|---|---|
+| Single service failures (3-5 failures) | Whoever is available first | Start immediately; don't wait for specific agent |
+| Factory/setup issues (nil associations) | Local Qwen3.5 (if available) else Claude | Quick file inspection + fix |
+| Complex cross-service issues (5+ related) | Codestral synthesis (try first) | Escalate to Claude Sonnet only if pattern unclear |
+| Fixture/data load failures | GPT-4.1 or available local | Mechanical fix; assign based on availability |
+
+**Example (2026-05-30)**: 19 failures after overnight run → Claude (free) available at 1:40pm → routed immediately (no task file needed)
+
+**Flexibility rule**: If another agent becomes available while one is working, evaluate if work can be parallelized. RSpec failures often have independent root causes.
 
 ---
 
