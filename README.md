@@ -1,7 +1,8 @@
-# Galaxy Game — Agent Workspace (Project-Specific)
+# Agent Workspace — Generic Guides for Multi-Project Workflow
 **Last Updated**: 2026-05-30
 
-**Important**: The shared agent infrastructure lives in a separate repository.
+**Purpose**: Generic workflow guidance for ANY project (Galaxy Game, Samvera, WVU Libraries, etc.)  
+**Shared Infrastructure**: Lives in `/Documents/git/agent-tasks/` (rules, routing, task templates for all projects)
 
 ---
 
@@ -57,10 +58,10 @@ Roles are assigned per session, not per model. The same model can act as strateg
 
 | ✅ In Scope | ❌ Out of Scope — DELEGATE IMMEDIATELY |
 |---|---|
-| Read failure logs and triage | Write Ruby/Rails application code |
-| Maintain session priority stack | Write or edit spec files |
-| Create and update task files | Run docker exec commands |
-| Move tasks between backlog/active/completed | Run RSpec tests |
+| Read failure logs and triage | Write application code |
+| Maintain session priority stack | Write or edit test files |
+| Create and update task files | Run build/test commands |
+| Move tasks between backlog/active/completed | Run tests |
 | Assign work to Executor agents | Apply patches or fixes |
 | Fill in session handoff document | Make architectural decisions alone |
 | Update DECISIONS.md with locked decisions | Commit or push changes |
@@ -69,7 +70,7 @@ Roles are assigned per session, not per model. The same model can act as strateg
 > ⚠️ **VIOLATION WARNING**: If you are in STRATEGIST role and find yourself writing code, editing spec files, running docker commands, or applying fixes — STOP. You are violating your session mandate. Produce a handoff for an EXECUTOR instead.
 
 **Strategist must update these files before ending every session:**
-- `projects/galaxy_game/status.md` — update baseline and current state
+- `projects/[project_name]/status.md` — update baseline and current state
 - Session handoff document — fill in completions, decisions, tomorrow's priorities
 - Any task files moved from backlog → active → completed
 - `rules/DECISIONS.md` — if any new architectural decisions were made
@@ -83,7 +84,7 @@ Roles are assigned per session, not per model. The same model can act as strateg
 | ✅ In Scope | ❌ Out of Scope |
 |---|---|
 | Implement the assigned task file exactly | Self-assign new work |
-| Run targeted specs inside Docker | Make architectural decisions |
+| Run targeted tests in environment | Make architectural decisions |
 | Produce synthesis reports before applying | Modify files outside task scope |
 | Report blockers immediately | Override stop conditions |
 | Fill in completion report | Plan or strategize |
@@ -123,37 +124,23 @@ Roles are assigned per session, not per model. The same model can act as strateg
 
 ---
 
-## Current MVP Focus — Luna
+## Project-Specific Status Files
 
-**Win condition**: Get LDC (Lunar Development Corporation) running on Luna.
+**Location**: `projects/[project_name]/status.md`
 
-```
-LDC established → GCC minted
-→ ISRU producing (TEU/PVE bulk regolith)
-→ GuaranteedMarketSale working (GCC flows to players)
-→ HLT tested (Luna surface ↔ L1)
-→ L1 depot construction starts
-→ Luna MVP complete
-```
-
-**Do not get distracted by**: wormholes, Venus, Mars, cyclers, tugs, asteroid mining, or any post-Luna work until this loop is proven.
-
----
-
-## Current Baseline & Session Status
-
-**Location**: `projects/galaxy_game/status.md`
-
-**What it contains:**
-- RSpec baseline (example count, failure count, pending count)
+**What each contains:**
+- Project baseline (test count, failure count, pending count)
 - Completed work with commit hashes
 - In-progress tasks and blockers
 - Backlog (formal tasks, not yet active)
 - Session notes and decisions
+- Project-specific context (MVP goals, focus areas, constraints)
 
-**Update rule**: Strategist updates at end of each session (mandatory).
-
-**For other projects**: Look in `projects/[project_name]/status.md` (same structure, per-project).
+**Update rule**: Strategist updates at end of each session (mandatory).  
+**Examples**:
+- `projects/galaxy_game/status.md` — Luna MVP, RSpec baseline
+- `projects/samvera_hyku/status.md` — Hyku focus areas
+- `projects/wvulibraries_knapsack/status.md` — Knapsack focus areas
 
 ---
 
@@ -163,41 +150,52 @@ LDC established → GCC minted
 docs/new_agent/
 ├── README.md                           ← you are here
 ├── agent_guides/
-│   └── galaxy_game.md                  ← Galaxy Game domain context
+│   ├── galaxy_game.md                  ← Galaxy Game domain context
+│   ├── samvera_hyku.md                 ← Hyku/Hyrax domain context
+│   └── [other_projects].md             ← Project-specific domain guides
 └── projects/
-    └── galaxy_game/
-        ├── status.md                   ← Project baseline & current state
-        ├── context/
-        │   ├── CODEBASE_MAP.md        ← Where code lives
-        │   └── PATTERNS.md             ← Code patterns in use
-        └── research/
-            └── LUNAR_GEOSPHERE_BASE.md ← Lunar resource baseline
+    ├── galaxy_game/
+    │   ├── status.md                   ← Project baseline & current state
+    │   └── context/
+    │       └── [project-context].md    ← Project-specific context
+    ├── samvera_hyku/
+    │   ├── status.md
+    │   └── context/
+    └── [other_projects]/
+        ├── status.md
+        └── context/
 ```
 
 ---
 
-## Task Files
+## Task Files (Shared Infrastructure)
 
-**Galaxy Game tasks** are in the separate `agent-tasks` repository:
+**All project tasks** are in the separate `agent-tasks` repository:
 
 ```
-/Users/tam0013/Documents/git/agent-tasks/galaxy_game/
-├── active/           ← Current sprint work
-├── backlog/          ← Planned but not started
-│   └── 2026-05/      ← May 2026 backlog
-├── completed/        ← Finished tasks with completion reports
-├── planning/         ← Long-term strategy
-└── testing/          ← Testing-focused tasks
+/Users/tam0013/Documents/git/agent-tasks/
+├── projects/
+│   ├── galaxy_game/
+│   │   └── tasks/
+│   │       ├── active/           ← Current sprint work
+│   │       ├── backlog/          ← Planned but not started
+│   │       │   └── 2026-05/      ← May 2026 backlog
+│   │       ├── completed/        ← Finished tasks with completion reports
+│   │       ├── planning/         ← Long-term strategy
+│   │       └── testing/          ← Testing-focused tasks
+│   ├── samvera_hyku/
+│   │   └── tasks/ [same structure]
+│   └── [other_projects]/ [same structure]
 ```
 
 ---
 
-## Before Starting Any Galaxy Game Task
+## Before Starting Any Task
 
 ### Standard Workflow: Task File + Handoff
 
 **Task Assignment Flow:**
-1. **Task file** lives in `/Documents/git/agent-tasks/galaxy_game/tasks/backlog/` (detailed specs)
+1. **Task file** lives in `/Documents/git/agent-tasks/projects/[project]/tasks/backlog/` (detailed specs)
 2. **Handoff** is provided as text in conversation (role reminder + quick instructions)
 3. **Agent reads both** before starting work
 4. **Agent moves task** from backlog → active → completed as work progresses
@@ -224,23 +222,11 @@ docs/new_agent/
 
 1. **Read shared agent workspace**: `~/Documents/git/agent-tasks/README.md`
 2. **Read your session role**: section above — STRATEGIST, EXECUTOR, REVIEWER, or DOMAIN EXPERT
-3. **Check Galaxy Game status**: `projects/galaxy_game/status.md`
-4. **Understand Galaxy Game context**: `projects/galaxy_game/context/CODEBASE_MAP.md`
+3. **Check project status**: `projects/[project]/status.md`
+4. **Understand project context**: `projects/[project]/context/` (project-specific guides)
 5. **Review rules**: `~/Documents/git/agent-tasks/rules/GUARDRAILS.md`
 6. **Review locked decisions**: `~/Documents/git/agent-tasks/rules/DECISIONS.md`
-7. **Read your task file**: Located in handoff text, usually in `~/Documents/git/agent-tasks/galaxy_game/tasks/[status]/[TASK].md`
-
----
-
-## Before Starting Any Galaxy Game Task
-
-1. **Read shared agent workspace**: `~/Documents/git/agent-tasks/README.md`
-2. **Read your session role**: section above — STRATEGIST, EXECUTOR, REVIEWER, or DOMAIN EXPERT
-3. **Check Galaxy Game status**: `projects/galaxy_game/status.md`
-4. **Understand Galaxy Game context**: `projects/galaxy_game/context/CODEBASE_MAP.md`
-5. **Review rules**: `~/Documents/git/agent-tasks/rules/GUARDRAILS.md`
-6. **Review locked decisions**: `~/Documents/git/agent-tasks/rules/DECISIONS.md`
-7. **Read your task file**: `~/Documents/git/agent-tasks/galaxy_game/[status]/[TASK].md`
+7. **Read your task file**: Located in handoff text, usually in `~/Documents/git/agent-tasks/projects/[project]/tasks/[status]/[TASK].md`
 
 ---
 
@@ -289,9 +275,11 @@ docs/new_agent/
 
 ## References
 
-- **Agent-tasks repository**: https://github.com/trmccormick/agent-tasks
+- **Agent-tasks repository**: `/Users/tam0013/Documents/git/agent-tasks/` (shared infrastructure for all projects)
 - **Session Strategist guide**: `~/Documents/git/agent-tasks/SESSION_STRATEGIST.md`
 - **Shared agent workspace**: `~/Documents/git/agent-tasks/README.md`
-- **Galaxy Game domain guide**: `agent_guides/galaxy_game.md`
-- **Galaxy Game status**: `projects/galaxy_game/status.md`
-- **Luna Base Establishment**: `projects/galaxy_game/research/LUNA_BASE_ESTABLISHMENT.md`
+- **Project-specific guides**: `agent_guides/[project].md`
+- **Project status**: `projects/[project]/status.md`
+- **Routing table**: `~/Documents/git/agent-tasks/rules/AGENT_ROUTING.md`
+- **Guardrails**: `~/Documents/git/agent-tasks/rules/GUARDRAILS.md`
+- **Decisions**: `~/Documents/git/agent-tasks/rules/DECISIONS.md`
