@@ -1,6 +1,13 @@
 Implement the task in [TASK FILE].
 
-Follow README.md rules.
+**CRITICAL: Move Task from Backlog to Active FIRST**
+Before writing any code:
+1. Move file: `git mv tasks/backlog/[FILENAME] tasks/active/[FILENAME]`
+2. Update YAML: `status: backlog` → `status: active`
+3. Commit: `git commit -m "Start task: [FILENAME]"`
+4. This signals work has begun. Do not skip.
+
+Then follow README.md rules.
 Inspect and confirm the target files first.
 Do not code if paths or assumptions are unclear.
 Keep all commands inside Docker.

@@ -4,6 +4,15 @@ Task:
 Implement the approved change described in the active task file:
 [PASTE TASK FILE PATH HERE]
 
+**CRITICAL FIRST STEP: Move Task File Before Starting Work**
+1. The task file is currently in `tasks/backlog/` 
+2. **Before writing any code**, move the file to `tasks/active/`:
+   - Git mv: `git mv tasks/backlog/[FILENAME] tasks/active/[FILENAME]`
+   - Update YAML header: change `status: backlog` to `status: active`
+   - Commit: `git add tasks/active/[FILENAME] && git commit -m "Start task: [FILENAME]"`
+3. This signals to the strategist that work has begun.
+4. **Do not skip this step.**
+
 Before changing code:
 1. Read README.md and follow all repository rules.
 2. Confirm the task is still valid against the current codebase.
