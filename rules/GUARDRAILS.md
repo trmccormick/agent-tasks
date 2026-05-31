@@ -39,7 +39,39 @@ Never run the full RSpec suite (`bundle exec rspec` with no file argument) durin
 
 If you encounter a need for full suite validation, STOP and escalate to human.
 
-Always capture and display the FULL RSpec output including:
+---
+
+### Rule 3a — MANDATORY PRE-EXECUTION CHECK (CRITICAL INCIDENT PREVENTION)
+**Before running ANY RSpec command, you MUST explicitly perform this check and state the result:**
+
+```
+✅ PRE-RSPEC EXECUTION CHECK:
+- Command: [EXACT command you are about to run]
+- Scope: [single file | directory | specific line]  
+- Targeted: YES | NO
+- File path: [path to spec file]
+- NOT a full suite: YES | NO
+- Ready to execute: YES | NO
+```
+
+**If ANY answer is NO or unclear, STOP and ask the human before proceeding.**
+
+**Example of REQUIRED output BEFORE executing the command:**
+```
+✅ PRE-RSPEC EXECUTION CHECK:
+- Command: docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS_ENV=test bundle exec rspec /home/galaxy_game/spec/services/logistics/shortage_detector_spec.rb'
+- Scope: single file
+- Targeted: YES
+- File path: spec/services/logistics/shortage_detector_spec.rb
+- NOT a full suite: YES
+- Ready to execute: YES
+```
+
+**Critical Incident Prevention Rule**: If you are about to run a command that looks like a full suite (no file argument, `--exclude-pattern`, background process `&`, output redirect to file), STOP immediately. State what you almost did, why it would violate Rule 3, and ask the human for permission before proceeding. Do not assume you have permission.
+
+---
+
+### Rule 7 — RSpec Output
 - All failure messages verbatim
 - Full stack traces
 - Summary line (X examples, Y failures, Z pending)
