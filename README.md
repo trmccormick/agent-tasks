@@ -84,10 +84,18 @@ Roles are assigned per session, not per model. The same model can act as strateg
 | ✅ In Scope | ❌ Out of Scope |
 |---|---|
 | Implement the assigned task file exactly | Self-assign new work |
-| Run targeted tests in environment | Make architectural decisions |
-| Produce synthesis reports before applying | Modify files outside task scope |
+| Run **targeted tests ONLY** for the feature you're implementing | Run the full RSpec suite |
+| Produce synthesis reports before applying | Make architectural decisions |
 | Report blockers immediately | Override stop conditions |
 | Fill in completion report | Plan or strategize |
+| Use latest overnight RSpec results to understand baseline | Generate new full RSpec runs |
+
+> ⚠️ **RSPEC CRITICAL RULE**: You MUST NEVER run the full RSpec suite (`bundle exec rspec` with no file).
+> - Only run targeted specs for YOUR feature (e.g., `spec/services/logistics/shortage_detector_spec.rb`)
+> - Use the latest overnight log (`/home/galaxy_game/log/rspec_full_*.log`) to understand baseline
+> - Full suite runs are the human's responsibility — they manage overnight batch runs
+> - If you need full suite validation, STOP and ask the human explicitly
+> - See `rules/GUARDRAILS.md` Rule 3 for full details
 
 > ⚠️ **STOP CONDITIONS**: Stop and escalate to Strategist immediately if:
 > - Same failure persists after two attempts
@@ -95,6 +103,7 @@ Roles are assigned per session, not per model. The same model can act as strateg
 > - Root cause is in a shared concern or base class
 > - A migration is needed that wasn't anticipated
 > - Any architectural decision is required
+> - You feel the need to run a full RSpec suite
 
 ---
 

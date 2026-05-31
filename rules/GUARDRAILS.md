@@ -17,12 +17,28 @@ docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS
 Never use `docker compose exec` — use `docker exec -it web`.
 Never run Rails or RSpec on the host system directly.
 
-### Rule 2 — Git and File System
-Git commands, file moves, file creation, and folder operations
-MUST happen on the Host (Mac/Windows terminal).
-Never run git inside Docker.
+### Rule 3 — RSpec Execution: AGENTS MUST NEVER RUN FULL SUITES
+**CRITICAL**: Agents execute ONLY targeted specs for the feature/service being implemented.
+Never run the full RSpec suite (`bundle exec rspec` with no file argument) during feature work.
 
-### Rule 7 — RSpec Output
+**Why**: Full suite runs consume significant buffer, can overflow output, and are the human's responsibility for overnight/batch runs.
+
+**What agents CAN run** (targeted only):
+- `rspec spec/services/logistics/shortage_detector_spec.rb` (single service)
+- `rspec spec/services/logistics/` (service directory)
+- `rspec spec/models/logistics/import_request_spec.rb:42` (specific line/test)
+
+**What agents CANNOT run**:
+- `rspec` (full suite — FORBIDDEN)
+- `rspec > /tmp/full.log` (full suite to file — FORBIDDEN)
+- Background RSpec processes (FORBIDDEN)
+- `rspec --exclude-pattern` spanning multiple services (FORBIDDEN — too broad)
+
+**If the human wants a full run**: They will ask explicitly and provide exact instructions.
+**Log location**: `/home/galaxy_game/log/rspec_full_*.log` — use for reading latest results, never generate new ones.
+
+If you encounter a need for full suite validation, STOP and escalate to human.
+
 Always capture and display the FULL RSpec output including:
 - All failure messages verbatim
 - Full stack traces
