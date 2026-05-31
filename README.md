@@ -95,7 +95,7 @@ Roles are assigned per session, not per model. The same model can act as strateg
 > - Use the latest overnight log (`/home/galaxy_game/log/rspec_full_*.log`) to understand baseline
 > - Full suite runs are the human's responsibility — they manage overnight batch runs
 > - If you need full suite validation, STOP and ask the human explicitly
-> - See `rules/GUARDRAILS.md` Rule 3 for full details
+> - See `/Documents/git/agent-tasks/rules/GUARDRAILS.md` Rule 3 for full details
 
 > ⚠️ **STOP CONDITIONS**: Stop and escalate to Strategist immediately if:
 > - Same failure persists after two attempts
