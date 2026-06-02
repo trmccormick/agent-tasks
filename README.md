@@ -108,5 +108,6 @@ Roles are assigned per session, not per model[cite: 3]. The same model can act a
 - **No Continue Sidebar**: All local models must be invoked directly inside the editor via GitHub Copilot custom agent commands.
 - **The Verified Execution Rule**: Local models utilizing terminal privileges MUST use them to verify file paths and run targeted container specs instead of fabricating or assuming test outcomes.
 - **Targeted Testing Only**: Executors must never run a project's full test suite. Only run specific, targeted specs relevant to the task file.
-- **Commits Restricted**: Code modifications can be scaffolded by executors, but final git commits are strictly performed by the human from the host node (Intel Mac)[cite: 3].
+- **Host-Only Supervised Git Commits**: Because Git is not accessible inside the Docker containers, all version control operations must be executed directly on the host node (Intel Mac). Agents may prepare and execute staging and commits under direct human supervision on the host, but they are strictly prohibited from attempting Git commands inside Docker.
+- **No JSON Commits**: Do not stage or commit raw JSON data files at this time. Version control is strictly reserved for application code, tests, and markdown documentation files.
 - **No Multi-Project Cross-Pollination**: Keep context isolated to the active target project repo directory. Do not reference directories from other active systems unless explicitly outlined in a task blueprint.

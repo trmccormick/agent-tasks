@@ -47,7 +47,8 @@ To prevent local hardware degradation and maintain database integrity, all agent
 - **The RSpec Isolation Rule**: All backend testing is executed via RSpec inside the active web container. Every single spec invocation **MUST** prepend `unset DATABASE_URL` to prevent the test environment from accidentally bleeding into or corrupting the operational database.
 - **No Parallel Testing**: Only run one RSpec runner at a time inside Docker. Parallel spec execution is strictly banned to prevent resource collision.
 - **Targeted Testing Only**: Agents must never trigger a blanket run of the entire test suite. Only run specific, targeted file paths relative to your active task.
-- **Version Control Restriction**: While local models can read codebases and write static task blueprints, they are strictly prohibited from executing version control alterations. All `git add`, `git commit`, and `git push` commands must be done by the human from the host Intel Mac node.
+- **Host-Only Supervised Git Commits**: Because Git is not accessible inside the Docker containers, all version control operations must be executed directly on the host node (Intel Mac). Agents may prepare and execute staging and commits under direct human supervision on the host, but they are strictly prohibited from attempting Git commands inside Docker.
+- **No JSON Commits**: Do not stage or commit raw JSON data files at this time. Version control is strictly reserved for application code, tests, and markdown documentation files.
 
 ---
 

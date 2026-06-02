@@ -1,30 +1,62 @@
 # Routing Logic — Quick Reference
-**Last Updated**: 2026-06-02
+**Last Updated**: 2026-06-02[cite: 3]
 
-> Full routing table and agent details are in `rules/AGENT_ROUTING.md`.
-> This file is a quick-reference summary only.
+> Full routing table and agent details are in `rules/AGENT_ROUTING.md`.[cite: 3]
+> This file is a quick-reference summary only.[cite: 3]
 
 ---
 
 ## The One Rule
 
-**Local workspace agents handle file reads, active terminal triage, planning, and targeted edits.**
-**Cloud agents handle mechanical execution, high-speed 0x tasks, or deep complex reviews.**
-**Cloud agents never receive the full codebase — snippets only.**
+**Local workspace agents handle file reads, active terminal triage, planning, and targeted edits.**[cite: 3]
+**Cloud agents handle mechanical execution, high-speed 0x tasks, or deep complex reviews.**[cite: 3]
+**Cloud agents never receive the full codebase — snippets only.**[cite: 3]
 
 ---
 
 ## Session Roles (Behavior-Based, Not Model-Specific)
 
-Roles are assigned per session. The same model can fill different roles in different sessions.
+Roles are assigned per session. The same model can fill different roles in different sessions.[cite: 3]
 
 | Role | Typical Agent | What They Do |
 |---|---|---|
-| **STRATEGIST** | Qwen3.5-9B (Copilot) | Triage, plan, delegate, update task files — never execute code in this role |
-| **EXECUTOR** | GPT-5 mini / Raptor mini (Cloud), Qwen3.5-9B / 27B (Local Live Work) | Implement assigned tasks only — never self-assign |
-| **REVIEWER** | Claude (web) | Architecture decisions, complex task creation — spot checks only |
-| **DOMAIN EXPERT** | Gemini (web) | Geological/game balance expertise — no local file access |
-| **RESEARCHER** | Perplexity | External documentation lookup |
+| **STRATEGIST** | Qwen3.5-9B (Copilot) | Triage, plan, delegate, update task files — never execute code in this role[cite: 3] |
+| **EXECUTOR** | GPT-5 mini / Raptor mini (Cloud), Qwen3.5-9B / 27B (Local Live Work) | Implement assigned tasks only — never self-assign[cite: 3] |
+| **REVIEWER** | Claude (web) | Architecture decisions, complex task creation — spot checks only[cite: 3] |
+| **DOMAIN EXPERT** | Gemini (web) | Geological/game balance expertise — no local file access[cite: 3] |
+| **RESEARCHER** | Perplexity | External documentation lookup[cite: 3] |
+| **DOCUMENTATION AGENT** | Gemini (Web - Context/Intent) / Qwen3.5-27B (Local - Tech Structure) | Parse repositories, maintain markdown guides, and sync code realities with gameplay design rules[cite: 3] |
+
+---
+
+## ⚖️ Cross-Auditing & Verification Protocol (Anti-Hallucination Gate)
+
+To prevent structural drift and trope hallucinations, no agent output may be finalized without a cross-audit from a separate model family.[cite: 3]
+
+1. **The Code-to-Doc Audit**: When a local agent (e.g., Qwen) generates architectural maps or changes code, a context agent (e.g., Gemini) must audit the output against the master design intent to ensure it has not slipped into generic 4X/turn-based tropes.[cite: 3]
+2. **The Doc-to-Code Audit**: When a design rule is updated, the local execution agent must immediately run targeted terminal checks (e.g., running specific RSpecs with `unset DATABASE_URL`) to verify that the codebase physically reflects the documentation.[cite: 3]
+3. **The Contradiction Ban**: Agents are explicitly ordered to cross-reference their active output against `docs/new_agent/agent_guides/galaxy_game.md`. If a generated code pattern or task file assumes mechanics (like turn-clocks) that contradict the guide, the execution must be halted and flagged for the human.[cite: 3]
+
+---
+
+## 📋 Task Assignment & Operational Handoff Rules (STRATEGIST Mandate)
+
+When the STRATEGIST (Qwen3.5-9B) is updating task files, allocating work, or closing out a session, it must strictly adhere to these operational steps to prevent state drift:[cite: 3]
+
+### 1. The State-Tracking Triad
+Every active development cycle requires updating three core files simultaneously to maintain project telemetry:[cite: 3]
+- **Task Files**: Must be built using `TASK_TEMPLATE.md` exactly, clearing out all old template suffixes. Every assignment must clearly define the scope, target specific RSpec files, and state explicit **Escalation Criteria** (e.g., *"If local tests fail due to unexpected environmental dependency collisions, halt execution and report back to the human—do not rewrite core network infrastructure"*).[cite: 3]
+- **`STATUS.md` Updates**: The STRATEGIST must update the global tracking log whenever a task shifts from active to completed or when a block is cleared by a verified RSpec pass.[cite: 3]
+- **`DECISIONS.md` Logging**: Any architectural pivot, database model adjustment, or game balancing deviation from the master `galaxy_game.md` context must be logged as a permanent entry in `DECISIONS.md` before work is handed off.[cite: 3]
+
+### 2. Executor Handoff Mechanics
+When assigning a blueprint to an EXECUTOR model (whether cloud-based or local live work), the STRATEGIST must append a **Simple Handoff Template** to the active task file. This template must explicitly map:[cite: 3]
+1. **Priority Stacking**: Tasks must be ordered sequentially (Task 1, Task 2). Executors are strictly banned from working out-of-order.[cite: 3]
+2. **Context Injection**: Explicit instructions on which domain guides (e.g., `@galaxy_game.md`) the executor must pull into their session before writing code.[cite: 3]
+3. **The Sandbox Constraint**: A reminder that Git is unavailable in the container and raw JSON changes are prohibited.[cite: 3]
+
+### 3. Session End Handoffs
+At the conclusion of an exploration or development session, the active strategist agent must synthesize a concise **Session Handoff Document** summarizing what was validated, what paths were checked via terminal, and what state the active task folder is being left in for the next active launch.[cite: 3]
 
 ---
 
@@ -32,15 +64,15 @@ Roles are assigned per session. The same model can fill different roles in diffe
 
 | Agent | Cost | When to Use | Local File/Terminal Access |
 |---|---|---|---|
-| **Qwen3.5-9B (Copilot)** | Free/local | **PRIMARY Local Strategist / Planner**, failure triage, terminal context gathering, task detailing | ✅ Yes (Native `run_in_terminal`) |
-| **Qwen3.5-27B (Copilot)** | Free/local | High-complexity local coding, deep logic validation, terminal verification runner | ✅ Yes (Native `run_in_terminal`) |
-| Codestral (Continue) | Free/local | Complex offline reasoning, multi-file structural planning (No terminal execution) | ❌ Read Only (No terminal tool) |
-| Qwen2.5-3B (Windows) | Free/local | Small targeted text edits, JSON configurations, quick doc updates | ❌ Read Only (No terminal tool) |
-| **GPT-5-mini (IDE Cloud)** | 0x Tier | **Implementation Worker** for well-specified mechanical code & migrations | ✅ Yes (IDE Workspace Only) |
-| **Raptor mini (Preview)** | 0x Tier | **Alternative Implementation Worker** for mechanical code, quick logic blocks, and specs | ✅ Yes (IDE Workspace Only) |
-| Claude (web) | Free tier | High-level conceptual reviews or planning fallback only | ❌ No |
-| Gemini (web) | Free | Macro session planning, priority stacking, and deep domain game-balance advice | ❌ No |
-| Perplexity (web) | Free | Research, workspace task deployment validation | ❌ No |
+| **Qwen3.5-9B (Copilot)** | Free/local | **PRIMARY Local Strategist / Planner**, failure triage, terminal context gathering, task detailing | ✅ Yes (Native `run_in_terminal`)[cite: 3] |
+| **Qwen3.5-27B (Copilot)** | Free/local | High-complexity local coding, deep logic validation, terminal verification runner | ✅ Yes (Native `run_in_terminal`)[cite: 3] |
+| Codestral (Continue) | Free/local | Complex offline reasoning, multi-file structural planning (No terminal execution) | ❌ Read Only (No terminal tool)[cite: 3] |
+| Qwen2.5-3B (Windows) | Free/local | Small targeted text edits, JSON configurations, quick doc updates | ❌ Read Only (No terminal tool)[cite: 3] |
+| **GPT-5-mini (IDE Cloud)** | 0x Tier | **Implementation Worker** for well-specified mechanical code & migrations | ✅ Yes (IDE Workspace Only)[cite: 3] |
+| **Raptor mini (Preview)** | 0x Tier | **Alternative Implementation Worker** for mechanical code, quick logic blocks, and specs | ✅ Yes (IDE Workspace Only)[cite: 3] |
+| Claude (web) | Free tier | High-level conceptual reviews or planning fallback only | ❌ No[cite: 3] |
+| Gemini (web) | Free | Macro session planning, priority stacking, and deep domain game-balance advice | ❌ No[cite: 3] |
+| Perplexity (web) | Free | Research, workspace task deployment validation | ❌ No[cite: 3] |
 
 ---
 
@@ -48,28 +80,29 @@ Roles are assigned per session. The same model can fill different roles in diffe
 
 | Task | Agent | Role Context |
 |---|---|---|
-| **Triage overnight failures / build task files** | Qwen3.5-9B (Local Copilot) | **STRATEGIST** |
-| **Verify workspace paths (Ledger check)** | Qwen3.5-9B (Local Copilot) | **STRATEGIST** |
-| **Execute live specs via terminal to check errors** | Qwen3.5-9B / 27B (Local Copilot) | **STRATEGIST / EXECUTOR** |
-| Macro session planning / priority stacking | Gemini (web) or Qwen3.5-9B | **STRATEGIST** |
-| Validate task deployment clarity | Perplexity (web) | **RESEARCHER** |
-| Architecture decision / multi-file design | Codestral (Continue) or Qwen3.5-27B | **REVIEWER / EXECUTOR** |
-| **Mechanical code implementation (0x)** | GPT-5-mini (Cloud) or Raptor mini (Preview) | **EXECUTOR (Cloud)** |
-| **Database migration scaffolding (0x)** | GPT-5-mini (Cloud) or Raptor mini (Preview) | **EXECUTOR (Cloud)** |
-| Fix a single spec — cause is known | Qwen3.5-9B | **EXECUTOR (Local)** |
-| Fix a single spec — cause unknown | Qwen3.5-27B (Terminal verification) | **EXECUTOR (Local)** |
-| Multi-file refactor (Patterns specified) | GPT-5-mini (Cloud) or Raptor mini (Preview) | **EXECUTOR (Cloud)** |
-| Edit a JSON / small config file | Qwen2.5-3B | **EXECUTOR (Local)** |
-| Write docs / update task tracking | Qwen2.5-3B or Qwen3.5-9B | **EXECUTOR (Local)** |
+| **Triage overnight failures / build task files** | Qwen3.5-9B (Local Copilot) | **STRATEGIST**[cite: 3] |
+| **Verify workspace paths (Ledger check)** | Qwen3.5-9B (Local Copilot) | **STRATEGIST**[cite: 3] |
+| **Execute live specs via terminal to check errors** | Qwen3.5-9B / 27B (Local Copilot) | **STRATEGIST / EXECUTOR**[cite: 3] |
+| Macro session planning / priority stacking | Gemini (web) or Qwen3.5-9B | **STRATEGIST**[cite: 3] |
+| Validate task deployment clarity | Perplexity (web) | **RESEARCHER**[cite: 3] |
+| Architecture decision / multi-file design | Codestral (Continue) or Qwen3.5-27B | **REVIEWER / EXECUTOR**[cite: 3] |
+| **Mechanical code implementation (0x)** | GPT-5-mini (Cloud) or Raptor mini (Preview) | **EXECUTOR (Cloud)**[cite: 3] |
+| **Database migration scaffolding (0x)** | GPT-5-mini (Cloud) or Raptor mini (Preview) | **EXECUTOR (Cloud)**[cite: 3] |
+| Fix a single spec — cause is known | Qwen3.5-9B | **EXECUTOR (Local)**[cite: 3] |
+| Fix a single spec — cause unknown | Qwen3.5-27B (Terminal verification) | **EXECUTOR (Local)**[cite: 3] |
+| Multi-file refactor (Patterns specified) | GPT-5-mini (Cloud) or Raptor mini (Preview) | **EXECUTOR (Cloud)**[cite: 3] |
+| Edit a JSON / small config file | Qwen2.5-3B | **EXECUTOR (Local)**[cite: 3] |
+| Write docs / update task tracking | Qwen2.5-3B or Qwen3.5-9B | **EXECUTOR (Local)**[cite: 3] |
 
 ---
 
 ## Hard Rules
 
-- **No Continue Sidebar for Automation**: Continue models (like Codestral) lack terminal tools. All active terminal automation must be executed via GitHub Copilot custom agent commands.
-- **The Verified Execution Rule**: Local models utilizing the `run_in_terminal` tool (Qwen3.5 series) MUST use it to verify files and run live Docker specs instead of fabricating or assuming test results.
-- **Role Isolation**: The **STRATEGIST** generates and coordinates the plan. The **EXECUTOR** acts on existing task blueprints and never self-assigns tasks.
-- **Scrub Your Templates**: Ensure all generated task files strip out old `_2` template suffixes and use `TASK_TEMPLATE.md` exactly.
-- All codebase-wide scans go to local models — never send the full codebase to cloud agents.
-- One RSpec runner at a time — never run parallel spec execution inside Docker.
-- Commits are strictly performed by the human from the host node (Intel Mac).
+- **No Continue Sidebar for Automation**: Continue models (like Codestral) lack terminal tools. All active terminal automation must be executed via GitHub Copilot custom agent commands.[cite: 3]
+- **The Verified Execution Rule**: Local models utilizing the `run_in_terminal` tool (Qwen3.5 series) MUST use it to verify files and run live Docker specs instead of fabricating or assuming test results.[cite: 3]
+- **Role Isolation**: The **STRATEGIST** generates and coordinates the plan. The **EXECUTOR** acts on existing task blueprints and never self-assigns tasks.[cite: 3]
+- **Scrub Your Templates**: Ensure all generated task files strip out old `_2` template suffixes and use `TASK_TEMPLATE.md` exactly.[cite: 3]
+- All codebase-wide scans go to local models — never send the full codebase to cloud agents.[cite: 3]
+- One RSpec runner at a time — never run parallel spec execution inside Docker.[cite: 3]
+- **Supervised Host-Only Version Control**: Because Git is not installed or accessible inside the Docker container environment, all version control operations must be executed directly on the host node (Intel Mac). Agents may stage and commit application code, specs, and markdown documentation under direct human supervision on the host, but they are strictly prohibited from attempting Git commands inside Docker.
+- **Data Commit Restriction**: Staging or committing raw JSON data files is strictly banned at this time; version control tracking is reserved exclusively for source code, tests, and documentation.
