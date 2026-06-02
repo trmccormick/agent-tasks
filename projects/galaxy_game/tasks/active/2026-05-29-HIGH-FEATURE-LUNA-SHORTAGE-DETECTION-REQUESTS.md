@@ -1,5 +1,5 @@
 ---
-status: active
+status: in-progress
 priority: HIGH
 type: feature
 system_domain: AI_MANAGER
@@ -9,19 +9,22 @@ local_worker_safe: true
 
 # TASK: Luna Phase 3 — Shortage Detection & Tiered Import Request Generation
 
-**Status**: ACTIVE  
+**Status**: READY FOR IMPLEMENTATION  
 **Priority**: HIGH  
 **Type**: feature  
 **Created**: 2026-05-29  
-**Last Updated**: 2026-05-30  
+**Last Updated**: 2026-05-31  
+**Assigned To**: Qwen3.5-9B (local) — Ready to implement  
+**Blockers Cleared**: 2026-05-31 by Haiku  
+**Est. Time (Local Agent)**: 2-3 hours (modular, well-spec'd)
 
 ---
 
 ## Agent Assignment
 
-**Assigned To**: GPT-4.1 (0x)  
-**Why This Agent**: Complex orchestration logic, settlement viability assessment, multi-tier priority system  
-**Supervision Level**: standard
+**Primary**: Qwen3.5-9B (local) — Full implementation  
+**Why This Agent**: All blockers cleared, spec complete, modular services, straightforward RSpec integration  
+**Supervision Level**: standard (verify test suite before merge)
 
 ---
 
@@ -285,10 +288,16 @@ Luna settlement must survive first, then expand. Shortage detection is tiered:
 
 ## Stop Conditions
 
-🛑 ISRU capability check logic unclear  
-🛑 Settlement inventory doesn't expose equipment list  
-🛑 operational_data structure doesn't support tier targets  
-🛑 Phase 1/2 integration fails during request generation  
+✅ **RESOLVED (May 31, 2026)**:
+- ✅ ISRU capability check logic: `planetary_volatiles_extractor` & `thermal_extraction_unit` are Tier 1 O2 units
+- ✅ Settlement inventory: Uses base_units table with unit_type filtering
+- ✅ operational_data structure: JSONB field on settlements; add nested survival_targets & expansion_targets (no migration needed)
+- ✅ Phase 1/2 integration: CostAnalyzer & ManifestGenerator confirmed ready
+
+### Previous Blockers (Now Resolved)
+- **Blocker #1 — O2 Equipment Names**: Confirmed `planetary_volatiles_extractor` (PVE) and `thermal_extraction_unit` (TEU). Read from `Lookup::UnitLookupService`, don't hardcode.
+- **Blocker #2 — Viability Gate Policy**: Option B implemented — import survival consumables only, deny expansion when ISRU missing, flag HIGH priority for O2 equipment.
+- **Blocker #3 — operational_data Schema**: Confirmed JSONB structure; add `survival_targets` & `expansion_targets` as nested JSON (existing migration 20260113040336).  
 
 ---
 
@@ -298,6 +307,125 @@ Luna settlement must survive first, then expand. Shortage detection is tiered:
 - ✅ Phase 2: `Logistics::ManifestGenerator` (ready)
 - Existing: Settlement.operational_data, Settlement.inventory
 - Existing: Equipment/consumable categorization (may need alignment)
+
+---
+
+## EXECUTOR INSTRUCTIONS (QWEN3.5-9B - ALL BLOCKERS CLEARED)
+
+**Your Role**: Implement the tier-based shortage detection system. All blockers cleared; you have canonical equipment names, viability policy, and data structures.
+
+**What to do**:
+1. **Review the Specification section above** (Services 1-3, Integration)
+2. **Read blockers resolution** (see "Stop Conditions" section above)
+3. **Implement in this order**:
+   - Service 1: `Logistics::ShortageDetector` — detect_shortages, assess_isru_capability, categorize_resource, calculate_target_inventory
+   - Service 2: `Logistics::ImportRequestGenerator` — generate_import_requests
+   - Service 3: `Logistics::ISRUCapabilityManager` — has_basic_isru?, missing_for_survival
+   - Integration: Add detect_and_request_imports to ServiceCoordinator
+4. **Key Facts**:
+   - O2 equipment: `planetary_volatiles_extractor`, `thermal_extraction_unit`, `lunar_oxygen_extractor`
+   - Read from: `Lookup::UnitLookupService.find_unit(unit_type)`
+   - Viability requires: O2 extraction + power source
+   - When non-viable: Allow survival imports only, deny expansion, flag HIGH priority for O2 equipment
+   - Tier targets stored in: `settlement.operational_data['survival_targets']` & `['expansion_targets']`
+5. **Write RSpec tests** — 10+ cases per service
+6. **Run full test suite** before marking complete
+
+**Estimated Implementation Time**: 2-3 hours
+- Service 1 (ShortageDetector): 45 min + 30 min tests
+- Service 2 (ImportRequestGenerator): 40 min + 30 min tests  
+- Service 3 (ISRUCapabilityManager): 20 min + 15 min tests
+- Integration: 15 min + 20 min tests
+
+**Do NOT**:
+- ❌ Hardcode equipment names (read from Lookup service)
+- ❌ Guess at operational_data schema (use nested JSON as documented)
+- ❌ Skip RSpec test coverage
+
+**CRITICAL RULES FOR QWEN3.5**
+
+⚠️ **RULE 1: Use Lookup Service, Not Hardcoded Names**
+- Equipment names live in JSON/database, retrieved via Lookup::UnitLookupService
+- Code example: `Lookup::UnitLookupService.new.find_unit('planetary_volatiles_extractor')`
+
+⚠️ **RULE 2: operational_data is JSONB, No Migration Needed**
+- Read/write nested JSON directly: `settlement.update(operational_data: {...})`
+- Migration already exists (20260113040336)
+
+⚠️ **RULE 3: Viability Gate is Non-Negotiable**
+- If O2 extraction missing: Return viable=false immediately
+- Process survival tiers first; expansion only if survival secured
+- Enforce at generation time (ImportRequestGenerator)
+
+⚠️ **RULE 4: Test Coverage Required**
+- 10+ RSpec cases minimum (see Test Cases Required section)
+- All passing before handoff to verification
+
+---
+
+## ACCEPTANCE CRITERIA (How STRATEGIST Will Know It's Done)
+
+✅ **All services implemented** and tested:
+- `Logistics::ShortageDetector` with all 4 methods
+- `Logistics::ImportRequestGenerator` with manifest creation
+- `Logistics::ISRUCapabilityManager` with viability checks
+- `ServiceCoordinator#detect_and_request_imports` integration
+
+✅ **RSpec suite passes**:
+- 10+ test cases across all services
+- Tier separation verified (survival vs expansion)
+- Viability gate prevents non-viable expansion
+- Equipment lookup uses Lookup service (not hardcoded)
+- operational_data schema respected
+
+✅ **No hardcoded values**:
+- Equipment names read from Lookup service
+- Thresholds/targets read from operational_data
+- No magic numbers in service logic
+
+---
+
+## REPORTING FORMAT (When You're Done)
+
+Reply with:
+
+```
+## Implementation Report: Luna Shortage Detection & Tiered Imports
+
+### Services Implemented
+- ✅ ShortageDetector (4 methods, X test cases)
+- ✅ ImportRequestGenerator (1 method, X test cases)
+- ✅ ISRUCapabilityManager (2 methods, X test cases)
+- ✅ ServiceCoordinator integration (detect_and_request_imports)
+
+### RSpec Test Results
+All X tests passing:
+- ShortageDetector: [X/X]
+- ImportRequestGenerator: [X/X]
+- ISRUCapabilityManager: [X/X]
+- Integration: [X/X]
+
+### Key Implementation Decisions
+- Viability gate enforced at detection time (fail fast)
+- Equipment lookup via Lookup::UnitLookupService
+- operational_data structure: nested JSON, no migration
+- Import priority: survival always > expansion if non-viable
+
+### Files Modified
+- app/services/logistics/shortage_detector.rb (new)
+- app/services/logistics/import_request_generator.rb (updated)
+- app/services/logistics/isru_capability_manager.rb (new)
+- app/services/ai_manager/service_coordinator.rb (updated)
+- spec/services/logistics/shortage_detector_spec.rb (new)
+- spec/services/logistics/import_request_generator_spec.rb (updated)
+- spec/services/logistics/isru_capability_manager_spec.rb (new)
+
+### Any Issues Encountered
+[Document any surprises, workarounds, or deviations from spec]
+
+### Ready for Verification
+Yes / No — [note if anything needs review before full testing]
+```
 
 ---
 

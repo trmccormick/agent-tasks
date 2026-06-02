@@ -1,0 +1,132 @@
+## Handoff to Qwen3.5-9B: Shortage Detection Services Implementation
+
+**Task Location**: `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/active/2026-05-31-QWEN-INVESTIGATE-IMPLEMENT-SHORTAGE-SERVICES.md`
+
+**Est. Time**: 3-4 hours  
+**Status**: Ready for Implementation  
+**Your Role**: Investigation + Implementation + Testing (full cycle)
+
+---
+
+### What You're Doing
+
+Implementing three services for Luna settlement shortage detection with viability checks and tier-based import logic:
+
+1. **ISRUCapabilityManager** — Check if settlement has O2 extraction + power (viability gate)
+2. **ShortageDetector** — Detect shortages, categorize by tier (survival/expansion)
+3. **ImportRequestGenerator** — Create + persist import requests with cost/manifest data
+4. **ServiceCoordinator update** — Simple orchestration layer
+
+---
+
+### Critical Constraint
+
+**Investigation First, Code Second**
+
+Settlement model structure is unclear. You MUST run Rails console commands first to discover:
+- How to access inventory data
+- What operational_data actually contains
+- Whether Phase 1/2 services exist
+- What ImportRequest columns are available
+
+**Do not guess or assume.** Run the commands, document findings, THEN code.
+
+---
+
+### Your Workflow
+
+**PHASE 1: Investigation (30-45 min)**
+```bash
+cd /home/galaxy_game && RAILS_ENV=test bundle exec rails console
+
+# Run each command, note the output
+Settlement::BaseSettlement.reflect_on_all_associations.map(&:name)
+Settlement::BaseSettlement.instance_methods.grep(/inventory|storage|items|material/).sort
+s = Settlement::BaseSettlement.new
+s.operational_data.class
+s.operational_data.inspect
+Settlements::CostAnalyzer.respond_to?(:calculate_cost)
+Logistics::ManifestGenerator.respond_to?(:generate_manifest)
+Logistics::ImportRequest.table_exists? rescue puts "N/A"
+Logistics::ImportRequest.column_names rescue puts "N/A"
+```
+
+Document findings in code comments in each service file.
+
+**PHASE 2-5: Implement + Test**
+- Implement services using actual API you discovered
+- 10+ RSpec tests per service (all passing)
+- ServiceCoordinator simplified to orchestration only
+- Full cycle: code → test → verify
+
+---
+
+### Success Checklist
+
+✅ Investigation findings documented  
+✅ All three services implemented  
+✅ ServiceCoordinator orchestration layer working  
+✅ 10+ RSpec tests per service  
+✅ All tests passing  
+✅ No hardcoded values  
+✅ Phase 1/2 integration working  
+
+### If You Get Stuck
+
+**Don't guess. Report blockers:**
+- Settlement model doesn't expose inventory? → Report it
+- Phase 1/2 services don't exist? → Report it
+- ImportRequest schema unclear? → Report it
+
+Include exact error messages and what you tried.
+
+---
+
+### When Done
+
+Reply with:
+
+```
+## Implementation Report: Shortage Detection Services
+
+### Investigation Findings
+Settlement inventory access: [METHOD]
+operational_data structure: [FIELDS]
+Phase 1/2 services: [EXIST? HOW CALLED?]
+ImportRequest columns: [ACTUAL COLUMNS]
+
+### Services Implemented
+- ✅ ISRUCapabilityManager (3 methods)
+- ✅ ShortageDetector (3 methods)
+- ✅ ImportRequestGenerator (1 method)
+- ✅ ServiceCoordinator.detect_and_request_imports
+
+### Test Results
+All X tests passing:
+- ISRUCapabilityManager: [X/X]
+- ShortageDetector: [X/X]
+- ImportRequestGenerator: [X/X]
+- Integration: [X/X]
+
+### Files Modified
+[List 7 files created/modified]
+
+### Issues
+[Any surprises or workarounds]
+```
+
+---
+
+### Key Rules (No Exceptions)
+
+⚠️ **Investigate first** — Console commands before code  
+⚠️ **Use actual field names** — Not assumptions  
+⚠️ **No hardcoding** — Config + operational_data only  
+⚠️ **All tests pass** — Can't mark done without green tests  
+⚠️ **Report blockers** — Don't work around unknowns  
+
+---
+
+You have full autonomy. Make implementation decisions based on what you discover. Document everything. Report results.
+
+**Start with Rails console. Go.**

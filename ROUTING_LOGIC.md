@@ -21,7 +21,7 @@ Roles are assigned per session. The same model can fill different roles in diffe
 | Role | Typical Agent | What They Do |
 |---|---|---|
 | **STRATEGIST** | Haiku (Copilot) | Triage, plan, delegate, update task files — never execute |
-| **EXECUTOR** | GPT-4.1, Continue local agents | Implement assigned tasks only — never self-assign |
+| **EXECUTOR** | Continue agents (primary), GPT-5 mini/Raptor mini (fallback) | Implement assigned tasks only — never self-assign |
 | **REVIEWER** | Claude (web) | Architecture decisions, complex task creation — spot checks only |
 | **DOMAIN EXPERT** | Gemini (web) | Geological/game balance expertise — no local file access |
 | **RESEARCHER** | Perplexity | External documentation lookup |
@@ -34,7 +34,8 @@ Roles are assigned per session. The same model can fill different roles in diffe
 |---|---|---|---|---|
 | Claude (web) | Free tier | REVIEWER | ❌ | Architecture decisions, complex task creation, spot reviews |
 | Haiku (Copilot) | 0.33x | STRATEGIST | ✅ | Session planning, triage, task file management, delegation |
-| GPT-4.1 (Copilot) | 0x* | EXECUTOR | ✅ | Implementation tasks, spec fixes, migrations |
+| GPT-5 mini (Copilot) | 0x* | EXECUTOR | ✅ | Implementation tasks, spec fixes, migrations |
+| Raptor mini (Copilot) | 0x* | EXECUTOR | ✅ | Parallel implementation tasks, alternative to GPT-5 mini |
 | Gemini (web) | Free | DOMAIN EXPERT | ❌ | Geological rules, game balance, scientific questions |
 | Perplexity (web) | Free | RESEARCHER | ❌ | Samvera/Hyku docs, external research |
 | Codestral (M4) | Free/local | EXECUTOR/ARCHITECT | ✅ via Continue | Architecture, complex multi-file reasoning |
@@ -45,7 +46,7 @@ Roles are assigned per session. The same model can fill different roles in diffe
 | Qwen2.5-3B (Windows) | Free/local | EXECUTOR | ✅ via Continue | Small targeted edits, JSON, docs |
 | Llama 3.1 8B (Windows) | Free/local | EXECUTOR | ✅ via Continue | General tasks, lightweight chat, fallback |
 
-> *GPT-4.1 moves to token-based billing June 1st 2026. Routing will be updated after transition impact is assessed. Do not route Galaxy Game tasks to Copilot for work/Samvera projects.
+> *Copilot agent pricing is uncertain as of May 31, 2026. GPT-5 mini and Raptor mini currently 0x but may change. Continue local agents are guaranteed free and are now PRIMARY for mechanical work.
 
 ---
 
@@ -60,15 +61,15 @@ Roles are assigned per session. The same model can fill different roles in diffe
 | Research Samvera/Hyku community | Perplexity | RESEARCHER |
 | Architecture decision / multi-file design | Codestral (M4) | EXECUTOR/ARCHITECT |
 | Audit logic before implementing | Codestral (M4) | EXECUTOR/ARCHITECT |
-| Fix a single spec — cause is known | Qwen3.5-9B or GPT-4.1 | EXECUTOR |
-| Fix a single spec — cause unknown | Codestral audit → Qwen3.5-9B | EXECUTOR |
-| Multi-file refactor | Codestral synthesis → Qwen3.5-9B | EXECUTOR |
+| Fix a single spec — cause is known | **Qwen3.5-9B** (Continue) or GPT-5 mini | EXECUTOR |
+| Fix a single spec — cause unknown | **Codestral** audit (Continue) → Qwen3.5-9B | EXECUTOR |
+| Multi-file refactor | **Codestral** synthesis (Continue) → Qwen3.5-9B | EXECUTOR |
 | Backlog file audit / task cleanup | Qwen3.5-27B (M4) | EXECUTOR/AUDITOR |
 | Search the codebase | Qwen3.5-9B + Nomic Embed | EXECUTOR |
 | Edit a JSON / small config file | Qwen2.5-3B | EXECUTOR |
 | Write docs after a change | Qwen2.5-3B or Qwen3.5-9B | EXECUTOR |
 | Complex logic / second opinion | Qwen3.5-27B or DeepSeek 16B (M4) | EXECUTOR |
-| Work/Samvera tasks | Copilot (token budget aware) | EXECUTOR |
+| Work/Samvera tasks | **Continue agents (primary)** or GPT-5 mini (fallback) | EXECUTOR |
 
 ---
 

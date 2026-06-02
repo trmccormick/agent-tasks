@@ -1,8 +1,9 @@
 # Task: Populate Agent Guide Stubs
 **Task ID**: TASK-GUIDES-001
-**Assigned To**: Qwen3-30B (Windows) or Codestral (M4)
+**Assigned To**: Qwen3.5-9B (M4 local) — QUEUED after RSpec completion
+**Fallback**: Qwen3-30B (Windows) if needed
 **Priority**: High
-**Status**: Ready
+**Status**: Queued for execution (waiting for RSpec batch to complete)
 
 ---
 

@@ -1,7 +1,9 @@
 # Agent Routing
-**Last Updated**: 2026-05-30
+**Last Updated**: 2026-05-31
 **Maintained By**: Session Strategist (Haiku)
-**Token Strategy**: Maximize free tier usage. Premium reserved for complex work only. **Flexible maintenance routing** for RSpec failures.
+**Token Strategy**: Maximize free tier usage. Premium reserved for complex work only. **Pivot to Continue local agents** for mechanical work.
+
+⚠️ **PRICING UNCERTAINTY (May 31, 2026)**: GPT-5 mini and Raptor mini (preview) are currently 0x but may change tomorrow. Treating as potentially-billing. **PRIMARY STRATEGY: Use Continue local agents** (Qwen, Codestral, DeepSeek) for RSpec failures, mechanical fixes, and implementation work.
 
 > Read DECISIONS.md before this file.
 > Routing decisions here are based on actual model capabilities AND token cost.
@@ -51,19 +53,39 @@
 
 ---
 
-### Cloud Implementation Agents — Minimal Premium Usage
-| Agent | Cost | Capability | When to Use |
-|---|---|---|---|
-| **GPT-4.1** | 0x free | Mechanical implementation | Well-specified tasks from Qwen3.5 + Perplexity |
-| **Haiku 4.5** | 0.33x | Fast fixes, spec corrections | Quick implementations, good for parallel |
-| **Claude Sonnet** | 1x PREMIUM | Complex reasoning, architecture | **RESERVE** for truly complex multi-file work |
+### Cloud Implementation Agents — Potential Premium Usage (MONITOR)
+| Agent | Current Cost | Capability | Status | When to Use |
+|---|---|---|---|---|
+| **GPT-5 mini** | 0x (may change) | Mechanical implementation | UNCERTAIN — treat as potentially-billing | Use only if no local alternative available |
+| **Raptor mini (preview)** | 0x (may change) | Mechanical implementation, parallel | UNCERTAIN — treat as potentially-billing | Fallback if GPT-5 mini unavailable |
+| **Haiku 4.5** | 0.33x | Fast fixes, spec corrections | STABLE | Reserve for quick decisions, not routine work |
+| **Claude Sonnet** | 1x PREMIUM | Complex reasoning, architecture | STABLE | **RESERVE** for truly complex multi-file work |
+
+**WARNING**: Do not route mechanical RSpec fixes to Copilot agents until billing structure is confirmed.
 
 ---
 
-### Local Execution Agents — 0 Token Cost
+## Strategy Shift: Prioritize Continue Local Agents
+
+**Effective immediately** (May 31, 2026):
+- ✅ **Primary**: Route all mechanical RSpec fixes to Continue agents (Qwen3.5-9B, Codestral, Qwen2.5-14B)
+- ✅ **Primary**: Multi-file refactors to Codestral (local synthesis)
+- ⚠️ **Fallback**: Copilot agents only if local agents unavailable
+- ✅ **Complex reasoning**: Continue to use Claude Sonnet (stable 1x cost)
+
+**Rationale**: 
+- Copilot agent pricing uncertain (Raptor/GPT-5 mini may become chargeable tomorrow)
+- Continue local agents are guaranteed free and always available
+- Mechanical work (RSpec fixes, edits) routes naturally to local agents
+- Reduces financial risk during pricing transition
+
+---
+
+### Local Execution Agents — 0 Token Cost (PRIMARY FOR MECHANICAL WORK)
 | Model | Node | IP | Best For |
 |---|---|---|---|
-| Codestral | M4 | 10.6.186.161 | Architecture reasoning, synthesis before implementation |
+| Codestral | M4 | 10.6.186.161 | Architecture reasoning, synthesis (⚠️ filesystem issues in galaxyGame setup) |
+| Qwen3.5-9B | M4 | 10.6.186.161 | **Primary for local files in galaxyGame** (more reliable filesystem access) |
 | Qwen2.5-Coder 14B | M4 | 10.6.186.161 | Multi-file implementation with context |
 | DeepSeek-Coder 16B | M4 | 10.6.186.161 | Logic verification, second opinion |
 | Qwen3-Coder 30B | Windows | 10.6.186.50 | Heavy implementation, primary local worker |

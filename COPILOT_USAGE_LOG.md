@@ -2,31 +2,43 @@
 title: Copilot Pro Usage Log (Prepaid Year)
 date_started: 2026-05-18
 prepaid_expiration: CHECK_GITHUB_BILLING (update when you find actual expiration)
-target_monthly_usage: <1 credit
-objective: Track escalations to prove local models sufficient for renewal decision
+monthly_budget: $10 (= 10 credits at ~$0.01/credit)
+overage_policy: NO OVERAGES — access halts when budget depleted, resumes next billing cycle
+target_monthly_usage: <$5 (conservative, leaves buffer)
+objective: Track escalations and prevent mid-month access loss
 ---
 
 # Copilot Pro Usage Log (Prepaid Period)
 
 **Strategy**: Local-first execution. Only escalate to Copilot Pro when local models (Codestral/Qwen3.5) genuinely fail.
 
+**⚠️ CRITICAL**: $10/month budget is HARD LIMIT with NO OVERAGES. When credits depleted, **access halts completely** until next billing cycle. No fallback, no overage charges — just loss of access.
+
+**Budget Management**:
+- Monthly budget: $10 (~10 credits)
+- Target spend: <$5/month (conservative 50% buffer to prevent mid-month access loss)
+- Emergency reserve: $2-3 for unexpected urgent tasks
+- Month-end burn: Use remaining credits only if safe (don't risk hitting zero before month ends)
+
 **⚠️ IMPORTANT**: Update `prepaid_expiration` date at top once you check your GitHub Billing page.
 
 **Tracking Categories**:
 - **Emergency Escalation**: Local model failed on urgent task → escalated to Copilot immediately
 - **Month-End Burn**: Backlog task assigned to Copilot at month-end to use remaining credits productively
+- **Budget Alert**: Note when approaching $5 spent (halfway mark) or $8 spent (danger zone)
 
 **Measurement Goal**: 
 - Track both emergency escalations AND month-end burns separately
 - Emergency escalations: Measure how often local fails (should be low)
 - Month-End burns: Track backlog cleared per month (should be high)
-- Combined usage: Calculate average credits/month
-- Target: Use ALL prepaid credits productively (don't waste, don't hoard)
+- Combined usage: Calculate total credits/month
+- **CRITICAL**: Never exceed $5 average spend/month (leaves buffer for unexpected needs)
 
-**Usage at Renewal (30 days before expiration)**:
-- If <1 credit/month average: Downgrade to Free ($0/month)
-- If 1-3 credits/month average: Marginal, need more analysis
-- If >3 credits/month average: Consider renewing Copilot Pro ($10/month)
+**Access Loss Prevention**:
+- Monitor spending daily if possible
+- When spending reaches 50% ($5): ⚠️ Yellow alert — reduce non-essential Copilot use
+- When spending reaches 80% ($8): 🔴 Red alert — Copilot use EMERGENCY ONLY
+- If spending hits $10: ❌ No more Copilot access until next month (24h later typically)
 
 ---
 

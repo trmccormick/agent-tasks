@@ -12,7 +12,9 @@ subscription_expiration: UNKNOWN (check GitHub billing page)
 
 **Status**: ✅ POLICY RELEASED — Effective June 1, 2026  
 **Your Subscription**: 📌 **ANNUAL PREPAID** (exact expiration date unknown)  
-**Where to Check**: GitHub Account → Billing & Plans → Subscriptions (shows renewal date)  
+**Billing Model**: **$10/month = $10 AI Credits** (1:1 ratio, ~$0.01 per credit)  
+**Critical Constraint**: ⚠️ **NO OVERAGES — when depleted, access halts until next billing cycle** (no fallback, no charges)  
+**Where to Check**: GitHub Account → Billing & Plans → Subscriptions (shows renewal date + current spend)  
 **Current Implication**: Path A (Copilot Pro) is locked in until renewal. No action needed before expiration date.
 
 ---
@@ -210,16 +212,23 @@ A complex multi-file refactor might cost:
 
 ---
 
-## Decision: Revised Routing Strategy (Post-June 1)
+## Decision: Revised Routing Strategy (Post-June 1 — CRITICAL FOR PREPAID)
 
-**THE FUNDAMENTAL SHIFT**: All 0x free agents disappear. GPT-4.1 will have a cost (amount unknown). You MUST choose between Copilot Pro or local models.
+**THE FUNDAMENTAL SHIFT**: $10/month budget with NO overages = must manage usage actively. Access loss mid-month is possible if spending not tracked.
 
-**Your $10 Budget Reality**:
-- $10/month in credits
-- ~$0.01 per credit average
-- Simple fixes: likely 0.1-0.5 credits each (20-100 tasks if lightweight models cheap)
+**Your $10 Budget Reality** (NO OVERAGES):
+- $10/month in credits, hard stop
+- When depleted: No access to Copilot Pro agents until next month
+- Simple fixes: likely 0.1-0.5 credits each (20-100 tasks if cheap, but risky)
 - Complex multi-file: likely 5-10+ credits each (1-2 tasks max)
-- Most likely sustainable: 5-10 mixed tasks/month
+- **Sustainable without risk**: 3-5 tasks/month (leaves $5-7 buffer)
+- **Aggressive but possible**: 5-10 tasks/month (higher risk of mid-month exhaustion)
+
+**Access Loss Prevention Strategy**:
+- Target spend: <$5/month (50% buffer)
+- Yellow alert: >$5 spent (reduce non-essential use)
+- Red alert: >$8 spent (emergency use only)
+- If hit $10: No Copilot until next billing cycle
 
 **Two Possible Workflows**:
 
@@ -367,18 +376,24 @@ IMPLEMENTATION (primary execution):
 
 **Revised Action Plan**:
 
-### Phase 1: NOW through Prepaid Expiration (Use Copilot Pro Freely)
+### Phase 1: NOW through Prepaid Expiration (Manage $10/month Budget Actively)
 
 **What you can do**:
-- ✅ Route complex work to Copilot Pro without budget constraints
+- ✅ Route complex work to Copilot Pro but monitor spending daily
 - ✅ Test local Codestral/Qwen3.5 in parallel (preparing for potential Path B)
 - ✅ Measure: How much Copilot work do you actually do per month?
 - ✅ Collect: Data on local model performance for same tasks
+- ✅ **Track spending**: Update COPILOT_USAGE_LOG.md weekly to prevent access loss
 
 **What you DON'T need to do**:
 - ❌ Test June 1-3 (prepaid = not affected)
-- ❌ Track Copilot credits (unlimited until expiration)
 - ❌ Make Path A vs B decision now (do it 30 days before expiration)
+- ❌ Hoard credits
+
+**Critical for prepaid period**:
+- ⚠️ Monitor spending weekly
+- ⚠️ Set alerts at 50% ($5) and 80% ($8) spent
+- ⚠️ Prevent hitting $10 mid-month (would lose access)
 
 ### Phase 2: 30 Days Before Prepaid Expiration (Make Renewal Decision)
 
@@ -452,13 +467,19 @@ THEN downgrade to Copilot Free ($0) + local primary
 
 **Implication**: You have an unfair advantage during June 1 - August 2026 (roughly). Everyone else is struggling with credit budgets; you're unlimited.
 
-**Smart Move**: Use this window to test Codestral/Qwen3.5 extensively while you have unlimited Copilot as backup.
+**Smart Move**: Use this prepaid period to:
+1. Establish safe spending patterns (target <$5/month)
+2. Test Codestral/Qwen3.5 extensively (local backup)
+3. Identify which tasks genuinely need Copilot vs. local
+4. Build buffer to prevent mid-month access loss
 
 ---
 
-## Phase 1 Routing Strategy: Local-First + Month-End Credit Burn
+## Phase 1 Routing Strategy: Local-First + Conservative Budget Management
 
-**Philosophy**: Your prepaid Copilot Pro credits are already paid. Use local models during the month (gather data), then burn remaining credits at month-end on backlog tasks.
+**Philosophy**: $10/month budget is HARD LIMIT with access loss if depleted. Prioritize local models to preserve Copilot credits for true emergencies.
+
+**Target Monthly Spending**: <$5 (conservative 50% buffer to prevent access loss)
 
 **Updated AI Stack (From Now Until Expiration)**:
 
@@ -468,12 +489,12 @@ THEN downgrade to Copilot Free ($0) + local primary
 | **Primary** | Qwen3.5 (local) | 0 | Detail, triage, model layer | Throughout month (default first) |
 | **0-Token** | Gemini | 0 | Planning, prioritization, coordination | Always in workflow |
 | **0-Token** | Perplexity | 0 | Validation, research | When needed |
-| **Secondary** | Copilot Pro | Prepaid (burn at month-end) | Escalations + month-end backlog tasks | (1) Local failures anytime, (2) Backlog burn at month-end |
+| **Secondary (CONTROLLED)** | Copilot Pro | $0.1-0.5 per task | Emergency escalations only | (1) Local failures anytime, (2) Only when critical |
 | **Premium** | Claude 1x | 1x cost | Rare architectural decisions | <1% of tasks (emergencies only) |
 
 **Decision Logic**:
 
-**During the Month** (Local-First):
+**During the Month** (Local-First, Conservative Spending):
 ```
 Task arrives:
 ├─ Simple (RSpec, models, controllers)
@@ -482,26 +503,30 @@ Task arrives:
 ├─ Complex (multi-file refactor, architecture)
 │  └─ Try local first if you have time
 │     ├─ Success? Done.
-│     └─ Failure? Escalate to Copilot Pro (urgent)
+│     └─ Failure AND NOT URGENT? Queue for weekend or next month
+│     └─ Failure AND URGENT? Check budget status:
+│         ├─ Under $3 spent: OK to escalate to Copilot Pro
+│         ├─ $3-$5 spent: Reconsider, try local one more time
+│         └─ Over $5 spent: ONLY if truly critical (emergency)
 │
 └─ Backlog task
-   └─ Log in queue for month-end burn
+   └─ DO NOT burn Copilot on backlog (preserve budget for emergencies)
 ```
 
-**At Month-End** (Credit Burn):
-```
-Review backlog queue:
-├─ How many Copilot credits remain?
-├─ How many queued backlog tasks?
-└─ Assign backlog tasks to Copilot Pro until credits ~depleted
-   (Don't hoard credits — you've already paid for them)
-```
+**Budget Monitoring** (Weekly):
+1. Check GitHub Billing page
+2. Update COPILOT_USAGE_LOG.md with current spend
+3. Alert thresholds:
+   - ⚠️ Yellow: >$5 spent (halt non-essential Copilot use)
+   - 🔴 Red: >$8 spent (emergency use only)
+   - ❌ Stop: Would hit $10 (wait for next billing cycle)
 
 **Tracking & Target**:
 - Track month-end burn separately from emergency escalations
-- Mark in COPILOT_USAGE_LOG.md: "Month-end burn" vs "Emergency escalation"
-- Measure: Average credits used/month
-- Target: Use ALL prepaid credits productively (don't leave unused)
+- Mark in COPILOT_USAGE_LOG.md: "Emergency escalation" only
+- **DO NOT track "month-end burns"** (changed strategy due to hard budget limit)
+- Measure: Total monthly spend (target <$5)
+- Prevent: Spending >$8 (danger zone for access loss)
 
 ---
 
@@ -617,8 +642,8 @@ A: Pick tasks that are moderately complex but clearly benefiting from Copilot (m
 **Q: What if I don't have queued backlog at month-end?**  
 A: Then don't artificially create work. You've proven local models work — that's a win. Leave credits unspent that month (though this is unlikely given your project size).
 
-**Q: What if I have more backlog than credits?**  
-A: Great! Means backlog exists. Month-end burn clears some of it. Next month, repeat. Eventually backlog will stabilize or clear. This actually proves demand for Copilot if consistent.
+**Q: What if I hit the $10 limit mid-month?**  
+A: Access halts. No overages, no charges, just stopped until next billing cycle. Prevent this by monitoring weekly and keeping spend under $5/month on average.
 
 **Q: What if local Codestral fails on a task?**  
 A: Escalate to Copilot Pro. Log it in COPILOT_USAGE_LOG.md. This data is gold for your renewal decision.
@@ -629,8 +654,8 @@ A: Yes, try both on similar tasks. You might find one is better for RSpec fixes,
 **Q: What if local models frequently fail?**  
 A: That would argue for renewing Copilot Pro (Path A). But based on your strategy, you're expecting <1 credit/month, so frequent failures are unlikely if local models are reasonable.
 
-**Q: Can I use Copilot Pro for learning/experiments?**  
-A: Technically yes (you've paid for it), but avoid it. Save credits for production work. Use local models for experiments.
+**Q: How do I prevent access loss?**  
+A: Monitor spending weekly. Target <$5/month average (leaves $5 buffer). Use GitHub Billing page to check current spend. Update COPILOT_USAGE_LOG.md. Yellow alert at $5, red alert at $8. Never allow it to hit $10 mid-month.
 
 **Q: How do I know if a task is "hard enough" for Copilot Pro?**  
 A: If local model output is completely wrong or non-functional after 1-2 attempts, escalate. If it's 80% right and just needs tweaks, use local. Copilot Pro is for "local failed" not "local suboptimal".
@@ -656,12 +681,12 @@ A: Absolutely. They'll hit the $10 credit limit hard if on monthly billing. Your
 
 | Factor | Impact |
 |---|---|
-| **June 1 policy change** | Doesn't affect you immediately ✅ |
 | **Urgency to decide** | Low — decide at renewal (30 days before expiration) ✅ |
-| **Action now** | Collect data on local model reliability 📊 |
-| **Expected renewal** | Path A (Keep Copilot Pro) — $10/month is worth it 🎯 |
-| **Local models role** | Reliable for production work? Escalate failures to Copilot. 🔍 |
-| **Advantage** | Prepaid period lets you test before renewal decision 📈 |
+| **Action now** | Establish safe <$5/month spending pattern; collect local model reliability data 📊 |
+| **Budget constraint** | $10/month hard limit — NO overages, just access loss 🚨 |
+| **Expected renewal** | Path B likely (downgrade to Free) — if local models prove reliable ✅ |
+| **Local models role** | Primary execution; Copilot as emergency backup only 🔍 |
+| **Advantage** | Prepaid period lets you test patterns before renewal; NO billing risk ✅ |
 | **Next step** | Execute month-end burn strategy, track both emergency + burn |
 
 **Recommendation**: At renewal, you're likely keeping Copilot Pro. $10/month is minimal cost for productivity boost. Use this prepaid period to:
