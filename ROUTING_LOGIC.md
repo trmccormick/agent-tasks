@@ -1,5 +1,5 @@
 # Routing Logic — Quick Reference
-**Last Updated**: 2026-05-29
+**Last Updated**: 2026-06-02
 
 > Full routing table and agent details are in `rules/AGENT_ROUTING.md`.
 > This file is a quick-reference summary only.
@@ -8,8 +8,8 @@
 
 ## The One Rule
 
-**Local models handle file reads and targeted edits.**
-**Cloud agents handle reasoning, review, and planning.**
+**Local workspace agents handle file reads, triage, planning, and targeted edits.**
+**Cloud agents handle mechanical execution, high-speed 0x tasks, or deep complex reviews.**
 **Cloud agents never receive the full codebase — snippets only.**
 
 ---
@@ -30,66 +30,49 @@ Roles are assigned per session. The same model can fill different roles in diffe
 
 ## AI Stack at a Glance
 
-| Agent | Cost | Role | Local Files | When to Use |
-|---|---|---|---|---|
-| Claude (web) | Free tier | REVIEWER | ❌ | Architecture decisions, complex task creation, spot reviews |
-| Haiku (Copilot) | 0.33x | STRATEGIST | ✅ | Session planning, triage, task file management, delegation |
-| GPT-5 mini (Copilot) | 0x* | EXECUTOR | ✅ | Implementation tasks, spec fixes, migrations |
-| Raptor mini (Copilot) | 0x* | EXECUTOR | ✅ | Parallel implementation tasks, alternative to GPT-5 mini |
-| Gemini (web) | Free | DOMAIN EXPERT | ❌ | Geological rules, game balance, scientific questions |
-| Perplexity (web) | Free | RESEARCHER | ❌ | Samvera/Hyku docs, external research |
-| Codestral (M4) | Free/local | EXECUTOR/ARCHITECT | ✅ via Continue | Architecture, complex multi-file reasoning |
-| Qwen3.5-27B (M4) | Free/local | EXECUTOR/AUDITOR | ✅ via Continue | Backlog audit, heavy structural reasoning, second opinion |
-| Qwen3.5-9B (Windows/M4) | Free/local | EXECUTOR | ✅ via Continue | Primary coding workhorse, implementation, general tasks |
-| Qwen3-30B (Windows) | Free/local | EXECUTOR | ✅ via Continue | Legacy high-complexity tasks |
-| Qwen2.5-14B (M4) | Free/local | EXECUTOR | ✅ via Continue | Implementation, code refinement |
-| Qwen2.5-3B (Windows) | Free/local | EXECUTOR | ✅ via Continue | Small targeted edits, JSON, docs |
-| Llama 3.1 8B (Windows) | Free/local | EXECUTOR | ✅ via Continue | General tasks, lightweight chat, fallback |
+| Agent | Cost | When to Use |
+|---|---|---|
+| **Qwen3.5-9B (Copilot Endpoint)** | Free/local | **PRIMARY Local Planner**, failure triage, task detailing, general coding workhorse[cite: 3, 6] |
+| Codestral (M4) | Free/local | Architecture, complex multi-file logic/synthesis[cite: 3, 6] |
+| Qwen3.5-27B (Windows) | Free/local | High-complexity coding, validation, second opinions[cite: 3, 6] |
+| Qwen2.5-3B (Windows) | Free/local | Small targeted edits, JSON, quick doc changes[cite: 3, 6] |
+| **GPT-5-mini (IDE Cloud)** | 0x Tier | **Implementation Worker** for well-specified mechanical code & migrations[cite: 2, 6] |
+| **Raptor mini (Preview) (IDE Cloud)** | 0x Tier | **Alternative Implementation Worker** for mechanical code, quick logic blocks, and specs |
+| Claude (web) | Free tier | High-level conceptual reviews or planning fallback only[cite: 3, 6] |
+| Gemini (web) | Free | Macro session planning and initial priority stacking[cite: 3, 6] |
+| Perplexity (web) | Free | Research, workspace task deployment validation[cite: 3, 6] |
 
-> *Copilot agent pricing is uncertain as of May 31, 2026. GPT-5 mini and Raptor mini currently 0x but may change. Continue local agents are guaranteed free and are now PRIMARY for mechanical work.
+> **Copilot / Ollama Note**: Local models are now accessed directly as custom Copilot endpoints[cite: 6]. 
+> Do not route Galaxy Game tasks to Cloud Copilot premium models; target local Qwen3.5 models or your designated 0x cloud workers (GPT-5-mini / Raptor mini)[cite: 2, 3, 6].
 
 ---
 
 ## Quick Routing Table
 
-| Task | Agent | Role |
-|---|---|---|
-| Session triage / priority stack | Haiku (Copilot) | STRATEGIST |
-| Task file creation / backlog audit | Haiku (Copilot) | STRATEGIST |
-| Architecture decision / design review | Claude (web) | REVIEWER |
-| Geological/game balance question | Gemini (web) | DOMAIN EXPERT |
-| Research Samvera/Hyku community | Perplexity | RESEARCHER |
-| Architecture decision / multi-file design | Codestral (M4) | EXECUTOR/ARCHITECT |
-| Audit logic before implementing | Codestral (M4) | EXECUTOR/ARCHITECT |
-| Fix a single spec — cause is known | **Qwen3.5-9B** (Continue) or GPT-5 mini | EXECUTOR |
-| Fix a single spec — cause unknown | **Codestral** audit (Continue) → Qwen3.5-9B | EXECUTOR |
-| Multi-file refactor | **Codestral** synthesis (Continue) → Qwen3.5-9B | EXECUTOR |
-| Backlog file audit / task cleanup | Qwen3.5-27B (M4) | EXECUTOR/AUDITOR |
-| Search the codebase | Qwen3.5-9B + Nomic Embed | EXECUTOR |
-| Edit a JSON / small config file | Qwen2.5-3B | EXECUTOR |
-| Write docs after a change | Qwen2.5-3B or Qwen3.5-9B | EXECUTOR |
-| Complex logic / second opinion | Qwen3.5-27B or DeepSeek 16B (M4) | EXECUTOR |
-| Work/Samvera tasks | **Continue agents (primary)** or GPT-5 mini (fallback) | EXECUTOR |
+| Task | Agent |
+|---|---|
+| **Triage overnight failures / build task files** | Qwen3.5-9B (Local Copilot)[cite: 3, 6] |
+| **Verify workspace paths (Ledger check)** | Qwen3.5-9B (Local Copilot)[cite: 5, 6] |
+| Macro session planning / priority stacking | Gemini (web)[cite: 3, 6] |
+| Validate task deployment clarity | Perplexity (web)[cite: 6] |
+| Architecture decision / multi-file design | Codestral (M4)[cite: 3, 6] |
+| **Mechanical code implementation (0x)** | GPT-5-mini (Cloud) or Raptor mini (Preview)[cite: 2, 6] |
+| **Database migration scaffolding (0x)** | GPT-5-mini (Cloud) or Raptor mini (Preview)[cite: 2, 6] |
+| Fix a single spec — cause is known | Qwen3.5-9B[cite: 3, 6] |
+| Fix a single spec — cause unknown | Codestral ➔ Qwen3.5-9B[cite: 3] |
+| Multi-file refactor (Patterns specified) | GPT-5-mini (Cloud) or Raptor mini (Preview)[cite: 2, 6] |
+| Multi-file refactor (Complex synthesis) | Codestral synthesis ➔ Qwen3.5-9B[cite: 3] |
+| Edit a JSON / small config file | Qwen2.5-3B[cite: 3, 6] |
+| Write docs / update task tracking | Qwen2.5-3B or Qwen3.5-9B[cite: 3, 6] |
+| Complex logic / second opinion | Qwen3.5-27B[cite: 3, 6] |
 
 ---
 
 ## Hard Rules
 
-- M4 must stay caffeinated (`caffeinate` / `pmset`) for stable Ollama connection
-- All codebase-wide scans go to local models — never send full codebase to cloud
-- Cloud agents receive only specific file snippets needed for the task
-- One RSpec runner at a time — never run parallel spec execution
-- Commits always from Intel Mac (host/orchestration node)
-- `unset DATABASE_URL` before every RSpec run inside Docker — never omit
-- Synthesis report before any code change — Executors must stop and wait for approval
-- Do not route Galaxy Game tasks to Copilot (token budget) — use GPT-4.1 Copilot agent instead
-
----
-
-## June 2026 Transition Note
-
-GitHub Copilot moves to token-based billing effective June 1st 2026. Impact on routing:
-- GPT-4.1 (Copilot agent) — was 0x free, becomes token-based
-- Routing table will be updated after transition impact is assessed
-- Until updated: treat GPT-4.1 as conservation-worthy, prefer local agents for implementation
-- Local Qwen3.5 series is the primary fallback for implementation work
+- **No Continue Sidebar**: All local models must be invoked directly inside the editor via GitHub Copilot custom agent commands[cite: 6].
+- **The Fabrication Rule**: Local models can read active workspace files via Copilot context, but they cannot execute shell, git, or Docker commands[cite: 6]. Never let them guess test results or schemas[cite: 6].
+- **Scrub Your Templates**: Ensure all generated task files strip out old `_2` template suffixes and use `TASK_TEMPLATE.md` exactly[cite: 4, 5].
+- All codebase-wide scans go to local models — never send the full codebase to cloud agents[cite: 3, 6].
+- One RSpec runner at a time — never run parallel spec execution inside Docker[cite: 3, 6].
+- Commits are strictly performed by the human from the host node (Intel Mac)[cite: 3, 6].
