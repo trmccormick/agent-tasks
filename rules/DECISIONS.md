@@ -143,7 +143,7 @@ Cancelled   → materials returned (if before start), status: :cancelled
 | DO NOT USE for analysis | Qwen3-Coder 30B | Tool calls broken — MoE arch |
 
 ### Cloud Agent Rules
-- **GPT-4.1**: Primary implementation agent. All 0x tasks. Free tier.
+- **GPT-5 mini**: Primary implementation agent. All 0x tasks. Free tier.
 - **Haiku 4.5**: 0.33x — implementation, spec fixes, handoffs. Weekly limit applies.
 - **Grok**: RETIRED 2026-05-15.
 - **Claude**: Planning and strategy only. Never implementation. Premium — use at gates only.
@@ -154,6 +154,17 @@ Integration specs use real JSON data and real service calls.
 Stubs only for external dependencies.
 Never stub internal lookup services in integration specs.
 If JSON changes, the test must catch it.
+
+## Test Execution Wrapper (Procedural Note) — 2026-06-03
+- During spec health sessions, use the Docker test wrapper to run focused specs inside the application container. This ensures correct paths and environment mirroring for integration tests.
+
+Recommended command (executor):
+
+```
+docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS_ENV=test bundle exec rspec [SPEC_PATH] 2>&1 | tail -20'
+```
+
+This is a procedural guidance for executors running isolated specs; any permanent policy change requires strategist approval.
 
 ---
 

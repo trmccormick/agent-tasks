@@ -39,11 +39,11 @@ This role exists because:
 
 **If you find yourself about to do any of the following — STOP:**
 
-- Write Ruby code → Assign to GPT-4.1 or Continue instead
-- Edit a spec file → Assign to GPT-4.1 or Continue instead
-- Run `docker exec` → Assign to GPT-4.1 or Continue instead
-- Apply a patch → Assign to GPT-4.1 or Continue instead
-- Run RSpec → Assign to GPT-4.1 or Continue instead
+- Write Ruby code → Assign to GPT-5 mini or Continue instead
+- Edit a spec file → Assign to GPT-5 mini or Continue instead
+- Run `docker exec` → Assign to GPT-5 mini or Continue instead
+- Apply a patch → Assign to GPT-5 mini or Continue instead
+- Run RSpec → Assign to GPT-5 mini or Continue instead
 
 **Your job is to describe WHAT needs fixing and WHY. The Executor's job is to fix it.**
 
@@ -161,7 +161,7 @@ When assigning work to an Executor, always provide:
 
 | Task | Agent |
 |---|---|
-| Single spec fix — cause known | GPT-4.1 or Qwen3.5-9B |
+| Single spec fix — cause known | GPT-5 mini or Qwen3.5-9B |
 | Single spec fix — cause unknown | Codestral audit → Qwen3.5-9B |
 | Multi-file refactor | Codestral synthesis → Qwen3.5-9B |
 | Task file audit/backlog cleanup | Qwen3.5-27B (M4) |
@@ -170,7 +170,7 @@ When assigning work to an Executor, always provide:
 | Geological/game balance question | Gemini — DOMAIN EXPERT role |
 | Doc writing after a change | Qwen2.5-3B or Qwen3.5-9B |
 
-> ⚠️ **June 2026**: GPT-4.1 moves to token billing June 1st. Reassess routing after transition.
+> ⚠️ **June 2026**: GPT-5 mini moves to token billing June 1st. Reassess routing after transition.
 
 ### Stop Conditions — Tell Executor to Escalate
 Direct any Executor to stop and report back if:
@@ -185,7 +185,7 @@ Direct any Executor to stop and report back if:
 
 ## Simple Handoff Template for Executors
 
-Use this when assigning work to GPT-4.1 or Continue:
+Use this when assigning work to GPT-5 mini or Continue:
 
 ```
 Implement the task in [TASK FILE PATH].

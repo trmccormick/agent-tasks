@@ -232,7 +232,7 @@ Token conservation is THE core constraint. Follow this hierarchy:
    - Qwen3.5 for task detailing (Continue, local)
    - Perplexity for task validation (web, free tier)
    - Local models for implementation synthesis (Continue, 0 tokens)
-   - GPT-4.1 0x for mechanical implementation (free tier)
+   - GPT-5 miniini 0x for mechanical implementation (free tier)
 
 2. **Free Token Tier (Use if 0-token option exhausted)**
    - Claude free web (~0 tokens) for alignment checks only

@@ -27,7 +27,7 @@ subscription_expiration: UNKNOWN (check GitHub billing page)
 
 **Current State (May 31, 2026)**:
 ```
-GPT-4.1           = 0x (unlimited, FREE) ← PRIMARY EXECUTION
+GPT-5 mini        = 0x (unlimited, FREE) ← PRIMARY EXECUTION
 Haiku             = 0.33x (paid)
 Claude Sonnet     = 1x (paid)
 Claude Opus       = 1.5x (paid)
@@ -37,7 +37,7 @@ Local Qwen3.5     = 0 tokens (local, unlimited)
 
 **Expected After June 1 (ASSUMPTION - NEEDS VERIFICATION)**:
 ```
-GPT-4.1           = 0.5x? (paid, but cheaper than Sonnet) ← NEW COST UNKNOWN
+GPT-5 mini        = 0.5x? (paid, but cheaper than Sonnet) ← NEW COST UNKNOWN
 Haiku             = 0.33x (paid, remains cheapest premium)
 Claude Sonnet     = 1x (paid, standard)
 Claude Opus       = 1.5x (paid, premium)
@@ -45,7 +45,7 @@ Local Codestral   = 0 tokens (local, unlimited) ← BECOMES PRIMARY
 Local Qwen3.5     = 0 tokens (local, unlimited) ← BECOMES PRIMARY
 ```
 
-**Impact**: Your unlimited GPT-4.1 0x tier is **GONE**. All execution work now has a cost UNLESS you use local models.
+**Impact**: Your unlimited GPT-5 mini 0x tier is **GONE**. All execution work now has a cost UNLESS you use local models.
 
 ### GitHub Copilot Pro: Usage-Based Billing Model (OFFICIAL)
 
@@ -70,7 +70,7 @@ Local Qwen3.5     = 0 tokens (local, unlimited) ← BECOMES PRIMARY
 - Lightweight models: Fraction of a credit per task
 - Standard models (Sonnet): Variable, roughly 1-2 credits per moderate task
 - Complex multi-file sessions: 5-10+ credits per task
-- **GPT-4.1 rates: NOT SPECIFIED** in official policy
+- **GPT-5 mini rates: NOT SPECIFIED** in official policy
 
 **Annual Plan Subscribers**:
 - Old annual plans remain valid until expiration
@@ -144,14 +144,14 @@ Local Qwen3.5     = 0 tokens (local, unlimited) ← BECOMES PRIMARY
 5. ✅ **Avoid Code Review** (costs both Actions minutes + credits)
 6. ✅ **Complex multi-file sessions are expensive** ("burn through credits significantly faster")
 
-### Critical Remaining Unknown #1: GPT-4.1 Availability & Pricing
+### Critical Remaining Unknown #1: GPT-5 mini Availability & Pricing
 
 **The Policy Says**: "Standard Chat & Coding Agents consume AI Credits at varying API rates per model"
 
 **What This Means**: Each model has a different cost multiplier.
 
 **What's Missing**: 
-- ❌ Is GPT-4.1 available in Copilot Pro at all?
+- ❌ Is GPT-5 mini available in Copilot Pro at all?
 - ❌ If yes, what's its cost multiplier? (Cheaper than Sonnet? Same as Sonnet? More?)
 - ❌ Is there any 0x equivalent in Copilot Pro?
 

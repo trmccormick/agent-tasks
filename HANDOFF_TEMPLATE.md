@@ -1,4 +1,4 @@
-You are GPT-4.1 Local acting as the Implementation Agent.
+You are GPT-5 mini Local acting as the Implementation Agent.
 
 Task:
 Implement the approved change described in the active task file:

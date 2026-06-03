@@ -125,6 +125,16 @@ Roles are assigned per session, not per model[cite: 3]. The same model can act a
 
 ---
 
+## Project-Specific Configuration Notes
+
+Each project may have unique configuration requirements. Refer to the project-specific documentation in:
+- `/docs/new_agent/projects/[project_name]/` for project-specific guides
+
+For example, Galaxy Game has a dedicated Docker command guide at:
+- `/docs/new_agent/projects/galaxy_game/DOCKER_COMMAND_GUIDE.md`
+
+---
+
 ## Hard Rules (Non-Negotiable)
 
 - **No Continue Sidebar**: All local models must be invoked directly inside the editor via GitHub Copilot custom agent commands.

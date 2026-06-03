@@ -1,7 +1,7 @@
 # Task File Template
 # Copy this file, rename it to describe the task, fill in all sections.
 # Delete these instruction comments before saving.
-# Place in docs/new_agent/tasks/backlog/ or active/ as appropriate.
+# Place in docs/new_agent/projects/{project name}/tasks/backlog/{YYYY-MM}/ or active/ as appropriate.
 #
 # FILENAME CONVENTION — mandatory for all task files:
 #   YYYY-MM-DD-PRIORITY-TYPE-DESCRIPTIVE-NAME.md
@@ -62,7 +62,7 @@ local_worker_safe: true | false
 
 ## Agent Assignment
 
-**Assigned To**: [GPT-4.1 0x | Haiku 0.33x | Claude Sonnet 1x | Local Ollama]
+**Assigned To**: [GPT-5 mini 0x | Haiku 0.33x | Claude Sonnet 1x | Local Ollama]
 **Why This Agent**: [one line]
 **Supervision Level**: [watched carefully | standard | autonomous OK]
 

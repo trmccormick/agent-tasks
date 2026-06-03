@@ -3,7 +3,7 @@
 **Maintained By**: Session Strategist (Haiku)
 **Token Strategy**: Maximize free tier usage. Premium reserved for complex work only. **Pivot to Continue local agents** for mechanical work.
 
-⚠️ **PRICING UNCERTAINTY (May 31, 2026)**: GPT-5 mini and Raptor mini (preview) are currently 0x but may change tomorrow. Treating as potentially-billing. **PRIMARY STRATEGY: Use Continue local agents** (Qwen, Codestral, DeepSeek) for RSpec failures, mechanical fixes, and implementation work.
+✅ **CONFIRMED FREE TIER**: GPT-5 mini and Raptor mini (preview) are confirmed 0x. **PRIMARY STRATEGY: Use Continue local agents** (Qwen, Codestral, DeepSeek) for RSpec failures, mechanical fixes, and implementation work.
 
 > Read DECISIONS.md before this file.
 > Routing decisions here are based on actual model capabilities AND token cost.
@@ -36,7 +36,7 @@
 | Single service failures (3-5 failures) | Whoever is available first | Start immediately; don't wait for specific agent |
 | Factory/setup issues (nil associations) | Local Qwen3.5 (if available) else Claude | Quick file inspection + fix |
 | Complex cross-service issues (5+ related) | Codestral synthesis (try first) | Escalate to Claude Sonnet only if pattern unclear |
-| Fixture/data load failures | GPT-4.1 or available local | Mechanical fix; assign based on availability |
+| Fixture/data load failures | GPT-5 mini or available local | Mechanical fix; assign based on availability |
 
 **Example (2026-05-30)**: 19 failures after overnight run → Claude (free) available at 1:40pm → routed immediately (no task file needed)
 
@@ -49,15 +49,15 @@
 |---|---|---|---|
 | **Perplexity** | 0 tokens | Review task clarity, validate deployment, manage workflow | After Qwen3.5 triage, before cloud handoff |
 
-**Perplexity role**: Can validate that Qwen3.5 output is clear and deployable. Can manage task queues and deployment order. Good for: "Is this task clear enough for GPT-4.1?" or "Can this be parallelized safely?"
+**Perplexity role**: Can validate that Qwen3.5 output is clear and deployable. Can manage task queues and deployment order. Good for: "Is this task clear enough for GPT-5 mini?" or "Can this be parallelized safely?"
 
 ---
 
 ### Cloud Implementation Agents — Potential Premium Usage (MONITOR)
 | Agent | Current Cost | Capability | Status | When to Use |
 |---|---|---|---|---|
-| **GPT-5 mini** | 0x (may change) | Mechanical implementation | UNCERTAIN — treat as potentially-billing | Use only if no local alternative available |
-| **Raptor mini (preview)** | 0x (may change) | Mechanical implementation, parallel | UNCERTAIN — treat as potentially-billing | Fallback if GPT-5 mini unavailable |
+| **GPT-5 mini** | 0x | Mechanical implementation | STABLE — confirmed free tier | Primary cloud agent |
+| **Raptor mini (preview)** | 0x | Mechanical implementation, parallel | STABLE — confirmed free tier | Parallel execution fallback |
 | **Haiku 4.5** | 0.33x | Fast fixes, spec corrections | STABLE | Reserve for quick decisions, not routine work |
 | **Claude Sonnet** | 1x PREMIUM | Complex reasoning, architecture | STABLE | **RESERVE** for truly complex multi-file work |
 
@@ -67,14 +67,14 @@
 
 ## Strategy Shift: Prioritize Continue Local Agents
 
-**Effective immediately** (May 31, 2026):
+**Effective immediately** (June 2, 2026):
 - ✅ **Primary**: Route all mechanical RSpec fixes to Continue agents (Qwen3.5-9B, Codestral, Qwen2.5-14B)
 - ✅ **Primary**: Multi-file refactors to Codestral (local synthesis)
 - ⚠️ **Fallback**: Copilot agents only if local agents unavailable
 - ✅ **Complex reasoning**: Continue to use Claude Sonnet (stable 1x cost)
 
 **Rationale**: 
-- Copilot agent pricing uncertain (Raptor/GPT-5 mini may become chargeable tomorrow)
+- GPT-5 mini and Raptor mini confirmed as free tier (0x)
 - Continue local agents are guaranteed free and always available
 - Mechanical work (RSpec fixes, edits) routes naturally to local agents
 - Reduces financial risk during pricing transition
@@ -174,13 +174,13 @@ the codebase. If RAG status is unknown, use a cloud agent for any codebase searc
 ### Implementation (Minimal Cost)
 | Task | Agent | Cost | Reason |
 |---|---|---|---|
-| Single file edit — exact specs from Qwen3.5 | GPT-4.1 0x | 0 | Mechanical, well-prepared task |
+| Single file edit — exact specs from Qwen3.5 | GPT-5 mini 0x | 0 | Mechanical, well-prepared task |
 | Single file edit — needs some inference | Haiku 0.33x | 0.33x | Slightly more complex |
-| Multi-file refactor — patterns specified | GPT-4.1 0x | 0 | Mechanical with guidance |
-| Multi-file refactor — needs reasoning | Codestral synthesis + GPT-4.1 impl | 0 | Never skip local synthesis |
-| Create missing fixture or config | GPT-4.1 0x | 0 | Mechanical |
-| Factory trait fix | GPT-4.1 0x | 0 | Mechanical |
-| Add logger call to rescue block | GPT-4.1 0x | 0 | Mechanical |
+| Multi-file refactor — patterns specified | GPT-5 mini 0x | 0 | Mechanical with guidance |
+| Multi-file refactor — needs reasoning | Codestral synthesis + GPT-5 mini impl | 0 | Never skip local synthesis |
+| Create missing fixture or config | GPT-5 mini 0x | 0 | Mechanical |
+| Factory trait fix | GPT-5 mini 0x | 0 | Mechanical |
+| Add logger call to rescue block | GPT-5 mini 0x | 0 | Mechanical |
 | Architecture refactor (PREMIUM ONLY) | Codestral synthesis + Claude 1x impl | 1x | Use sparingly — almost never needed |
 
 ### Data & JSON (0 Token Cost)
@@ -188,15 +188,15 @@ the codebase. If RAG status is unknown, use a cloud agent for any codebase searc
 |---|---|---|---|
 | JSON file edits — small targeted | Qwen2.5-Coder 3B (Windows) | 0 | Fast, low risk |
 | JSON file audits — validation | Qwen3.5 27B (M4) | 0 | Needs judgment |
-| Large JSON generation | GPT-4.1 0x | 0 | Free, handles volume |
+| Large JSON generation | GPT-5 mini 0x | 0 | Free, handles volume |
 
 ### Documentation (0 or Free Token Cost)
 | Task | Agent | Cost | Reason |
 |---|---|---|---|
-| Update .md files after code change | Qwen2.5-Coder 3B or GPT-4.1 | 0 | Mechanical |
+| Update .md files after code change | Qwen2.5-Coder 3B or GPT-5 mini | 0 | Mechanical |
 | Write new architecture docs | Gemini or free Claude | 0 | Prefer Gemini (planning gate) |
-| Session handoff document | Haiku 0.33x or GPT-4.1 0x | 0-0.33x | Prefer GPT-4.1 (free) |
-| Update task files (post-implementation) | GPT-4.1 0x | 0 | Mechanical update |
+| Session handoff document | Haiku 0.33x or GPT-5 mini 0x | 0-0.33x | Prefer GPT-5 mini (free) |
+| Update task files (post-implementation) | GPT-5 mini 0x | 0 | Mechanical update |
 
 ### Repository Operations (No Agent Cost)
 | Task | Agent | Cost | Reason |
@@ -214,7 +214,7 @@ the codebase. If RAG status is unknown, use a cloud agent for any codebase searc
 - Qwen3.5 (Continue) for all task detailing
 - Perplexity for task validation and management
 - Local models for implementation synthesis
-- GPT-4.1 0x for mechanical implementation
+- GPT-5 mini 0x for mechanical implementation
 
 **Rule**: Do NOT use premium tokens unless work has exhausted all 0-token options.
 
@@ -233,11 +233,11 @@ the codebase. If RAG status is unknown, use a cloud agent for any codebase searc
 - Do NOT use for task creation or implementation
 
 ### When NOT to Use Premium Tokens
-- Single file edits with exact specs → GPT-4.1 0x
+- Single file edits with exact specs → GPT-5 mini 0x
 - Template enforcement → Qwen3.5 (Continue)
 - Task queue management → Perplexity
 - Codebase search → Local models + RAG
-- Mechanical implementations → GPT-4.1 0x
+- Mechanical implementations → GPT-5 mini 0x
 
 ### When to Use Premium Tokens (1x Claude / 0.33x Haiku)
 - Multi-file refactor requiring judgment across shared services

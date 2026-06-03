@@ -1,7 +1,7 @@
 # Agent Session Handoff Process — June 1st 2026 Update
 
-**Effective Date**: June 1, 2026  
-**Version**: 2.0  
+**Effective Date**: June 3, 2026  
+**Version**: 2.1  
 **Status**: Pre-implementation Planning
 
 ---
@@ -15,7 +15,7 @@ This document defines the new session handoff process and agent workflow for Git
 ## Current State (Through May 31, 2026)
 
 ### Handoff Locations
-- **Session Summaries**: `/docs/agent/tasks/session-handoffs/`
+- **Session Summaries**: `/docs/new_agent/projects/{project path}/tasks/session-handoffs/`
 - **Agent Status**: Root workspace via `AGENT_STATUS.md`
 - **Internal Memory**: User and session memory in local `.vscode/` directory
 
@@ -35,7 +35,7 @@ This document defines the new session handoff process and agent workflow for Git
 
 ### Session Handoff File Structure
 
-All session handoffs MUST go to: `/docs/agent/tasks/session-handoffs/`
+All session handoffs MUST go to: `/docs/new_agent/projects/{project path}/tasks/session-handoffs/`
 
 **Naming Convention**: `session_handoff_YYYY-MM-DD_[SESSION_NAME].md`
 
@@ -59,7 +59,7 @@ All session handoffs MUST go to: `/docs/agent/tasks/session-handoffs/`
 
 ### Planning Agent Access Points
 
-**Primary**: `/docs/agent/tasks/session-handoffs/` (latest file by date)  
+**Primary**: `/docs/new_agent/projects/{project path}/tasks/session-handoffs/` (latest file by date)  
 **Secondary**: Grep pattern `session_handoff_*.md` for all historical handoffs  
 **Status**: Named files sorted by date for sequential discovery
 
@@ -116,7 +116,7 @@ All session handoffs MUST go to: `/docs/agent/tasks/session-handoffs/`
 
 | Aspect | Current (Through 5/31) | New (From 6/1) |
 |--------|------------------------|----------------|
-| **Handoff Location** | Varied locations | `/docs/agent/tasks/session-handoffs/` only |
+| **Handoff Location** | Varied locations | `/docs/new_agent/projects/{project path}/tasks/session-handoffs/` only |
 | **Naming** | Inconsistent patterns | Strict `session_handoff_YYYY-MM-DD_[NAME].md` |
 | **Required Sections** | Varies by agent | 9 mandatory sections |
 | **Planning Agent Access** | Variable | Defined entry points (grep by date) |
@@ -130,7 +130,7 @@ All session handoffs MUST go to: `/docs/agent/tasks/session-handoffs/`
 
 ### May 31, 2026 (End of Day)
 - [ ] Review this document with current agent setup
-- [ ] Validate current handoff locations against `/docs/agent/tasks/session-handoffs/`
+- [ ] Validate current handoff locations against `/docs/new_agent/projects/{project path}/tasks/session-handoffs/`
 - [ ] Audit recent handoffs for completeness
 
 ### June 1, 2026 (Transition)
@@ -203,11 +203,11 @@ A: Yes, for complex changes. Include 3-5 lines of context around the change.
 
 ## Version Control & Updates
 
-**Document Version**: 2.0  
-**Last Updated**: 2026-05-15  
+**Document Version**: 2.1  
+**Last Updated**: 2026-06-02  
 **Next Review**: 2026-06-15
 
 To update this process after June 1:
 1. Create new version document (3.0)
-2. Reference this 2.0 document for history
+2. Reference this 2.1 document for history
 3. Update all agents on workflow change

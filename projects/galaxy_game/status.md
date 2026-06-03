@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-06-02
+**Last Updated:** 2026-06-03
 
 ---
 
@@ -96,6 +96,16 @@
 - **Agent Coordination:** Established simple handoff protocol for quick fixes vs formal task files.
 
 ### 2026-06-02
+### 2026-06-03 Session
+- ✅ **Spec health bugfix cycle (Executor)** — Executed three HIGH-priority spec checks and recorded completed task files in `agent-tasks`:
+  - `2026-06-03-HIGH-BUGFIX-ORBITAL-SHIPYARD-MATERIAL-DISTRIBUTION-FRAKILENESS.md` — Verified spec: `spec/services/construction/orbital_shipyard_service_spec.rb` (1 example, 0 failures). Root cause: incorrect RSpec invocation path used earlier; corrected to container path `/home/galaxy_game`.
+  - `2026-06-03-HIGH-BUGFIX-GAME-DATA-GENERATOR-FILE-EXISTENCE-CHECK-FRAKILENESS.md` — Verified spec: `spec/services/generators/game_data_generator_spec.rb` (1 example, 0 failures).
+  - `2026-06-03-HIGH-BUGFIX-MATERIAL-LOOKUP-JSON-ERROR-LOGGING-FRAKILENESS.md` — Verified spec: `spec/services/lookup/material_lookup_service_spec.rb` (1 example, 0 failures). JSON resources enumerated and parsed successfully.
+
+Notes:
+- No application code changes were required for these tasks; all failures were resolved by correcting test invocation and re-running the focused specs inside the container.
+- Completed task files have been committed and pushed to the `agent-tasks` repo under `projects/galaxy_game/tasks/completed/2026-06/`.
+
 - **Investigation Phase**: Diagnosed all 11 RSpec failures by category (6 service classes)
 - **Constant Loading Issue**: ISRUCapabilityManager had Zeitwerk namespace mismatch (expected `IsruCapabilityManager`, got `ISRUCapabilityManager`)
 - **Solution**: Created initializer with alias, refactored class name, both work with backward-compatible alias

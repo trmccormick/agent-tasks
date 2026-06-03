@@ -86,7 +86,7 @@ Eight task files from `docs/new_agent/tasks/backlog/2026-02/` were selected for 
 3. **Architectural Reasoning**: Added context from DECISIONS.md and GUARDRAILS.md appropriately
 4. **Code Examples**: Generated realistic PORO pattern code for water escalation task
 5. **Implementation Clarity**: Steps are sequential and specific (Step 1, 2, 3...)
-6. **Agent Routing**: Correctly assigned to GPT-4.1 0x, Haiku 0.33x, or Claude 1x based on complexity
+6. **Agent Routing**: Correctly assigned to GPT-5 mini 0x, Haiku 0.33x, or Claude 1x based on complexity
 
 ### Areas for Improvement
 
@@ -143,7 +143,7 @@ The models CANNOT effectively:
 └─────────────────────────────────────────────────────────────┘
                            ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ Cloud Agent (GPT-4.1 / Haiku / Claude) — Execution          │
+│ Cloud Agent (GPT-5 mini / Haiku / Claude) — Execution          │
 │ - Read the detailedtask prepared by Qwen3.5                 │
 │ - Run implementation or investigation                       │
 │ - Produce completion report                                 │
