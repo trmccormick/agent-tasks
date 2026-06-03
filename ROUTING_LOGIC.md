@@ -1,8 +1,17 @@
 # Routing Logic — Quick Reference
-**Last Updated**: 2026-06-02[cite: 3]
+**Last Updated**: 2026-06-03
 
 > Full routing table and agent details are in `rules/AGENT_ROUTING.md`.[cite: 3]
 > This file is a quick-reference summary only.[cite: 3]
+
+---
+
+## ⚠️ EXPERIMENTAL TOOLS (Not in Active Routing)
+
+- **Continue (VS Code Extension)**: Text-only terminal execution (no `run_terminal`), but CAN read files including git history.
+  - DeepSeek-v2: Honest refusal ("unable to execute").
+  - Codestral: Can access and read local files (including .git/ structures). Does NOT fabricate — output verified accurate. However, still cannot execute terminal commands.
+  - **Limited use case**: Architecture review, file analysis, git history reading. **NOT recommended for active workflow** since Qwen3.5 in Copilot does everything Continue does PLUS terminal execution.
 
 ---
 
@@ -62,12 +71,18 @@ At the conclusion of an exploration or development session, the active strategis
 
 ## AI Stack at a Glance
 
+**⚠️ TESTED FINDINGS (2026-06-03):**
+- **Copilot + Qwen3.5 (both 9b & 27b)**: ✅ Tools work correctly
+- **Copilot + Qwen2.5 (14b & 7b)**: ❌ Tool format incompatibility (outputs JSON, Copilot doesn't execute)
+- **Continue**: ❌ All tools disabled by design (text-only mode)
+- **DeepSeek-v2:16b & Codestral**: Not selectable in Copilot (discovered but hidden from dropdown)
+
 | Agent | Cost | When to Use | Local File/Terminal Access |
 |---|---|---|---|
-| **Qwen3.5-9B (Copilot)** | Free/local | **PRIMARY Local Strategist / Planner**, failure triage, terminal context gathering, task detailing | ✅ Yes (Native `run_in_terminal`)[cite: 3] |
-| **Qwen3.5-27B (Copilot)** | Free/local | High-complexity local coding, deep logic validation, terminal verification runner | ✅ Yes (Native `run_in_terminal`)[cite: 3] |
-| Codestral (Continue) | Free/local | Complex offline reasoning, multi-file structural planning (No terminal execution) | ❌ Read Only (No terminal tool)[cite: 3] |
-| Qwen2.5-3B (Windows) | Free/local | Small targeted text edits, JSON configurations, quick doc updates | ❌ Read Only (No terminal tool)[cite: 3] |
+| **Qwen3.5-9B (Copilot)** | Free/local | **Fast Local Strategist / Planner**, quick triage, terminal context gathering, task detailing | ✅ Yes (Tested & confirmed working)[cite: 3] |
+| **Qwen3.5-27B (Copilot)** | Free/local | **Heavy Local Executor**, deep logic validation, terminal verification runner, complex multi-file reasoning | ✅ Yes (Tested & confirmed working)[cite: 3] |
+| ~~Codestral (Continue)~~ | Free/local | ~~Complex offline reasoning~~ **NOT SELECTABLE IN COPILOT** | ❌ Text-only (Continue disabled tools)[cite: 3] |
+| ~~Qwen2.5 variants (Copilot)~~ | Free/local | ~~Code implementation~~ **DO NOT USE — TOOL FORMAT BROKEN** | ❌ Tool calls not executed (format mismatch)[cite: 3] |
 | **GPT-5-mini (IDE Cloud)** | 0x Tier | **Implementation Worker** for well-specified mechanical code & migrations | ✅ Yes (IDE Workspace Only)[cite: 3] |
 | **Raptor mini (Preview)** | 0x Tier | **Alternative Implementation Worker** for mechanical code, quick logic blocks, and specs | ✅ Yes (IDE Workspace Only)[cite: 3] |
 | Claude (web) | Free tier | High-level conceptual reviews or planning fallback only | ❌ No[cite: 3] |
@@ -78,28 +93,29 @@ At the conclusion of an exploration or development session, the active strategis
 
 ## Quick Routing Table
 
-| Task | Agent | Role Context |
-|---|---|---|
-| **Triage overnight failures / build task files** | Qwen3.5-9B (Local Copilot) | **STRATEGIST**[cite: 3] |
-| **Verify workspace paths (Ledger check)** | Qwen3.5-9B (Local Copilot) | **STRATEGIST**[cite: 3] |
-| **Execute live specs via terminal to check errors** | Qwen3.5-9B / 27B (Local Copilot) | **STRATEGIST / EXECUTOR**[cite: 3] |
-| Macro session planning / priority stacking | Gemini (web) or Qwen3.5-9B | **STRATEGIST**[cite: 3] |
-| Validate task deployment clarity | Perplexity (web) | **RESEARCHER**[cite: 3] |
-| Architecture decision / multi-file design | Codestral (Continue) or Qwen3.5-27B | **REVIEWER / EXECUTOR**[cite: 3] |
-| **Mechanical code implementation (0x)** | GPT-5-mini (Cloud) or Raptor mini (Preview) | **EXECUTOR (Cloud)**[cite: 3] |
-| **Database migration scaffolding (0x)** | GPT-5-mini (Cloud) or Raptor mini (Preview) | **EXECUTOR (Cloud)**[cite: 3] |
-| Fix a single spec — cause is known | Qwen3.5-9B | **EXECUTOR (Local)**[cite: 3] |
-| Fix a single spec — cause unknown | Qwen3.5-27B (Terminal verification) | **EXECUTOR (Local)**[cite: 3] |
-| Multi-file refactor (Patterns specified) | GPT-5-mini (Cloud) or Raptor mini (Preview) | **EXECUTOR (Cloud)**[cite: 3] |
-| Edit a JSON / small config file | Qwen2.5-3B | **EXECUTOR (Local)**[cite: 3] |
-| Write docs / update task tracking | Qwen2.5-3B or Qwen3.5-9B | **EXECUTOR (Local)**[cite: 3] |
+| Task | Agent | Role Context | Notes |
+|---|---|---|---|
+| **Triage overnight failures / build task files** | Qwen3.5-9B (Copilot) | **STRATEGIST**[cite: 3] | Fast, proven tool support |
+| **Verify workspace paths (Ledger check)** | Qwen3.5-9B (Copilot) | **STRATEGIST**[cite: 3] | Terminal-verified only |
+| **Execute live specs via terminal to check errors** | Qwen3.5-27B (Copilot) | **EXECUTOR**[cite: 3] | ⚠️ ONLY Qwen3.5 works; Qwen2.5 format broken |
+| Macro session planning / priority stacking | Gemini (web) or Qwen3.5-9B | **STRATEGIST**[cite: 3] | Avoid Qwen2.5 for planning |
+| Validate task deployment clarity | Perplexity (web) | **RESEARCHER**[cite: 3] |  |
+| Architecture decision / multi-file design | Qwen3.5-27B (Copilot) | **REVIEWER / EXECUTOR**[cite: 3] | Primary local option |
+| **Mechanical code implementation (0x)** | GPT-5-mini (Cloud) or Raptor mini (Preview) | **EXECUTOR (Cloud)**[cite: 3] |  |
+| **Database migration scaffolding (0x)** | GPT-5-mini (Cloud) or Raptor mini (Preview) | **EXECUTOR (Cloud)**[cite: 3] |  |
+| Fix a single spec — cause is known | Qwen3.5-9B | **EXECUTOR (Local)**[cite: 3] | Verified working |
+| Fix a single spec — cause unknown | Qwen3.5-27B (Terminal verification) | **EXECUTOR (Local)**[cite: 3] | Deep reasoning + terminal tools |
+| Multi-file refactor (Patterns specified) | GPT-5-mini (Cloud) or Raptor mini (Preview) | **EXECUTOR (Cloud)**[cite: 3] |  |
+| Write docs / update task tracking | Qwen3.5-9B (Copilot) | **EXECUTOR (Local)**[cite: 3] | Use Qwen3.5, not Qwen2.5 |
 
 ---
 
 ## Hard Rules
 
-- **No Continue Sidebar for Automation**: Continue models (like Codestral) lack terminal tools. All active terminal automation must be executed via GitHub Copilot custom agent commands.[cite: 3]
-- **The Verified Execution Rule**: Local models utilizing the `run_in_terminal` tool (Qwen3.5 series) MUST use it to verify files and run live Docker specs instead of fabricating or assuming test results.[cite: 3]
+- **⚠️ Qwen2.5 Tool Incompatibility (Copilot)**: Qwen2.5 models (7b, 14b, 32b) output tool-calls in a format that Copilot doesn't recognize/execute. They are NOT suitable for terminal automation in Copilot. Do NOT use in active routing.[cite: 3]
+- **Qwen3.5 Only for Copilot Terminal Tools**: Both Qwen3.5-9B and Qwen3.5-27B support terminal execution in Copilot. These are the ONLY local Copilot agents confirmed working with `run_in_terminal` tool.[cite: 3]
+- **Continue is Experimental/Deprecated**: Continue disables terminal execution (`run_terminal` tool) for all models but allows file reading. Cannot execute, so no advantage over Copilot + Qwen3.5 which does both reading AND execution. Keep for architecture analysis only, but do NOT use for active task routing since Qwen3.5 covers all use cases.[cite: 3]
+- **The Verified Execution Rule**: Local models utilizing the `run_in_terminal` tool (Qwen3.5 series in Copilot) MUST use it to verify files and run live tests instead of fabricating or assuming test results.[cite: 3]
 - **Role Isolation**: The **STRATEGIST** generates and coordinates the plan. The **EXECUTOR** acts on existing task blueprints and never self-assigns tasks.[cite: 3]
 - **Scrub Your Templates**: Ensure all generated task files strip out old `_2` template suffixes and use `TASK_TEMPLATE.md` exactly.[cite: 3]
 - All codebase-wide scans go to local models — never send the full codebase to cloud agents.[cite: 3]

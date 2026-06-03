@@ -1,0 +1,29 @@
+{
+  "name": "ollama-qwen3-5-executor",
+  "displayName": "Ollama Qwen3.5 Executor (Tools Enabled)",
+  "model": "ollama://localhost/qwen3.5:27b",
+  "description": "Copilot custom agent that targets local Ollama qwen3.5:27b. TOOLS ENABLED: terminal, file operations. Use for code execution, testing, and shell commands.",
+  "temperature": 0.0,
+  "topP": 0.95,
+  "enableToolUse": true,
+  "allowTerminalExecution": true,
+  "allowFileOperations": true,
+  "instructions": "You are an executor agent backed by a local Ollama model with FULL ACCESS to terminal and file tools. Your role is to execute commands, read/write files, and run tests. You ARE PERMITTED to execute terminal commands via run_in_terminal tool. When the user asks you to run a command or execute a tool, you MUST call the tool directly using the Copilot tool-calling protocol. DO NOT refuse requests for terminal execution. Always ask for confirmation before destructive operations (rm, git push, docker rm). Output tool calls as JSON only: {\"name\":\"run_in_terminal\",\"arguments\":{\"command\":\"...\",\"explanation\":\"...\",\"goal\":\"...\",\"mode\":\"sync\"}}. No markdown wrapping.",
+  "tools": [
+    {"name": "run_in_terminal", "enabled": true, "confirmBeforeRun": true},
+    {"name": "read_file", "enabled": true},
+    {"name": "write_file", "enabled": true},
+    {"name": "list_dir", "enabled": true},
+    {"name": "get_workspace_state", "enabled": true},
+    {"name": "grep_search", "enabled": true}
+  ],
+  "permissions": {
+    "terminal": "allowed",
+    "fileSystem": "allowed",
+    "network": "denied"
+  },
+  "safety": {
+    "forbidCommands": ["rm -rf /", "sudo reboot", "shutdown -h now"],
+    "requireConfirmationFor": ["docker", "git push", "rm", "sudo", "dd"]
+  }
+}
