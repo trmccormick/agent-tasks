@@ -24,6 +24,28 @@
 **Scope**: Formal feature or refactor assignments containing detailed technical specifications[cite: 3].  
 **Status**: Lifecycle tracked via YAML header (`status: backlog` ➔ `status: active` ➔ `status: completed`)[cite: 3].
 
+## Symlinked Task Repo — Managing Task Files
+NOTE: In this workspace `docs/new_agent` is a filesystem symlink that points to the shared task repository at `/Users/tam0013/Documents/git/agent-tasks`. Editing files under `docs/new_agent` is fine, but commits and pushes must be performed from the `agent-tasks` repository on the host.
+
+Recommended workflow for executors and strategists:
+
+- Edit or create task files in `docs/new_agent/projects/galaxy_game/tasks/...` (this updates the symlinked location).  
+- When ready to commit, operate from the `agent-tasks` repo root to ensure correct Git metadata and remotes are used. Use quoted paths to avoid shell globbing. Example commands:
+
+```bash
+cd /Users/tam0013/Documents/git/agent-tasks
+git add 'projects/galaxy_game/tasks/completed/2026-06/2026-06-03-HIGH-BUGFIX-EXAMPLE.md'
+git commit -m "Add completed task: 2026-06-03 spec health"
+git push
+```
+
+- When moving a task between `backlog` → `active` → `completed`, update the YAML header (`status:`) in the task file before committing.
+- After committing task file changes, update `docs/new_agent/projects/galaxy_game/status.md` in the repo where you edited the file (the symlink target) to reflect progress and decisions.
+
+Why this matters:
+- Committing from the `agent-tasks` repo root preserves the correct repository metadata and remote configuration. Committing from the symlinked workspace path can result in files being added to the wrong repository or failing due to path mismatches.
+
+
 ---
 
 ## Where to Find Agent Guidance
