@@ -1,98 +1,56 @@
 # Agent Routing
-**Last Updated**: 2026-05-31
-**Maintained By**: Session Strategist (Haiku)
-**Token Strategy**: Maximize free tier usage. Premium reserved for complex work only. **Pivot to Continue local agents** for mechanical work.
-
-✅ **CONFIRMED FREE TIER**: GPT-5 mini and Raptor mini (preview) are confirmed 0x. **PRIMARY STRATEGY: Use Continue local agents** (Qwen, Codestral, DeepSeek) for RSpec failures, mechanical fixes, and implementation work.
+**Last Updated**: 2026-06-03
+**Maintained By**: Claude (web) + human
+**Token Strategy**: Local-first execution. Cloud agents are 0.33x — reserve for tasks local models genuinely cannot complete after two attempts.
 
 > Read DECISIONS.md before this file.
 > Routing decisions here are based on actual model capabilities AND token cost.
 
 ---
 
+## ⚠️ Tier Change — Effective 2026-06-03
+
+**GPT-5 mini and Raptor mini are no longer 0x. Both are now 0.33x tier.**
+
+- All routing tables in this file have been updated to reflect this
+- Do not route routine implementation to cloud agents
+- Qwen3.5-27B is now the primary implementation worker
+- Cloud agents require two local failure attempts before escalation
+- Track all cloud usage in `COPILOT_USAGE_LOG.md`
+
+---
+
 ## The Cluster
 
-### Planning Gate — 0 Token Cost
+### Strategic Dispatch — Free
 | Agent | Cost | Role | When to Use |
 |---|---|---|---|
-| **Gemini** | 0 tokens | PRIMARY planner | All session starts, priority stacking |
-| Claude (free web) | ~0 tokens | Overview/alignment checks | Secondary if Gemini unavailable |
+| **Claude (web)** | Free | **PRIMARY STRATEGIST** — review, task file drafting, handoff prompts, synthesis audit | Session starts, task file creation, architecture review |
+| **Gemini (web)** | Free | Domain expertise, game balance, macro planning | Geological/game balance questions, design intent checks |
+| Perplexity | Free | External research, task clarity validation | After task file is drafted — "is this deployable?" |
 
 ---
 
-### Triage & Detailing Phase — 0 Token Cost
-| Model | Node | Provider | Cost | Role |
-|---|---|---|---|---|
-| **Qwen3.5 27B** | M4 | Continue | 0 tokens | Heavy auditing, complex multi-file reasoning |
-| **Qwen3.5 9B** | M4 / Windows | Continue | 0 tokens | Template conformance, implementation detail |
+### Local Execution Agents — Free (PRIMARY IMPLEMENTATION PATH)
+| Model | Node | Best For | Terminal Access |
+|---|---|---|---|
+| **Qwen3.5-27B** | M4 | **PRIMARY EXECUTOR** — multi-file fixes, schema verification, complex logic | ✅ `run_in_terminal` |
+| **Qwen3.5-9B** | M4 / Windows | Targeted file reads, single spec runs, simple known fixes | ✅ `run_in_terminal` |
+| Codestral | M4 | Complex offline reasoning, multi-file structural planning | ❌ Read only |
+| Qwen2.5-3B | Windows | Small text edits, JSON configs, quick doc updates | ❌ Read only |
+| Qwen3-Coder 30B | Windows | Heavy implementation, primary Windows worker | ✅ `run_in_terminal` |
+| Nomic Embed | Windows | RAG/codebase indexing — always on, never reassign | — |
+| Qwen2.5-Coder 1.5B | Windows | Tab autocomplete — always on, never reassign | — |
 
 ---
 
-### RSpec Failure Debugging (Flexible Maintenance Routing)
-**Principle**: RSpec failures are ad-hoc maintenance, NOT formal tasks. Route based on agent availability.
-
-| Failure Type | Route To | Notes |
+### Cloud Agents — 0.33x Tier (RESERVED)
+| Agent | Cost | When to Use |
 |---|---|---|
-| Single service failures (3-5 failures) | Whoever is available first | Start immediately; don't wait for specific agent |
-| Factory/setup issues (nil associations) | Local Qwen3.5 (if available) else Claude | Quick file inspection + fix |
-| Complex cross-service issues (5+ related) | Codestral synthesis (try first) | Escalate to Claude Sonnet only if pattern unclear |
-| Fixture/data load failures | GPT-5 mini or available local | Mechanical fix; assign based on availability |
+| **GPT-5 mini** | 0.33x | Local models failed twice AND task is urgent AND budget available |
+| **Raptor mini (Preview)** | 0.33x | Alternative when GPT-5 mini unavailable — same criteria |
 
-**Example (2026-05-30)**: 19 failures after overnight run → Claude (free) available at 1:40pm → routed immediately (no task file needed)
-
-**Flexibility rule**: If another agent becomes available while one is working, evaluate if work can be parallelized. RSpec failures often have independent root causes.
-
----
-
-### Task Management & Validation — 0 Token Cost
-| Agent | Cost | Role | When to Use |
-|---|---|---|---|
-| **Perplexity** | 0 tokens | Review task clarity, validate deployment, manage workflow | After Qwen3.5 triage, before cloud handoff |
-
-**Perplexity role**: Can validate that Qwen3.5 output is clear and deployable. Can manage task queues and deployment order. Good for: "Is this task clear enough for GPT-5 mini?" or "Can this be parallelized safely?"
-
----
-
-### Cloud Implementation Agents — Potential Premium Usage (MONITOR)
-| Agent | Current Cost | Capability | Status | When to Use |
-|---|---|---|---|---|
-| **GPT-5 mini** | 0x | Mechanical implementation | STABLE — confirmed free tier | Primary cloud agent |
-| **Raptor mini (preview)** | 0x | Mechanical implementation, parallel | STABLE — confirmed free tier | Parallel execution fallback |
-| **Haiku 4.5** | 0.33x | Fast fixes, spec corrections | STABLE | Reserve for quick decisions, not routine work |
-| **Claude Sonnet** | 1x PREMIUM | Complex reasoning, architecture | STABLE | **RESERVE** for truly complex multi-file work |
-
-**WARNING**: Do not route mechanical RSpec fixes to Copilot agents until billing structure is confirmed.
-
----
-
-## Strategy Shift: Prioritize Continue Local Agents
-
-**Effective immediately** (June 2, 2026):
-- ✅ **Primary**: Route all mechanical RSpec fixes to Continue agents (Qwen3.5-9B, Codestral, Qwen2.5-14B)
-- ✅ **Primary**: Multi-file refactors to Codestral (local synthesis)
-- ⚠️ **Fallback**: Copilot agents only if local agents unavailable
-- ✅ **Complex reasoning**: Continue to use Claude Sonnet (stable 1x cost)
-
-**Rationale**: 
-- GPT-5 mini and Raptor mini confirmed as free tier (0x)
-- Continue local agents are guaranteed free and always available
-- Mechanical work (RSpec fixes, edits) routes naturally to local agents
-- Reduces financial risk during pricing transition
-
----
-
-### Local Execution Agents — 0 Token Cost (PRIMARY FOR MECHANICAL WORK)
-| Model | Node | IP | Best For |
-|---|---|---|---|
-| Codestral | M4 | 10.6.186.161 | Architecture reasoning, synthesis (⚠️ filesystem issues in galaxyGame setup) |
-| Qwen3.5-9B | M4 | 10.6.186.161 | **Primary for local files in galaxyGame** (more reliable filesystem access) |
-| Qwen2.5-Coder 14B | M4 | 10.6.186.161 | Multi-file implementation with context |
-| DeepSeek-Coder 16B | M4 | 10.6.186.161 | Logic verification, second opinion |
-| Qwen3-Coder 30B | Windows | 10.6.186.50 | Heavy implementation, primary local worker |
-| Qwen2.5-Coder 3B | Windows | 10.6.186.50 | Fast single-file edits |
-| Llama 3.1 8B | Windows | 10.6.186.50 | Fallback chat only — not for implementation |
-| Nomic Embed | Windows | 10.6.186.50 | RAG/codebase indexing — always on, never reassign |
-| Qwen2.5-Coder 1.5B | Windows | 10.6.186.50 | Tab autocomplete — always on, never reassign |
+**Before escalating to cloud**: document which local model was tried, what it produced, and why it failed. Log in `COPILOT_USAGE_LOG.md`.
 
 ---
 
@@ -105,15 +63,15 @@
 - Create and edit files when exact content is provided
 - Read files that Continue can access on the filesystem
 - Apply specific code changes with clear before/after
-- List directory contents via Continue file tools
+- Run terminal commands via `run_in_terminal` (Qwen3.5 series only)
+- Run targeted RSpec via `docker exec web bundle exec rspec spec/...`
 
 ### What local models CANNOT do
-- Execute terminal commands (no shell access)
-- Run Docker commands or RSpec
-- Run git commands
+- Run git commands inside Docker (git runs on host only)
 - Access the internet or external APIs
 - Know which tests are currently failing without being told
 - Analyze real runtime behavior without actual output provided
+- Reliably summarize file contents for Claude review — drop files directly instead
 
 ### The Fabrication Rule — CRITICAL
 **Local models MUST NOT report output from commands they did not actually run.**
@@ -126,163 +84,115 @@ If asked to run a command the model cannot execute:
 - ✅ CORRECT: "I cannot execute this command. Please run it on the host and paste the output."
 - ❌ WRONG: Fabricating what the output would look like
 
-**Mixing real file data with fabricated command output is the most dangerous failure mode.**
-A document that is 30% real makes the 70% fabrication look credible.
+**The Hallucination Gate**: Qwen3.5-9B in particular will hallucinate root causes when lacking file context. Never approve a synthesis report based on Qwen's description of a file without reading it yourself. Drop files directly to Claude (web) for review.
 
-### RAG Status Warning
-Local model codebase search is only reliable when Nomic Embed has actively indexed
-the codebase. If RAG status is unknown, use a cloud agent for any codebase search.
+---
+
+## ⚖️ Cross-Auditing & Verification Protocol
+
+1. **The Code-to-Doc Audit**: When a local agent changes code, Claude (web) must audit the output against master design intent — ensure no drift into generic 4X/turn-based tropes.
+2. **The Doc-to-Code Audit**: When a design rule is updated, the local execution agent must run targeted terminal checks to verify the codebase physically reflects the documentation.
+3. **The Contradiction Ban**: Agents must cross-reference active output against `docs/new_agent/agent_guides/galaxy_game.md`. If a generated pattern contradicts the guide, halt and flag for the human.
+4. **Synthesis Report Gate**: Executor produces synthesis report and stops. No changes applied until human explicitly approves.
 
 ---
 
 ## Routing Table
 
-### Planning Gate (Session Start) — 0 Token Cost
-| Task | Agent | Cost | Reason |
-|---|---|---|---|
-| Session triage and priority stack | Gemini | 0 | PRIMARY gatekeeper |
-| Produce initial task recommendations | Gemini | 0 | Understand MVP alignment |
-| Route tasks for Qwen3.5 triage vs direct handoff | Gemini | 0 | Quality assessment |
-| High-level alignment check (if needed) | Claude free web | ~0 | Fallback to Gemini |
+### Session Start
+| Task | Agent | Cost |
+|---|---|---|
+| Review files, audit architecture | Claude (web) | Free |
+| Draft task files from findings | Claude (web) | Free |
+| Write handoff prompts | Claude (web) | Free |
+| Game balance / domain question | Gemini (web) | Free |
+| Validate task clarity before handoff | Perplexity | Free |
 
-### Qwen3.5 Triage Phase (All Tasks) — 0 Token Cost
-| Task | Agent | Cost | Reason |
-|---|---|---|---|
-| Read backlog task files and assess | Qwen3.5 27B (M4) | 0 | Heavy reasoning, multi-file |
-| Verify template conformance | Qwen3.5 9B (M4 or Windows) | 0 | Structural analysis |
-| Add implementation detail, code examples | Qwen3.5 (either size) | 0 | Code pattern understanding |
-| Identify MVP alignment | Qwen3.5 27B (M4) | 0 | Requires reasoning |
-| Produce triage report | Qwen3.5 (either size) | 0 | Structured output |
-| Route to cloud agent | Qwen3.5 27B (M4) | 0 | Complex decision-making |
+### Triage & Investigation
+| Task | Agent | Cost |
+|---|---|---|
+| Targeted file read — confirm contents | Qwen3.5-9B or drop to Claude | Free |
+| Triage RSpec failures — cause unknown | Qwen3.5-27B (terminal) | Free |
+| Schema verification before fix | Qwen3.5-27B | Free |
+| Codebase-wide grep/search | Qwen3.5-9B (local) | Free |
+| External docs / API research | Perplexity | Free |
 
-### Task Management & Validation — 0 Token Cost (NEW)
-| Task | Agent | Cost | Reason |
-|---|---|---|---|
-| Validate task clarity after Qwen3.5 triage | Perplexity | 0 | "Is this deployable?" check |
-| Review task queue for parallelization | Perplexity | 0 | Workflow management |
-| Check if task routing is correct | Perplexity | 0 | Deployment optimization |
-| Ensure acceptance criteria are testable | Perplexity | 0 | QA before cloud agent |
+### Implementation
+| Task | Agent | Cost |
+|---|---|---|
+| Single file fix — cause known | Qwen3.5-9B | Free |
+| Single file fix — cause unknown | Qwen3.5-27B | Free |
+| Multi-file fix with schema verification | Qwen3.5-27B | Free |
+| Complex multi-file refactor | Qwen3.5-27B (try first) | Free |
+| Heavy implementation — 27B failed twice | GPT-5 mini or Raptor mini | **0.33x** |
+| Database migration scaffolding — local failed | GPT-5 mini or Raptor mini | **0.33x** |
 
-### Investigation & Synthesis (After Validation) — Minimal Premium
-| Task | Agent | Cost | Reason |
-|---|---|---|---|
-| Cross-file reasoning (8+ files) | Claude Sonnet | 1x | **RESERVE** — only if truly needed |
-| Logic audit before implementation | Codestral (try first) | 0 | If fails, escalate to Claude 1x |
-| Codebase search | Qwen3-Coder 30B + Nomic Embed | 0 | RAG-assisted local search |
-| Identify root cause from error | Codestral (try first) | 0 | If fails, escalate to Claude 1x |
+### Data & JSON
+| Task | Agent | Cost |
+|---|---|---|
+| JSON file edits — small targeted | Qwen2.5-3B | Free |
+| JSON file audits — validation | Qwen3.5-27B | Free |
 
-### Implementation (Minimal Cost)
-| Task | Agent | Cost | Reason |
-|---|---|---|---|
-| Single file edit — exact specs from Qwen3.5 | GPT-5 mini 0x | 0 | Mechanical, well-prepared task |
-| Single file edit — needs some inference | Haiku 0.33x | 0.33x | Slightly more complex |
-| Multi-file refactor — patterns specified | GPT-5 mini 0x | 0 | Mechanical with guidance |
-| Multi-file refactor — needs reasoning | Codestral synthesis + GPT-5 mini impl | 0 | Never skip local synthesis |
-| Create missing fixture or config | GPT-5 mini 0x | 0 | Mechanical |
-| Factory trait fix | GPT-5 mini 0x | 0 | Mechanical |
-| Add logger call to rescue block | GPT-5 mini 0x | 0 | Mechanical |
-| Architecture refactor (PREMIUM ONLY) | Codestral synthesis + Claude 1x impl | 1x | Use sparingly — almost never needed |
+### Documentation & Task Files
+| Task | Agent | Cost |
+|---|---|---|
+| Draft new task files | Claude (web) | Free |
+| Update task files post-implementation | Qwen3.5-9B or Qwen2.5-3B | Free |
+| Update status.md | Qwen3.5-9B | Free |
+| Write architecture docs | Claude (web) or Gemini | Free |
+| Session handoff document | Claude (web) | Free |
 
-### Data & JSON (0 Token Cost)
-| Task | Agent | Cost | Reason |
-|---|---|---|---|
-| JSON file edits — small targeted | Qwen2.5-Coder 3B (Windows) | 0 | Fast, low risk |
-| JSON file audits — validation | Qwen3.5 27B (M4) | 0 | Needs judgment |
-| Large JSON generation | GPT-5 mini 0x | 0 | Free, handles volume |
-
-### Documentation (0 or Free Token Cost)
-| Task | Agent | Cost | Reason |
-|---|---|---|---|
-| Update .md files after code change | Qwen2.5-Coder 3B or GPT-5 mini | 0 | Mechanical |
-| Write new architecture docs | Gemini or free Claude | 0 | Prefer Gemini (planning gate) |
-| Session handoff document | Haiku 0.33x or GPT-5 mini 0x | 0-0.33x | Prefer GPT-5 mini (free) |
-| Update task files (post-implementation) | GPT-5 mini 0x | 0 | Mechanical update |
-
-### Repository Operations (No Agent Cost)
-| Task | Agent | Cost | Reason |
-|---|---|---|---|
-| Codebase-wide grep/search | Local M4 or Windows via Continue | 0 | Never send full codebase to cloud |
-| git add / commit / push | Human on host only | 0 | No agent commits without human review |
-| File moves and renames | Human on host | 0 | Simple terminal commands |
+### Repository Operations
+| Task | Agent | Cost |
+|---|---|---|
+| git add / commit / push | Human on host only | Free |
+| File moves between task folders | Human on host (or supervised agent) | Free |
+| docker exec rspec runs | Qwen3.5-9B or 27B via terminal | Free |
 
 ---
 
-## Decision Rules — Token Conservation Strategy
+## Decision Rules
 
-### The 0 Token Tier (Default)
-- Gemini for all planning/triage
-- Qwen3.5 (Continue) for all task detailing
-- Perplexity for task validation and management
-- Local models for implementation synthesis
-- GPT-5 mini 0x for mechanical implementation
+### Default: Always Try Local First
+1. Qwen3.5-27B for anything requiring reasoning or multi-file work
+2. Qwen3.5-9B for single file reads and targeted spec runs
+3. Only escalate to cloud after two genuine local failures
 
-**Rule**: Do NOT use premium tokens unless work has exhausted all 0-token options.
+### When to Escalate to Cloud (0.33x)
+All three conditions must be true:
+- Local model failed or produced clearly wrong output twice
+- Task is blocking progress and cannot wait
+- Copilot budget is not in red alert (check `COPILOT_BUDGET_MANAGEMENT.md`)
 
-### When to Use Perplexity (0 Tokens)
-- After Qwen3.5 triage: "Is this task clear and deployable?"
-- Before cloud handoff: validate task routing correctness
-- Queue management: which tasks can run in parallel safely?
-- QA check: are acceptance criteria testable?
+Document the escalation in `COPILOT_USAGE_LOG.md` before proceeding.
 
-**Perplexity strength**: Excellent at pattern-matching task clarity without premium cost
+### When NOT to Use Cloud Agents
+- Routine RSpec fixes → Qwen3.5-27B
+- Single file edits with exact specs → Qwen3.5-9B
+- Task file moves and status updates → Qwen3.5-9B
+- JSON config edits → Qwen2.5-3B
+- Any task where local has not been tried first
 
-### When to Use Claude Free Web (~0 Tokens)
-- Fallback to Gemini if unavailable
-- High-level alignment checks
-- Non-critical architecture review
-- Do NOT use for task creation or implementation
-
-### When NOT to Use Premium Tokens
-- Single file edits with exact specs → GPT-5 mini 0x
-- Template enforcement → Qwen3.5 (Continue)
-- Task queue management → Perplexity
-- Codebase search → Local models + RAG
-- Mechanical implementations → GPT-5 mini 0x
-
-### When to Use Premium Tokens (1x Claude / 0.33x Haiku)
-- Multi-file refactor requiring judgment across shared services
-- New architectural pattern requiring design review
-- Complex BaseUnit or concern changes
-- **Almost never** for mechanical work
-
-**Golden rule**: If Codestral (local) can do a synthesis, never use Claude 1x for that task.
-
-### When NOT to Use Local Models (Route to Cloud)
-- Tasks requiring knowledge of project history (use Perplexity or Claude)
-- Anything requiring actual command execution
-- Database schema verification needed
-- Cross-session memory required
+### When NOT to Use Local Models
+- Tasks requiring reading files not available on host filesystem
+- Cross-session memory required — use Claude (web) with files dropped in
+- Full architecture audit across many files — drop files to Claude (web)
 
 ---
 
-## GitHub Copilot & Perplexity Integration
+## Hard Rules
 
-### GitHub Copilot (June 1, 2026)
-- **Policy changes incoming** — read carefully when released
-- Current: Treat as research/non-critical only to conserve tokens
-- After June 1: Update this section with new routing rules
-- Do NOT use for implementation until policy clarified
-
-### Perplexity (NEW)
-- Free tier, 0 tokens per query
-- Excellent for: "Is this task clear?" and workflow validation
-- Deployed after Qwen3.5 triage, before cloud agent handoff
-- Strong at pattern-matching, routing decisions, QA
-
-**Example workflow**:
-```
-Gemini: Plan session → 0 tokens
-Qwen3.5: Detail task files → 0 tokens
-Perplexity: Validate clarity + routing → 0 tokens
-GPT-4.1: Implement → 0 tokens
-Result: Full task cycle with 0 premium tokens spent
-```
-
----
-
-## June 2026 Changes
-Update this file when GitHub Copilot policy changes take effect on June 1, 2026.
-Current plan: clarify Copilot token allocation and update routing table accordingly.
+- **Local First**: Always attempt with local models. Cloud is reserved, not default.
+- **No Continue Sidebar for Automation**: Codestral lacks terminal tools. All terminal automation via GitHub Copilot custom agent commands.
+- **The Verified Execution Rule**: Qwen3.5 series MUST use `run_in_terminal` to verify files and run Docker specs — never fabricate or assume test results.
+- **Role Isolation**: Claude (web) plans and drafts. Executor acts on task blueprints only — never self-assigns.
+- **Synthesis Report Gate**: Executor stops after synthesis report. No changes until human approves.
+- **No full suite runs**: Targeted specs only — never run the full RSpec suite from an agent.
+- **One RSpec runner at a time**: Never run parallel spec execution inside Docker.
+- **Supervised Host-Only Git**: All version control on the host Mac only. Never attempt Git inside Docker.
+- **No JSON Commits**: Raw JSON data files never staged or committed. Code, specs, and markdown only.
+- **No Cross-Project Contamination**: Keep context isolated to the active project repo.
+- **Codebase scans go local**: Never send the full codebase to cloud agents — snippets only.
 
 ---
 
