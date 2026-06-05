@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: bug-fix
 system_domain: AI_MANAGER
@@ -208,16 +208,26 @@ git push
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**: —
-**Completion date**: —
-**Final test result**: —
+**Completed by**: Qwen3.5-27B (Cloud)
+**Completion date**: 2026-06-04
+**Final test result**: 722 examples, 0 failures, 4 pending
 
 ### What was changed
+- Modified `load_settlement` method to use find-or-create pattern
+- Added private `find_existing_settlement(body)` helper method
+- Settlement-to-CelestialBody association confirmed: BaseSettlement → CelestialLocation (polymorphic) → CelestialBody
+
 ### Issues discovered
+- None — fix applied cleanly without breaking existing tests
+
 ### Follow-up tasks needed
+- None — task fully completed
+
 ### Lessons learned
+- Two-step find query (location then settlement) is clearer and safer than join queries for this use case
+- `find_by` returns nil safely, allowing graceful fallback to create logic
 
 ---
 
 ## Handoff Summary
-HANDOFF SUMMARY: [files updated] | [structural changes] | [next action needed]
+HANDOFF SUMMARY: [app/services/ai_manager/task_execution_engine_v2.rb updated] | [load_settlement now uses find-or-create pattern] | [task completed, ready for next task in backlog]
