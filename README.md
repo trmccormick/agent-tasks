@@ -109,19 +109,21 @@ Roles are assigned per session, not per model[cite: 3]. The same model can act a
 
 ---
 
-## Agent Stack Quick Reference
+## Agent Stack Quick Reference (Updated June 2026)
 
-| Agent | Role | Cost | Local File/Terminal Access |
-|---|---|---|---|
-| **Qwen3.5-9B (Local)** | STRATEGIST / EXECUTOR | Free/local | ✅ Yes (Custom Copilot Endpoint w/ Terminal Tool) |
-| Codestral (M4) | EXECUTOR / ARCHITECT | Free/local | ✅ Yes (Custom Copilot Endpoint) |
-| Qwen3.5-27B (Local) | EXECUTOR / AUDITOR | Free/local | ✅ Yes (Custom Copilot Endpoint w/ Terminal Tool) |
-| Qwen2.5-3B (Local) | TEXT / CONFIG WORKER | Free/local | ✅ Yes (Custom Copilot Endpoint) |
-| **GPT-5-mini (Cloud)** | EXECUTOR | 0x Tier | ✅ Yes (IDE Workspace Only) |
-| **Raptor mini (Preview)** | EXECUTOR | 0x Tier | ✅ Yes (IDE Workspace Only) |
-| Claude (web) | REVIEWER | Free tier | ❌ No |
-| Gemini (web) | DOMAIN EXPERT / STRATEGIST | Free | ❌ No |
-| Perplexity (web) | RESEARCHER | Free | ❌ No |
+**Primary Workflow**: Single-model sessions using Qwen3.5-27B on M4 Mac to avoid token limit errors when switching models in VS Code extension.
+
+| System | Model | Role | Cost | Local File/Terminal Access | Notes |
+|---|---|---|---|---|---|
+| **M4 Mac (Primary)** | Qwen3.5-27B | Planning Agent / Executor / Auditor | Free/local | ✅ Yes | Default for 90% of tasks; fast inference, good reasoning/speed balance |
+| M4 Mac (Fallback) | Qwen3.5-9B | Quick config/JSON edits only if needed | Free/local | ✅ Yes | Use sparingly — model switching causes "Response too long" errors in VS Code extension due to context accumulation |
+| **Ryzen 7 System (Secondary)** | Llama 3.1 / Mixtral or larger models with extended context windows | Complex synthesis & large-context analysis when M4 hits token limits | Free/local | ✅ Via SSH or separate session | Use for: multi-file architectural reviews, full RSpec suite output triage (>8K tokens), research-heavy tasks requiring external docs + codebase in single pass; slower inference but handles larger contexts without truncation errors |
+| Cloud (Fallback Only) | GPT-5-mini / Raptor mini | Two-local-failure fallback only | 0x Tier | ✅ Yes (IDE Workspace Only) | Reserved for when both M4 and Ryzen systems fail on same task — token billing applies June 2026+ |
+
+### Why Single-Model Workflow?
+**Problem**: VS Code's Copilot Chat extension has ~8K token output limit. Switching between local Ollama models accumulates context from previous conversations, hitting "Response too long" errors mid-session (see error: `Copilot Request id: 2bc8c144-... Reason: Response too long`).
+
+**Solution**: Use Qwen3.5-27B as primary workhorse for entire sessions without model switching. Only switch to Ryzen system when task complexity exceeds M4's token capacity (e.g., analyzing full RSpec suite output with 4K examples).
 
 ---
 
@@ -135,6 +137,124 @@ For example, Galaxy Game has a dedicated Docker command guide at:
 
 ---
 
+## Agent Handoff Generation Process
+
+**Purpose**: When an Implementation Agent (Qwen3.5-27B, Qwen3.5-9B) is assigned to execute a task, they must receive a structured handoff message that clearly defines their role, scope, and requirements.
+
+### How to Generate Handoffs
+
+When you have a task file ready for implementation:
+
+1. **Identify the target agent**: Qwen3.5-27B (Local) or Qwen3.5-9B (Local) for Implementation Agent role
+2. **Extract key information from the task file**:
+   - Task ID and title
+   - Objective summary
+   - Target files to modify
+   - Implementation scope
+   - Testing requirements
+   - Output expectations
+3. **Structure the handoff message** using this template with EXACT absolute paths:
+
+```
+You are **[Agent Name]** acting as the **[Role]**.
+
+Task:
+Implement the approved change described in the active task file:
+[EXACT ABSOLUTE PATH TO TASK FILE]
+
+CRITICAL FIRST STEP: Move Task File Before Starting Work
+
+The task file is currently in tasks/backlog/
+Before writing any code, move the file (using the mv command) to [EXACT ABSOLUTE PATH TO ACTIVE FOLDER]:
+
+Note the new_agent folder ([PATH]) is a simlink to the agent-tasks repo at [AGENT-TASKS-ROOT]
+
+Update YAML header: change status: backlog to status: active
+Commit: git add [EXACT PATH] && git commit -m "Start task: [TASK TITLE]"
+This signals to the strategist that work has begun.
+Do not skip this step.
+Before changing code:
+
+Read README.md ([PATH]) and follow all repository rules.
+Confirm the task is still valid against the current codebase.
+Inspect the target files listed below.
+If a target path is missing or renamed, stop and report the current path before editing anything.
+Target files:
+
+[file1]
+[file2]
+...
+Requirements:
+
+Preserve existing behavior unless the task explicitly changes it.
+Make only the changes needed for this task.
+Do not create documentation.
+Do not edit unrelated files.
+Keep all command execution inside Docker.
+For RSpec, do not stream full output; run the targeted spec and report only the final summary line plus any relevant failure snippets.
+Implementation scope:
+
+[bullet point 1]
+[bullet point 2]
+...
+Testing:
+
+Update or add focused specs for the changed behavior.
+Run only the targeted spec file(s) needed to verify the change.
+If a nil-related failure appears after model creation, stop and validate the factory/model setup before changing service logic.
+Output required:
+
+Brief action plan if implementation is not yet started.
+Code changes once approved.
+Targeted test result summary.
+Any assumptions or blockers.
+Stop immediately if any requirement is unclear.
+```
+
+### Handoff Template Components
+
+- **Role Assignment**: Clearly state the agent's role (Implementation Agent)
+- **Task Reference**: Full path to the active task file
+- **Critical First Steps**: Git operations to move task from backlog → active
+- **Target Files**: List all files that need inspection before editing
+- **Requirements**: What must be preserved, what must not be done
+- **Implementation Scope**: Specific changes expected
+- **Testing Approach**: Which specs to run and how to report results
+- **Output Expectations**: What the agent should produce at each stage
+
+### Why This Matters
+
+- Ensures agents understand their exact scope before starting work
+- Prevents accidental modifications to unrelated code
+- Provides clear testing expectations upfront
+- Documents the workflow for future sessions and new agents
+- Maintains consistency across all implementation tasks
+
+---
+
+## 📋 PLANNING Agent Role (You)
+
+**When you act as the Planning Agent:**
+- You are responsible for generating agent handoffs after task decisions are made
+- Most task files are generated by Claude (web) via research and analysis
+- Refactored tasks may be reviewed by various reviewing agents before implementation
+- Your job is to synthesize all inputs and create a clear, structured handoff message for the Implementation Agent
+
+**Handoff Generation Workflow:**
+1. **Task Decision Made**: After Claude or other agents complete their review/refactoring work
+2. **Synthesize Inputs**: Gather all relevant context (task file, research notes, architectural decisions)
+3. **Generate Handoff**: Create the structured handoff message using the template in the "Agent Handoff Generation Process" section
+4. **Verify Completeness**: Ensure all target files are listed, requirements are clear, and testing expectations are defined
+5. **Present to User**: Show the handoff text for approval before it's sent to the Implementation Agent
+
+**What NOT to do:**
+- Don't skip the handoff generation step
+- Don't assume the Implementation Agent knows what to do without explicit instructions
+- Don't generate vague or incomplete handoffs
+- Don't proceed with implementation tasks without a proper handoff
+
+---
+
 ## Hard Rules (Non-Negotiable)
 
 - **No Continue Sidebar**: All local models must be invoked directly inside the editor via GitHub Copilot custom agent commands.
@@ -142,4 +262,62 @@ For example, Galaxy Game has a dedicated Docker command guide at:
 - **Targeted Testing Only**: Executors must never run a project's full test suite. Only run specific, targeted specs relevant to the task file.
 - **Host-Only Supervised Git Commits**: Because Git is not accessible inside the Docker containers, all version control operations must be executed directly on the host node (Intel Mac). Agents may prepare and execute staging and commits under direct human supervision on the host, but they are strictly prohibited from attempting Git commands inside Docker.
 - **No JSON Commits**: Do not stage or commit raw JSON data files at this time. Version control is strictly reserved for application code, tests, and markdown documentation files.
-- **No Multi-Project Cross-Pollination**: Keep context isolated to the active target project repo directory. Do not reference directories from other active systems unless explicitly outlined in a task blueprint.
+- **No Multi-Project Cross-Pollination**: Keep context isolated to the active target project repo directory. Do not reference directories from other systems unless explicitly outlined in a task blueprint.
+
+---
+
+## Planning Agent / Session Strategist Role Convergence (June 2026)
+
+**Status: LIVING DOCUMENT — Update as workflow evolves.**
+
+### Why Roles Converge
+In this workspace, the **Planning Agent** and **Session Strategist** roles have converged into a single agent function. This document clarifies how these duties work together going forward.
+
+| Responsibility | Planning Agent Focus | Session Strategist Focus | Combined Execution |
+|---|---|---|---|
+| Task file creation | Draft task files from research/analysis or backlog review | — | Same output: structured task files in agent-tasks repo |
+| Handoff generation | Generate handoffs for Implementation Agents using templates | Produce executor assignment messages with exact context | Identical process; same template selection logic (SIMPLE_HANDOFF_TEMPLATE.md vs HANDOFF_TEMPLATE.md) |
+| Triage & prioritization | Assess backlog, identify blockers during planning phase at session start/transition points | Maintain priority stack during active sessions when Executors are working | Same triage table output; Planning Agent does this first thing at startup and after task completion events |
+| Failure analysis | Review logs when new tasks are scoped for investigation or architectural decisions needed | Interpret root causes from error output before delegating to Executor agents | Both read logs via `run_in_terminal`; same triage rules apply (flaky specs ignored, regressions flagged first) |
+| Status tracking | Update status.md with baseline and completed work during planning phases | Maintain session handoff document at end of each active implementation session | Combined: update both files as needed; Planning Agent handles this when no active implementation is running or after sessions complete |
+
+### When Each "Mode" Activates
+
+**Planning Mode:**
+- At session startup, before any tasks are assigned to Executors
+- Reviewing backlog for new task opportunities (Luna Phase 3+, future features)
+- Analyzing architectural decisions or research notes from Domain Expert agents
+- Drafting initial task files based on MVP focus and project status.md baseline
+- Generating handoffs once a task is ready to be implemented
+
+**Session Strategist Mode:**
+- During active implementation sessions when Executor agents are working on tasks
+- Triage table generation for failures that appear during the session (regressions, new errors)
+- Priority stack maintenance as work completes or blockers emerge from Executor reports
+- Directing Executors with exact context: task file path, full error output, target files to inspect
+- Ending session and producing handoff document before closing
+
+**Combined Workflow:**
+In most sessions, a single agent operates in both modes sequentially:
+1. **Start**: Planning mode — review status.md for baseline, triage backlog/tasks from `agent-tasks/galaxy_game/`, identify next task(s) based on MVP focus (Luna), draft or select existing task file
+2. **Handoff generation**: Create structured handoff message using SIMPLE_HANDOFF_TEMPLATE.md (straightforward tasks) or HANDOFF_TEMPLATE.md (complex/refactoring work); present to user for approval before sending to Implementation Agent
+3. **During implementation**: Session Strategist mode — monitor Executor progress via terminal logs with `get_terminal_output`, handle regressions that appear, update priority stack if blockers emerge from task completion events; use `run_in_terminal` to read failure logs and triage as needed
+4. **End of session**: Update status.md (baseline, completed work summary) and produce handoff document in `agent-tasks/galaxy_game/planning/session_handoff_YYYY-MM-DD.md`; return to Planning mode at next startup
+
+### Key Distinction from Traditional "Strategist" Role
+
+Traditional AI agent workflows often separate planning (LLM reasoning without tool access) from execution (code generation with tools). In this workspace:
+
+- The same local model (**Qwen3.5-9B** or **Qwen3.5-27B on M4 Mac**) performs both Planning and Session Strategist duties
+- No architectural separation is needed because the agent has full terminal access to verify file paths, run targeted specs via `docker exec`, and read logs before delegating fixes
+- Human oversight remains at handoff approval gate — agents never self-deploy new tasks without human review using the templates provided
+
+### Documentation Updates Needed (June 2026)
+
+The following documents should be updated or created to ensure consistency across sessions:
+
+1. **SESSION_STRATEGIST.md** — Already exists; add section clarifying Planning Agent convergence and combined workflow patterns
+2. **NEW_PLANNING_AGENT_GUIDE.md** — New document for agents being assigned to this role, covering task file drafting patterns (backlog review vs research-driven), handoff generation workflow using templates, triage rules at session start/end points
+3. **WORKFLOW_TRANSITION_PROTOCOLS.md** — Document how the agent transitions between planning mode (task scoping) and session strategist mode (active triage during implementation), including when to switch focus based on task completion events or new failure reports
+
+These updates will ensure consistency across sessions and provide clear guidance for new agents joining this workspace.

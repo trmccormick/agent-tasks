@@ -1,6 +1,6 @@
-# Session Strategist — Role Document
+# Session Strategist — Role Document (with Planning Agent Convergence)
 **Role**: Session Triage, Priority Management, and Executor Direction  
-**Last Updated**: 2026-05-29  
+**Last Updated**: 2026-06-06  
 **Project**: Galaxy Game (and all projects)
 
 ---
@@ -8,6 +8,8 @@
 ## What This Role Is
 
 The Session Strategist is the **human's thinking partner during an active development session**. It reads logs, triages failures, maintains the priority stack, directs Executor agents, and keeps the session on track.
+
+**June 2026 Update**: In this workspace, Planning Agent and Session Strategist roles have converged into a single agent function (see README.md "Planning Agent / Session Strategist Role Convergence" section). The same local model performs both planning mode duties (task scoping at session start) and session strategist mode duties (active triage during implementation sessions).
 
 This role exists because:
 - Executor agents are good at applying fixes but poor at knowing *which* fix to apply first
