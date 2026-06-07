@@ -4,17 +4,18 @@
 
 ---
 
-## Quick Reference: When to Use Which System
+## Quick Reference: When to Use Which System (Updated June 2026)
 
 | Task Type | Recommended System/Model | Why |
 |---|---|---|
-| **Standard implementation tasks** (Luna Phase work, single service integration) | M4 Mac + Qwen3.5-27B | Fast inference (~100ms/token), sufficient context window for 2-5 file edits with targeted specs |
-| **Planning Agent duties at session start** (review status.md, triage backlog, draft handoffs) | M4 Mac + Qwen3.5-27B | Quick iteration needed; task files are ~100-300 lines each — well within token limits |
-| **Session Strategist mode during active implementation** (monitor Executor progress via terminal logs) | M4 Mac + Qwen3.5-27B | Real-time feedback loop requires fast responses; targeted spec output is small (<8K tokens typically) |
-| **Complex multi-file synthesis reports before editing 10+ files** | Ryzen 7 System + Llama 3.1 / Mixtral with extended context window | Can read entire service layer (5-10 files, ~2K lines each) without truncation; better pattern recognition across codebase sections |
-| **Full RSpec suite output triage after overnight run** (~4K examples, full log file >8K tokens) | Ryzen 7 System + larger model with extended context window | M4 hits "Response too long" errors when ingesting entire failure logs; Ryzen can analyze all failures in single pass without chunking |
-| **Research-heavy tasks requiring external docs (GitHub issues, architectural RFCs) + codebase** | Ryzen 7 System + Llama 3.1 / Mixtral | Larger context window handles reference material + target files simultaneously; less need to make multiple tool calls for partial reads |
-| **Quick config/JSON edits (<50 lines)** | M4 Mac + Qwen3.5-27B (stay on same model) or fallback to 9B only if RAM constrained | Smaller models save RAM but add token overhead when switching — not worth it unless running parallel sessions simultaneously |
+| **Standard implementation tasks** (Luna Phase work, single service integration) | M4 Mac + Qwen3.5-27B | Fast inference (~100ms/token), sufficient context window for 2-5 file edits with targeted specs; primary workhorse for 90% of sessions |
+| **Planning Agent duties at session start** (review status.md, triage backlog, draft handoffs) | M4 Mac + Qwen3.5-27B | Quick iteration needed; task files are ~100-300 lines each — well within token limits for single-model sessions |
+| **Session Strategist mode during active implementation** (monitor Executor progress via terminal logs, handle regressions) | M4 Mac + Qwen3.5-27B | Real-time feedback loop requires fast responses; targeted spec output is small (<8K tokens typically); avoids token limit errors from model switching |
+| **Documentation review & formatting checks while implementation runs in parallel** (README updates, task file validation, session handoff generation) | Ryzen 7 System + Llama 3.1:8B / Mistral:7B or smaller models (~6GB RAM usage vs ~18GB for 27B) | Smaller models handle simple review tasks efficiently; frees M4 to stay focused on implementation work without context switching overhead in VS Code extension |
+| **Complex multi-file synthesis reports before editing 10+ files** (architectural analysis spanning multiple services, cross-cutting refactors) | Ryzen 7 System + Llama 3.1 / Mixtral with extended context window (~64K-128K tokens depending on model) | Can read entire service layer (5-10 files, ~2K lines each) without truncation; better pattern recognition across codebase sections when M4 hits token limits mid-task |
+| **Full RSpec suite output triage after overnight run** (~4K examples, full log file >8K tokens) | Ryzen 7 System + larger model with extended context window (Llama 3.1 / Mixtral or similar) | M4 hits "Response too long" errors when ingesting entire failure logs; Ryzen can analyze all failures in single pass without chunking across multiple tool calls |
+| **Research-heavy tasks requiring external docs** (GitHub issues, architectural RFCs + codebase context simultaneously) | Ryzen 7 System + Llama 3.1 / Mixtral with larger context window | Larger context window handles reference material + target files simultaneously; less need to make multiple `read_file` tool calls for partial reads due to token constraints |
+| **Quick config/JSON edits** (<50 lines, no complex reasoning needed) | M4 Mac + Qwen3.5-27B (stay on same model per session) or fallback to 9B only if RAM constrained and running parallel sessions simultaneously | Smaller models save RAM but add token overhead when switching in VS Code extension — not worth it unless you need two independent tasks running at once across both systems |
 
 ---
 
@@ -76,20 +77,59 @@ exit ssh session
 - Complex architectural reviews spanning multiple services move to Ryzen temporarily
 - End-of-session full RSpec suite triage uses Ryzen's larger context window
 
-### Pattern B: Parallel Sessions for Independent Tasks
-```bash
-# Session 1 — M4 Mac, Qwen3.5-27B (active implementation work)
-ollama run qwen3.5:27b
+### Pattern B: Parallel Sessions for Independent Tasks (Optimized)
 
-# Session 2 — Ryzen system via SSH or separate VS Code window on that machine
+**Recommended Setup**: M4 handles implementation work while Ryzen runs smaller models on documentation/review tasks.
+
+```bash
+# Session 1 — M4 Mac, Qwen3.5-27B (active implementation work in VS Code)
+ollama run qwen3.5:27b
+# Use for: Luna Phase integration tasks, service refactoring, spec writing
+
+# Session 2 — Ryzen system via SSH or separate terminal window
 ssh user@ryzen-system-ip
 cd /path/to/galaxyGame
-ollama run llama3.1:8b  # for research-heavy task running in parallel
+ollama run llama3.1:8b  # or mistral:7b, phi3:mini for docs/review tasks
+```
+
+**Why This Works Well**:
+- **M4 stays focused on fast implementation work** — no context switching overhead from model changes in VS Code extension
+- **Ryzen handles documentation review with smaller models efficiently** — 8B parameter models (Llama 3.1, Mistral) are faster than 27B for simple tasks like:
+  - Reviewing README.md updates before commit
+  - Checking task file formatting against templates
+  - Spot-checking spec comments and docstrings
+  - Generating session handoff summaries from status.md changes
+- **RAM efficiency**: Smaller models on Ryzen (8B vs 27B) use ~6GB RAM instead of ~18GB, leaving headroom for other tasks if needed
+
+**When to Use This Pattern**:
+- You're implementing Luna Phase work on M4 while needing documentation reviewed in parallel
+- Session Strategist needs to update status.md and generate handoff document while Executor continues implementation work
+- Multiple independent tasks can proceed simultaneously without blocking each other (e.g., fixing RSpec failures + drafting next task file)
+
+**Tradeoffs**:
+- **Slower inference on Ryzen for small models too** — even 8B models run slower than M4's optimized Qwen3.5; only use when parallelism is worth the speed penalty
+- **SSH session overhead** — if using SSH to access Ryzen, there's latency in terminal output; better to have VS Code running directly on Ryzen machine for documentation work
+
+### Pattern C: Hybrid Workflow (M4 Primary + Ryzen Fallback) [Original]
+```bash
+# 90% workflow stays on M4 with Qwen3.5-27B in VS Code session
+ollama run qwen3.5:27b
+
+# When hitting token limits or needing larger context window:
+ssh user@ryzen-system-ip
+cd /path/to/galaxyGame  # if synced via git clone or rsync
+ollama run llama3.1:8b  # or mixtral, depending on available models and RAM
+
+# After heavy analysis complete, return to M4 for implementation work based on findings
+exit ssh session
 ```
 
 **When this works best**: 
-- Two independent tasks can proceed simultaneously (e.g., implementing Luna Phase 2 while researching architectural decisions for Phase 4)
-- RAM constraints on M4 prevent running multiple large models at once; Ryzen handles second session without impacting primary workflow speed
+- Standard Luna Phase tasks (2-5 file edits) stay on fast M4 system
+- Complex architectural reviews spanning multiple services move to Ryzen temporarily when token limits hit
+- End-of-session full RSpec suite triage uses Ryzen's larger context window for analysis, then returns to M4
+
+**Note**: Pattern B is preferred over C if you have two independent tasks running simultaneously. Use Pattern C only when a single task exceeds M4's capacity and needs temporary escalation.
 
 ---
 
