@@ -6,9 +6,9 @@ status: backlog
 priority: MEDIUM
 type: FEATURE
 created: 2026-06-07
-last_updated: 2026-06-07
-system_domain: AI_MANAGER | SETTLEMENTS | LOGISTICS
-mvp_alignment: PHASE_5_AUTONOMOUS_EXPANSION
+last_updated: 2026-06-09
+system_domain: AI_MANAGER | SETTLEMENTS | LOGISTICS | WORMHOLES
+mvp_alignment: PHASE_9_SOL_EXPANSION
 local_worker_safe: true
 ```
 
@@ -18,9 +18,12 @@ local_worker_safe: true
 
 **Extracted from:** `docs/agent/archive/backlog_april_2026/ai_manager_autonomous_expansion.md` (Sub-Task 1.2)
 
-After Luna Phases complete and AI Manager proves single-system supply chain reliability, the next expansion phase requires establishing footholds in new star systems via wormhole network. This task creates the foundational service architecture for automated colony site selection, resource allocation planning, and bootstrap package generation for multi-system colonization.
+After Luna simulation calibration completes AND wormhole network infrastructure is operational, the next expansion phase requires establishing footholds in new star systems via wormhole network. This task creates the foundational service architecture for automated colony site selection, resource allocation planning, and bootstrap package generation for multi-system colonization.
 
-**Why Separate Task?** Unlike Wormhole Topology Integration (which builds on existing `system_discovery_service.rb`), this is greenfield work — no foothold_manager or expansion_plan models exist yet. Requires clean architectural design before implementation begins.
+**Why Phase 9+?** Per LUNA-MVP-SIMULATION-DESIGN.md revised phases:
+- Luna simulation (Phase 4-5) must prove single-system supply chain reliability first
+- Wormhole network infrastructure (Act 3/4, Phase 6-8) must be operational before multi-system expansion
+- Foothold establishment is Act 4: Hammer Protocol work — requires proven wormhole logistics and dual-link stabilization
 
 ---
 
@@ -33,9 +36,14 @@ Current AI Manager can:
 
 **Missing:** No logic for establishing new settlements in discovered systems:
 - Automated colony site selection based on habitability and resources
-- Initial bootstrap resource package calculation per settlement type
-- Foothold expansion triggers and milestone tracking  
+- Initial bootstrap resource package calculation per settlement type  
+- Foothold expansion triggers and milestone tracking
 - Integration with wormhole logistics for multi-system supply chains
+
+**Note: This is Act 4 work (Hammer Protocol & Network Mastery)** — requires:
+1. ✅ Luna simulation proven operational (Phase 5 calibration complete)
+2. ✅ Wormhole network infrastructure built (L1 shipyard, depot operations at scale - Phase 6-8)
+3. ⏭️ Dual-link stabilization and EM physics data-drop delivered to Eden systems
 
 ---
 
@@ -84,10 +92,10 @@ Create `ExpansionPlan` model to track multi-phase colonization efforts:
 - Resource allocation per phase with milestone triggers
 - Integration with logistics layer for supply chain establishment
 
-### Out of Scope (Future Tasks)
-- Wormhole topology integration — separate task (`2026-06-XX-MEDIUM-FEATURE-WORMHOLE-TOPOLOGY-INTEGRATION.md`)  
-- Multi-system resource coordination algorithms — Phase 5+ optimization after footholds established
-- TerraGen consortium formation detection and shared resource pools (Phase 6+)
+**Out of Scope (Future Tasks or Already Covered):**
+- Wormhole topology integration — separate task in phase9+ (`Wormhole Topology Integration`)
+- Multi-system resource coordination algorithms — Phase 9+ optimization after footholds established
+- TerraGen consortium formation detection and shared resource pools (Phase 10+)
 - Eden system special case handling for superior terraforming targets
 
 ---
