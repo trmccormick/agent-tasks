@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking  
-**Last Updated:** 2026-06-09 (Morning Session — ImportRequestGenerator Spec Fix Complete)
+**Last Updated:** 2026-06-09 (Evening Session — Phase Structure Defined, Backlog Reorganized, Design Document Committed)
 
 ---
 
@@ -225,6 +225,43 @@
 ---
 
 ## Session Notes
+
+### 2026-06-09 (Evening)
+- Full suite run completed: 3966 examples, 4 failures — 2 known flaky + 2 ImportRequestGenerator spec regression (keyword args)
+- ImportRequestGenerator spec regression fixed by Qwen morning session ✅ — baseline restored
+- **LUNA-MVP-SIMULATION-DESIGN.md** drafted and committed to `research/` folder — authoritative phase reference
+- **Phase structure finalized:**
+  - `backlog/2026-06/` — Luna AI Manager mechanics only (active)
+  - `phase5+/` — **intentionally empty** — simulation observation phase, tasks generated from run findings
+  - `phase6+/` — L1 Depot, LEO Depot, orbital infrastructure (4 tasks)
+  - `phase9+/` — wormhole, multi-system, Sol expansion, Act 3/4 (5 tasks)
+- **Task file corrections:**
+  - Return Cargo Profit Optimization → priority HIGH, moved to active backlog (Phase 4 — immediate HLT rotation concern)
+  - Standardize Orbital Structure Deployment → moved to phase6+ (L1 construction prerequisite)
+  - June 3 duplicate bug fix task → archive, June 8 version is canonical
+- **BACKLOG_TRIAGE_SESSION_TEMPLATE.md** updated — added phase alignment quick reference, research folder index, classification decision rules, game design context summary
+- **Key design decisions documented in LUNA-MVP-SIMULATION-DESIGN.md:**
+  - GCC = USD peg early, backed by Luna physical stockpiles as hard assets, LDC is the mint
+  - LOX pricing at 90% EAP locks out Earth imports — LDC's first revenue stream
+  - TEU→PVU chain: construction is byproduct of life support (depleted regolith → 3D printing)
+  - Precursor build sequence is deadline-driven — Titan launches first, Venus later, pad must be ready
+  - Venus skimmer self-fuels LOX in transit (CO2→O2), needs CH4 on turnaround
+  - Titan skimmer brings CH4, needs LOX on turnaround — Luna local production bridges both
+  - Titan arrival = economic independence event (CH4 imports → zero)
+  - tasks_v2 is the existing AI pattern library — AI Manager wires to it, not new work
+  - Phase 5 = market emergence observation + stockpile accumulation watch, not feature work
+  - tasks_v2 confirmed: 149 task files, all key patterns already built (tug, hollow body, tank farm, cycler, skimmer, lava tube)
+  - TaskExecutionEngineV2 completed June 4 — first real end-to-end stack ready
+- **Vector Hauling** confirmed as cycler operator (bulk cargo, fixed orbital routes)
+- **Zenith Orbital** confirmed as station builder (precision orbital construction)
+- **AstroLift + LDC** co-own L1 Shipyard — build tugs and cyclers, Vector buys/operates
+- **Tug program:** L1 Shipyard first build → Mars Phobos/Deimos reposition → Venus asteroid reposition (no moons) → standardized DC sponsorship pattern
+- **Asteroid conversion:** tug repositions → Zenith hollows → cyclers deliver outfitting → VDC/MDC operates
+- **Next session dispatch order:**
+  1. Confirm ai_manager suite 740/0 baseline
+  2. Dispatch cleanup task (remove plural API + Logistics::ServiceCoordinator)
+  3. Verify 740/0 after cleanup
+  4. Dispatch Phase 4 (consumption-aware ordering + precursor phase gating)
 
 ### 2026-06-08
 - Evening design discussion — no code changes

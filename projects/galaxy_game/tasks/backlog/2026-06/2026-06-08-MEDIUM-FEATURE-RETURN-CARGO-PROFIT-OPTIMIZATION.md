@@ -3,12 +3,12 @@
 ```yaml
 id: 2026-06-08-MEDIUM-FEATURE-RETURN-CARGO-PROFIT-OPTIMIZATION  
 status: backlog
-priority: MEDIUM
+priority: HIGH
 type: FEATURE
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-06-09
 system_domain: AI_MANAGER | LOGISTICS | ECONOMICS
-mvp_alignment: PHASE_5_AUTONOMOUS_EXPANSION  
+mvp_alignment: PHASE_4_LUNA_MVP
 local_worker_safe: true
 ```
 
@@ -20,10 +20,9 @@ local_worker_safe: true
 
 After Luna Phases complete the import dependency loop (Earth→Moon), logistics economics require return cargo to balance trade ledger and prevent empty AstroLift HLT flights back to Earth. This task implements outbound manifest generation for Luna exports, market price integration for real-time valuation, and profit optimization algorithms that maximize revenue while maintaining settlement operational needs.
 
-**Why Phase 5+?** Only becomes relevant after:
-- ✅ Single-system supply chain proven reliable (Luna Phases 1-3 complete)  
-- ⏸️ Import dependency loop working reliably via ShortageDetector + ImportRequestGenerator integration
-- 🔄 Settlement has excess production capacity beyond local consumption needs
+**Why Phase 4 (Active Backlog)?** As soon as HLT tankers begin cycling Earth→Luna→Earth, the return leg carries cargo. Optimizing that return revenue directly affects LDC's GCC balance during the CH4 bridge period — before Titan arrives, every GCC earned on return cargo offsets Earth methane imports. This is not a future enhancement, it is an immediate operational concern once Luna operations begin.
+
+**Phase placement note (updated 2026-06-09):** Originally tagged PHASE_5_AUTONOMOUS_EXPANSION and MEDIUM priority. Corrected to PHASE_4_LUNA_MVP and HIGH priority. Return cargo optimization is active from the first HLT rotation, not a post-simulation feature. Priority raised because LDC GCC balance during bridge period depends on it.
 
 **Critical Economics Note:** One-way GCC flow breaks logistics realism. If Luna only imports and never exports, AstroLift HLTs fly back empty — inefficient use of cargo capacity that should carry valuable return goods (He-3, regolith-derived materials in excess, scientific samples). AI Manager must know what Luna can export to balance trade ledger.
 

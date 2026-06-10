@@ -74,16 +74,24 @@ local_worker_safe: true
 
 ## 📝 Notes & Context
 
-### Recent Triage Session (May 18, 2026)
+### Recent Triage Session (June 8, 2026 — Evening)
+- **Orbital Market System Architecture Review**: April 2026 task superseded by implementation. Core market infrastructure already live (orders, trade execution, GCC settlement). Extracted gas processing pipeline gap as Phase 5+ feature task (`2026-06-08-HIGH-FEATURE-ORBITAL-GAS-PROCESSING-PIPELINE.md`).
+  
+- **Orbital Structure Deployment Standardization Review**: April 2026 task partially implemented (DepotAdapter reference exists but isolated). Extracted as Phase 5+ prerequisite (`2026-06-08-HIGH-FEATURE-STANDARDIZE-ORBITAL-STRUCTURE-DEPLOYMENT.md`) + two Phase 6+ enhancement tasks for multi-structure routing and dynamic orbital simulation.
+
+**Total Tasks Created Tonight**: 4 new high-fidelity task files  
+**Files Archived to Deprecated/**: 2 legacy April backlog items with header notes explaining extraction rationale  
+**Remaining in April Backlog**: ~47 files awaiting triage review (wormhole-related tasks, bug fixes from early April)
+
+### Previous Triage Session (May 18, 2026)
 - **ISRU Track A**: Completed full task breakdown from legacy concept. Created 4 high-fidelity tasks covering architecture audit, unit manager integration, RSpec suite, and data fixtures.
 - **Resource Spawning System**: Converted comprehensive plan into 7 actionable tasks (1 overview + 3 designs + 3 implementations) plus 2 documentation updates.
 - **Total Tasks Created**: 14 new high-fidelity task files in `docs/new_agent/tasks/backlog/2026-05/`
-- **Legacy Files**: All legacy ISRU concepts consolidated and deleted from workspace root
 
 ### Next Steps for Copilot Agent
-1. Prioritize **ISRU Track A** tasks (foundation for resource extraction)
-2. Execute **Resource Spawning System** once ISRU foundation is stable
-3. Apply **Documentation Updates** to align agent workflows with June cutover
+1. Prioritize **Orbital Structure Deployment Standardization** (blocks gas processing pipeline)  
+2. Execute **Gas Processing Pipeline at L1 Station** once deployment standardization complete
+3. Continue April backlog triage — suggested next: wormhole-related tasks or bug fix verification batch
 
 ---
 

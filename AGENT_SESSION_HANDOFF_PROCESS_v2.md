@@ -1,8 +1,8 @@
-# Agent Session Handoff Process — June 1st 2026 Update
+# Agent Session Handoff Process — Current Workflow (June 9, 2026)
 
-**Effective Date**: June 3, 2026  
-**Version**: 2.1  
-**Status**: Pre-implementation Planning
+**Last Updated**: June 9, 2026  
+**Version**: 3.0  
+**Status**: Active
 
 ---
 
@@ -75,7 +75,7 @@ All session handoffs MUST go to: `/docs/new_agent/projects/{project path}/tasks/
 # Session Handoff: YYYY-MM-DD [Optional Session Name]
 
 **Date**: YYYY-MM-DD  
-**Agent**: [GitHub Copilot / Other Agent Name]  
+**Agent**: Qwen3.5-27B (M4 Mac) / Ryzen Fallback  
 **Duration**: [HH:MM or "ongoing"]  
 **Status**: [✅ COMPLETE | 🔄 IN PROGRESS | ❌ BLOCKED]  
 ```
@@ -203,11 +203,6 @@ A: Yes, for complex changes. Include 3-5 lines of context around the change.
 
 ## Version Control & Updates
 
-**Document Version**: 2.1  
-**Last Updated**: 2026-06-02  
-**Next Review**: 2026-06-15
-
-To update this process after June 1:
-1. Create new version document (3.0)
-2. Reference this 2.1 document for history
-3. Update all agents on workflow change
+**Document Version**: 3.0  
+**Last Updated**: 2026-06-09  
+**Next Review**: After Luna Phase 4 completion or when workflow patterns evolve significantly

@@ -6,9 +6,9 @@ status: backlog
 priority: HIGH
 type: REFACTOR_FEATURE
 created: 2026-06-08
-last_updated: 2026-06-08
+last_updated: 2026-06-09
 system_domain: ORBITAL_INFRASTRUCTURE | DEPLOYMENT_SERVICES
-mvp_alignment: PHASE_5_AUTONOMOUS_EXPANSION_PREREQUISITE
+mvp_alignment: PHASE_6_L1_DEPOT_INFRASTRUCTURE
 local_worker_safe: true
 ```
 
@@ -20,10 +20,12 @@ local_worker_safe: true
 
 The April 2026 task identified that `OrbitalSettlement#location` returns nil because orbital structures don't create `CelestialLocation` on deployment. A reference implementation exists in `AIManager::DepotAdapter#create_depot`, but it's isolated — no standard pattern applies to all orbital structure types (L1 stations, cycler assembly points, Venus processing platforms).
 
-**Why Phase 5 Prerequisite?** This blocks:
+**Why Phase 6 Prerequisite?** This is required before L1 Depot and LEO Depot construction begins. It blocks:
 - Gas processing pipeline at L1 Station (`2026-06-HIGH-FEATURE-ORBITAL-GAS-PROCESSING-PIPELINE.md`) — needs valid locations for skimmer docking routing  
 - WormholeNavigator upgrade pathfinding costs — uses SpatialLocation distances between celestial bodies  
 - Foothold establishment service — creates orbital depots at new systems
+
+**Phase placement note (updated 2026-06-09):** Originally tagged PHASE_5_AUTONOMOUS_EXPANSION_PREREQUISITE. Corrected to PHASE_6_L1_DEPOT_INFRASTRUCTURE — Phase 5 is simulation observation only, no feature work. This task becomes relevant when L1 Station construction begins.
 
 ---
 

@@ -9,8 +9,8 @@ local_worker_safe: true
 
 # 🎯 Master Triage Guide for Galaxy Game Agent Tasks
 
-**Version**: 1.0  
-**Last Updated**: 2026-05-31  
+**Version**: 1.1  
+**Last Updated**: 2026-06-08  
 **Owner**: Senior Engineer / Team Lead
 
 ---

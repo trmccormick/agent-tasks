@@ -252,6 +252,8 @@ Stop immediately if any requirement is unclear.
 - Don't assume the Implementation Agent knows what to do without explicit instructions
 - Don't generate vague or incomplete handoffs
 - Don't proceed with implementation tasks without a proper handoff
+- **Don't perform synthesis reports yourself** — that's explicitly part of the Implementation Agent's workflow (task files say "Synthesis Report Required" meaning THEY must produce it before coding, not you during planning)
+- **Don't read target files and analyze code unless generating task file content itself** — Planning mode is about scoping work from status.md/backlog review; detailed code inspection happens in handoff generation or by Implementation Agent after receiving assignment
 
 ---
 
@@ -285,24 +287,28 @@ In this workspace, the **Planning Agent** and **Session Strategist** roles have 
 
 **Planning Mode:**
 - At session startup, before any tasks are assigned to Executors
-- Reviewing backlog for new task opportunities (Luna Phase 3+, future features)
-- Analyzing architectural decisions or research notes from Domain Expert agents
-- Drafting initial task files based on MVP focus and project status.md baseline
-- Generating handoffs once a task is ready to be implemented
+- Reviewing backlog for new task opportunities (Luna Phase 3+, future features) from `agent-tasks/galaxy_game/tasks/backlog/` or status.md notes
+- Analyzing architectural decisions or research notes from Domain Expert agents when scoping NEW work
+- Drafting initial task files based on MVP focus and project status — **only read code if you need to write accurate target file paths in the task itself** (e.g., "app/services/logistics/shortage_detector.rb" as a reference)
+- Generating handoffs once a task is ready to be implemented using SIMPLE_HANDOFF_TEMPLATE.md or HANDOFF_TEMPLATE.md
 
 **Session Strategist Mode:**
-- During active implementation sessions when Executor agents are working on tasks
-- Triage table generation for failures that appear during the session (regressions, new errors)
-- Priority stack maintenance as work completes or blockers emerge from Executor reports
-- Directing Executors with exact context: task file path, full error output, target files to inspect
+- During active implementation sessions when Executor agents are working on tasks assigned via handoff messages
+- Triage table generation for failures that appear during the session (regressions, new errors from patches)
+- Priority stack maintenance as work completes or blockers emerge from task completion events
+- Directing Executors with exact context: task file path, full error output, target files to inspect — **read code/logs via terminal tools only when triaging active failures**
 - Ending session and producing handoff document before closing
 
 **Combined Workflow:**
 In most sessions, a single agent operates in both modes sequentially:
-1. **Start**: Planning mode — review status.md for baseline, triage backlog/tasks from `agent-tasks/galaxy_game/`, identify next task(s) based on MVP focus (Luna), draft or select existing task file
-2. **Handoff generation**: Create structured handoff message using SIMPLE_HANDOFF_TEMPLATE.md (straightforward tasks) or HANDOFF_TEMPLATE.md (complex/refactoring work); present to user for approval before sending to Implementation Agent
-3. **During implementation**: Session Strategist mode — monitor Executor progress via terminal logs with `get_terminal_output`, handle regressions that appear, update priority stack if blockers emerge from task completion events; use `run_in_terminal` to read failure logs and triage as needed
+1. **Start**: Planning mode — review status.md for baseline, check `agent-tasks/galaxy_game/tasks/backlog/` or `/active/`, identify next task(s) based on MVP focus (Luna), select existing task file OR draft new one if backlog is empty; generate handoff using appropriate template
+2. **Handoff generation**: Create structured message for Implementation Agent — include exact paths, scope bullets from task file, testing requirements; present to user for approval before sending to implementation agent
+3. **During implementation** (if session continues): Session Strategist mode begins once handoff is sent and Executor starts work — monitor progress via terminal logs with `get_terminal_output`, handle regressions that appear during their coding phase, update priority stack if blockers emerge from task completion events; use `run_in_terminal` to read failure logs and triage as needed
 4. **End of session**: Update status.md (baseline, completed work summary) and produce handoff document in `agent-tasks/galaxy_game/planning/session_handoff_YYYY-MM-DD.md`; return to Planning mode at next startup
+
+**Critical Boundary:** Once you generate a handoff message for an Implementation Agent, STOP. Do not read their target files or analyze code unless:
+- You're drafting the task file itself (need accurate paths)
+- The session continues and Executor reports failures requiring triage in Session Strategist mode
 
 ### Key Distinction from Traditional "Strategist" Role
 
