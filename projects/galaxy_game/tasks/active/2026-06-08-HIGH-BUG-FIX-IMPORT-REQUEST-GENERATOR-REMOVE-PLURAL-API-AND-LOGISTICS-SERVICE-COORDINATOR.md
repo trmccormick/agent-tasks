@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: bug-fix
 system_domain: AI_MANAGER
@@ -8,7 +8,7 @@ local_worker_safe: true
 ---
 
 # TASK: Remove Orphaned Plural API and Logistics::ServiceCoordinator
-**Status**: BACKLOG
+**Status**: ACTIVE
 **Priority**: HIGH
 **Type**: bug-fix
 **Created**: 2026-06-08
