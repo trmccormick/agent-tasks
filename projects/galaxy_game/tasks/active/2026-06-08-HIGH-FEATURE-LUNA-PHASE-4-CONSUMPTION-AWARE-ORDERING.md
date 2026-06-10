@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: feature
 system_domain: AI_MANAGER
@@ -8,7 +8,7 @@ local_worker_safe: false
 ---
 
 # TASK: Luna Phase 4 — Consumption-Aware Ordering + Precursor Phase Awareness
-**Status**: BACKLOG
+**Status**: ACTIVE
 **Priority**: HIGH
 **Type**: feature
 **Created**: 2026-06-08
