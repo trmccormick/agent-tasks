@@ -2,7 +2,7 @@
 
 ```yaml
 id: 2026-06-06-HIGH-FEATURE-LUNA-PHASE-3-SHORTAGE-DETECTOR-IMPORT-REQUEST-GENERATOR
-status: active
+status: backlog
 priority: HIGH
 type: FEATURE
 created: 2026-06-06
