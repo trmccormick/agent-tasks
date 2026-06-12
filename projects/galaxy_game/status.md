@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking  
-**Last Updated:** 2026-06-12 (Phase 4 Implementation Complete — Consumption-aware Ordering + Precursor Phase Gating)
+**Last Updated:** 2026-06-12 (Phase 4 Cleanup Complete — Task File Moved to Completed)
 
 ---
 
@@ -23,7 +23,11 @@
 
 ## Active Tasks
 
-| File | Agent | Status |
+**None currently active.** ✅
+
+### Items Awaiting Human Decision
+
+| File | Status | Notes |
 |---|---|---|
 | `2026-06-03-HIGH-BUG-FIX-IMPORT-REQUEST-GENERATOR-REMOVE-PLURAL-API.md` | Hold | Needs human decision — plural method uses wrong manifest API. Remove or fix? |
 
@@ -148,12 +152,13 @@
 ---
 
 ## Task Order & Priority Notes
-- Check overnight full suite log first thing next session
-- PLURAL-API removal task on hold — human decision needed before reassessment
-- Phase 4 task file needs drafting — consumption-aware ordering, precursor phases
-- FootholdManager task needs scope update — Sol system settlements are first real use case
-- Backlog growing faster than completions — apply Luna MVP filter before adding new tasks
-- Agents use create instead of mv — always verify originals removed after agent file moves
+- ✅ **Phase 4 Cleanup Complete** — Task file moved from active/ → completed/, status.md updated (June 12 evening)
+- ⏸️ **PLURAL-API removal task on hold** — Human decision needed before reassessment: remove or fix the plural method?
+- 📋 **Next Priority Assessment Needed**: Phase 4 gate is open, but we're still in Luna MVP phase. Options:
+  - Address PLURAL-API cleanup (hold item) if human decides to proceed
+  - Begin simulation observation period per LUNA-MVP-SIMULATION-DESIGN.md before Phase 5+ tasks
+  - Review backlog/2026-06/ for any remaining Luna-focused items
+- 🚧 **Backlog Organization**: Tasks organized by phase (backlog/2026-06/, phase5+, phase6+, phase9+) — apply MVP filter before dispatching non-Luna tasks
 
 ---
 
@@ -239,6 +244,13 @@
 ---
 
 ## Session Notes
+
+### 2026-06-12 (Evening — Planning Agent Startup)
+- ✅ **Phase 4 Task File Cleanup** — Moved completed task from active/ → completed/2026-06/
+  - Task: `2026-06-08-HIGH-FEATURE-LUNA-PHASE-4-CONSUMPTION-AWARE-ORDERING.md`
+  - Updated YAML header: status: active → status: completed, added commit_hash and completion date
+  - Commit in agent-tasks repo: abf6fa1 (pushed to origin/main)
+  - Active tasks folder now empty ✅ — ready for next task assignment
 
 ### 2026-06-09 (Evening)
 - Full suite run completed: 3966 examples, 4 failures — 2 known flaky + 2 ImportRequestGenerator spec regression (keyword args)
