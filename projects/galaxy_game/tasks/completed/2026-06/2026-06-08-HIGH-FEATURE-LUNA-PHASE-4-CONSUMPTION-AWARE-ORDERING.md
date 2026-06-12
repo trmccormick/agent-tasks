@@ -1,18 +1,21 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: feature
 system_domain: AI_MANAGER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: false
+completed_date: 2026-06-12
+commit_hash: 01919af8
 ---
 
 # TASK: Luna Phase 4 — Consumption-Aware Ordering + Precursor Phase Awareness
-**Status**: ACTIVE
+**Status**: COMPLETED ✅
 **Priority**: HIGH
 **Type**: feature
 **Created**: 2026-06-08
-**Last Updated**: 2026-06-08
+**Last Updated**: 2026-06-12
+**Completed**: 2026-06-12 (commit: 01919af8)
 
 ---
 
