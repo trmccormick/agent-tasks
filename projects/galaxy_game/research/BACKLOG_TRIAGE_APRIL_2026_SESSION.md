@@ -300,9 +300,12 @@ Requires further analysis against `research/LUNA-MVP-SIMULATION-DESIGN.md` accep
 |---|---|
 | Files Reviewed Tonight | **5 of ~57** |
 | Status: OBSOLETE/Implemented | ✅ 4 (80%) |
-| Status: PARTIALLY IMPLEMENTED → Needs Actionable Work Extraction ⚠️ | 📝 1 (20% — first actionable task found!) |
+| Status: PARTIALLY IMPLEMENTED → Actionable Work Extracted ⚠️ | 📝 1 (20% — Phase 6+ task created!) |
 | Status: ACTIONABLE (Greenfield Work) → New Task Created | 📝 0 |
 | Status: DUPLICATE of Existing Backlog Tasks | 🔁 1 (monitor loading bug fixed Feb 20, before task created Apr 17) |
+
+**New Task File Created**: `docs/new_agent/projects/galaxy_game/tasks/backlog/phase6+/2026-06-12-HIGH-FEATURE-TTR-METRIC-AND-FAILURE-CASCADE-MODELING.md`  
+Deferred to Phase 6+ per `research/LUNA-MVP-SIMULATION-DESIGN.md` — NOT needed for Luna simulation calibration (Phase 5).
 
 **Note**: Git commit shows **4 additional files already archived in deprecated/** from previous sessions (June 8-9 triage work). Total April backlog reviewed to date: ~9 files.
 
