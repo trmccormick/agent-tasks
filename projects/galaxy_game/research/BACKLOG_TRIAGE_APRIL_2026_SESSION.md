@@ -237,16 +237,74 @@ This is a **stale backlog item that was never cleared after the fix was implemen
 
 ---
 
+### File #5: 2026-04-17-CRITICAL-ARCHITECTURE-ENCLOSED-ATMOSPHERE-FAILURE-PREDICTION-PLANNING.md
+**Review Time**: June 12, 2026 — Evening Session  
+**Status Found**: ⚠️ **PARTIALLY IMPLEMENTED — NEEDS COMPLETION (First actionable task found!)**
+
+#### Task Summary (Original Request)
+- **Type**: CRITICAL architecture planning for TTR and failure cascade modeling in enclosed atmospheric systems
+- **Priority**: CRITICAL
+- **Created**: April 17, 2026  
+- **Problem**: No unified architectural plan for Time-to-Reversion (TTR), failure propagation, or AI/maintenance integration across all artificial habitats (worldhouses, domes, stations, depots)
+- **Expected Fix**: Clear architecture and actionable subtasks for TTR metric implementation, event system hooks, AI response patterns
+
+#### Implementation Audit Results
+**Codebase Check (June 12, 2026)**:
+```bash
+$ grep -rn "ttr\|time_to_reversion" ~/Documents/git/galaxyGame/galaxy_game/app/services/pressurization* --include="*.rb" | head -10  
+# No results — TTR metric NOT IMPLEMENTED
+
+$ find ~/Documents/git/galaxyGame/galaxy_game/app/models -name "*worldhouse*" | xargs ls 2>/dev/null
+/Users/tam0013/Documents/git/galaxyGame/galaxy_game/app/models/structures/worldhouse.rb ✅ EXISTS
+/Users/tam0013/Documents/git/galaxyGame/galaxy_game/app/models/structures/worldhouse_segment.rb ✅ EXISTS
+
+$ find ~/Documents/git/galaxyGame/galaxy_game/app -name "*pressuriz*" | xargs ls 2>/dev/null  
+# Pressurization infrastructure EXISTS:
+- base_pressurization_service.rb ✅ (handles gas calculations, retention multipliers)
+- craft_pressurization_service.rb ✅
+- habitat_pressurization_service.rb ✅
+- lavatube_pressurization_service.rb ✅
+- structure_pressurization_service.rb ✅
+- unit_pressurization_service.rb ✅
+```
+
+**Git History Check**:
+```bash
+$ git log --oneline --all -- galaxy_game/app/models/structures/worldhouse.rb | head -15  
+ffa4c1cc chore: move Housing concern audit task to completed after full removal and regression fix [Recent]
+2a7776d4 updated worldhouse.rb model 192 passing specs in /models/concerns/structures after fix.
+```
+
+**Key Finding**: Pressurization infrastructure was built but the **failure prediction architecture (TTR, cascade modeling) described in this task file was never implemented**. This is a genuine gap that may be relevant for Luna simulation calibration — life support failure cascades are critical for Phase 5 acceptance criteria per `research/LUNA-MVP-SIMULATION-DESIGN.md`.
+
+#### Action Taken
+✅ **Archived to deprecated/** with comprehensive header note documenting:
+- Partial implementation evidence (pressurization services exist, worldhouse model exists)  
+- Gaps identified: TTR metric NOT FOUND, failure cascade modeling NOT IMPLEMENTED
+- Recommendation for actionable work extraction into `phase5+/` or `phase6+` backlog folders depending on Luna simulation calibration requirements
+
+**Archive Location**: `docs/agent/archive/backlog_april_2026/deprecated/2026-04-17-CRITICAL-ARCHITECTURE-ENCLOSED-ATMOSPHERE-FAILURE-PREDICTION-PLANNING.md`  
+**Git Commit**: `7ac08982 docs: update archive header for enclosed atmosphere failure prediction task — partial implementation found`
+
+#### Recommendation for Next Steps
+This is the **first actionable task found in 5 files reviewed**. Recommend either:
+1. **Create Phase 5+ task file** if TTR/failure prediction needed for Luna simulation calibration (life support ordering, precursor phase gating)  
+2. **Defer to Phase 6+** if not critical for single-system fuel loop validation
+
+Requires further analysis against `research/LUNA-MVP-SIMULATION-DESIGN.md` acceptance criteria before task file creation.
+
+---
+
 ## Session Progress Summary
 | Metric | Count |
 |---|---|
-| Files Reviewed Tonight | **4 of ~57** |
-| Status: OBSOLETE/Implemented | ✅ 4 (100% implementation rate maintained!) |
-| Status: PARTIALLY IMPLEMENTED → Extracted Task(s) | ⚠️ 0 |
+| Files Reviewed Tonight | **5 of ~57** |
+| Status: OBSOLETE/Implemented | ✅ 4 (80%) |
+| Status: PARTIALLY IMPLEMENTED → Needs Actionable Work Extraction ⚠️ | 📝 1 (20% — first actionable task found!) |
 | Status: ACTIONABLE (Greenfield Work) → New Task Created | 📝 0 |
 | Status: DUPLICATE of Existing Backlog Tasks | 🔁 1 (monitor loading bug fixed Feb 20, before task created Apr 17) |
 
-**Note**: Git commit shows **4 additional files already archived in deprecated/** from previous sessions (June 8-9 triage work). Total April backlog reviewed to date: ~8 files.
+**Note**: Git commit shows **4 additional files already archived in deprecated/** from previous sessions (June 8-9 triage work). Total April backlog reviewed to date: ~9 files.
 
 ---
 
