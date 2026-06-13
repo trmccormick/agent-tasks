@@ -25,14 +25,6 @@
 
 **None currently active.** ✅
 
-### Items Awaiting Human Decision
-
-| File | Status | Notes |
-|---|---|---|
-| `2026-06-03-HIGH-BUG-FIX-IMPORT-REQUEST-GENERATOR-REMOVE-PLURAL-API.md` | Hold | Needs human decision — plural method uses wrong manifest API. Remove or fix? |
-
-**Note:** ImportRequestGenerator spec keyword args regression (June 9 morning) ✅ FIXED and archived to completed/2026-06-09-spec-fixes/
-
 ---
 
 ## Luna Phase Queue
@@ -153,11 +145,11 @@
 
 ## Task Order & Priority Notes
 - ✅ **Phase 4 Cleanup Complete** — Task file moved from active/ → completed/, status.md updated (June 12 evening)
-- ⏸️ **PLURAL-API removal task on hold** — Human decision needed before reassessment: remove or fix the plural method?
+- ✅ **PLURAL-API Removal Verified** — Confirmed complete June 13 morning, hold item removed from tracking
 - 📋 **Next Priority Assessment Needed**: Phase 4 gate is open, but we're still in Luna MVP phase. Options:
-  - Address PLURAL-API cleanup (hold item) if human decides to proceed
-  - Begin simulation observation period per LUNA-MVP-SIMULATION-DESIGN.md before Phase 5+ tasks
+  - Begin simulation observation period per LUNA-MVP-SIMULATION-DESIGN.md before dispatching Phase 5+ tasks (recommended)
   - Review backlog/2026-06/ for any remaining Luna-focused items
+  - Draft new task files if needed based on simulation findings or design discussions
 - 🚧 **Backlog Organization**: Tasks organized by phase (backlog/2026-06/, phase5+, phase6+, phase9+) — apply MVP filter before dispatching non-Luna tasks
 
 ---
@@ -244,6 +236,14 @@
 ---
 
 ## Session Notes
+
+### 2026-06-13 (Morning — Planning Agent Verification)
+- ✅ **PLURAL-API Cleanup Verified** — Confirmed task completed on June 10, code cleanup verified today:
+  - Plural method `generate_import_requests` removed from ImportRequestGenerator ✅
+  - Orphaned Logistics::ServiceCoordinator file deleted ✅  
+  - AIManager::ServiceCoordinator preserved and using correct singular API with keyword args ✅
+  - Test baseline confirmed: import_request_generator_spec.rb (2 examples, 0 failures), ai_manager suite (746 examples, 3 pre-existing flaky) ✅
+- 📝 **Status Tracking Updated** — Removed resolved hold item from Active Tasks section
 
 ### 2026-06-12 (Evening — Planning Agent Startup)
 - ✅ **Phase 4 Task File Cleanup** — Moved completed task from active/ → completed/2026-06/
