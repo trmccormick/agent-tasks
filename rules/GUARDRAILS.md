@@ -1,5 +1,5 @@
 # Operational Guardrails
-**Last Updated**: 2026-05-12
+**Last Updated**: 2026-06-12
 **Maintained By**: Session Strategist (Claude)
 
 > Read before every task. These rules are non-negotiable.
@@ -16,6 +16,28 @@ docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS
 ```
 Never use `docker compose exec` — use `docker exec -it web`.
 Never run Rails or RSpec on the host system directly.
+
+### Rule 2 — Database Migrations
+Always generate migration files using the Rails generator inside Docker.
+Never create migration files manually.
+
+```bash
+docker exec -it web bash -c 'cd /home/galaxy_game && rails generate migration MigrationName column:type column:type'
+```
+
+**Why**: Manually created migration files bypass Rails timestamp tracking and cause
+`ActiveRecord::Migration.maintain_test_schema!` failures in the test environment.
+The generator produces a correctly sequenced timestamp automatically.
+
+After generating, run in both environments:
+```bash
+docker exec -it web bash -c 'cd /home/galaxy_game && rails db:migrate && RAILS_ENV=test rails db:migrate'
+```
+
+If a migration is needed mid-task, this is a **Stop Condition** (see Rule 19) —
+stop, generate the migration, confirm it runs cleanly, then continue.
+
+---
 
 ### Rule 3 — RSpec Execution: AGENTS MUST NEVER RUN FULL SUITES
 **CRITICAL**: Agents execute ONLY targeted specs for the feature/service being implemented.

@@ -122,6 +122,8 @@ local_worker_safe: true | false
 - [ ] No migration needed
 - [ ] Migration needed: `[describe the schema change]`
 
+**If migration needed: follow GUARDRAILS Rule 2 before proceeding.**
+
 ---
 
 ## Implementation Steps
