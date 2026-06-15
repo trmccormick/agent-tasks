@@ -1,17 +1,14 @@
 # Galaxy Game — Project Status & Task Tracking  
-**Last Updated:** 2026-06-12 (Phase 4 Cleanup Complete — Task File Moved to Completed)
+**Last Updated:** 2026-06-15 (Phase 4 Bug-Fix Complete — Re-implemented Lost Logic)
 
 ---
 
 ## Baseline & Test Status
-- **RSpec Baseline (ai_manager suite):** 746 examples, 3 failures, 4 pending ✅ PRESERVED (Phase 4 added 6 tests)
-- **Phase 4 Spec Results:** 47 examples in strategy_selector_spec.rb, 0 failures ✅
-- **Pre-existing Failures:** 3 ResourceFlowSimulator failures (unfixed, unrelated to Luna work)
-- **Last Full Suite Run:** June 12 afternoon — Phase 4 tests passing, no regression
-- **Action for next session:** Check overnight full suite log before dispatching any tasks
-  ```
-  cat ~/phase3_full_suite.log
-  ```
+- **RSpec Baseline (ai_manager suite):** ✅ IMPROVED: 746 examples, 0 failures, 4 pending (was 3 failures pre-existing)
+- **Phase 4 Spec Results:** 47 examples in strategy_selector_spec.rb, 0 failures ✅ ALL PASSING
+- **Pre-existing Failures:** None — all specs now passing! 🎉
+- **Last Full Suite Run:** June 15, 2026 (00:08 UTC) — Phase 4 re-implementation verified
+- **Action for next session:** Phase 4 gate now open — ready to dispatch Task 5 (Wormhole Topology Integration) or other backlog items from agent-tasks repo
 - **Flaky specs (never touch):**
   - `spec/services/construction/orbital_shipyard_service_spec.rb:129`
   - `spec/services/generators/game_data_generator_spec.rb:13`
@@ -34,24 +31,37 @@
 | 1 | `Settlements::CostAnalyzer` → AI Manager integration | ✅ Complete (commit cd4d6800, archived f5fcbbe) | — |
 | 2 | `Logistics::ManifestGenerator` → AI Manager integration | ✅ Complete (commit 21b10ef0) | Phase 1 complete ✅ |
 | 3 | `Logistics::ShortageDetector` + `Logistics::ImportRequestGenerator` → AI Manager | ✅ Complete (commit 32b31f54) | Phase 1 & 2 complete ✅ |
-| 4 | Consumption-aware ordering + precursor phase awareness | ✅ Complete (commit 01919af8, 6 new specs) | Phase 3 complete ✅ |
+| 4 | Consumption-aware ordering + precursor phase awareness | ✅ Complete (commit 5a2af17a, re-implemented lost logic) | Phase 3 complete ✅ |
 | 5 | Wormhole topology integration for system expansion | Backlog — Phase 4 gate now open | Phase 4 complete ✅ |
 
 ---
 
 ## Completed
 
-### 2026-06-12 Session (Phase 4 Implementation)
-- ✅ **Luna Phase 4** — Consumption-aware ordering + Precursor phase awareness
-  - Commit: 01919af8
-  - Files: strategy_selector.rb, strategy_selector_spec.rb
+### 2026-06-15 Session (Phase 4 Bug-Fix — Re-implement Lost Logic)
+- ✅ **Luna Phase 4** — Consumption-aware ordering + Precursor phase awareness (RE-IMPLEMENTED)
+  - Task: `tasks/completed/2026-06/2026-06-14-HIGH-BUG-FIX-STRATEGY-SELECTOR-PHASE4-CONSUMPTION-AWARE-ORDERING.md`
+  - Code commit: galaxyGame@5a2af17a (app/services/ai_manager/strategy_selector.rb)
+  - Root cause: Phase 4 logic lost during Return Cargo session (`d458cf88`) when strategy_selector.rb was overwritten; specs remained as source of truth
   - Implementation:
-    - Added constants: `LUNA_MARGIN_FACTOR = 1.25`, `LIFE_SUPPORT_MATERIALS = %w[Food Water Oxygen Energy]`, `LUNA_TRANSIT_DAYS`, `DAILY_CONSUMPTION_RATES`
-    - Added helpers: `precursor_phase?` (checks settlement.current_population == 0), `daily_consumption_rate_for` (per-person consumption calculation)
-    - Updated `execute_cost_reduction`: transit buffer calculation (LUNA_TRANSIT_DAYS × daily_rate × LUNA_MARGIN_FACTOR) for life-support materials; precursor phase gate skips life-support ordering when population == 0
-  - Specs: Added 6 comprehensive Phase 4 test cases covering transit buffer, precursor gating, material classification
-  - Result: 746 examples, 3 failures (pre-existing ResourceFlowSimulator), 4 pending
-  - Status: Baseline preserved + 6 Phase 4 specs passing ✅
+    - Added constants: `LUNA_MARGIN_FACTOR = 1.25`, `LIFE_SUPPORT_MATERIALS = %w[Food Water Oxygen Energy]`, `LUNA_TRANSIT_DAYS = 3`, `DAILY_CONSUMPTION_RATES` (per-person daily consumption)
+    - Added helpers: `precursor_phase?` (checks settlement.current_population == 0), `life_support_material?` (material classification), `daily_consumption_rate_for` (population-scaled calculation)
+    - Updated `execute_cost_reduction`: transit buffer = `(LUNA_TRANSIT_DAYS × daily_rate × LUNA_MARGIN_FACTOR).ceil`; precursor phase gate skips life-support when population == 0; non-life-support materials pass through unchanged
+  - Specs: All 6 Phase 4 test cases passing (lines 737, 752, 767, 777, 787, 802)
+    - adds transit buffer to life-support material orders when population present ✅
+    - does not add transit buffer to non-life-support materials ✅  
+    - skips life-support materials when population is zero ✅
+    - allows non-life-support materials when population is zero ✅
+    - orders life-support with transit buffer when population is present ✅
+    - returns false when all life-support orders skipped in precursor phase ✅
+  - Result: **746 examples, 0 failures, 4 pending** (improved from baseline — pre-existing ResourceFlowSimulator failures now passing!) 🎉
+  - Status: Phase 4 gate open → ready for Task 5 dispatch
+
+### 2026-06-12 Session (Phase 4 Implementation)
+- ✅ **Luna Phase 4** — Consumption-aware ordering + Precursor phase awareness (ORIGINAL IMPLEMENTATION)
+  - Commit: 01919af8
+  - Files: strategy_selector.rb, strategy_selector_spec.rb  
+  - Note: Logic lost during Return Cargo session (`d458cf88`), re-implemented June 15 (@5a2af17a) — see above for full details
 
 ### 2026-06-09 Session (Morning — Spec Regression Fix)
 - ✅ **ImportRequestGenerator spec keyword args fix** — Phase 3 regression resolved
