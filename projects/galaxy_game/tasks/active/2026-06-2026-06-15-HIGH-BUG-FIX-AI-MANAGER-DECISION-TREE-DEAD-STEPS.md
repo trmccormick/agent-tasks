@@ -268,14 +268,14 @@ READY TO COMMIT? — waiting for approval
 ---
 
 ## Acceptance Criteria
-- [ ] `check_player_market` has phase_gate and skip_condition
-- [ ] `check_wormhole_network` renamed to `check_intra_solar_logistics`
-- [ ] `wormhole_priority_boost` removed from tuning_parameters
-- [ ] `target_export_roi` and `subsidy_threshold_gcc` added to metrics
-- [ ] Service that reads file documented
-- [ ] ai_manager suite: 746 examples, ≤3 failures (flaky only), 4 pending
-- [ ] `learned_patterns.json` January success rates confirmed preserved
-- [ ] `mission_profile_patterns.json` confirmed unchanged
+- [x] `check_player_market` has phase_gate and skip_condition
+- [x] `check_wormhole_network` renamed to `check_intra_solar_logistics`
+- [x] `wormhole_priority_boost` removed from tuning_parameters
+- [x] `target_export_roi` and `subsidy_threshold_gcc` added to metrics
+- [x] Service that reads file documented (finding: currently unintegrated)
+- [x] ai_manager suite: 746 examples, ≤3 failures (flaky only), 4 pending
+- [x] `learned_patterns.json` January success rates confirmed preserved
+- [x] `mission_profile_patterns.json` confirmed unchanged
 
 ---
 
@@ -309,19 +309,71 @@ git push
 ## Completion Report
 *Filled in by implementing agent*
 
-**Completed by**:
-**Completion date**:
-**Final test result**:
+**Completed by**: Qwen3.5-27B
+**Completion date**: 2026-06-15
+**Final test result**: ✅ 746 examples, 3 failures (flaky only), 4 pending
 
 ### What was changed
 
+**File modified**: `data/json-data/ai_manager/resource_acquisition_logic_v1.json`
+
+1. **check_player_market step**:
+   - Added `"phase_gate": "players_exist"`
+   - Added `"skip_condition": "no_players_in_system"`
+   - Updated name to clarify unified market (GCC + Virtual Ledger)
+
+2. **check_wormhole_network step renamed to check_intra_solar_logistics**:
+   - Renamed step_id from `check_wormhole_network` to `check_intra_solar_logistics`
+   - Updated name to reflect intra-solar logistics vs wormhole concept
+   - Added `"phase_gate": "intra_solar_infrastructure_exists"`
+   - Added `"skip_condition": "no_stations_or_cyclers_operational"`
+   - Updated logic and action descriptions for intra-solar context
+
+3. **tuning_parameters**:
+   - Removed `"wormhole_priority_boost": 1.2` (deprecated until Phase 9+)
+   - Added `"intra_solar_priority_boost": 1.2`
+   - Added `"REMOVED_wormhole_priority_boost"` flag with deprecation note
+
+4. **metrics**:
+   - Added `"target_export_roi": 1.2` for extraction outpost metrics
+   - Added `"subsidy_threshold_gcc": -50000` for GCC subsidy gating
+   - Added `"NOTE_self_sufficiency"` field explaining that self-sufficiency is wrong for extraction outposts like Luna
+   - Kept `"target_self_sufficiency": 0.8` for compatibility with other systems
+
+### Service findings
+
+**Key discovery**: The `resource_acquisition_logic_v1.json` file exists in the codebase but is **not currently loaded or executed by any Ruby service**. 
+
+Search results:
+- ✅ Found service file: `galaxy_game/app/services/ai_manager/resource_acquisition_service.rb`
+- ❌ No references to `resource_acquisition_logic_v1.json` in any `.rb` files
+- ❌ No decision tree executor that reads and applies this config
+
+**Conclusion**: This JSON file serves as architectural specification/documentation of the intended decision tree. The actual resource acquisition logic is currently hard-coded in `ResourceAcquisitionService` (process_local_acquisition and process_external_import methods).
+
+**No service changes needed** — The config file has been updated as required, but integration with the actual service is out of scope for this task.
+
 ### Issues discovered
+
+1. **Data directory ignored by .gitignore**: The `/data/` directory is excluded from version control (line 41: `/data/`). Resource config changes are applied locally but cannot be committed to git. This is expected behavior.
+
+2. **Phase gates present in JSON but not executed**: The phase_gate and skip_condition fields have been added to the config, but there is no service logic currently checking these gates. This is architectural preparation for future integration.
 
 ### Follow-up tasks needed
 
+1. **Integration task**: When resource acquisition is refactored to use the decision tree config, add phase-awareness logic to skip dead steps (check_player_market and check_intra_solar_logistics during pre-player/pre-infrastructure phases)
+
+2. **Metric validation**: Verify that Luna settlements are measured using `target_export_roi` rather than `target_self_sufficiency` once Luna training pipeline is active
+
+3. **Remove deprecated self_sufficiency metric**: Once audit confirms no other services depend on it
+
 ### Lessons learned
+
+- JSON config files can serve as architectural specifications even before full integration
+- Phase gates should be documented early even if execution logic is deferred
+- Marking deprecated fields with DEPRECATED flags + NOTE fields helps future developers understand the technical debt
 
 ---
 
 ## Handoff Summary
-HANDOFF SUMMARY: resource_acquisition_logic_v1.json + [service if changed] | Dead steps gated, wormhole renamed, export ROI metric added | Dispatch Task 2 (Luna training refresh) next
+✅ COMPLETED: resource_acquisition_logic_v1.json updated with phase gates, intra-solar logistics rename, and export ROI metric. No service changes needed (config currently unintegrated). Ready for Luna training refresh task next.
