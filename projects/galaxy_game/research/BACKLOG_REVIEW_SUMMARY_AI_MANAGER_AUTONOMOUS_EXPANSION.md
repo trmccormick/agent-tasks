@@ -97,7 +97,7 @@ Extraction Date: June 7, 2026
 ## Next Steps for Backlog Review Process
 
 ### Immediate Actions (This Session):
-- [ ] Commit three new task files to agent-tasks repo with message: "feat: Extract actionable Phase 5+ tasks from ai_manager_autonomous_expansion.md backlog review"  
+- [x] Commit three new task files to agent-tasks repo with message: "feat: Extract actionable Phase 5+ tasks from ai_manager_autonomous_expansion.md backlog review"  
 - [ ] Move original April 2026 file to deprecated subfolder after adding archival header note
 
 ### Future Backlog Review Sessions (When Luna Phases Complete):
@@ -127,14 +127,14 @@ Other potentially valuable backlog items from same archive folder:
 
 ---
 
-## Summary Statistics
+**Summary Statistics:**
 
 | Metric | Count |
 |--------|-------|
-| Original April 2026 task file reviewed | 1 (`ai_manager_autonomous_expansion.md`) |  
-| New independent tasks extracted and created | 3 (Wormhole Topology, Foothold Establishment, Multi-System Resource Coordination) |  
-| Luna-relevant concepts identified as already covered in active work | 1 ("foothold resource allocation" → ShortageDetector + ImportRequestGenerator integration) |
-| Remaining concepts for future review consideration | 2 (TerraGen consortium formation, Eden system prioritization special cases) |
+| Original April 2026 task files reviewed | 2 (`ai_manager_autonomous_expansion.md`, `implement_luna_base_buildup_test_case.md`)  
+| New independent tasks extracted and created | 3 (Wormhole Topology, Foothold Establishment, Multi-System Resource Coordination) |
+| Luna-relevant concepts identified as already covered in active work | 2 ("foothold resource allocation" → ShortageDetector + ImportRequestGenerator; "Luna base buildup test case" → Phases 1-3 implementation)|  
+| Future considerations flagged (not extracted yet) | 3 (TerraGen consortium formation, Eden system prioritization special cases, Return Cargo Profit Optimization for Phase 5+) |
 
 ---
 

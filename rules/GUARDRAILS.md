@@ -1,5 +1,5 @@
 # Operational Guardrails
-**Last Updated**: 2026-06-12
+**Last Updated**: 2026-06-14
 **Maintained By**: Session Strategist (Claude)
 
 > Read before every task. These rules are non-negotiable.
@@ -12,17 +12,31 @@
 ### Rule 1 — Docker
 All Rails and RSpec commands MUST run inside Docker using:
 ```bash
-docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS_ENV=test bundle exec [command]'
+docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec [command]'
 ```
 Never use `docker compose exec` — use `docker exec -it web`.
 Never run Rails or RSpec on the host system directly.
+
+> **Working Directory**: The `web` container working directory is already
+> `/home/galaxy_game`. Do NOT prefix commands with `cd /home/galaxy_game &&`.
+> Adding it is redundant and clutters commands. Omit it entirely.
+
+**Correct:**
+```bash
+docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/logistics/shortage_detector_spec.rb 2>&1 | tail -20'
+```
+
+**Wrong:**
+```bash
+docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/logistics/shortage_detector_spec.rb 2>&1 | tail -20'
+```
 
 ### Rule 2 — Database Migrations
 Always generate migration files using the Rails generator inside Docker.
 Never create migration files manually.
 
 ```bash
-docker exec -it web bash -c 'cd /home/galaxy_game && rails generate migration MigrationName column:type column:type'
+docker exec -it web bash -c 'rails generate migration MigrationName column:type column:type'
 ```
 
 **Why**: Manually created migration files bypass Rails timestamp tracking and cause
@@ -31,7 +45,7 @@ The generator produces a correctly sequenced timestamp automatically.
 
 After generating, run in both environments:
 ```bash
-docker exec -it web bash -c 'cd /home/galaxy_game && rails db:migrate && RAILS_ENV=test rails db:migrate'
+docker exec -it web bash -c 'rails db:migrate && RAILS_ENV=test rails db:migrate'
 ```
 
 If a migration is needed mid-task, this is a **Stop Condition** (see Rule 19) —
@@ -69,7 +83,7 @@ If you encounter a need for full suite validation, STOP and escalate to human.
 ```
 ✅ PRE-RSPEC EXECUTION CHECK:
 - Command: [EXACT command you are about to run]
-- Scope: [single file | directory | specific line]  
+- Scope: [single file | directory | specific line]
 - Targeted: YES | NO
 - File path: [path to spec file]
 - NOT a full suite: YES | NO
@@ -81,7 +95,7 @@ If you encounter a need for full suite validation, STOP and escalate to human.
 **Example of REQUIRED output BEFORE executing the command:**
 ```
 ✅ PRE-RSPEC EXECUTION CHECK:
-- Command: docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS_ENV=test bundle exec rspec /home/galaxy_game/spec/services/logistics/shortage_detector_spec.rb'
+- Command: docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/logistics/shortage_detector_spec.rb'
 - Scope: single file
 - Targeted: YES
 - File path: spec/services/logistics/shortage_detector_spec.rb
@@ -100,15 +114,17 @@ If you encounter a need for full suite validation, STOP and escalate to human.
 Never summarize or truncate RSpec output unless explicitly told to.
 For large suites redirect to a log file:
 ```bash
-docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS_ENV=test bundle exec rspec [spec] 2>&1 | tee /tmp/rspec_output.log && tail -30 /tmp/rspec_output.log'
+docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec [spec] 2>&1 | tee /tmp/rspec_output.log && tail -30 /tmp/rspec_output.log'
 ```
 
 ### Rule 10 — Host vs Docker Paths
 The host path and Docker path are different:
-- **Host**: `galaxy_game/app/models/...`
-- **Docker**: `/home/galaxy_game/app/models/...`
+- **Host**: `~/Documents/git/galaxyGame/galaxy_game/app/models/...`
+- **Docker**: `/home/galaxy_game/app/models/...` (working directory root)
 Always use the correct path context for commands and file references.
 Task files use Docker paths for commands, host paths for git operations.
+Do NOT include `/home/galaxy_game` prefix in docker exec commands — it is the
+container working directory and is already active.
 
 ---
 
@@ -122,8 +138,14 @@ Every task follows this exact path:
 ```
 backlog/ → active/ → (work happens) → completed/
 ```
+Use `git mv` to move task files between folders — never copy and delete.
 A task in active/ with no completion report is abandoned — flag it.
 Never leave a task in active/ after work is done.
+
+> **Known Agent Issue**: Qwen3.5-27B frequently creates a copy in the destination
+> folder instead of using `git mv`, leaving a duplicate in the source folder.
+> After every session that moves task files, human must run `git status` and
+> `git rm -f` any stale duplicate.
 
 ### Rule 13 — Handoff Commands
 Reserve strategic context for handoff commands.
@@ -247,37 +269,42 @@ When a Continue model hits these limits:
 ### Rule 23 — Token Conservation (Core Strategy)
 **Applies to all agents in the planning/triage/implementation chain.**
 
-Token conservation is THE core constraint. Follow this hierarchy:
+Token conservation is THE core constraint. Local agents are always preferred.
+Cloud agents are fallback only — never first choice.
 
-1. **0 Token Tier (Always Use First)**
-   - Gemini for planning/triage (web, free tier)
-   - Qwen3.5 for task detailing (Continue, local)
-   - Perplexity for task validation (web, free tier)
-   - Local models for implementation synthesis (Continue, 0 tokens)
-   - GPT-5 miniini 0x for mechanical implementation (free tier)
+**Escalation ladder (always follow in order):**
 
-2. **Free Token Tier (Use if 0-token option exhausted)**
-   - Claude free web (~0 tokens) for alignment checks only
-   - Haiku 0.33x for fast fixes on well-specified tasks
+1. **Local Tier (Always Use First — 0 cost)**
+   - Qwen3.5-9B (Copilot) — planning, triage, task file updates, doc edits
+   - Qwen3.5-27B (Copilot, fresh session) — implementation, spec fixes, targeted edits
+   - If tool execution failure in a running session → open a NEW local session first
+     before escalating to cloud. Long sessions cause instability, not capability gaps.
 
-3. **Premium Tier (RESERVE for complex work)**
-   - Claude 1x only when:
-     - Codestral synthesis insufficient
-     - Cross-session memory required
-     - New architectural pattern design needed
-   - Use sparingly — maybe once per month
+2. **Cloud Fallback Tier (0.33x — only after two local failures)**
+   - Claude Haiku 4.5 / GPT-5 mini / Raptor mini (GitHub Copilot)
+   - Use for focused, well-specified tasks only
+   - Never send full codebase — snippets only
+   - Two local failures means two genuine attempts in fresh sessions,
+     not two retries in the same session
 
-**Golden Rule**: If a task can be completed with 0 tokens, using premium tokens is a bug.
+3. **Premium Tier (Reserve — use sparingly)**
+   - Claude Sonnet (this web session) — architecture decisions, complex diagnosis,
+     session strategy, task file drafting, handoff document creation
+   - Target: end of month premium quota still available
+   - If a task can be completed locally, using premium is a workflow bug
+
+**Golden Rule**: Local first. Cloud second. Premium last.
+Spare quota at month end can be used for accelerated implementation sprints.
 
 ### Rule 24 — Perplexity Workflow Integration
 **Applies to task validation phase before cloud agent handoff.**
 
 Perplexity's role in the workflow:
 
-1. **Task Clarity Validation**: "Is this task clear enough for GPT-4.1?"
+1. **Task Clarity Validation**: "Is this task clear enough for the assigned agent?"
    - Review Qwen3.5 output for ambiguities
    - Flag if acceptance criteria are testable
-   - Verify docker commands are correct
+   - Verify docker commands are correct and follow Rule 1
 
 2. **Routing Verification**: "Is this task routed to the right agent?"
    - Confirm task complexity level matches agent tier
@@ -289,4 +316,22 @@ Perplexity's role in the workflow:
    - Identify blocking relationships
    - Optimize execution order
 
-**Perplexity does NOT replace task creation** — it validates Qwen3.5 output before cloud handoff.
+**Perplexity does NOT replace task creation** — it validates Qwen3.5 output before handoff.
+
+### Rule 25 — No File Recreation From Scratch
+**Applies to all agents.**
+
+Agents must edit files in place. Recreating service files, spec files, or factories
+from scratch (via Python heredoc, `cat >`, or any full-file overwrite method) is
+prohibited unless explicitly authorized by the human.
+
+**Why**: Recreation discards valid existing content and introduces new bugs.
+Incremental in-place edits are always safer and reviewable.
+
+If an agent cannot fix a file incrementally and wants to recreate it:
+- STOP
+- Report the specific blocker to the human
+- Wait for explicit authorization before proceeding
+
+The human may choose to provide a replacement file directly rather than
+authorizing the agent to recreate it.

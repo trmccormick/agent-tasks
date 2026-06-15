@@ -22,13 +22,15 @@
 #     - No date prefix = task must be reviewed before assignment, may be obsolete.
 #
 # DEPTH GUIDE — how much detail to include per agent tier:
-#   0x  (GPT-4.1)              — fill every field, no ambiguity, explicit paths and commands
-#   0.33x (Haiku/Gemini Flash) — most fields required, can handle some inference
-#   1x  (Claude Sonnet)        — core fields required, can reason about gaps
-#   Local (Ollama via Continue) — must have exact file content provided, cannot execute commands
+#   Local Qwen3.5-27B (primary) — explicit file paths, before/after code, exact docker commands
+#   0.33x cloud fallback (Haiku/GPT-5 mini/Raptor mini) — same as above, only after two local failures
+#   Claude Sonnet (premium/web) — architecture and strategy only, never implementation
 #
 # Rule: when in doubt, add more detail. An over-specified task wastes nothing.
 # An under-specified task burns premium requests on clarification.
+#
+# AGENT SELECTION RULE: Always assign to local Qwen3.5-27B first.
+# Only escalate to cloud after two genuine failures in fresh local sessions.
 
 ---
 status: backlog
@@ -53,27 +55,28 @@ local_worker_safe: true | false
 *Local models read task files only — they cannot run commands or access the DB*
 
 - **Template Conformance**: PASS | FAIL — [note missing sections]
-- **Docker Wrapper Check**: PASS | FAIL | N/A — [verify RSpec strings use correct docker exec format]
+- **Docker Wrapper Check**: PASS | FAIL | N/A — [verify RSpec strings use correct docker exec format without cd /home/galaxy_game]
 - **MVP Alignment**: VALID | STALE | OBSOLETE — [does this task still apply to current codebase]
 - **MVP Impact Note**: [one line on how this connects to AI Manager Luna settlement or spec health]
-- **Action Line**: READY FOR CLOUD HANDOFF | NEEDS MANUAL REVIEW | OBSOLETE — ARCHIVE
+- **Action Line**: READY FOR LOCAL DISPATCH | NEEDS MANUAL REVIEW | OBSOLETE — ARCHIVE
 
 ---
 
 ## Agent Assignment
 
-**Assigned To**: [GPT-5 mini 0x | Haiku 0.33x | Claude Sonnet 1x | Local Ollama]
-**Why This Agent**: [one line]
+**Assigned To**: [Qwen3.5-27B local (primary) | Qwen3.5-9B local | Claude Haiku 0.33x | GPT-5 mini 0.33x | Raptor mini 0.33x]
+**Why This Agent**: [one line — if cloud agent, state why local failed]
+**Local attempts before cloud**: [N/A | 1 | 2 — cloud only dispatched after 2 local failures]
 **Supervision Level**: [watched carefully | standard | autonomous OK]
 
 **Supervision Legend**:
-- Watched carefully = 0x/0.33x cloud agents and all local models
-- Standard = 0.33x agents on well-specified tasks
-- Autonomous OK = 1x agents only
+- Watched carefully = all agents on first dispatch of a task
+- Standard = local Qwen3.5-27B on well-specified repeat task types
+- Autonomous OK = not currently used — all tasks require human approval before commit
 
-> Local Ollama agents: you cannot execute terminal commands, Docker, RSpec, or git.
-> You can read files provided to you and create/edit files via Continue.
-> Never fabricate command output. If you need a command run, ask the human.
+> **Primary executor is always local Qwen3.5-27B (Copilot).**
+> Cloud agents (Haiku, GPT-5 mini, Raptor mini) are fallback only.
+> If assigning to cloud, document which local attempts failed and why.
 
 ---
 
@@ -128,9 +131,9 @@ local_worker_safe: true | false
 
 ## Implementation Steps
 
-> 0x/0.33x agents: follow these steps exactly in order.
-> 1x agents: use as a guide, apply judgment.
-> Local Ollama agents: read steps carefully, ask human to run any commands, never fabricate output.
+> All agents: follow these steps exactly in order.
+> Do not skip steps or reorder them.
+> Do not proceed to the next step if the current step has not produced a clean result.
 
 **Debug prints OK for complex callbacks** — add temporary `puts` statements, remove after verification.
 
@@ -154,16 +157,17 @@ end
 
 ### Step 3 — Verify
 
-> CRITICAL EXECUTION MANDATE: All RSpec commands must use the isolated Docker wrapper below.
+> CRITICAL EXECUTION MANDATE: All RSpec commands must use the Docker wrapper below.
+> The container working directory is already /home/galaxy_game — do NOT add cd /home/galaxy_game.
 > Never run bare local test commands. Never fabricate test results.
 
 ```bash
-docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS_ENV=test bundle exec rspec [SPEC_PATH_IN_CONTAINER] 2>&1 | tail -20'
+docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec [SPEC_PATH] 2>&1 | tail -20'
 ```
 
 Expected result: X examples, 0 failures
 
-### Step 4 — Synthesis Report format (before applying any fix)
+### Step 4 — Synthesis Report (before committing anything)
 
 ```
 SYNTHESIS REPORT
@@ -184,7 +188,7 @@ RISK
 READY TO APPLY? — waiting for approval
 ```
 
-Do not apply the fix until the user explicitly approves.
+Do not commit until the user explicitly approves.
 
 ---
 
@@ -192,7 +196,7 @@ Do not apply the fix until the user explicitly approves.
 - [ ] [specific measurable outcome]
 - [ ] Isolation run: 0 failures
 - [ ] No regressions in related specs
-- [ ] Full suite run completed and logged
+- [ ] Full suite run completed and logged (human runs overnight — agent does not trigger)
 
 ---
 
@@ -207,11 +211,17 @@ Do not apply the fix until the user explicitly approves.
 ---
 
 ## Commit Instructions
-Run git commands on **host**, not inside container:
+Run git commands on **host only** — never inside the Docker container:
 ```bash
 git add [specific files only — never git add .]
 git commit -m "[type]: [spec/file name] — [brief description of root cause and fix]"
 git push
+```
+
+**Task file move on completion — use git mv, never copy:**
+```bash
+git mv projects/galaxy_game/tasks/active/[FILENAME] projects/galaxy_game/tasks/completed/[YYYY-MM]/[FILENAME]
+git commit -m "chore: move [FILENAME] to completed/"
 ```
 
 ---
