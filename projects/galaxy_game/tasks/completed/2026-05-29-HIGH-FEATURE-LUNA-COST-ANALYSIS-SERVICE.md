@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: feature
 system_domain: MANUFACTURING
@@ -9,11 +9,11 @@ local_worker_safe: true
 
 # TASK: Luna Phase 1 — Cost Analysis Service
 
-**Status**: BACKLOG  
+**Status**: COMPLETED  
 **Priority**: HIGH  
 **Type**: feature  
 **Created**: 2026-05-29  
-**Last Updated**: 2026-05-29  
+**Last Updated**: 2026-05-31 (implementation completed)  
 
 ---
 
@@ -162,3 +162,27 @@ Test file should include:
 - Do NOT create a UI or controller endpoint yet.
 - Service only. Tests only.
 - If blueprint/recipe system doesn't exist, flag in completion report.
+
+---
+
+## Completion Report
+
+**Completed**: May 31, 2026  
+**Commit**: `f0c3b8ca` (test: make NPC count assertion flexible for seeded orgs)  
+
+### Implementation Details
+- **Service File**: `galaxy_game/app/services/settlements/cost_analyzer.rb` ✅ Created with all required methods
+- **Spec File**: `galaxy_game/spec/services/settlements/cost_analyzer_spec.rb` ✅ All 5 test cases passing
+
+### Test Results (June 16, 2026)
+```bash
+Finished in 1.25 seconds (files took 27.24 seconds to load)
+5 examples, 0 failures
+```
+
+### Methods Implemented
+✅ `Settlements::CostAnalyzer.compare_costs(resource_name, settlement)`  
+✅ `Settlements::CostAnalyzer.local_production_cost(resource_name, settlement)`  
+✅ `Settlements::CostAnalyzer.current_import_price(resource_name, settlement)`  
+
+**Note**: This task was created on May 29 from analysis findings but implementation was completed on May 31 before formal assignment. Task file moved to completed/ folder June 16 when discovered in active/.
