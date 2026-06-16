@@ -1,14 +1,15 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: feature
 system_domain: AI_MANAGER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
+completed_at: "2026-06-15"
 ---
 
 # TASK: Luna AI Manager Training Refresh
-**Status**: ACTIVE
+**Status**: COMPLETED
 **Priority**: HIGH
 **Type**: feature
 **Created**: 2026-06-15
