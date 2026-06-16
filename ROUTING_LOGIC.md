@@ -17,7 +17,7 @@ This document reflects a transitional setup following new hardware addition (Ryz
 | Machine | RAM | GPU | Role |
 |---|---|---|---|
 | **Intel MacBook** | — | — | Primary Galaxy Game dev surface. VS Code + GitHub Copilot. No local models — accesses M4 and Ryzen 7 remotely via Ollama. |
-| **M4 Mac** (48GB unified) | 48GB | Apple Silicon | Primary WVU/Samvera work machine. Runs Ollama agents concurrently but memory is shared with work tasks. |
+| **M4 Mac** (48GB unified) | 48GB | Apple Silicon | Primary WVU/Samvera work machine (wvu_knapsack/Hyku). Runs qwen3.5:27b concurrently with full Docker stack — validated stable with 12 containers (Solr, Fedora, PostgreSQL, Redis, Zookeeper, Selenium, Traefik + Rails web/worker). |
 | **Ryzen 7** (128GB RAM) | 128GB | 16GB (primary) + 4GB (DVI display) | Gaming rig and model server. 16GB GPU handles model inference; 4GB card drives secondary display. Available during the day; gaming and model inference can run simultaneously. |
 | **Pi 4** | — | — | Home server (Jellyfin, Samba via Docker). **Pending reload** — will host Open WebUI as unified Ollama aggregator. |
 
@@ -26,6 +26,19 @@ This document reflects a transitional setup following new hardware addition (Ryz
 ## The One Rule
 
 **Route by task complexity, not by habit. 27B handles most things. Only reach for a larger or cloud model when there's a genuine reason.**
+
+---
+
+## Dual Workstream Setup
+
+The agent-tasks repo coordinates two concurrent workstreams across machines:
+
+| Workstream | Primary Machine | Primary Agent | Repo |
+|---|---|---|---|
+| **Galaxy Game** | Intel MacBook (VS Code + Copilot) | qwen3.5:27b via M4 or qwen3.5:35b via Ryzen 7 | galaxygame |
+| **WVU/Samvera** | M4 Mac (VS Code + Copilot) | qwen3.5:27b local | wvu_knapsack |
+
+These workstreams are independent — task files in agent-tasks are namespaced by repo. Agents working on Galaxy Game tasks should never touch wvu_knapsack files and vice versa.
 
 ---
 
