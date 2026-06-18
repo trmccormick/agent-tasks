@@ -27,7 +27,7 @@ Key facts:
 - **Authentication Domain**: `wvu-ad.wvu.edu` (WVU Active Directory)
 - **Admin Contact**: Library Systems Office
 - **License**: WVU Libraries internal use
-- **Stack**: PHP 8.3, Apache 2.4, MySQL 8.0 (⚠️ EOL — upgrade planned), LDAP extension, EngineAPI template engine, Docker/Docker Compose
+- **Stack**: PHP 8.3, Apache 2.4, MySQL 8.4 LTS (upgraded from EOL 8.0), LDAP extension, EngineAPI template engine, Docker/Docker Compose
 - **Deployment**: Dockerized single-container `php:8.3-apache` with PHP LDAP, MySQLi, and PDO extensions
 - **Key Configuration**: LDAP server = `ldap://wvu-ad.wvu.edu`, bind format = `username@wvu-ad.wvu.edu`
 
@@ -236,25 +236,29 @@ services:
 ```
 
 ### Database Infrastructure & Versions
-**CRITICAL**: MySQL 8.0 reached end-of-life (April 2024) and is no longer receiving security updates.
+**CRITICAL**: MySQL 8.0.46 reached end-of-life (April 2024) and is no longer receiving security updates. Upgrade to **MySQL 8.4 LTS** is required.
 
-| Environment | Version | Status | Notes |
-|-------------|---------|--------|-------|
-| **Production** | 8.0.46 | **EOL (Unsupported)** | Remote server (database.lib.wvu.edu); DevOps confirmed needs upgrade |
-| **Dev Docker** | 8.0 | EOL (Unsupported) | Aligned with production for accurate testing; will be upgraded |
+| Environment | Current Version | Target Version | Status | Notes |
+|-------------|-----------------|-----------------|--------|-------|
+| **Production** | 8.0.46 | **8.4 LTS** | **EOL (Action Required)** | Remote server (database.lib.wvu.edu); DevOps confirmed upgrade needed |
+| **Dev Docker** | 8.4 | 8.4 LTS | Testing | Aligned with production target for accurate upgrade testing |
 
 **Upgrade Plan** (Seq 5 of modernization backlog):
-- Target version: *Pending DevOps confirmation* (likely 8.4 LTS or 9.0)
-- Database dump: *Pending acquisition from production*
-- Blocked by: MySQL functions migration (Seq 3), deprecated mysql_* functions must be converted to mysqli/PDO first
-- Blocks: EngineAPI distillation (Seq 6)
-- Testing: PHPUnit suite (Seq 1) must pass against target version before production upgrade
+- **Target version**: MySQL 8.4 LTS (confirmed by DevOps 2026-06-18)
+- **Database dump**: Pending from production (8.0.46 dump required for testing)
+- **Dev environment**: Updated to 8.4 for upgrade validation
+- **Blocked by**: MySQL functions migration (Seq 3 — mysql_* must be converted first)
+- **Blocks**: EngineAPI distillation (Seq 6)
+- **Testing**: PHPUnit suite (Seq 1) must pass against 8.4 before production upgrade
 
-**Key Considerations for Upgrade**:
-- Authentication.sql (current dump from 5.7.40) schema compatibility must be verified against target version
-- Temporary accounts table uses MyISAM; may need conversion to InnoDB for 8.4+
-- Character encoding defaults changed (utf8 vs utf8mb4); verify collation requirements
-- All mysqli/PDO connections must support target version authentication plugin
+**Key Considerations for 8.0 → 8.4 Upgrade**:
+- Authentication.sql dump (8.0.46) must be tested and restored into 8.4 instance
+- Temporary accounts table uses MyISAM; verify engine compatibility or plan conversion to InnoDB
+- Character encoding: Ensure utf8mb4 collation compatibility
+- Authentication plugin: 8.4 may require mysql_native_password or caching_sha2_password verification
+- All mysqli/PDO connections must support target authentication method
+- Performance testing required (8.4 may have query optimization differences)
+- DevOps owns production deployment; this task provides testing and validation
 
 ### Environment Variables
 - `MYSQL_HOST` — Database hostname (`db` for Docker, `database.lib.wvu.edu` for production)

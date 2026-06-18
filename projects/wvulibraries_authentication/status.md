@@ -9,15 +9,16 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 **Repository**: `/Users/tam0013/Documents/git/Authentication`  
 **Production URL**: `https://systems.lib.wvu.edu`  
 **Dev Docker**: `http://localhost:8080`  
-**Stack**: PHP 8.3, Apache 2.4, MySQL 8.0, LDAP, EngineAPI framework
+**Stack**: PHP 8.3, Apache 2.4, MySQL 8.4 LTS (upgrading from EOL 8.0), LDAP, EngineAPI framework
 
 ---
 
 ## Current Status
-- **Status:** Functional (LDAP authentication operational, test environment aligned with production)
-- **Last Session:** 2026-06-18 (MySQL version confirmed as 8.0.46 production; dev updated to match; task backlog finalized)
+- **Status:** Functional (LDAP authentication operational; MySQL 8.4 LTS upgrade planned)
+- **Last Session:** 2026-06-18 (MySQL 8.0 EOL confirmed; target upgraded to 8.4 LTS per DevOps)
 - **Production Branch:** `main` (renamed from frontend-updates)
-- **MySQL Alignment:** ✅ Production 8.0.46, Dev 8.0 (confirmed and synced)
+- **MySQL Status:** Production 8.0.46 (EOL); Target: 8.4 LTS; Dev Docker: 8.4 LTS (for upgrade testing)
+- **Database Dump:** Pending from DevOps for upgrade validation
 - **Known Issues:** None blocking PHPUnit setup
 
 ---

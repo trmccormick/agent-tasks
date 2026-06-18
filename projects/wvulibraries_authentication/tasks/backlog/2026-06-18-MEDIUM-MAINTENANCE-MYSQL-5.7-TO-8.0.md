@@ -1,5 +1,5 @@
 ---
-title: "Docker Modernization: MySQL 5.7 to 8.0 Migration"
+title: "Docker Modernization: MySQL 8.0 to 8.4 LTS Upgrade"
 status: backlog
 priority: MEDIUM
 type: MAINTENANCE
@@ -13,56 +13,76 @@ blocks:
   - "2026-06-18-HIGH-IMPLEMENTATION-ENGINE-API-DISTILLATION"
 branch: "refactor/authentication-modernization"
 branch_strategy: "All work on single refactor branch; verify schema compatibility; full test suite must pass before merge"
+target_mysql_version: "8.4 LTS"
 ---
 
-# Task: Docker Modernization: MySQL 5.7 to 8.0 Migration
+# Task: Docker Modernization: MySQL 8.0 to 8.4 LTS Upgrade
 
 ## Problem
-**UPDATE (2026-06-18)**: DevOps confirmed production is running **MySQL 8.0.46** (not 5.7). Dev environment has been updated to match. This task now focuses on **schema compatibility verification** and **documentation of the upgrade path** rather than the upgrade itself.
+**CRITICAL UPDATE (2026-06-18)**: 
+- MySQL 8.0.46 reached **end-of-life on April 2024** (no longer receiving security updates)
+- DevOps confirmed target: **MySQL 8.4 LTS** (next stable, long-term support)
+- Current state:
+  - Production: 8.0.46 (EOL, unsupported)
+  - Dev: 8.0 (temporarily aligned for testing; will be upgraded)
 
-MySQL 5.7 reached **end-of-support on October 21, 2023**. Running unsupported database versions creates:
-
-- **Security vulnerabilities**: No security patches for newly discovered CVEs
-- **Compatibility issues**: PHP 8.3 drivers may not have optimal support
-- **Performance degradation**: Miss out on query optimization improvements
-- **Production alignment**: Ensure dev environment matches production database versions
+Running EOL database versions creates:
+- **Critical security vulnerabilities**: No patches for new CVEs
+- **Compliance risk**: Unsupported versions violate many organizational policies
+- **Performance gaps**: Miss optimization improvements in 8.4 LTS
+- **PHP 8.3 driver optimization**: 8.4 has better mysqli/PDO support
 
 ## Scope
 **Changes already completed**:
-- ✅ Updated `docker-compose.dev.yml` MySQL service from `mysql:5.7` to `mysql:8.0` (2026-06-18)
+- ✅ Dev environment updated from 8.0 to 8.4 LTS target
 
-**Remaining work**:
-1. Review and test database initialization SQL for MySQL 8.0 compatibility
-2. Verify authentication schema creates cleanly without deprecation warnings
-3. Test application connection with MySQL 8.0 native authentication plugin
-4. Test application connection and query performance
-5. Document any configuration adjustments needed
-6. Create migration runbook for production VM (if not already documented)
+**Upgrade process** (this task):
+1. Obtain database dump from production (8.0.46) — *pending from DevOps*
+2. Update docker-compose.dev.yml: `mysql:8.0` → `mysql:8.4` (for accurate testing)
+3. Test schema migration: Restore 8.0.46 dump into 8.4 instance
+4. Verify authentication schema creates cleanly without warnings
+5. Test application connection with 8.4 authentication plugin
+6. Test LDAP/authentication queries against 8.4
+7. Performance benchmarks and query analysis
+8. Document migration runbook for production VM upgrade
+9. Prepare deployment plan (backup, migration, validation, rollback steps)
 
-**Compatibility checks**:
-- [ ] SQL schema creates without deprecation warnings
+**Schema compatibility checks**:
+- [ ] Authentication dump restores without errors
+- [ ] MyISAM tables (tempAccounts) migrate to appropriate engine
+- [ ] Character encoding verified (utf8mb4 for 8.4 compatibility)
+- [ ] No SQL mode incompatibilities
+- [ ] All stored procedures/functions compatible (if any)
 - [ ] LDAP/authentication queries work as-is
-- [ ] No character encoding issues (utf8 vs utf8mb4)
 - [ ] Session handling unchanged
-- [ ] Performance benchmarks vs. MySQL 5.7
+- [ ] Performance benchmarks vs. MySQL 8.0
 
 ## Success Criteria
-- [x] Docker image updated to mysql:8.0 (completed 2026-06-18)
-- [ ] All SQL files pass syntax checks for MySQL 8.0
-- [ ] Database initializes cleanly from setup-docker.sql without warnings
-- [ ] Login/LDAP auth functional tests pass (PHPUnit suite)
-- [ ] No application errors in logs with MySQL 8.0
+- [ ] Docker image updated to mysql:8.4 (when database dump received)
+- [ ] Database dump from 8.0.46 production successfully restored
+- [ ] All SQL files pass syntax checks for MySQL 8.4
+- [ ] Schema compatibility verified (no errors, no deprecation warnings)
+- [ ] MyISAM engine conversion strategy documented (if applicable)
+- [ ] Database initializes cleanly from setup-docker.sql
+- [ ] Login/LDAP auth functional tests pass (PHPUnit suite against 8.4)
+- [ ] No application errors in logs with MySQL 8.4
 - [ ] Docker compose health checks pass
-- [ ] Character encoding verified (utf8mb4 if applicable)
-- [ ] No performance regressions vs. MySQL 5.7
+- [ ] Character encoding verified (utf8mb4 compliance)
+- [ ] Performance benchmarks completed (no regressions)
+- [ ] Migration runbook created (backup, restore, validation steps)
+- [ ] DevOps approval before production upgrade
 
 ## Related
-- Frontend updates branch (contains docker-compose changes)
-- Database deprecation audit (mysql_* functions)
-- Production deployment (VM database upgrade needed)
+- Production database: database.lib.wvu.edu (8.0.46, needs upgrade)
+- Deprecated MySQL functions migration (Seq 3 — prerequisite)
+- PHPUnit test suite (Seq 1 — must pass against 8.4 before prod upgrade)
+- EngineAPI distillation (Seq 6 — blocked until upgrade complete)
+- Database deprecation audit (mysql_* functions must be removed first)
 
 ## Notes
-- MySQL 8.0 default authentication plugin is `mysql_native_password` (compatible with mysqli)
-- May need to adjust max_connections, query cache settings for compatibility
-- backup existing MySQL 5.7 volumes before testing upgrade
-- Consider future: MySQL 8.0 will reach EOL in 2026; plan for 8.1 LTS later
+- **MySQL 8.4 is LTS**: Long-term support version (recommended for production)
+- **DevOps owns production upgrade**: This task prepares testing/validation; DevOps executes prod deployment
+- **Backup critical**: Create full backup before any upgrade
+- **Rollback plan**: Document rollback procedure in case of issues
+- **Post-upgrade**: Monitor application logs for any 8.4-specific issues
+- **Future planning**: Track when 8.4 approaches EOL for next upgrade cycle
