@@ -1,7 +1,17 @@
 ---
 title: "Establish frontend-updates as Main Production Branch"
-status: backlog
-priority: HIGH
+status: in-progress
+priority: HIGHEST
+type: MAINTENANCE
+created: 2026-06-18
+updated: 2026-06-18
+estimated_effort: "1 week"
+---
+
+---
+title: "Establish frontend-updates as Main Production Branch"
+status: in-progress
+priority: HIGHEST
 type: MAINTENANCE
 created: 2026-06-18
 updated: 2026-06-18
@@ -9,6 +19,19 @@ estimated_effort: "1 week"
 ---
 
 # Task: Establish frontend-updates as Main Production Branch
+
+## Progress
+**✅ COMPLETED (2026-06-18)**:
+- Created `main` branch from `frontend-updates` locally and pushed to remote
+- `main` branch now exists at origin/main with all 120+ commits from frontend-updates
+- Current commit: `da00b13 (updated apache update)`
+
+**⏳ REMAINING**:
+- [ ] Set `main` as default branch on GitHub (via web UI: Settings > Branches > Default branch)
+- [ ] Comprehensive testing (visual regression, LDAP, Docker, responsive design)
+- [ ] Delete/archive `master` branch after verification
+- [ ] Update CI/CD if applicable
+- [ ] Update local development guide with new branch info
 
 ## Problem
 DevOps reports the production VM is currently pointing to the `frontend-updates` branch (not `master`). The `frontend-updates` branch should be renamed/promoted to `main` to make it the official production branch. Before promotion, the branch needs comprehensive testing and review to ensure:
@@ -20,19 +43,24 @@ DevOps reports the production VM is currently pointing to the `frontend-updates`
 - Legacy code cleanup (removed files) didn't break dependencies
 
 ## Scope
-**Current situation:**
+**Current situation (2026-06-18)**:
 - DevOps has production VM pointing to `frontend-updates` branch (de facto main branch)
 - `frontend-updates` contains 120+ commits of UI improvements, CSS updates, Docker improvements
-- `master` branch is 4 commits ahead of `frontend-updates` (legacy state)
-- Repository needs explicit promotion of `frontend-updates` to `main` status
+- `master` branch is legacy state
+- **NEW**: `main` branch created from `frontend-updates` and pushed to origin ✓
 
-**Git workflow**:
-1. Rename `frontend-updates` → `main` (or set as default branch if GitHub supports)
-2. Archive or delete `master` branch after verification
-3. Update CI/CD pipelines to pull from `main`
-4. Document migration for other developers
+**Remaining git workflow**:
+1. ✅ Create `main` from `frontend-updates`
+2. **Set `main` as default branch on GitHub**:
+   - Go to https://github.com/wvulibraries/Authentication/settings/branches
+   - Click "Change default branch"
+   - Select `main` from dropdown
+   - Confirm (this updates `origin/HEAD -> origin/main`)
+3. Archive or delete `master` branch after verification
+4. Verify frontend-updates and master branches can be deleted
+5. Document migration for other developers
 
-**Testing requirements** (before promotion):
+**Testing requirements** (before deleting master):
 1. Visual regression testing (login page, error pages, responsive design)
 2. Functional testing (form submission, LDAP authentication, redirect handling)
 3. Docker build and startup verification

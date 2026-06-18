@@ -22,15 +22,18 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 ---
 
 ## Active Tasks
-- [None currently assigned]
-- See `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_authentication/tasks/active/` for assigned work
+- **Frontend-Updates → Main Production Promotion** (HIGHEST priority, 1 week effort)
+  - File: `2026-06-18-HIGHEST-MAINTENANCE-FRONTEND-UPDATES-PROMOTION.md`
+  - Status: IN-PROGRESS (started 2026-06-18)
+  - Completed: ✅ Created `main` branch from `frontend-updates`, pushed to origin
+  - Next: Set `main` as default on GitHub, comprehensive testing, delete legacy branches
+  - **CRITICAL**: This is blocking priority — should complete before other Authentication work
 
 ---
 
-## Backlog (8 tasks created 2026-06-18, updated 2026-06-18)
-1. **HIGH-MAINTENANCE** — Establish frontend-updates as Main Production Branch (1 week)
-   - DevOps VM points to frontend-updates; rename to main to formalize production status
-   - Requires testing + branch promotion workflow with DevOps
+## Backlog (7 tasks remaining — 1 now active)
+1. ~~**HIGH-MAINTENANCE** — Establish frontend-updates as Main Production Branch~~ → MOVED TO ACTIVE
+   - See Active Tasks above
 
 2. **HIGH-MAINTENANCE** — Deprecated MySQL Function Audit and Migration (3-4 weeks)
    - 12 files using mysql_* functions need conversion to mysqli/PDO
@@ -106,6 +109,17 @@ See `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_authenticati
 ---
 
 ## Session Notes
+- **2026-06-18** (FINAL UPDATE — BRANCH PROMOTION STARTED): Frontend-updates promotion initiated:
+  - ✅ **COMPLETED**: Created `main` branch from `frontend-updates` locally
+  - ✅ **COMPLETED**: Pushed `main` to origin (https://github.com/wvulibraries/Authentication)
+  - ✅ **COMPLETED**: Moved task from backlog/ to active/ with HIGHEST priority
+  - **NEXT STEP**: Set `main` as default branch on GitHub
+    - Go to: https://github.com/wvulibraries/Authentication/settings/branches
+    - Change default branch from `master` to `main`
+  - **THEN**: Comprehensive testing before deleting master/frontend-updates
+  - **KEY DECISION**: This should be completed BEFORE EngineAPI distillation work begins
+  - Rationale: Formalizes production branch, unblocks all future work on correct codebase
+
 - **2026-06-18** (Final update — STRATEGY CLARIFIED): Long-term maintenance approach decided:
   - **PREFERRED**: EngineAPI Distillation — extract minimal code, remove framework entirely
     - Created task: `2026-06-18-HIGH-IMPLEMENTATION-ENGINE-API-DISTILLATION.md`
