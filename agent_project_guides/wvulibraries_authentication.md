@@ -270,6 +270,66 @@ The commented-out symlink lines in `scripts/entrypoint.sh` may need uncommentati
 
 ---
 
+## Long-Term Maintenance Strategy
+
+### Current State
+- **Application Purpose**: Simple LDAP authentication gateway for temporary patron accounts
+- **Current Architecture**: PHP + EngineAPI framework (88 files, 30+ modules)
+- **Maintenance Status**: Minimal active development; focus on stability and security
+
+### Why EngineAPI is a Problem
+EngineAPI is:
+- An internal WVU template engine (no longer maintained)
+- Overkill for Authentication's actual needs
+- 88 files/30+ modules when Authentication needs ~5 functions (LDAP login, temp account lookup, session management, CSRF tokens, ACL)
+- Deprecated mysql_* function compatibility layer (fragile)
+- Tightly coupled to template system (difficult to extract)
+
+### Preferred Long-Term Approach: EngineAPI Distillation
+
+**Strategy**: Extract only what Authentication needs, remove EngineAPI entirely, maintain as lightweight 500-line PHP module.
+
+**What Authentication Actually Needs**:
+1. **LDAP Authentication**: `ldapLogin()`, `securityUserCheck()`, `ldapConnect()`, `ldapDisconnect()`
+   - Simple PHP LDAP extension calls
+   - ~100 lines
+2. **Temp Account Lookup**: Database queries (username validation, status checking)
+   - ~100 lines (MySQLi prepared statements)
+3. **Session Management**: PHP session handling + user context storage
+   - ~50 lines (standard PHP sessions)
+4. **CSRF Tokens**: Generate/validate tokens
+   - ~50 lines (standard pattern)
+5. **ACL/Permissions**: Check user groups and permissions
+   - ~100 lines (database queries)
+6. **Login Form**: Simple HTML form (no template engine needed)
+   - ~50 lines (static HTML/CSS)
+
+**Total**: ~500 lines of distilled, purpose-built PHP code (vs. 88 files of EngineAPI framework)
+
+**Implementation**:
+- Extract LDAP module from `src/phpincludes/engineAPI/engine/login/ldap.php`
+- Extract temp account queries from EngineAPI database layer
+- Build minimal `src/phpincludes/Auth.php` (or similar) with only essential functions
+- Replace EngineAPI routing with simple PHP entry point
+- Update form rendering to use plain HTML instead of template system
+- Remove EngineAPI from Docker image
+- Result: Clean, lightweight, maintainable codebase
+
+**Benefits**:
+- ✅ **Operational simplicity**: 500 lines of known code vs. maintaining EngineAPI framework
+- ✅ **Long-term maintainability**: Easier to understand and modify minimal code
+- ✅ **No framework lock-in**: Decoupled from EngineAPI's evolution (or lack thereof)
+- ✅ **Security focused**: Full control over LDAP binding, SQL queries, session handling
+- ✅ **Faster startup**: No framework overhead
+- ✅ **Clear deprecation**: No ambiguity about EngineAPI's future (retire it entirely)
+
+**Timeline**: 2-3 weeks for complete distillation + testing
+
+### Backup Approach: Framework Migration
+If EngineAPI distillation reveals unexpected architectural entanglement, migrate to lightweight framework (Slim, Laravel, etc.). However, this is NOT preferred — it trades one framework dependency for another when simple distillation is possible.
+
+---
+
 ## What NOT To Do
 - **Never hardcode LDAP server URLs**: Use `$engineVars['domains']['wvu-ad']['ldapServer']` — configuration is centralized in `engine/config/default.php`
 - **Never bypass EngineAPI's localVars system**: Always use `$engine->localVars()` to set/get template variables; do not directly manipulate template includes

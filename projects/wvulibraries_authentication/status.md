@@ -106,6 +106,16 @@ See `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_authenticati
 ---
 
 ## Session Notes
+- **2026-06-18** (Final update — STRATEGY CLARIFIED): Long-term maintenance approach decided:
+  - **PREFERRED**: EngineAPI Distillation — extract minimal code, remove framework entirely
+    - Created task: `2026-06-18-HIGH-IMPLEMENTATION-ENGINE-API-DISTILLATION.md`
+    - Rationale: Authentication needs only 5 functions (LDAP, temp account lookup, sessions, CSRF, ACL) ~ 500 lines
+    - EngineAPI overkill (88 files, 30+ modules); distillation is cleaner long-term than migration to new framework
+    - Updated application guide: New "Long-Term Maintenance Strategy" section explains distillation approach
+    - Repositioned research task: `2026-06-18-MEDIUM-RESEARCH-ENGINE-API-REPLACEMENT.md` now backup if distillation fails
+  - **BACKUP**: Framework migration (Slim, Laravel, etc.) only if distillation architecturally infeasible
+  - **Key insight**: Keep it simple—don't trade one framework dependency for another when distillation works
+
 - **2026-06-18** (Evening update — CLARIFICATION): DevOps feedback clarified application dependencies:
   - **MFCS**: Legacy application (uses EngineAPI); no longer updated; being retired
     - Data extraction process to WVU Knapsack (https://github.com/wvulibraries/wvu_knapsack) already happening
