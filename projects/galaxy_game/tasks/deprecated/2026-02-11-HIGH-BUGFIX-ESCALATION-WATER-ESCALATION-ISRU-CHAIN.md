@@ -1,3 +1,25 @@
+> **ARCHIVED 2026-06-18 — FILE CORRUPTED, DESIGN INTENT PARTIALLY VALID**
+> Source file was corrupted: identical content pasted three times with mid-word
+> splice points (not three genuine design revisions despite v3.2 versioning).
+> PORO classes proposed (IsruTrackA, IsruTrackB, RawGasBuffer, TankFarmSystem,
+> LavaTubeAtmosphericHarvester) were never implemented — confirmed via grep,
+> 2026-06-16 staleness review.
+>
+> Design intent extracted and still valid:
+> - Track A (regolith->H2O via TEU/PVE, chemical/diffuse extraction) — likely
+>   still a real EscalationService gap, scope TBD pending active research task.
+> - Track B (crater/PSR ice mining) — intent was correct but mechanism was
+>   wrong. This is NOT a robot-dispatch problem; it's a discrete, surveyable,
+>   depletable deposit (Civ4/FreeCiv-style), which is DepositSpawner/
+>   PlausibilityEngine's domain. Whether that system is wired up for Luna is
+>   under active investigation as of 2026-06-18 — see research findings doc
+>   from that date once complete, and the corresponding new task file if one
+>   results.
+>
+> Do not revive this file's implementation steps as written. Original content
+> preserved below for historical reference only.
+
+
 # TASK: Fix Water Escalation ISRU Chain (Dual-Track Systems)
 **Status**: BACKLOG  
 **Priority**: HIGH  
