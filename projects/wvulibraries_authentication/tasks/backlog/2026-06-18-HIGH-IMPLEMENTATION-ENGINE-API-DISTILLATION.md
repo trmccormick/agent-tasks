@@ -12,8 +12,8 @@ blocked_by:
   - "2026-06-18-HIGH-FEATURE-LOGIN-TEST-SUITE"
   - "2026-06-18-HIGH-MAINTENANCE-DEPRECATED-MYSQL-FUNCTIONS"
   - "2026-06-18-MEDIUM-MAINTENANCE-SECURITY-AUDIT"
-branch: "feature/engine-api-distillation"
-branch_strategy: "Create from main; all tests must pass; distilled code must be < 500 lines before merge"
+branch: "refactor/authentication-modernization"
+branch_strategy: "All work on single refactor branch; distilled code must be < 500 lines; full test suite must pass before merge"
 ---
 
 # Task: EngineAPI Distillation: Extract Authentication Core & Remove Framework Dependency

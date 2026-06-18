@@ -12,6 +12,8 @@ blocked_by:
 blocks:
   - "2026-06-18-HIGH-MAINTENANCE-DEPRECATED-MYSQL-FUNCTIONS"
   - "2026-06-18-MEDIUM-MAINTENANCE-SECURITY-AUDIT"
+branch: "refactor/authentication-modernization"
+branch_strategy: "All work on single refactor branch; test suite must pass before final merge to main"
 ---
 
 # Task: Login Functionality Test Suite and Error Handling

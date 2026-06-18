@@ -7,6 +7,14 @@ created: 2026-06-18
 updated: 2026-06-18
 estimated_effort: "1 week"
 sequence: 1
+branch: "refactor/authentication-modernization"
+branch_strategy: |
+  Single refactor branch for all modernization work.
+  - Create from main: git checkout -b refactor/authentication-modernization
+  - All tasks (PHPUnit, tests, MySQL functions, security audit, Docker upgrade) work on this branch
+  - Production VM stays on main (never disturbed during refactor)
+  - Only merge back to main when ENTIRE refactor branch passes all tests
+  - Merge criteria: Full test suite passing, all blockers complete, no regressions
 blocks:
   - "2026-06-18-HIGH-FEATURE-LOGIN-TEST-SUITE"
   - "2026-06-18-HIGH-MAINTENANCE-DEPRECATED-MYSQL-FUNCTIONS"
@@ -24,6 +32,8 @@ Authentication application has **zero automated test coverage**. Before any code
 5. Baseline tests for current functionality (regression tests)
 
 Without this, any changes risk breaking production login flow with no safety net.
+
+**Branch Strategy**: All modernization work (PHPUnit setup, tests, MySQL migration, security audit, Docker upgrade) happens on a single `refactor/authentication-modernization` branch off main. Production VM stays on main and is never disturbed until the entire refactor branch is complete and verified. Only merge back to main when full test suite passes.
 
 ## Scope
 

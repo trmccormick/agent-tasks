@@ -5,13 +5,15 @@ priority: MEDIUM
 type: MAINTENANCE
 created: 2026-06-18
 updated: 2026-06-18
-estimated_effort: "1-2 weeks"sequence: 5
+estimated_effort: "1-2 weeks"
+sequence: 5
 blocked_by:
   - "2026-06-18-HIGH-MAINTENANCE-DEPRECATED-MYSQL-FUNCTIONS"
 blocks:
   - "2026-06-18-HIGH-IMPLEMENTATION-ENGINE-API-DISTILLATION"
-branch: "feature/mysql-5.7-to-8.0-upgrade"
-branch_strategy: "Create from main; verify schema compatibility, run full test suite before merge"---
+branch: "refactor/authentication-modernization"
+branch_strategy: "All work on single refactor branch; verify schema compatibility; full test suite must pass before merge"
+---
 
 # Task: Docker Modernization: MySQL 5.7 to 8.0 Migration
 
