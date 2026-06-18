@@ -15,8 +15,9 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 
 ## Current Status
 - **Status:** Functional (LDAP authentication operational post-kernel-patch)
-- **Last Session:** 2026-06-18 (LDAP connectivity resolved, project setup initialization)
-- **Known Issues:** None currently blocking; static asset symlinks available but not currently critical
+- **Last Session:** 2026-06-18 (LDAP connectivity resolved, task backlog created, frontend-updates confirmed as production branch)
+- **Production Branch:** `frontend-updates` (DevOps VM pointing to it; rename to `main` planned)
+- **Known Issues:** Static asset symlinks available but not currently critical; EngineAPI dependency to be addressed via migration strategy
 
 ---
 
@@ -26,18 +27,19 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 
 ---
 
-## Backlog (8 tasks created 2026-06-18)
-1. **HIGH-MAINTENANCE** — Deprecated MySQL Function Audit and Migration (3-4 weeks)
+## Backlog (8 tasks created 2026-06-18, updated 2026-06-18)
+1. **HIGH-MAINTENANCE** — Establish frontend-updates as Main Production Branch (1 week)
+   - DevOps VM points to frontend-updates; rename to main to formalize production status
+   - Requires testing + branch promotion workflow with DevOps
+
+2. **HIGH-MAINTENANCE** — Deprecated MySQL Function Audit and Migration (3-4 weeks)
    - 12 files using mysql_* functions need conversion to mysqli/PDO
    - Core infrastructure work affecting EngineAPI modules
 
-2. **HIGH-MAINTENANCE** — Review and Merge Frontend Updates Branch (2-3 weeks)
-   - 120+ commits with CSS updates, Bootstrap 5, Docker config
-   - Requires comprehensive testing and visual regression checks
-
-3. **MEDIUM-RESEARCH** — EngineAPI End-of-Life Assessment (2 weeks)
-   - Determine long-term strategy: stay on EngineAPI or migrate
-   - Impacts Application and other WVU Libraries services
+3. **MEDIUM-RESEARCH** — EngineAPI End-of-Life: Authentication is Last Remaining User (1-2 weeks)
+   - **Strategic update**: MFCS transitioning to Knapsack (not staying on EngineAPI)
+   - Authentication is LAST remaining EngineAPI user
+   - Clear migration path identified (not open-ended assessment)
 
 4. **MEDIUM-MAINTENANCE** — Docker Modernization: MySQL 5.7 to 8.0 (1-2 weeks)
    - MySQL 5.7 is EOL; upgrade to current stable version
@@ -104,15 +106,23 @@ See `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_authenticati
 ---
 
 ## Session Notes
-- **2026-06-18**: Project initialization — LDAP issue was kernel-patching-related, not application code. Static asset 404s identified as cosmetic (missing CSS/JS references do not cause authentication failure). Project now integrated into agent-tasks workflow for formal task tracking and agent guidance.
+- **2026-06-18** (Evening update): DevOps clarification received:
+  - Production VM is pointing to `frontend-updates` branch (de facto production)
+  - Branch should be renamed/promoted to `main` to formalize status (not merged into master)
+  - Updated task: "Establish frontend-updates as Main Production Branch" (branch promotion + testing, not merge)
+  - **EngineAPI strategic clarity**: Authentication is the LAST remaining EngineAPI user
+    - MFCS is being replaced by WVU Knapsack (data extraction, not staying on EngineAPI)
+    - This means EngineAPI has a clear deprecation path (not an open-ended decision)
+    - Once Authentication is off EngineAPI, the entire framework can be retired
+  - Updated EngineAPI task from assessment to migration strategy research
 
-- **2026-06-18**: Comprehensive task analysis completed. Repository review found:
-  - **frontend-updates branch**: 120+ commits behind master, needs merge + testing (970 files changed, major CSS/UI updates, Docker config improvements)
+- **2026-06-18** (Afternoon): Comprehensive task analysis completed. Repository review found:
+  - **frontend-updates branch**: 120+ commits, 970 files changed, major CSS/UI updates, Docker config improvements
   - **Code debt**: 12 files use deprecated mysql_* functions (needs migration to mysqli/PDO for PHP 9.0 compatibility)
-  - **EngineAPI status**: 88 PHP files across 30 modules, minimally maintained, used by other WVU Libraries apps (needs strategic EOL assessment)
+  - **EngineAPI status**: 88 PHP files across 30 modules, minimally maintained
   - **Infrastructure**: MySQL 5.7 is EOL (supports MySQL 8.0), Docker config ready, PHP 8.3 is current
   - **Testing**: No automated test coverage for login/LDAP flows
   - **Security**: Full audit needed (LDAP injection, SQL injection vectors, session handling)
   - **Documentation**: Minimal comments, new devs need architecture guide
   
-  **Recommendation**: Prioritize frontend-updates merge (unblocks UI improvements), then address deprecated MySQL functions (infrastructure stability), then research EngineAPI strategy (long-term planning).
+  **Recommendation**: Prioritize frontend-updates promotion to main (unblocks production status), then deprecated MySQL functions (infrastructure stability), then EngineAPI migration research (long-term planning).
