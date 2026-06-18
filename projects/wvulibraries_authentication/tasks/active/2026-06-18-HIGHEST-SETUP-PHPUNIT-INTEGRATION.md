@@ -1,6 +1,6 @@
 ---
 title: "PHPUnit Integration & Test Generation Infrastructure"
-status: backlog
+status: active
 priority: HIGHEST
 type: SETUP
 created: 2026-06-18
