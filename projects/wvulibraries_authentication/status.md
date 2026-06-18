@@ -59,7 +59,7 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 
 ---
 
-## Backlog (8 tasks total) — WITH PROGRESSION & BLOCKERS
+## Backlog (9 tasks total) — WITH PROGRESSION & BLOCKERS
 
 **Task progression ensures safe changes with test coverage:**
 
@@ -67,9 +67,10 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 |-----|----------|------|--------|-----------|--------|-------|
 | 1 | **HIGHEST** | **[Setup] PHPUnit Integration & Test Infrastructure** | 1 week | None | All others | FOUNDATIONAL: Creates testing framework, mock LDAP, test fixtures |
 | 2 | **HIGH** | **[Feature] Login Functionality Test Suite** | 1-2 weeks | PHPUnit | MySQL Functions, Security | REGRESSION TESTS: Baseline for all future changes |
-| 3 | **HIGH** | **[Maintenance] Deprecated MySQL Functions Migration** | 3-4 weeks | PHPUnit + Tests | MySQL 5.7 upgrade | BRANCH: feature/migrate-mysql-functions; all tests must pass |
+| R1 | **MEDIUM** | **[Research] Temp Account Password Reset & Shared Instance** | 2-3 days | None | Seq 3 (MySQL Functions) | DISCOVERY: Understand password reset workflow; identify other apps using MySQL instance; assess refactoring risk |
+| 3 | **HIGH** | **[Maintenance] Deprecated MySQL Functions Migration** | 3-4 weeks | PHPUnit + Tests + R1 | MySQL 5.7 upgrade | BRANCH: feature/migrate-mysql-functions; all tests must pass; **BLOCKED until R1 completes** |
 | 4 | **MEDIUM** | **[Maintenance] PHP Security Audit (OWASP)** | 2-3 weeks | PHPUnit + Tests | Engine API distillation | BRANCH: feature/security-audit-owasp; security fixtures required |
-| 5 | **MEDIUM** | **[Maintenance] Docker: MySQL 8.0 → 8.4 LTS** | 1-2 weeks | MySQL Functions | Engine API distillation | ✅ COMPATIBILITY VERIFIED 2026-06-18: Schema from 5.7.40 works in 8.4 without changes; production upgrade approved |
+| 5 | **MEDIUM** | **[Maintenance] Docker: MySQL 8.0 → 8.4 LTS** | 1-2 weeks | MySQL Functions (optional) | Engine API distillation | ✅ COMPATIBILITY VERIFIED: No code changes needed; production upgrade safe |
 | 6 | **MEDIUM** | **[Implementation] EngineAPI Distillation** | 2-3 weeks | All above | Optional: research task | BRANCH: feature/engine-api-distillation; extract core, remove framework |
 | 7 | **LOW** | **[Feature] Centralized Logging** | 1 week | PHPUnit + Tests | None | Optional: long-term maintainability |
 | 8 | **LOW** | **[Maintenance] Documentation Audit** | 1 week | Distillation (optional) | None | FINAL: After major work complete |
@@ -107,6 +108,13 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
   - Return to main: No broken application state
 - **Blocker system**: Tasks blocked_by must complete first; check YAML frontmatter in task files
 - **Low-priority discipline**: Because this is low-priority, testing standards are HIGHER (not lower)
+
+### CRITICAL RESEARCH DEPENDENCY (2026-06-18)
+- **Before Seq 3 (MySQL Functions Migration)**, complete Research Task R1
+- **R1 Purpose**: Discover if other WVU Libraries applications share this MySQL instance
+- **Why it matters**: If other apps depend on current schema/functions, refactoring could break them
+- **Stop condition**: Cannot proceed with Seq 3 until R1 determines: "Safe to refactor" OR "Requires coordination"
+- **Estimated impact**: 2-3 days research could save weeks of production issues
 
 ### LDAP Connectivity
 - **WVU-AD LDAP Server**: `ldap://wvu-ad.wvu.edu`  
