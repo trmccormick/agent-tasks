@@ -22,16 +22,20 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 ---
 
 ## Active Tasks
-- **Frontend-Updates → Main Production Promotion** (HIGHEST priority, 1 week effort)
-  - File: `2026-06-18-HIGHEST-MAINTENANCE-FRONTEND-UPDATES-PROMOTION.md`
-  - Status: IN-PROGRESS (started 2026-06-18)
-  - Completed: ✅ Created `main` branch from `frontend-updates`, pushed to origin
-  - Next: Set `main` as default on GitHub, comprehensive testing, delete legacy branches
-  - **CRITICAL**: This is blocking priority — should complete before other Authentication work
+[None currently assigned]
 
 ---
 
-## Backlog (7 tasks remaining — 1 now active)
+## Recently Completed (2026-06-18)
+- **Frontend-Updates → Main Production Promotion** ✅
+  - File: `2026-06-18-HIGHEST-MAINTENANCE-FRONTEND-UPDATES-PROMOTION.md`
+  - Status: COMPLETED
+  - What was done: Renamed frontend-updates to main on GitHub, set as default branch
+  - Timeline: 1 session (fast track — branch renaming + default branch change)
+
+---
+
+## Backlog (7 tasks remaining)
 1. ~~**HIGH-MAINTENANCE** — Establish frontend-updates as Main Production Branch~~ → MOVED TO ACTIVE
    - See Active Tasks above
 
@@ -109,6 +113,17 @@ See `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_authenticati
 ---
 
 ## Session Notes
+- **2026-06-18** (TASK COMPLETED — NEXT PRIORITY): Frontend-updates promotion completed:
+  - ✅ **COMPLETED**: Renamed `frontend-updates` branch to `main` on GitHub
+  - ✅ **COMPLETED**: Set `main` as default branch in GitHub settings
+  - ✅ **COMPLETED**: Moved task to completed/
+  - **STATUS**: Ready for next priority work
+  - **NEXT PRIORITY**: EngineAPI Distillation task (`2026-06-18-HIGH-IMPLEMENTATION-ENGINE-API-DISTILLATION.md`)
+    - When ready: Move from backlog/ to active/
+    - Effort: 2-3 weeks
+    - Scope: Extract LDAP, temp account lookup, sessions, CSRF, ACL functions; remove EngineAPI entirely
+  - **KEY**: All future work will now happen on `main` branch (production default)
+
 - **2026-06-18** (FINAL UPDATE — BRANCH PROMOTION STARTED): Frontend-updates promotion initiated:
   - ✅ **COMPLETED**: Created `main` branch from `frontend-updates` locally
   - ✅ **COMPLETED**: Pushed `main` to origin (https://github.com/wvulibraries/Authentication)

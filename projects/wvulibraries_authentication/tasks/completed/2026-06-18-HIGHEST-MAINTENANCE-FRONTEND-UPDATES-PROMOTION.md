@@ -1,20 +1,11 @@
 ---
 title: "Establish frontend-updates as Main Production Branch"
-status: in-progress
+status: completed
 priority: HIGHEST
 type: MAINTENANCE
 created: 2026-06-18
 updated: 2026-06-18
-estimated_effort: "1 week"
----
-
----
-title: "Establish frontend-updates as Main Production Branch"
-status: in-progress
-priority: HIGHEST
-type: MAINTENANCE
-created: 2026-06-18
-updated: 2026-06-18
+completed: 2026-06-18
 estimated_effort: "1 week"
 ---
 
@@ -22,14 +13,15 @@ estimated_effort: "1 week"
 
 ## Progress
 **✅ COMPLETED (2026-06-18)**:
-- Created `main` branch from `frontend-updates` locally and pushed to remote
-- `main` branch now exists at origin/main with all 120+ commits from frontend-updates
+- Renamed `frontend-updates` branch to `main` on GitHub
+- Set `main` as default branch on GitHub (Settings > Branches)
+- Production branch formalized and set as repository default
+- All 120+ commits from frontend-updates now on main
 - Current commit: `da00b13 (updated apache update)`
 
-**⏳ REMAINING**:
-- [ ] Set `main` as default branch on GitHub (via web UI: Settings > Branches > Default branch)
+**✅ NEXT STEPS** (for future reference):
 - [ ] Comprehensive testing (visual regression, LDAP, Docker, responsive design)
-- [ ] Delete/archive `master` branch after verification
+- [ ] Delete/archive `master` and `frontend-updates` branches after verification
 - [ ] Update CI/CD if applicable
 - [ ] Update local development guide with new branch info
 
