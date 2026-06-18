@@ -1,11 +1,19 @@
 ---
 title: "EngineAPI Distillation: Extract Authentication Core & Remove Framework Dependency"
 status: backlog
-priority: HIGH
+priority: MEDIUM
 type: IMPLEMENTATION
 created: 2026-06-18
 updated: 2026-06-18
 estimated_effort: "2-3 weeks"
+sequence: 6
+blocked_by:
+  - "2026-06-18-HIGHEST-SETUP-PHPUNIT-INTEGRATION"
+  - "2026-06-18-HIGH-FEATURE-LOGIN-TEST-SUITE"
+  - "2026-06-18-HIGH-MAINTENANCE-DEPRECATED-MYSQL-FUNCTIONS"
+  - "2026-06-18-MEDIUM-MAINTENANCE-SECURITY-AUDIT"
+branch: "feature/engine-api-distillation"
+branch_strategy: "Create from main; all tests must pass; distilled code must be < 500 lines before merge"
 ---
 
 # Task: EngineAPI Distillation: Extract Authentication Core & Remove Framework Dependency

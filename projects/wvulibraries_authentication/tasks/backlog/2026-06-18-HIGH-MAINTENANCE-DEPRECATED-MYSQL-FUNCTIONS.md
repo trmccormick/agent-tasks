@@ -6,6 +6,14 @@ type: MAINTENANCE
 created: 2026-06-18
 updated: 2026-06-18
 estimated_effort: "3-4 weeks"
+sequence: 3
+blocked_by:
+  - "2026-06-18-HIGHEST-SETUP-PHPUNIT-INTEGRATION"
+  - "2026-06-18-HIGH-FEATURE-LOGIN-TEST-SUITE"
+blocks:
+  - "2026-06-18-MEDIUM-MAINTENANCE-MYSQL-5.7-TO-8.0"
+branch: "feature/migrate-mysql-functions"
+branch_strategy: "Create from main; all tests must pass before merge back to main"
 ---
 
 # Task: Deprecated MySQL Function Audit and Migration

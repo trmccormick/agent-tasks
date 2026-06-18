@@ -1,11 +1,15 @@
 ---
 title: "EngineAPI Replacement Options: Research (Backup to Distillation Approach)"
 status: backlog
-priority: MEDIUM
+priority: LOW
 type: RESEARCH
 created: 2026-06-18
 updated: 2026-06-18
 estimated_effort: "1-2 weeks"
+sequence: 99
+blocked_by:
+  - "2026-06-18-HIGH-IMPLEMENTATION-ENGINE-API-DISTILLATION"
+notes: "BACKUP TASK: Only start this if distillation task is found to be architecturally infeasible. Do not start unless distillation is blocked."
 ---
 
 # Task: EngineAPI Replacement Options: Research (Backup to Distillation Approach)

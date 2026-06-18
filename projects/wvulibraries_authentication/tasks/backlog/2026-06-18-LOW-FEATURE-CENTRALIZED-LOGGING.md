@@ -6,6 +6,11 @@ type: FEATURE
 created: 2026-06-18
 updated: 2026-06-18
 estimated_effort: "1 week"
+sequence: 7
+blocked_by:
+  - "2026-06-18-HIGHEST-SETUP-PHPUNIT-INTEGRATION"
+  - "2026-06-18-HIGH-FEATURE-LOGIN-TEST-SUITE"
+blocks: []
 ---
 
 # Task: Centralized Logging and Error Handling Implementation

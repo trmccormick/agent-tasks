@@ -1,11 +1,17 @@
 ---
 title: "Login Functionality Test Suite and Error Handling"
 status: backlog
-priority: MEDIUM
+priority: HIGH
 type: FEATURE
 created: 2026-06-18
 updated: 2026-06-18
 estimated_effort: "1-2 weeks"
+sequence: 2
+blocked_by:
+  - "2026-06-18-HIGHEST-SETUP-PHPUNIT-INTEGRATION"
+blocks:
+  - "2026-06-18-HIGH-MAINTENANCE-DEPRECATED-MYSQL-FUNCTIONS"
+  - "2026-06-18-MEDIUM-MAINTENANCE-SECURITY-AUDIT"
 ---
 
 # Task: Login Functionality Test Suite and Error Handling

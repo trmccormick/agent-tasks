@@ -35,43 +35,27 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 
 ---
 
-## Backlog (7 tasks remaining)
-1. ~~**HIGH-MAINTENANCE** — Establish frontend-updates as Main Production Branch~~ → MOVED TO ACTIVE
-   - See Active Tasks above
+## Backlog (8 tasks total) — WITH PROGRESSION & BLOCKERS
 
-2. **HIGH-MAINTENANCE** — Deprecated MySQL Function Audit and Migration (3-4 weeks)
-   - 12 files using mysql_* functions need conversion to mysqli/PDO
-   - Core infrastructure work affecting EngineAPI modules
+**Task progression ensures safe changes with test coverage:**
 
-3. **MEDIUM-RESEARCH** — EngineAPI End-of-Life: Authentication is Last Remaining User (1-2 weeks)
-   - **Strategic update**: MFCS transitioning to Knapsack (not staying on EngineAPI)
-   - Authentication is LAST remaining EngineAPI user
-   - Clear migration path identified (not open-ended assessment)
+| Seq | Priority | Task | Effort | Blocked By | Blocks | Notes |
+|-----|----------|------|--------|-----------|--------|-------|
+| 1 | **HIGHEST** | **[Setup] PHPUnit Integration & Test Infrastructure** | 1 week | None | All others | FOUNDATIONAL: Creates testing framework, mock LDAP, test fixtures |
+| 2 | **HIGH** | **[Feature] Login Functionality Test Suite** | 1-2 weeks | PHPUnit | MySQL Functions, Security | REGRESSION TESTS: Baseline for all future changes |
+| 3 | **HIGH** | **[Maintenance] Deprecated MySQL Functions Migration** | 3-4 weeks | PHPUnit + Tests | MySQL 5.7 upgrade | BRANCH: feature/migrate-mysql-functions; all tests must pass |
+| 4 | **MEDIUM** | **[Maintenance] PHP Security Audit (OWASP)** | 2-3 weeks | PHPUnit + Tests | Engine API distillation | BRANCH: feature/security-audit-owasp; security fixtures required |
+| 5 | **MEDIUM** | **[Maintenance] Docker: MySQL 5.7 → 8.0** | 1-2 weeks | MySQL Functions | Engine API distillation | BRANCH: feature/mysql-5.7-to-8.0-upgrade; schema compatibility testing |
+| 6 | **MEDIUM** | **[Implementation] EngineAPI Distillation** | 2-3 weeks | All above | Optional: research task | BRANCH: feature/engine-api-distillation; extract core, remove framework |
+| 7 | **LOW** | **[Feature] Centralized Logging** | 1 week | PHPUnit + Tests | None | Optional: long-term maintainability |
+| 8 | **LOW** | **[Maintenance] Documentation Audit** | 1 week | Distillation (optional) | None | FINAL: After major work complete |
+| 99 | **LOW** | **[Research] EngineAPI Alternatives** | 1-2 weeks | Distillation | None | BACKUP: Only if distillation fails; don't start unless blocked |
 
-4. **MEDIUM-MAINTENANCE** — Docker Modernization: MySQL 5.7 to 8.0 (1-2 weeks)
-   - MySQL 5.7 is EOL; upgrade to current stable version
-   - Verify schema compatibility
-
-5. **MEDIUM-MAINTENANCE** — PHP Security Audit: Deprecated Patterns (2-3 weeks)
-   - Check for SQL injection, LDAP injection, XSS, session security
-   - OWASP Top 10 review
-
-6. **MEDIUM-FEATURE** — Login Functionality Test Suite (1-2 weeks)
-   - PHPUnit tests with mock LDAP server
-   - 20+ tests covering auth flows and error cases
-   - CI/CD pipeline setup
-
-7. **LOW-FEATURE** — Centralized Logging and Error Handling (1 week)
-   - Audit trail for authentication attempts
-   - JSON structured logging
-   - Log rotation and retention
-
-8. **LOW-MAINTENANCE** — Documentation Audit (1 week)
-   - Architecture guide
-   - LDAP flow documentation
-   - Configuration reference
-
-See `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_authentication/tasks/backlog/` for full details
+**Key principles:**
+- ✅ No code changes without tests (PHPUnit + Login tests first)
+- ✅ All feature branches must pass full test suite before merge to main
+- ✅ Lower-priority project = higher testing standards
+- ✅ Branch strategy: Create from main → pass tests → merge back to main
 
 ---
 
@@ -88,6 +72,17 @@ See `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_authenticati
 ---
 
 ## Special Warnings & Conventions
+
+### TESTING-FIRST WORKFLOW (2026-06-18 Update)
+- **Critical**: PHPUnit setup is FIRST priority (Seq 1) before any code changes
+- **Regression safety**: Login test suite (Seq 2) must pass before any feature work
+- **Branch strategy**: All work on feature branches off main
+  - Create: `git checkout -b feature/task-description`
+  - Test: `scripts/run-tests.sh` (all tests must pass)
+  - Merge: Only after full test suite passes
+  - Return to main: No broken application state
+- **Blocker system**: Tasks blocked_by must complete first; check YAML frontmatter in task files
+- **Low-priority discipline**: Because this is low-priority, testing standards are HIGHER (not lower)
 
 ### LDAP Connectivity
 - **WVU-AD LDAP Server**: `ldap://wvu-ad.wvu.edu`  
@@ -113,6 +108,20 @@ See `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_authenticati
 ---
 
 ## Session Notes
+- **2026-06-18** (FINAL UPDATE — TASK RESTRUCTURING): Low-priority project task progression redesigned:
+  - **NEW TASK**: PHPUnit Integration & Test Infrastructure (Seq 1, HIGHEST)
+    - Foundational: testing framework, mock LDAP, test fixtures
+    - All other tasks blocked until this completes
+  - **REORDERED**: Login Test Suite upgraded to HIGH (Seq 2) - blocks MySQL functions migration
+  - **UPDATED**: Deprecated MySQL Functions task blocked by tests, branch strategy added
+  - **UPDATED**: Security Audit task (Seq 4) blocked by tests, branch strategy added
+  - **UPDATED**: MySQL 5.7→8.0 (Seq 5), Engine API distillation (Seq 6) with blocker chains
+  - **UPDATED**: Low-priority tasks (logging, docs) sequenced (7-8)
+  - **MARKED**: Engine API research task as BACKUP (Seq 99) — only if distillation fails
+  - **KEY PRINCIPLE**: Testing-first workflow for low-priority project (higher standards, not lower)
+  - **BRANCH STRATEGY**: All feature work on branches off main; must pass tests before merge
+  - **RATIONALE**: Prevents breaking production application, enables long-term maintenance
+
 - **2026-06-18** (TASK COMPLETED — NEXT PRIORITY): Frontend-updates promotion completed:
   - ✅ **COMPLETED**: Renamed `frontend-updates` branch to `main` on GitHub
   - ✅ **COMPLETED**: Set `main` as default branch in GitHub settings

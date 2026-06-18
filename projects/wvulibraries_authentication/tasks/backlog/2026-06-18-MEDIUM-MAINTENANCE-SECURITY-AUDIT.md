@@ -6,6 +6,14 @@ type: MAINTENANCE
 created: 2026-06-18
 updated: 2026-06-18
 estimated_effort: "2-3 weeks"
+sequence: 4
+blocked_by:
+  - "2026-06-18-HIGHEST-SETUP-PHPUNIT-INTEGRATION"
+  - "2026-06-18-HIGH-FEATURE-LOGIN-TEST-SUITE"
+blocks:
+  - "2026-06-18-HIGH-IMPLEMENTATION-ENGINE-API-DISTILLATION"
+branch: "feature/security-audit-owasp"
+branch_strategy: "Create from main; create security test fixtures for vulnerabilities; document findings before merge"
 ---
 
 # Task: PHP Security Audit: Deprecated Patterns and Vulnerabilities
