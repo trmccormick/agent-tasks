@@ -107,14 +107,14 @@ See `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_authenticati
 
 ## Session Notes
 - **2026-06-18** (Evening update — CLARIFICATION): DevOps feedback clarified application dependencies:
-  - **MFCS**: Completely separate legacy application (NOT EngineAPI-dependent) being retired
-    - Data extraction process migrating to WVU Knapsack (https://github.com/wvulibraries/wvu_knapsack)
+  - **MFCS**: Legacy application (uses EngineAPI); no longer updated; being retired
+    - Data extraction process to WVU Knapsack (https://github.com/wvulibraries/wvu_knapsack) already happening
+    - Data extraction is independent/unrelated to Authentication/EngineAPI strategy
     - See: `agent_project_guides/wvulibraries_knapsack.md` (already in agent-tasks)
-    - Retirement is independent of EngineAPI work
-  - **EngineAPI**: ONLY used by Authentication (no other active dependents)
+  - **EngineAPI**: Used by Authentication (only active user); MFCS legacy but not maintained
     - Clear retirement path once Authentication migrates off EngineAPI
-    - MFCS retirement does not affect EngineAPI decision
-  - Updated EngineAPI task description to clarify MFCS is separate application, not EngineAPI issue
+    - MFCS retirement process does not impact EngineAPI deprecation timeline
+  - Updated EngineAPI task: MFCS uses EngineAPI (legacy) but no longer maintained; data extraction already happening
 
 - **2026-06-18** (Evening update): DevOps clarification received:
   - Production VM is pointing to `frontend-updates` branch (de facto production)

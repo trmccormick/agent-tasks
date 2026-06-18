@@ -66,12 +66,14 @@ This is no longer an open-ended "should we stay or go?" question — it's "how a
 - Phase 2 work (if staying on EngineAPI): systematic modernization
 
 ## Notes
-- **Strategic clarity**: Authentication is the ONLY remaining EngineAPI user (no other active dependents)
-- **MFCS context**: Separate legacy application (unrelated to EngineAPI); being retired with data extracted to WVU Knapsack
-  - MFCS is NOT EngineAPI-dependent — it's a completely separate application replacement
+- **Strategic clarity**: Authentication is the ONLY ACTIVE remaining EngineAPI user
+- **MFCS context**: Legacy application using EngineAPI; no longer updated; being retired
+  - MFCS does use EngineAPI (inherited from legacy codebase)
+  - MFCS is NOT actively maintained — data extraction to WVU Knapsack already happening
+  - Data extraction process is independent/unrelated to Authentication/EngineAPI decisions
   - Knapsack setup: https://github.com/wvulibraries/wvu_knapsack (already in agent-tasks)
   - See agent guide: `agent_project_guides/wvulibraries_knapsack.md`
-- **Clear deprecation path**: Once Authentication is off EngineAPI, EngineAPI can be fully retired (no other apps to support)
+- **Clear deprecation path**: Once Authentication is off EngineAPI, EngineAPI can be fully retired (no active users remaining)
 - **Stakeholders**: Library Systems Office (libsys@mail.wvu.edu), DevOps, EngineAPI maintainer (if one exists)
 - This is not a "stay or go" question anymore — it's a "how and when to migrate" question
 - Consider: Can we build a temporary abstraction layer to decouple Authentication from EngineAPI incrementally?
