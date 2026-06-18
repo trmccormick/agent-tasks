@@ -1,5 +1,5 @@
 # Routing Logic — Quick Reference
-**Last Updated**: 2026-06-16
+**Last Updated**: 2026-06-17
 
 > Full routing table and agent details are in `rules/AGENT_ROUTING.md`.
 > This file is a quick-reference summary only.
@@ -9,6 +9,8 @@
 ## ⚠️ CURRENT STATE NOTICE (June 2026)
 
 This document reflects a transitional setup following new hardware addition (Ryzen 7 16GB GPU) and GitHub Copilot model changes. The Pi 4 home server reload and Open WebUI aggregator deployment are **pending** — routing will be revisited once that infrastructure is live.
+
+**2026-06-17 update**: qwen3.5:35b-a3b on Ryzen 7 now confirmed validated. Dual-machine parallel execution (27B on M4 + 35B on Ryzen simultaneously, different tasks) tested successfully in live session — no collision, no context bleed, both outputs usable.
 
 ---
 
@@ -25,7 +27,7 @@ This document reflects a transitional setup following new hardware addition (Ryz
 
 ## The One Rule
 
-**Route by task complexity, not by habit. 27B handles most things. Only reach for a larger or cloud model when there's a genuine reason.**
+**Route by task complexity, not by habit. 27B handles most everyday tasks on M4. Use 35B on Ryzen for heavy/complex work when available. Only reach for cloud when both local machines fail.**
 
 ---
 
@@ -52,7 +54,7 @@ These workstreams are independent — task files in agent-tasks are namespaced b
 | **Perplexity** | perplexity.ai | Agent handoff documents, external research | Free |
 | **qwen3.5:27b** | M4 (local Ollama) | Primary implementation executor | Free/local |
 | **qwen3.5:9b** | M4 (local Ollama) | Fast lightweight tasks, planning support | Free/local |
-| **qwen3.5:35b-a3b** | Ryzen 7 (local Ollama) | Heavy execution — **under validation as of 2026-06-16** | Free/local |
+| **qwen3.5:35b-a3b** | Ryzen 7 (local Ollama) | Heavy execution — **validated 2026-06-17, confirmed working** | Free/local |
 | **Claude Haiku 4.5** | GitHub Copilot (0.33x) | Escalation when local gets stuck | 0.33x tier |
 
 ---
@@ -67,7 +69,7 @@ These workstreams are independent — task files in agent-tasks are namespaced b
 | **HANDOFF WRITER** | Perplexity (free) | Agent handoff documents between sessions |
 | **EXECUTOR (Primary)** | qwen3.5:27b (M4) | Implementation, multi-file reasoning, spec work, terminal verification |
 | **EXECUTOR (Light)** | qwen3.5:9b (M4) | Fast tasks — STATUS.md updates, task file edits, quick triage |
-| **EXECUTOR (Heavy)** | qwen3.5:35b-a3b (Ryzen) | Complex implementation when 27B gets stuck — pending full validation |
+| **EXECUTOR (Heavy)** | qwen3.5:35b-a3b (Ryzen) | Complex implementation — validated 2026-06-17. Use for heavy tasks directly, not only as 27B fallback |
 | **ESCALATION** | Claude Haiku 4.5 (Copilot) | When local models fail after fresh session retry |
 
 ---
@@ -84,7 +86,7 @@ These workstreams are independent — task files in agent-tasks are namespaced b
 | Code implementation | qwen3.5:27b | Primary executor |
 | Multi-file reasoning | qwen3.5:27b | Proven reliable |
 | Spec writing / debugging | qwen3.5:27b | With terminal verification |
-| Complex implementation (27B stuck) | qwen3.5:35b-a3b (Ryzen) | Only when Ryzen available |
+| Complex implementation (heavy tasks) | qwen3.5:35b-a3b (Ryzen) | First choice for complex/multi-file work when Ryzen available |
 | Any task after two local failures | Claude Haiku 4.5 (Copilot) | 0.33x escalation |
 
 ---
@@ -198,8 +200,8 @@ Agents under pressure may attempt to recreate spec files from scratch rather tha
 
 - **Pi 4 reload** — needed for Raspbian version upgrade and general cleanup. Jellyfin and Samba will be restored. Not blocking any current workflow.
 - **Open WebUI** — post-reload decision. Originally considered as Ollama aggregator with session memory/database persistence. May not be necessary given current topology — Intel MacBook can point directly at Ryzen 7 Ollama endpoint without Pi in the middle.
-- **Multi-model parallel execution** — 27B on M4 + 35B on Ryzen simultaneously, untested but viable once Ryzen 7 35B is fully validated.
-- **35B full validation** — results from 2026-06-16 unattended test run pending review tonight.
+- **Multi-model parallel execution** — 27B on M4 + 35B on Ryzen simultaneously, **validated 2026-06-17** in live session (storyline agent on 35B/Ryzen, planning agent on 27B/M4, no collision).
+- **35B full validation** — confirmed working 2026-06-17. Galaxy Game storyline/phase reconciliation tasks completed successfully on Ryzen 7 35B. No blocking issues found.
 
 ## Ollama Endpoint Topology
 
