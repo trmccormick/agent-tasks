@@ -24,21 +24,27 @@ Review legacy backlog files from archived folders (`docs/agent/archive/backlog_*
 ## 📋 Pre-Session Checklist (MANDATORY)
 
 ### 1. Read Required Documentation First
+
+**CRITICAL (June 2026 Update):** Two phase-numbering systems exist for different purposes. You must understand both before triaging tasks:
+
 ```bash
-# STEP 1: Read phase alignment reference — do this BEFORE reviewing any task files
-# This is the authoritative guide for which phase folder any task belongs in
-cat ~/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/research/LUNA-MVP-SIMULATION-DESIGN.md
+# STEP 1A — System B: Canonical game progression and phase folder structure
+cat ~/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/research/LUNA-MVP-SIMULATION-DESIGN.md | head -80  
+# This tells you which phase folders (phase5+/, phase6+/, phase9+/) tasks belong in
 
-# STEP 2: Understand current project state
-cat ~/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/status.md | head -50  
-cat ~/Documents/git/galaxyGame/docs/new_agent/README.md | head -100
+# STEP 1B — System A: What Tracy has actually implemented
+cat ~/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/status.md | grep -A 20 "Luna Phase Queue"  
+# This tells you which AI Manager services are live and what gates are open
 
-# STEP 3: Check what's already in Phase folders (avoid duplicating work):
+# STEP 2 — Understand current project state broadly
+cat ~/Documents/git/galaxyGame/docs/new_agent/README.md | head -100  
+
+# STEP 3 — Check what's already in Phase folders (avoid duplicating work):
 ls -la ~/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase5+/
 ls -la ~/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase6+/ 2>/dev/null || echo "Phase 6+ folder doesn't exist yet"
 ls -la ~/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase9+/ 2>/dev/null || echo "Phase 9+ folder doesn't exist yet"
 
-# STEP 4: Review current triage registry for context:
+# STEP 4 — Review current triage registry for context:
 cat ~/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/backlog/TRIAGE_REGISTRY.md | head -80  
 ```
 
@@ -49,15 +55,17 @@ Additional reference documents live at:
 ```
 
 Key files:
-| File | Purpose |
-|---|---|
-| `LUNA-MVP-SIMULATION-DESIGN.md` | **PRIMARY REFERENCE** — Phase structure, acceptance criteria, game design intent |
-| `BACKLOG_TRIAGE_ANALYSIS_JUNE_9.md` | June 9 triage findings — what was reviewed and decisions made |
-| `BACKLOG_TRIAGE_ANALYSIS_PHASE_ALIGNMENT.md` | Phase alignment analysis from June 9 session |
-| `LUNAR_GEOSPHERE_BASE.md` | Luna geology reference for ISRU-related tasks |
-| `REORGANIZATION_COMPLETE_FOR_CLAUDE_REVIEW_JUNE_9.md` | Current task folder inventory as of June 9 |
 
-### 2. Identify Target Backlog Folder & Files to Review
+**CRITICAL (June 2026 Update):** Two phase-numbering systems exist. Read `LUNA-MVP-SIMULATION-DESIGN.md` first to understand which system applies before triaging tasks.
+
+| File | Purpose | Critical For |
+|---|---|---|
+| `LUNA-MVP-SIMULATION-DESIGN.md` | **PRIMARY REFERENCE** — Phase structure, acceptance criteria, game design intent (System B canonical progression) | Determining which phase folder tasks belong in |
+| `BACKLOG_TRIAGE_ANALYSIS_JUNE_9.md` | June 9 triage findings — what was reviewed and decisions made | Understanding recent backlog work patterns |
+| `AI-MANAGER-TRAINING-PIPELINE-FINDINGS.md` | Claude's June 16 audit of historical AI Manager files, stub handlers analysis | Distinguishing real vs. aspirational decision logic |
+| `LUNAR_GEOSPHERE_BASE.md` | Luna geology reference for ISRU-related tasks | Understanding regolith processing requirements |
+
+**Critical Note (June 16):** Legacy documentation may reference conflicting "Phase" numbers due to System A vs. System B confusion. Always verify against `LUNA-MVP-SIMULATION-DESIGN.md` before creating tasks.
 **Example Session Scenarios:**
 - **April 2026 backlog triage**: `docs/agent/archive/backlog_april_2026/*.md` (~57 files)  
 - **March 2026 backlog triage**: `docs/agent/archive/backlog_march_2026/*.md` (if exists)
@@ -70,14 +78,33 @@ Example: "Review all wormhole-related tasks from April 2026 backlog" → `docs/a
 
 ## 📐 Phase Alignment Quick Reference
 
-**Authoritative source:** `research/LUNA-MVP-SIMULATION-DESIGN.md` — read this first every session.
+**Authoritative source:** `research/LUNA-MVP-SIMULATION-DESIGN.md` — read this first every session.  
+**CRITICAL UPDATE (June 16, 2026):** Two distinct phase-numbering systems exist for different purposes. **Always use the correct system based on task type.**
+
+### System A: AI Manager Service Integration Phases
+**Location:** `docs/new_agent/projects/galaxy_game/status.md` — "Luna Phase Queue" table  
+**Purpose:** Tracks Tracy's implementation of AI Manager service integrations (what he has built)  
+**Use for:** Determining which AI Manager services are live, what gates are open
+
+| Phase | Service Integration Status |
+|---|---|
+| 1 | `Settlements::CostAnalyzer` → AI Manager ✅ Complete |
+| 2 | `Logistics::ManifestGenerator` → AI Manager ✅ Complete |
+| 3 | `Logistics::ShortageDetector` + `ImportRequestGenerator` → AI Manager ✅ Complete |
+| 4 | Consumption-aware ordering + precursor phase awareness ✅ Complete |
+| 5+ | Wormhole topology, system expansion — **NOT IMPLEMENTED** (belongs in Phase folders below) |
+
+### System B: World/Settlement Expansion Phases  
+**Location:** `research/LUNA-MVP-SIMULATION-DESIGN.md` and Claude's code audit findings  
+**Purpose:** Defines the canonical game progression from Luna → multi-system operations  
+**Use for:** Classifying backlog tasks into correct phase folders (phase5+/, phase6+/, phase9+/)
 
 | Phase Folder | What Belongs Here | Gate Condition |
 |---|---|---|
-| `backlog/2026-06/` | Luna AI Manager mechanics only — consumption modeling, precursor phase gating, life support ordering, import request fixes | Active work — dispatch immediately when ready |
-| `phase5+/` | Luna simulation calibration prep — skimmer processing, multi-source supply, tank farm architecture, inbound cargo awareness, CH4 arbitration, flight time modeling | After Phase 4 complete and simulation running |
-| `phase6+/` | L1 Depot, LEO Depot, gas processing pipeline, depot operations, orbital structure deployment, return cargo optimization | After Luna simulation calibrated (Phase 5 acceptance criteria met) |
-| `phase9+/` | Everything else — wormhole topology, multi-system expansion, Mars/Phobos/Deimos, outer Sol, Act 3/4 work | After L1 Shipyard operational |
+| `backlog/2026-06/` | Luna AI Manager mechanics only — consumption modeling, precursor phase gating, life support ordering, import request fixes (System A Phases 1–4 work) | Active work — dispatch immediately when ready |
+| `phase5+/` | **Luna simulation calibration prep** — skimmer processing, multi-source supply, tank farm architecture, inbound cargo awareness, CH₄ arbitration, flight time modeling. Phase 5 is observation not features: run simulation, watch market emergence and stockpile accumulation, generate tasks from what breaks. Only create phase5+ tasks if they are prerequisites needed BEFORE the Luna simulation can run (e.g., AI Manager training pipeline audit). | After System A Phase 4 complete AND simulation running |
+| `phase6+/` | **L1 Depot, LEO Depot, gas processing pipeline**, depot operations, orbital structure deployment, return cargo optimization. Requires Luna fuel/economic loop proven viable first. | After Luna simulation calibrated (Phase 5 acceptance criteria met) |
+| `phase9+/` | **Everything else** — wormhole topology integration for system expansion planning, multi-system resource coordination algorithms, Mars/Phobos/Deimos operations, cycler construction, tug program, outer Sol exploration, Act 3/4 work. These are late-game features that require L1 Shipyard operational first. | After L1 Shipyard operational (Phase 7+) |
 
 **Classification rules when in doubt:**
 
@@ -85,17 +112,14 @@ Example: "Review all wormhole-related tasks from April 2026 backlog" → `docs/a
 Does this touch Luna AI Manager import/ordering logic directly?
   YES → active backlog/2026-06/
 
-Does this require Luna simulation to be calibrated first?
-  YES → phase5+/
+Is this a prerequisite for running the Luna simulation to prove fuel loop viability?
+  YES → phase5+/ (but remember: Phase 5 is observation, not feature development)
 
-Does this require L1 Depot or LEO Depot to exist?
+Does this require L1 Depot or LEO Depot infrastructure to exist first?
   YES → phase6+/
 
-Does this involve wormholes, other star systems, or multi-system operations?
-  YES → phase9+/
-
-Does this involve Mars, Phobos/Deimos, cycler construction, or tug program?
-  YES → phase9+/
+Does this involve wormholes, other star systems, multi-system operations, Mars/Phobos/Deimos, cycler construction, or tug program?
+  YES → phase9+/ (these are Act 3/4 work)
 ```
 
 **Game Design Context (required for correct classification):**
@@ -103,9 +127,31 @@ Does this involve Mars, Phobos/Deimos, cycler construction, or tug program?
 - **LDC** is a non-profit development corporation and GCC mint — optimization goal is expansion not profit
 - **GCC** is asset-backed cryptocurrency — Luna stockpiles are the hard asset backing
 - **tasks_v2** is the AI pattern library — already built, AI Manager reads it to decide actions
-- **Phase 5 is observation not features** — run simulation, watch market emergence and stockpile accumulation, generate tasks from what breaks
-- **Luna must prove the fuel loop closes** before anything downstream gets built
+- **Phase 5 is observation not features** — run simulation, watch market emergence and stockpile accumulation, generate tasks from what breaks. Do NOT add new features to phase5+; those belong in phase6+.
+- **Luna must prove the fuel loop closes** before anything downstream gets built (System B Phase 5 acceptance criteria)
 - **AstroLift + LDC** co-own L1 Station, LEO Depot, L1 Shipyard — Zenith Orbital builds stations, Vector Hauling runs cyclers
+
+### Common Pitfalls to Avoid (Learned from June 16 Claude Session):
+
+❌ **DON'T:**
+- Place Phase 6+ tasks in `phase5+/` folder — use correct phase folder per alignment table above
+- Place wormhole/multi-system tasks anywhere except `phase9+/` — these are Act 3/4 work, not Phase 5 calibration items
+- Place Mars/tug/cycler tasks in phase5+ or phase6+ — they belong in `phase9+/`
+- Use incomplete date format (`2026-06`) instead of full YYYY-MM-DD (`2026-06-16`)
+- Skip adding archive headers to deprecated files (future agents need context)
+- Forget updating tracking documents at end of session
+- Create phase5+ task files for features — Phase 5 is observation/calibration, tasks emerge from simulation runs
+
+✅ **DO:**
+- Read `research/LUNA-MVP-SIMULATION-DESIGN.md` before triaging anything to understand which system applies
+- Check both System A (status.md) and System B (LUNA-MVP-SIMULATION-DESIGN.md) to determine correct phase folder
+- Create `phase6+/` and `phase9+/` folders if they don't exist before moving tasks there
+- Always use full date format in filenames AND YAML header ID fields
+- Add comprehensive archive headers explaining extraction rationale + dependency chains
+- Update TRIAGE_REGISTRY.md, status.md, and optionally create SESSION_SUMMARY file
+- When unsure of phase: apply the classification rules above; if task involves wormholes/multi-system/Mars/cyclers → default to `phase9+/`
+
+**Note on Phase Numbering Conflicts:** If you encounter conflicting phase numbers in legacy documentation (e.g., "Phase 5" meaning different things), this is likely due to System A vs. System B confusion. The canonical progression for game design purposes follows **System B**, while **System A** tracks what Tracy has actually implemented so far. When creating new tasks, use System B's phase folder structure regardless of what legacy docs say about "Phase 5" or "Phase 6".
 
 ---
 
