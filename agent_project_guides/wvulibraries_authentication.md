@@ -27,7 +27,7 @@ Key facts:
 - **Authentication Domain**: `wvu-ad.wvu.edu` (WVU Active Directory)
 - **Admin Contact**: Library Systems Office
 - **License**: WVU Libraries internal use
-- **Stack**: PHP 8.3, Apache 2.4, MySQL 5.7, LDAP extension, EngineAPI template engine, Docker/Docker Compose
+- **Stack**: PHP 8.3, Apache 2.4, MySQL 8.0 (⚠️ EOL — upgrade planned), LDAP extension, EngineAPI template engine, Docker/Docker Compose
 - **Deployment**: Dockerized single-container `php:8.3-apache` with PHP LDAP, MySQLi, and PDO extensions
 - **Key Configuration**: LDAP server = `ldap://wvu-ad.wvu.edu`, bind format = `username@wvu-ad.wvu.edu`
 
@@ -235,11 +235,33 @@ services:
         condition: service_healthy
 ```
 
+### Database Infrastructure & Versions
+**CRITICAL**: MySQL 8.0 reached end-of-life (April 2024) and is no longer receiving security updates.
+
+| Environment | Version | Status | Notes |
+|-------------|---------|--------|-------|
+| **Production** | 8.0.46 | **EOL (Unsupported)** | Remote server (database.lib.wvu.edu); DevOps confirmed needs upgrade |
+| **Dev Docker** | 8.0 | EOL (Unsupported) | Aligned with production for accurate testing; will be upgraded |
+
+**Upgrade Plan** (Seq 5 of modernization backlog):
+- Target version: *Pending DevOps confirmation* (likely 8.4 LTS or 9.0)
+- Database dump: *Pending acquisition from production*
+- Blocked by: MySQL functions migration (Seq 3), deprecated mysql_* functions must be converted to mysqli/PDO first
+- Blocks: EngineAPI distillation (Seq 6)
+- Testing: PHPUnit suite (Seq 1) must pass against target version before production upgrade
+
+**Key Considerations for Upgrade**:
+- Authentication.sql (current dump from 5.7.40) schema compatibility must be verified against target version
+- Temporary accounts table uses MyISAM; may need conversion to InnoDB for 8.4+
+- Character encoding defaults changed (utf8 vs utf8mb4); verify collation requirements
+- All mysqli/PDO connections must support target version authentication plugin
+
 ### Environment Variables
-- `MYSQL_HOST` — Database hostname (`db` for Docker, `localhost` for VM)
+- `MYSQL_HOST` — Database hostname (`db` for Docker, `database.lib.wvu.edu` for production)
 - `MYSQL_USER` — Database username
 - `MYSQL_PASSWORD` — Database password
 - `MYSQL_DATABASE` — Database name (`authentication`)
+- `MYSQL_VERSION` — Current version (8.0; track during upgrade)
 - `LDAP_SERVER` — LDAP server URL (defaults to `ldap://wvu-ad.wvu.edu`)
 
 ---
