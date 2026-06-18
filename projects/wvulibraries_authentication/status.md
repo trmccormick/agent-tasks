@@ -9,15 +9,16 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 **Repository**: `/Users/tam0013/Documents/git/Authentication`  
 **Production URL**: `https://systems.lib.wvu.edu`  
 **Dev Docker**: `http://localhost:8080`  
-**Stack**: PHP 8.3, Apache 2.4, MySQL 5.7, LDAP, EngineAPI framework
+**Stack**: PHP 8.3, Apache 2.4, MySQL 8.0, LDAP, EngineAPI framework
 
 ---
 
 ## Current Status
-- **Status:** Functional (LDAP authentication operational post-kernel-patch)
-- **Last Session:** 2026-06-18 (LDAP connectivity resolved, task backlog created, frontend-updates confirmed as production branch)
-- **Production Branch:** `frontend-updates` (DevOps VM pointing to it; rename to `main` planned)
-- **Known Issues:** Static asset symlinks available but not currently critical; EngineAPI dependency to be addressed via migration strategy
+- **Status:** Functional (LDAP authentication operational, test environment aligned with production)
+- **Last Session:** 2026-06-18 (MySQL version confirmed as 8.0.46 production; dev updated to match; task backlog finalized)
+- **Production Branch:** `main` (renamed from frontend-updates)
+- **MySQL Alignment:** ✅ Production 8.0.46, Dev 8.0 (confirmed and synced)
+- **Known Issues:** None blocking PHPUnit setup
 
 ---
 
@@ -31,7 +32,14 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
   - File: `2026-06-18-HIGHEST-MAINTENANCE-FRONTEND-UPDATES-PROMOTION.md`
   - Status: COMPLETED
   - What was done: Renamed frontend-updates to main on GitHub, set as default branch
-  - Timeline: 1 session (fast track — branch renaming + default branch change)
+  - Timeline: 1 session
+
+- **MySQL Environment Alignment Discovery** ✅
+  - **Finding**: DevOps confirmed production MySQL 8.0.46 (not 5.7)
+  - **Action**: Updated docker-compose.dev.yml to mysql:8.0 (was 5.7)
+  - **Result**: Dev and production environments now aligned
+  - **Benefit**: PHPUnit test environment will accurately represent production database behavior
+  - **Commit**: `Update dev MySQL to 8.0 to match production environment` (bfb0c63)
 
 ---
 
@@ -45,7 +53,7 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 | 2 | **HIGH** | **[Feature] Login Functionality Test Suite** | 1-2 weeks | PHPUnit | MySQL Functions, Security | REGRESSION TESTS: Baseline for all future changes |
 | 3 | **HIGH** | **[Maintenance] Deprecated MySQL Functions Migration** | 3-4 weeks | PHPUnit + Tests | MySQL 5.7 upgrade | BRANCH: feature/migrate-mysql-functions; all tests must pass |
 | 4 | **MEDIUM** | **[Maintenance] PHP Security Audit (OWASP)** | 2-3 weeks | PHPUnit + Tests | Engine API distillation | BRANCH: feature/security-audit-owasp; security fixtures required |
-| 5 | **MEDIUM** | **[Maintenance] Docker: MySQL 5.7 → 8.0** | 1-2 weeks | MySQL Functions | Engine API distillation | BRANCH: feature/mysql-5.7-to-8.0-upgrade; schema compatibility testing |
+| 5 | **MEDIUM** | **[Maintenance] Docker: MySQL 5.7 → 8.0** | 1-2 weeks | MySQL Functions | Engine API distillation | UPDATED: Dev aligned to prod (8.0.46); focus on schema compatibility testing |
 | 6 | **MEDIUM** | **[Implementation] EngineAPI Distillation** | 2-3 weeks | All above | Optional: research task | BRANCH: feature/engine-api-distillation; extract core, remove framework |
 | 7 | **LOW** | **[Feature] Centralized Logging** | 1 week | PHPUnit + Tests | None | Optional: long-term maintainability |
 | 8 | **LOW** | **[Maintenance] Documentation Audit** | 1 week | Distillation (optional) | None | FINAL: After major work complete |

@@ -18,21 +18,26 @@ branch_strategy: "All work on single refactor branch; verify schema compatibilit
 # Task: Docker Modernization: MySQL 5.7 to 8.0 Migration
 
 ## Problem
-The `docker-compose.dev.yml` specifies `mysql:5.7`, which reached **end-of-support on October 21, 2023**. Running unsupported database versions creates:
+**UPDATE (2026-06-18)**: DevOps confirmed production is running **MySQL 8.0.46** (not 5.7). Dev environment has been updated to match. This task now focuses on **schema compatibility verification** and **documentation of the upgrade path** rather than the upgrade itself.
+
+MySQL 5.7 reached **end-of-support on October 21, 2023**. Running unsupported database versions creates:
 
 - **Security vulnerabilities**: No security patches for newly discovered CVEs
 - **Compatibility issues**: PHP 8.3 drivers may not have optimal support
 - **Performance degradation**: Miss out on query optimization improvements
-- **Production risk**: Development environment diverges from production database versions
+- **Production alignment**: Ensure dev environment matches production database versions
 
 ## Scope
-**Changes required**:
-1. Update docker-compose.yml MySQL service from `mysql:5.7` to `mysql:8.0`
-2. Review and update database initialization SQL for MySQL 8.0 compatibility
-3. Test authentication schema creation and migration
-4. Update SQL connection parameters if needed (default authentication plugins changed)
-5. Test application connection and query performance
-6. Document migration path for production VMs
+**Changes already completed**:
+- ✅ Updated `docker-compose.dev.yml` MySQL service from `mysql:5.7` to `mysql:8.0` (2026-06-18)
+
+**Remaining work**:
+1. Review and test database initialization SQL for MySQL 8.0 compatibility
+2. Verify authentication schema creates cleanly without deprecation warnings
+3. Test application connection with MySQL 8.0 native authentication plugin
+4. Test application connection and query performance
+5. Document any configuration adjustments needed
+6. Create migration runbook for production VM (if not already documented)
 
 **Compatibility checks**:
 - [ ] SQL schema creates without deprecation warnings
@@ -42,13 +47,14 @@ The `docker-compose.dev.yml` specifies `mysql:5.7`, which reached **end-of-suppo
 - [ ] Performance benchmarks vs. MySQL 5.7
 
 ## Success Criteria
-- [ ] Docker image updated to mysql:8.0 (latest stable)
-- [ ] All SQL files pass syntax checks
-- [ ] Database initializes cleanly from setup-docker.sql
-- [ ] Login/LDAP auth functional tests pass
-- [ ] No application errors in logs
+- [x] Docker image updated to mysql:8.0 (completed 2026-06-18)
+- [ ] All SQL files pass syntax checks for MySQL 8.0
+- [ ] Database initializes cleanly from setup-docker.sql without warnings
+- [ ] Login/LDAP auth functional tests pass (PHPUnit suite)
+- [ ] No application errors in logs with MySQL 8.0
 - [ ] Docker compose health checks pass
-- [ ] Performance is equal or better than MySQL 5.7
+- [ ] Character encoding verified (utf8mb4 if applicable)
+- [ ] No performance regressions vs. MySQL 5.7
 
 ## Related
 - Frontend updates branch (contains docker-compose changes)

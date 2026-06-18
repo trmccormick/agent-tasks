@@ -185,6 +185,7 @@ class LDAPConnectionTest extends TestCase
 - If PHPUnit installation conflicts with EngineAPI, document workaround and flag for EngineAPI distillation task
 
 ## Notes
+- **MySQL 8.0 confirmed (2026-06-18)**: Production verified running MySQL 8.0.46; dev environment updated to match. Test environment now aligns with production.
 - **Critical for long-term maintenance**: Low-priority projects NEED testing to prevent regressions
 - **Regression safety**: Once Login tests pass, any change to core functions must pass tests before merge
 - **Branch strategy**: All feature branches MUST pass full test suite before merge to main
