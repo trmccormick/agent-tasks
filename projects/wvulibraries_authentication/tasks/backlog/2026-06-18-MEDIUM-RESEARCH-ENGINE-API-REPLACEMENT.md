@@ -1,5 +1,5 @@
 ---
-title: "EngineAPI End-of-Life: Authentication is Last Remaining User"
+title: "EngineAPI End-of-Life: Authentication is the Only Remaining User"
 status: backlog
 priority: MEDIUM
 type: RESEARCH
@@ -8,22 +8,21 @@ updated: 2026-06-18
 estimated_effort: "1-2 weeks"
 ---
 
-# Task: EngineAPI End-of-Life: Authentication is Last Remaining User
+# Task: EngineAPI End-of-Life: Authentication is the Only Remaining User
 
 ## Problem
 EngineAPI is an internal WVU Libraries template engine framework (88 PHP files, 30+ modules) that is no longer actively maintained. Strategic context:
 
-- **Only 2 applications used EngineAPI historically**: Authentication and MFCS
-- **MFCS status**: Being replaced by WVU Knapsack (data extraction only, not staying on EngineAPI)
-- **Authentication status**: Is the LAST remaining EngineAPI user
-- **Framework obsolescence**: Uses deprecated mysql_* functions, no PSR compliance, no modern architecture
+- **Authentication**: Currently the ONLY application using EngineAPI
+- **MFCS**: Separate legacy application (unrelated to EngineAPI) being retired; data migrating to WVU Knapsack via extraction process
+- **EngineAPI status**: No other active dependents; once Authentication migrates off, framework can be fully retired
 
 **This creates a clear deprecation path:**
 1. Migrate Authentication away from EngineAPI (Phase 1)
-2. Decommission EngineAPI entirely (Phase 2)
-3. Retire both EngineAPI and MFCS as dead code (Phase 3)
+2. Decommission EngineAPI entirely (Phase 2) — no other apps to support
+3. Retire EngineAPI codebase as dead code (Phase 3)
 
-This is no longer an open-ended "should we stay or go?" question — it's "how and when do we migrate off?"
+This is no longer an open-ended "should we stay or go?" question — it's "how and when do we migrate" when Authentication is the only user.
 
 ## Scope
 **Research questions**:
@@ -67,9 +66,12 @@ This is no longer an open-ended "should we stay or go?" question — it's "how a
 - Phase 2 work (if staying on EngineAPI): systematic modernization
 
 ## Notes
-- **Strategic clarity**: Authentication is the LAST remaining EngineAPI user (MFCS transitioning to Knapsack, not staying on EngineAPI)
-- **Clear deprecation path**: Once Authentication is off EngineAPI, EngineAPI can be fully retired (no longer supporting multiple apps)
+- **Strategic clarity**: Authentication is the ONLY remaining EngineAPI user (no other active dependents)
+- **MFCS context**: Separate legacy application (unrelated to EngineAPI); being retired with data extracted to WVU Knapsack
+  - MFCS is NOT EngineAPI-dependent — it's a completely separate application replacement
+  - Knapsack setup: https://github.com/wvulibraries/wvu_knapsack (already in agent-tasks)
+  - See agent guide: `agent_project_guides/wvulibraries_knapsack.md`
+- **Clear deprecation path**: Once Authentication is off EngineAPI, EngineAPI can be fully retired (no other apps to support)
 - **Stakeholders**: Library Systems Office (libsys@mail.wvu.edu), DevOps, EngineAPI maintainer (if one exists)
-- **MFCS context**: Not a blocker — MFCS is being replaced by Knapsack for digital collections (data extraction only)
 - This is not a "stay or go" question anymore — it's a "how and when to migrate" question
 - Consider: Can we build a temporary abstraction layer to decouple Authentication from EngineAPI incrementally?
