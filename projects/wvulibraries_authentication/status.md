@@ -14,21 +14,40 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 ---
 
 ## Current Status
-- **Status:** ✅ Seq 1 + Seq 2 COMPLETE — 35 passing tests (comprehensive regression baseline established)
-- **Last Session:** 2026-06-18 (Seq 2: Login regression test suite delivered with 15 new tests covering all auth flows)
+- **Status:** ✅ Seq 1 + Seq 2 + R1 COMPLETE — Ready for Seq 3 (MySQL Functions Migration)
+- **Last Session:** 2026-06-18 (R1 research complete: MySQL instance isolated, zero external dependencies, SAFE to refactor)
 - **Production Branch:** `main`; **Working Branch:** `refactor/authentication-modernization`
 - **MySQL Status:** Production 8.0.46 (EOL); Target 8.4 LTS ✅ VALIDATED COMPATIBLE; Dev: 8.4 LTS
 - **Testing Infrastructure:** ✅ LIVE — 35/35 passing tests, MockLDAPServer, test isolation, Xdebug coverage
-- **Next Action:** Await R1 (Research) completion, then unblock Seq 3
+- **Critical Security Finding:** ⚠️ Temp account passwords stored in PLAIN TEXT (Seq 4 priority)
+- **Next Action:** Start Seq 3 (MySQL Functions Migration) — no blockers identified
 
 ---
 
-## Active Tasks (In Progress)
-- **R1**: [Research] Temp Account Password Reset & Shared Instance — MEDIUM priority
+## Active Tasks (Ready to Start)
+- **Seq 3**: [Maintenance] Deprecated MySQL Functions Migration — HIGH priority (Seq 1 ✅ + Seq 2 ✅ + R1 ✅ all unblocked)
 
 ---
 
 ## Recently Completed (2026-06-18)
+- **R1: MySQL Instance Dependency Analysis** ✅ **DELIVERED**
+  - File: `2026-06-18-MEDIUM-RESEARCH-TEMP-ACCOUNT-PASSWORD-RESET.md`
+  - Status: COMPLETED (task file moved to completed/ folder)
+  - Key Finding: **SAFE to proceed with Seq 3** — Zero external dependencies
+  - Research Results:
+    * Zero stored procedures, views, or triggers in schema
+    * No evidence of shared MySQL instance with other WVU Libraries apps
+    * All 10 tables use simple direct access only
+  - Critical Issues Discovered (for Seq 4 priority):
+    * ⚠️ Temp account passwords stored in PLAIN TEXT (critical security vulnerability)
+    * 🚨 Password reset functionality NOT implemented (despite COMPONENTS.md documentation)
+    * 🔍 Temp accounts perform LDAP bind against WVU-AD (unknown synchronization process)
+  - Deliverable: MYSQL_INSTANCE_DEPENDENCIES.md (447 lines, comprehensive analysis)
+  - Branch: `refactor/authentication-modernization`
+  - Impact: Seq 3 now unblocked; safe to proceed with mysql_* function refactoring
+  - Recommendations: Seq 3 can proceed immediately; Seq 4 must prioritize plain text password fix
+  - Timeline: 1 session
+
 - **Seq 2: Login Functionality Test Suite** ✅ **DELIVERED**
   - File: `2026-06-18-HIGH-FEATURE-LOGIN-TEST-SUITE.md`
   - Status: COMPLETED (task file moved to completed/ folder)
@@ -98,9 +117,9 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 | Seq | Priority | Task | Effort | Blocked By | Blocks | Status |
 |-----|----------|------|--------|-----------|--------|--------|
 | 1 | **HIGHEST** | **[Setup] PHPUnit Integration & Test Infrastructure** | 1 week | None | All others | ✅ **COMPLETED** — 20 passing tests, MockLDAPServer, test isolation verified |
-| 2 | **HIGH** | **[Feature] Login Functionality Test Suite** | 1-2 weeks | ~~PHPUnit~~ ✅ DONE | MySQL Functions, Security | ✅ **COMPLETED** — 35 total passing tests (15 new), comprehensive regression baseline established |
-| R1 | **MEDIUM** | **[Research] Temp Account Password Reset & Shared Instance** | 2-3 days | None | Seq 3 (MySQL Functions) | 🟡 **IN PROGRESS** — Research underway, blocks Seq 3 until complete |
-| 3 | **HIGH** | **[Maintenance] Deprecated MySQL Functions Migration** | 3-4 weeks | ~~PHPUnit~~ ✅ + ~~Tests~~ ✅ + **R1 IN PROGRESS** | MySQL 5.7 upgrade | 🔒 **BLOCKED** until R1 determines safe-to-proceed; all tests ready on refactor/authentication-modernization |
+| 2 | **HIGH** | **[Feature] Login Functionality Test Suite** | 1-2 weeks | ~~PHPUnit~~ ✅ DONE | MySQL Functions, Security | ✅ **COMPLETED** — 35 total passing tests (15 new), comprehensive regression baseline |
+| R1 | **MEDIUM** | **[Research] Temp Account Password Reset & Shared Instance** | 2-3 days | None | Seq 3 | ✅ **COMPLETED** — Zero external dependencies found; SAFE to proceed with Seq 3 |
+| 3 | **HIGH** | **[Maintenance] Deprecated MySQL Functions Migration** | 3-4 weeks | ✅ + ✅ + ✅ | MySQL 5.7 upgrade | 🟢 **UNBLOCKED** — Ready to start (12 mysql_* files refactored to mysqli_*) |
 | 4 | **MEDIUM** | **[Maintenance] PHP Security Audit (OWASP)** | 2-3 weeks | PHPUnit + Tests | Engine API distillation | BRANCH: feature/security-audit-owasp; security fixtures required |
 | 5 | **MEDIUM** | **[Maintenance] Docker: MySQL 8.0 → 8.4 LTS** | 1-2 weeks | MySQL Functions (optional) | Engine API distillation | ✅ COMPATIBILITY VERIFIED: No code changes needed; production upgrade safe |
 | 6 | **MEDIUM** | **[Implementation] EngineAPI Distillation** | 2-3 weeks | All above | Optional: research task | BRANCH: feature/engine-api-distillation; extract core, remove framework |
@@ -141,12 +160,15 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 - **Blocker system**: Tasks blocked_by must complete first; check YAML frontmatter in task files
 - **Low-priority discipline**: Because this is low-priority, testing standards are HIGHER (not lower)
 
-### CRITICAL RESEARCH DEPENDENCY (2026-06-18)
-- **Before Seq 3 (MySQL Functions Migration)**, complete Research Task R1
-- **R1 Purpose**: Discover if other WVU Libraries applications share this MySQL instance
-- **Why it matters**: If other apps depend on current schema/functions, refactoring could break them
-- **Stop condition**: Cannot proceed with Seq 3 until R1 determines: "Safe to refactor" OR "Requires coordination"
-- **Estimated impact**: 2-3 days research could save weeks of production issues
+### R1 RESEARCH COMPLETE — CRITICAL FINDINGS (2026-06-18)
+- **R1 Finding**: ✅ SAFE to proceed with Seq 3 — Zero external dependencies
+- **Zero Stored Procedures/Views/Triggers**: All queries are simple direct table access
+- **No Shared MySQL Instance**: No evidence of MFCS, Knapsack, or other apps using this database
+- **Critical Security Issues Discovered** (NOT blocking Seq 3, but urgent for Seq 4):
+  * ⚠️ **Plain Text Password Storage**: Temp account passwords stored unencrypted in database (CRITICAL)
+  * 🚨 **Missing Password Reset**: No implementation of password reset mechanism exists
+  * 🔍 **LDAP Bind Mystery**: Temp accounts attempt LDAP bind against WVU-AD; synchronization process unknown
+- **Recommendation**: Proceed with Seq 3 immediately; prioritize password hashing fix in Seq 4
 
 ### LDAP Connectivity
 - **WVU-AD LDAP Server**: `ldap://wvu-ad.wvu.edu`  
