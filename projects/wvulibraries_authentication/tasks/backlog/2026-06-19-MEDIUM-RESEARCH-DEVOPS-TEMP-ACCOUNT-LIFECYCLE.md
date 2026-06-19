@@ -9,7 +9,9 @@ estimated_effort: "1-2 hours"
 sequence: "R3 (supplemental to Seq 4)"
 blocked_by:
   - "Seq 4 security audit discovery"
-depends_on: []
+depends_on:
+  - "DevOps team availability (out June 19, resume next week)"
+notes: "Strategist follow-up required. Requires manual outreach to DevOps team with investigation questions."
 ---
 
 ## Objective
