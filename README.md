@@ -95,6 +95,46 @@ Roles are assigned per session, not per model[cite: 3]. The same model can act a
 | Produce an accurate technical synthesis report before editing[cite: 3] | Override strict stop conditions[cite: 3] |
 | Report blockers and file errors immediately[cite: 3] | Scaffold unapproved migrations or database specs[cite: 3] |
 
+#### Task Completion Workflow (Executor Only)
+
+When you finish implementing a task, follow this **exact sequence**:
+
+**Step 1: Move task from active/ → completed/**
+```bash
+cd /Users/tam0013/Documents/git/agent-tasks/projects/[project]/tasks/
+mv active/[TASKFILE].md completed/[TASKFILE].md
+# Update YAML header in the file: change status: active to status: completed
+```
+
+**Step 2: Commit task file move**
+```bash
+git add completed/[TASKFILE].md
+git commit -m "task: Complete [TASK_TITLE]
+
+[2-3 bullet points of what was accomplished]"
+git push origin main
+```
+
+**Step 3: Update project status.md** (located in the project repo, not agent-tasks)
+Navigate to: `[project_repo]/doc/status.md`
+- Add completed task summary
+- Update "Last Updated" timestamp
+- Note any deferred work or Phase 2 items
+
+**Step 4: Commit status.md update**
+```bash
+cd /Users/tam0013/Documents/git/[project]
+git add doc/status.md
+git commit -m "docs: Update status.md — [TASK] complete"
+git push origin [working_branch]
+```
+
+**Step 5: Report to Strategist**
+Provide brief summary:
+- ✅ What was completed
+- ⚠️ What (if anything) was deferred and why
+- 📋 Recommendation on next sequence (if applicable)
+
 ---
 
 ### 🔬 REVIEWER Role
