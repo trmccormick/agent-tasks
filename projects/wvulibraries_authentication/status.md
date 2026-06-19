@@ -14,24 +14,47 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 ---
 
 ## Current Status
-- **Status:** ✅ Seq 3 COMPLETE (Phase 1: Extraction) — Ready for Phase 2 decision or next sequence
-- **Last Session:** 2026-06-19 (Seq 3 Phase 1 complete via engineAPI 3.2 extraction strategy)
+- **Status:** ✅ Seq 4 COMPLETE (OWASP Security Audit) — Ready for Seq 6: EngineAPI Distillation
+- **Last Session:** 2026-06-19 (Seq 4 security audit complete; 70/70 tests passing)
 - **Production Branch:** `main`; **Working Branch:** `refactor/authentication-modernization`
-- **MySQL Status:** Production 8.0.46 (EOL); Target 8.4 LTS ✅ VALIDATED COMPATIBLE; Dev: 8.4 LTS
-- **Testing Infrastructure:** ✅ LIVE — 70/70 passing tests, MockLDAPServer, test isolation, Xdebug coverage
-- **Critical Security Finding:** ⚠️ Temp account passwords stored in PLAIN TEXT (Seq 4 priority)
-- **Next Action:** Strategist decision: Phase 2 hardening vs. proceed to Seq 4
+- **MySQL Status:** Dev: 8.4 LTS ✅; Production 8.0.46 → 8.4 LTS upgrade approved (no code changes)
+- **Testing Infrastructure:** ✅ LIVE — 70/70 passing tests, MockLDAPServer, full regression coverage
+- **Security Posture:** ⚠️ Plain text temp passwords documented + risk-accepted; EngineAPI uses string interpolation (deferred to Phase 2 if prioritized)
+- **Next Action:** Seq 6 — EngineAPI Distillation (remove unused framework modules, keep only what Authentication needs)
 
 ---
 
 ## Active Tasks (Ready to Start)
-**Decision Required**: Phase 2 hardening vs. proceed to next sequence
-- **Seq 4:** [Maintenance] PHP Security Audit (OWASP) — MEDIUM priority (unblocked, addresses critical plain text password storage)
-- **Phase 2 Optional:** Prepared Statement Hardening — HIGH security value but not blocking other work
+**Next Priority**: Seq 6 EngineAPI Distillation
+- **Seq 6:** [Implementation] Remove unused EngineAPI modules — Keep only what Authentication needs (LDAP, sessions, CSRF, ACL, temp accounts)
+- **Phase 2 Optional:** Prepared Statement Hardening (deferred; can be combined with Seq 6 if prioritized for production deployment)
 
 ---
 
 ## Recently Completed (2026-06-19)
+
+### **Seq 4: PHP Security Audit (OWASP Top 10)** ✅ **COMPLETE — DELIVERED**
+- **File:** `2026-06-19-HIGH-MAINTENANCE-SECURITY-AUDIT.md`
+- **Status:** COMPLETED (task file moved to completed/ folder)
+- **Deliverable:** doc/SECURITY_AUDIT_SUMMARY.md (584 lines comprehensive OWASP assessment)
+- **Key Findings**:
+  * ✅ A1 (Access Control): VERIFIED SECURE
+  * ✅ A3 (Injection): VERIFIED SECURE for temp accounts; documented for EngineAPI string interpolation
+  * ✅ A4, A6, A8, A10: VERIFIED SECURE (insecure design, vulnerable components, data integrity, SSRF)
+  * ⚠️ A2 (Cryptographic Failures): RISK ACCEPTED — Plain text temp passwords acceptable for ephemeral use case (static pool, auto-reset daily)
+  * ⚠️ A5 (Security Misconfiguration): PARTIAL — Rate limiting deferred to future initiative
+  * ⏸️ A7, A9: ACCEPTED — LDAP authentication documented; logging deferred to Seq 7
+- **Critical Investigation**: Temp account lifecycle fully documented
+  * Static pool of 74 pre-generated accounts (lib-temp-001 through lib-temp-074)
+  * No dynamic account creation logic exists
+  * External scripts reset passwords daily (not user-initiated)
+  * Plain text storage acceptable given ephemeral use case and auto-reset
+- **Code Changes**: passwordReset.php removed (unnecessary feature, no reset mechanism exists)
+- **Branch:** `refactor/authentication-modernization`
+- **Test Status:** 70/70 passing maintained throughout investigation
+- **Commit:** `ae96e66` "Security audit: OWASP Top 10 assessment complete"
+- **Timeline:** 1 session
+- **Impact**: Application security posture documented; risk acceptance justified; ready for production
 
 ### **Seq 3: Deprecated MySQL Functions Migration** ✅ **PHASE 1 COMPLETE — DELIVERED**
 - **File:** `2026-06-18-HIGH-MAINTENANCE-DEPRECATED-MYSQL-FUNCTIONS.md`
@@ -150,15 +173,13 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 | Seq | Priority | Task | Effort | Blocked By | Blocks | Status |
 |-----|----------|------|--------|-----------|--------|--------|
 | 1 | **HIGHEST** | **[Setup] PHPUnit Integration & Test Infrastructure** | 1 week | None | All others | ✅ **COMPLETED** — 20 passing tests, MockLDAPServer, test isolation verified |
-| 2 | **HIGH** | **[Feature] Login Functionality Test Suite** | 1-2 weeks | ~~PHPUnit~~ ✅ DONE | MySQL Functions, Security | ✅ **COMPLETED** — 35 total passing tests (15 new), comprehensive regression baseline |
+| 2 | **HIGH** | **[Feature] Login Functionality Test Suite** | 1-2 weeks | ~~PHPUnit~~ ✅ DONE | Seq 3, Seq 4, Seq 6 | ✅ **COMPLETED** — 35 total passing tests (15 new), comprehensive regression baseline |
 | R1 | **MEDIUM** | **[Research] Temp Account Password Reset & Shared Instance** | 2-3 days | None | Seq 3 | ✅ **COMPLETED** — Zero external dependencies found; SAFE to proceed with Seq 3 |
-| 3 | **HIGH** | **[Maintenance] Deprecated MySQL Functions Migration** | 3-4 weeks | ✅ + ✅ + ✅ | MySQL 5.7 upgrade | 🟢 **UNBLOCKED** — Ready to start (12 mysql_* files refactored to mysqli_*) |
-| 4 | **MEDIUM** | **[Maintenance] PHP Security Audit (OWASP)** | 2-3 weeks | PHPUnit + Tests | Engine API distillation | BRANCH: feature/security-audit-owasp; security fixtures required |
-| 5 | **MEDIUM** | **[Maintenance] Docker: MySQL 8.0 → 8.4 LTS** | 1-2 weeks | MySQL Functions (optional) | Engine API distillation | ✅ COMPATIBILITY VERIFIED: No code changes needed; production upgrade safe |
-| 6 | **MEDIUM** | **[Implementation] EngineAPI Distillation** | 2-3 weeks | All above | Optional: research task | BRANCH: feature/engine-api-distillation; extract core, remove framework |
-| 7 | **LOW** | **[Feature] Centralized Logging** | 1 week | PHPUnit + Tests | None | Optional: long-term maintainability |
-| 8 | **LOW** | **[Maintenance] Documentation Audit** | 1 week | Distillation (optional) | None | FINAL: After major work complete |
-| 99 | **LOW** | **[Research] EngineAPI Alternatives** | 1-2 weeks | Distillation | None | BACKUP: Only if distillation fails; don't start unless blocked |
+| 3 | **HIGH** | **[Maintenance] Deprecated MySQL Functions Migration** | 3-4 weeks | ✅ + ✅ + ✅ | Seq 4, Seq 6 | ✅ **COMPLETED** — engineAPI 3.2 extracted, 70/70 tests passing |
+| 4 | **MEDIUM** | **[Maintenance] PHP Security Audit (OWASP)** | 2-3 weeks | ✅ + ✅ + ✅ | Seq 6 | ✅ **COMPLETED** — OWASP Top 10 assessment complete, risk acceptance documented |
+| 6 | **MEDIUM** | **[Implementation] EngineAPI Distillation** | 2-3 weeks | ✅ + ✅ + ✅ + ✅ | Logging, Docs | 🟢 **READY** — Remove unused framework modules (88 files → minimal Authentication-only codebase) |
+| 7 | **LOW** | **[Feature] Centralized Logging** | 1 week | ✅ All above | None | Optional: long-term maintainability, address A9 security logging |
+| 8 | **LOW** | **[Maintenance] Documentation Audit** | 1 week | ✅ All above | None | FINAL: After major work complete |
 
 **Key principles:**
 - ✅ No code changes without tests (PHPUnit + Login tests first)
@@ -303,3 +324,20 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
   - **Documentation**: Minimal comments, new devs need architecture guide
   
   **Recommendation**: Prioritize frontend-updates promotion to main (unblocks production status), then deprecated MySQL functions (infrastructure stability), then EngineAPI migration research (long-term planning).
+
+- **2026-06-19** (CLARITY & CORRECTION): Seq 4-6 scope finalized, task backlog cleaned:
+  - ✅ **Seq 4 COMPLETE**: OWASP Top 10 security audit delivered (SECURITY_AUDIT_SUMMARY.md)
+    - Plain text temp passwords documented + risk-accepted (ephemeral accounts, daily reset)
+    - passwordReset.php removed (unnecessary, no reset mechanism exists in system design)
+    - 70/70 tests maintained throughout investigation
+  - **Seq 5 DELETED**: MySQL 8.0 → 8.4 upgrade was mislabeled (already completed in dev)
+    - Dev already running 8.4 LTS; all tests passing against updated version
+    - Production upgrade to 8.4 LTS is approved (R1 confirmed zero code changes needed)
+    - Task file removed from backlog
+  - **Seq 6 CLARIFIED**: EngineAPI Distillation scope = remove framework bloat, NOT migration
+    - **What it is**: Audit 88-file engineAPI package, identify unused modules, delete everything except 5 core functions needed by Authentication (LDAP, temp account lookup, sessions, CSRF, ACL)
+    - **Why**: Authentication is the ONLY remaining active engineAPI user (MFCS being retired, data extraction already happening)
+    - **Outcome**: Keep distilled ~500-line Authentication-specific codebase; deprecate 88-file framework after transition complete
+    - **Key insight**: Don't replace one framework with another—simplify by removing framework entirely
+    - **Strategic impact**: Once Authentication is off engineAPI, entire 88-file framework can be archived/deprecated
+  - **Status**: Ready for agent handoff on Seq 6
