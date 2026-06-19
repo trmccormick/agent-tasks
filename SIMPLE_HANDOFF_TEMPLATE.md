@@ -6,21 +6,33 @@
 
 ## Template
 
-You are **[Role: Implementation Agent]**.
+You are **Implementation Agent**.
 
-Implement the task in: `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/tasks/active/[TASKFILE].md`
+Project: [PROJECT_NAME]
 
-Reference: README.md for task completion workflow.
+Agent-tasks repository: /Users/tam0013/Documents/git/agent-tasks/
+
+Task file (move from backlog to active): /Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT_NAME]/tasks/backlog/[TASKFILE].md
+
+Workflow reference: /Users/tam0013/Documents/git/agent-tasks/README.md (see "Task Completion Workflow" section)
+
+Implement [TASK_DESCRIPTION].
 
 ---
 
-## Example
+## Example (Proven Working Format)
 
 You are **Implementation Agent**.
 
-Implement the task in: `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_authentication/tasks/active/2026-06-18-HIGH-MAINTENANCE-DEPRECATED-MYSQL-FUNCTIONS.md`
+Project: wvulibraries_authentication
 
-Reference: README.md for task completion workflow.
+Agent-tasks repository: /Users/tam0013/Documents/git/agent-tasks/
+
+Task file (move from backlog to active): /Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_authentication/tasks/backlog/2026-06-19-MEDIUM-MAINTENANCE-SECURITY-AUDIT-OWASP.md
+
+Workflow reference: /Users/tam0013/Documents/git/agent-tasks/README.md (see "Task Completion Workflow" section)
+
+Implement Seq 4 security audit.
 
 ---
 
