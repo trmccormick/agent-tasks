@@ -1,6 +1,6 @@
 ---
 title: "Seq 7 - Centralized Logging Infrastructure"
-status: backlog
+status: active
 priority: LOW
 type: FEATURE
 created: 2026-06-19
