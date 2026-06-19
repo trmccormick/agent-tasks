@@ -1,10 +1,50 @@
 # Agent Routing
-**Last Updated**: 2026-06-03
+**Last Updated**: 2026-06-19
 **Maintained By**: Claude (web) + human
 **Token Strategy**: Local-first execution. Cloud agents are 0.33x — reserve for tasks local models genuinely cannot complete after two attempts.
 
 > Read DECISIONS.md before this file.
 > Routing decisions here are based on actual model capabilities AND token cost.
+
+---
+
+## 🔴 NEW: wvulibraries_authentication Budget Strategy (June 2026)
+
+**Project**: wvulibraries_authentication (GitHub Copilot $10/month plan)
+
+**Budget Constraint**: Keep premium (Claude Haiku 4.5) usage ≤15%/week (target 60%/month)
+
+**Routing Pattern**:
+- **Strategist** (premium): Task planning, context synthesis, risk assessment only
+- **Implementation** (local agents): All code changes, testing, debugging, git operations
+- **Result**: Leaves 25-40% buffer end-of-month for concentrated agent task
+
+**Why This Works**:
+- Task files are detailed → agents work independently without back-and-forth
+- Handoffs are 2-4 lines max → no expansion into long exploratory sessions
+- Implementation agents (OllamaExecutor, Explore) run locally → zero cloud cost
+
+**Seq 1-3 Status**: 28% used through June 19 (~10%/week actual burn)
+**Runway**: 72% remaining for Seq 4-8 + end-of-month heavy task
+
+---
+
+## ⚠️ NEW: qwen 3.6 Models on Ryzen 7 (As of June 18, 2026)
+
+**Hardware Updated**: Ryzen 7 upgraded earlier this week with qwen 3.6 models installed:
+- **qwen 3.6:25b** — Now available for testing
+- **qwen 3.6:35b** — Now available for testing
+- Previous: qwen3.5:35b-a3b (validated working, performance baseline)
+
+**Status**: ⚠️ **ROUTING UNDER REVIEW** — Models installed but not yet validated in live sessions
+
+**Next Steps**:
+1. Run Seq 4-5 tasks to evaluate qwen 3.6 performance vs 3.5:35b
+2. Document if 3.6:25b is faster/better than 3.5:27b for routine tasks
+3. Track if 3.6:35b improves on previous 3.5:35b baseline (complexity, speed, accuracy)
+4. Update routing table once validation complete
+
+**Current Assumption**: qwen3.5:35b-a3b remains primary heavy executor until 3.6 validated.
 
 ---
 
