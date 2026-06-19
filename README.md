@@ -187,17 +187,30 @@ For example, Galaxy Game has a dedicated Docker command guide at:
 - Handoff is dispatch only: "Read this task and implement it"
 - Planning agent documents everything in task file, not handoff
 
-### Handoff Template
+### Handoff Template (Proven Working Format)
 ```
 You are **Implementation Agent**.
 
-Implement the task in: `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/tasks/active/[TASKFILE].md`
+Project: [PROJECT_NAME]
 
-Reference: README.md for task completion workflow.
+Agent-tasks repository: /Users/tam0013/Documents/git/agent-tasks/
+
+Task file (move from backlog to active): /Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT_NAME]/tasks/backlog/[TASKFILE].md
+
+Workflow reference: /Users/tam0013/Documents/git/agent-tasks/README.md (see "Task Completion Workflow" section)
+
+Implement [TASK_DESCRIPTION].
 ```
 
+### Key Elements That Must Be Explicit
+✅ **Project name** — Tells agent which project folder to use  
+✅ **Full task file path** — Points to backlog location (agent moves to active)  
+✅ **Agent-tasks repository path** — Anchor point for all relative paths  
+✅ **Workflow reference** — Directs agent to README.md task completion section  
+✅ **Plain text, no links** — Copy-paste friendly for cross-session use  
+
 ### When to Split Tasks
-If the handoff would be longer than 4 lines, don't expand it — instead:
+If the handoff would be longer than the template above, don't expand it — instead:
 - **Move content to task file** (comprehensive details there)
 - **OR split into multiple smaller tasks** (Phase 1, Phase 2, etc.)
 - **Never make handoffs long** — they must remain copy-paste friendly
