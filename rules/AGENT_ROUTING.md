@@ -8,24 +8,28 @@
 
 ---
 
-## 🔴 NEW: wvulibraries_authentication Budget Strategy (June 2026)
+## 🔴 NEW: Cross-Project GitHub Copilot Budget Strategy (June 2026)
 
-**Project**: wvulibraries_authentication (GitHub Copilot $10/month plan)
+**Plan**: GitHub Copilot $10/month (Claude Haiku 4.5)
 
-**Budget Constraint**: Keep premium (Claude Haiku 4.5) usage ≤15%/week (target 60%/month)
+**Budget Constraint**: Keep premium usage ≤15%/week across ALL projects (target 60%/month max)
 
-**Routing Pattern**:
+**Why**: Leaves 25-40% buffer end-of-month for concentrated heavy agent tasks. Prevents premium burn in first 2 weeks.
+
+**Routing Pattern** (applies to all projects):
 - **Strategist** (premium): Task planning, context synthesis, risk assessment only
 - **Implementation** (local agents): All code changes, testing, debugging, git operations
-- **Result**: Leaves 25-40% buffer end-of-month for concentrated agent task
+- **Result**: Premium stays lean for steady-state work, reserves capacity for heavy tasks
 
-**Why This Works**:
+**How This Works**:
 - Task files are detailed → agents work independently without back-and-forth
 - Handoffs are 2-4 lines max → no expansion into long exploratory sessions
-- Implementation agents (OllamaExecutor, Explore) run locally → zero cloud cost
+- Implementation agents (OllamaExecutor, Explore, qwen models) run locally → zero cloud cost
+- Heavy tasks batched for end-of-month → absorb remaining budget in concentrated sprints
 
-**Seq 1-3 Status**: 28% used through June 19 (~10%/week actual burn)
-**Runway**: 72% remaining for Seq 4-8 + end-of-month heavy task
+**Validation** (as of June 19):
+- wvulibraries_authentication: 28% used through day 19 (~10%/week actual burn) ✅
+- Pattern holds: 72% remaining runway = enough for Seq 4-8 + month-end heavy task
 
 ---
 
