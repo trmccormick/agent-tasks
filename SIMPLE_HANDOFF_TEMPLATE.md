@@ -1,37 +1,33 @@
-Implement the task in [TASK FILE].
+# Simple Handoff Template — 2-4 Lines Only
 
-**CRITICAL: Move Task from Backlog to Active FIRST**
-Before writing any code:
-1. Note: The new_agent folder (`docs/new_agent`) is a symlink to agent-tasks repo at `/Users/tam0013/Documents/git/agent-tasks`
-2. Move file: `git mv tasks/backlog/[FILENAME] tasks/active/[FILENAME]` (from agent-tasks root)
-3. Update YAML: `status: backlog` → `status: active`
-4. Commit from `/Users/tam0013/Documents/git/agent-tasks`:  
-   ```bash
-   cd /Users/tam0013/Documents/git/agent-tasks
-   git add 'projects/galaxy_game/tasks/active/[FILENAME]'
-   git commit -m "Start task: [FILENAME]"
-   ```
-5. This signals work has begun. Do not skip.
+**Copy-paste friendly format for chat sessions. All details belong in task file.**
 
-Then read `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/README.md` and follow all repository rules.
-Inspect and confirm the target files first.
-Do not code if paths or assumptions are unclear.
-Keep all commands inside Docker.
-Run only targeted specs and do not stream full output.
-If a nil-related failure appears, validate factory/model setup before changing logic.
-Produce synthesis report and stop. Do not apply changes until explicitly told to proceed.
+---
 
-Targets:
-- [FILE 1]
-- [FILE 2]
-- [SPEC FILE]
+## Template
 
-Scope:
-- [BEHAVIOR 1]
-- [BEHAVIOR 2]
-- [BEHAVIOR 3]
+You are **[Role: Implementation Agent]**.
 
-Return:
-- brief plan or code changes,
-- targeted test result summary,
-- blockers or assumptions.
+Implement the task in: `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/tasks/active/[TASKFILE].md`
+
+Reference: README.md for task completion workflow.
+
+---
+
+## Example
+
+You are **Implementation Agent**.
+
+Implement the task in: `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_authentication/tasks/active/2026-06-18-HIGH-MAINTENANCE-DEPRECATED-MYSQL-FUNCTIONS.md`
+
+Reference: README.md for task completion workflow.
+
+---
+
+## Rules
+
+✅ **Keep handoff to 2-4 lines max** — Must be copy-paste friendly across chat sessions
+✅ **All details in task file** — Comprehensive context, target files, requirements, testing instructions
+✅ **If handoff gets long** — Move content to task file OR split into multiple smaller tasks
+✅ **Task file is source of truth** — Executor reads full details there, not in handoff
+✅ **Handoff is dispatch only** — "Read this task file and implement it"

@@ -177,98 +177,40 @@ For example, Galaxy Game has a dedicated Docker command guide at:
 
 ---
 
-## Agent Handoff Generation Process
+## Agent Handoff Generation Process (Updated June 2026)
 
-**Purpose**: When an Implementation Agent (Qwen3.5-27B, Qwen3.5-9B) is assigned to execute a task, they must receive a structured handoff message that clearly defines their role, scope, and requirements.
+**Core Pattern**: Handoffs must be **2-4 lines max** (copy-paste friendly). All details belong in task files.
 
-### How to Generate Handoffs
+### Why This Pattern?
+- Handoffs get copied across chat sessions and long text causes issues
+- Task files are persistent, detailed repositories of work
+- Handoff is dispatch only: "Read this task and implement it"
+- Planning agent documents everything in task file, not handoff
 
-When you have a task file ready for implementation:
-
-1. **Identify the target agent**: Qwen3.5-27B (Local) or Qwen3.5-9B (Local) for Implementation Agent role
-2. **Extract key information from the task file**:
-   - Task ID and title
-   - Objective summary
-   - Target files to modify
-   - Implementation scope
-   - Testing requirements
-   - Output expectations
-3. **Structure the handoff message** using this template with EXACT absolute paths:
-
+### Handoff Template
 ```
-You are **[Agent Name]** acting as the **[Role]**.
+You are **Implementation Agent**.
 
-Task:
-Implement the approved change described in the active task file:
-[EXACT ABSOLUTE PATH TO TASK FILE]
+Implement the task in: `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/tasks/active/[TASKFILE].md`
 
-CRITICAL FIRST STEP: Move Task File Before Starting Work
-
-The task file is currently in tasks/backlog/
-Before writing any code, move the file (using the mv command) to [EXACT ABSOLUTE PATH TO ACTIVE FOLDER]:
-
-Note the new_agent folder ([PATH]) is a simlink to the agent-tasks repo at [AGENT-TASKS-ROOT]
-
-Update YAML header: change status: backlog to status: active
-Commit: git add [EXACT PATH] && git commit -m "Start task: [TASK TITLE]"
-This signals to the strategist that work has begun.
-Do not skip this step.
-Before changing code:
-
-Read README.md ([PATH]) and follow all repository rules.
-Confirm the task is still valid against the current codebase.
-Inspect the target files listed below.
-If a target path is missing or renamed, stop and report the current path before editing anything.
-Target files:
-
-[file1]
-[file2]
-...
-Requirements:
-
-Preserve existing behavior unless the task explicitly changes it.
-Make only the changes needed for this task.
-Do not create documentation.
-Do not edit unrelated files.
-Keep all command execution inside Docker.
-For RSpec, do not stream full output; run the targeted spec and report only the final summary line plus any relevant failure snippets.
-Implementation scope:
-
-[bullet point 1]
-[bullet point 2]
-...
-Testing:
-
-Update or add focused specs for the changed behavior.
-Run only the targeted spec file(s) needed to verify the change.
-If a nil-related failure appears after model creation, stop and validate the factory/model setup before changing service logic.
-Output required:
-
-Brief action plan if implementation is not yet started.
-Code changes once approved.
-Targeted test result summary.
-Any assumptions or blockers.
-Stop immediately if any requirement is unclear.
+Reference: README.md for task completion workflow.
 ```
 
-### Handoff Template Components
+### When to Split Tasks
+If the handoff would be longer than 4 lines, don't expand it — instead:
+- **Move content to task file** (comprehensive details there)
+- **OR split into multiple smaller tasks** (Phase 1, Phase 2, etc.)
+- **Never make handoffs long** — they must remain copy-paste friendly
 
-- **Role Assignment**: Clearly state the agent's role (Implementation Agent)
-- **Task Reference**: Full path to the active task file
-- **Critical First Steps**: Git operations to move task from backlog → active
-- **Target Files**: List all files that need inspection before editing
-- **Requirements**: What must be preserved, what must not be done
-- **Implementation Scope**: Specific changes expected
-- **Testing Approach**: Which specs to run and how to report results
-- **Output Expectations**: What the agent should produce at each stage
+### Task File Checklist
+✅ Clear objective and success criteria  
+✅ Complete list of target files  
+✅ Implementation scope (detailed bullets)  
+✅ Testing strategy and expectations  
+✅ Known blockers or dependencies  
+✅ Phase structure (if multi-phase work)  
 
-### Why This Matters
-
-- Ensures agents understand their exact scope before starting work
-- Prevents accidental modifications to unrelated code
-- Provides clear testing expectations upfront
-- Documents the workflow for future sessions and new agents
-- Maintains consistency across all implementation tasks
+Task files are the source of truth. Executors read full context there.
 
 ---
 
@@ -276,24 +218,26 @@ Stop immediately if any requirement is unclear.
 
 **When you act as the Planning Agent:**
 - You are responsible for generating agent handoffs after task decisions are made
+- **Handoffs must be 2-4 lines max** (copy-paste friendly across chat sessions)
+- **All details belong in task files** — task files are persistent knowledge repositories
 - Most task files are generated by Claude (web) via research and analysis
 - Refactored tasks may be reviewed by various reviewing agents before implementation
-- Your job is to synthesize all inputs and create a clear, structured handoff message for the Implementation Agent
 
 **Handoff Generation Workflow:**
-1. **Task Decision Made**: After Claude or other agents complete their review/refactoring work
-2. **Synthesize Inputs**: Gather all relevant context (task file, research notes, architectural decisions)
-3. **Generate Handoff**: Create the structured handoff message using the template in the "Agent Handoff Generation Process" section
-4. **Verify Completeness**: Ensure all target files are listed, requirements are clear, and testing expectations are defined
-5. **Present to User**: Show the handoff text for approval before it's sent to the Implementation Agent
+1. **Task Decision Made**: After task decisions finalized
+2. **Comprehensive Task File**: Write full details there (scope, targets, requirements, testing, phases)
+3. **Minimal Handoff**: Generate 2-4 line dispatch message using SIMPLE_HANDOFF_TEMPLATE.md
+4. **If handoff gets long**: Move content to task file OR split into multiple tasks
+5. **Copy-paste friendly**: Handoff must work across chat sessions without truncation
 
 **What NOT to do:**
-- Don't skip the handoff generation step
-- Don't assume the Implementation Agent knows what to do without explicit instructions
-- Don't generate vague or incomplete handoffs
-- Don't proceed with implementation tasks without a proper handoff
-- **Don't perform synthesis reports yourself** — that's explicitly part of the Implementation Agent's workflow (task files say "Synthesis Report Required" meaning THEY must produce it before coding, not you during planning)
-- **Don't read target files and analyze code unless generating task file content itself** — Planning mode is about scoping work from status.md/backlog review; detailed code inspection happens in handoff generation or by Implementation Agent after receiving assignment
+- ❌ Don't expand handoffs beyond 4 lines
+- ❌ Don't assume Implementation Agent will figure it out without task file
+- ❌ Don't put complex context in handoff (use task file)
+- ❌ **Don't perform synthesis reports yourself** — that's Implementation Agent's job (reads task file, does synthesis before coding)
+- ❌ **Don't read target files and analyze code unless writing task file** — let Implementation Agent inspect code
+
+**Your Job**: Write comprehensive task files. Keep handoffs minimal.
 
 ---
 
