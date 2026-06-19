@@ -19,24 +19,26 @@ branch: "refactor/authentication-modernization" (shared working branch)
 test_coverage: "70/70 passing tests required throughout"
 ---
 
-# Seq 6: EngineAPI Framework Distillation
+# Seq 6: EngineAPI Framework Bloat Removal
 
 ## Problem & Strategy
 
-The Authentication application currently includes an 88-file engineAPI framework package extracted from `/Users/tam0013/Documents/git/engineAPI/engine/3.2-develop`. However, Authentication uses only a minimal subset of this framework:
-- **LDAP authentication** (5-10 files)
-- **Session management** (2-3 files)
-- **CSRF token handling** (1-2 files)
-- **ACL/permission loading** (1-2 files)
-- **Temporary account lookup** (1-2 files)
+The Authentication application currently includes an 88-file engineAPI framework package at `src/phpincludes/engineAPI/engine/`. However, Authentication uses only a minimal subset:
+- **LDAP authentication** (specific modules)
+- **Session management** (specific modules)
+- **CSRF token handling** (specific modules)
+- **ACL/permission loading** (specific modules)
+- **Temporary account lookup** (specific modules)
+
+Most engineAPI modules are unused bloat.
 
 **Core insight**: Authentication is the ONLY remaining active engineAPI user (MFCS being retired, data extraction to WVU Knapsack already happening). Once Authentication is off engineAPI, the entire 88-file framework can be deprecated.
 
-**Strategy**: Audit the 88 extracted files, identify what's actually used, delete everything else. Result: 88 files → ~500 lines of distilled, purpose-built Authentication code.
+**Strategy**: Audit the 88 files in `src/phpincludes/engineAPI/engine/`, identify what Authentication actually uses, delete the unused modules/directories. Keep engineAPI in same location, just remove bloat.
 
 **Outcome**: 
-- Reduced codebase (easier to maintain, understand, modify)
-- No external framework dependency to upgrade/maintain
+- Reduced local codebase (easier to maintain, understand, modify)
+- Same `src/phpincludes/engineAPI/engine/` directory, just with unused modules removed
 - Clear deprecation path for engineAPI (retire entirely once Authentication migration complete)
 
 ## Investigation Steps
@@ -94,18 +96,11 @@ done
 # Identify which are <100 lines (candidates for migration to core app)
 ```
 
-**Step 5: Plan distillation approach**
+**Step 5: Plan deletion approach**
 Document strategy:
-1. **Extract core functions** (LDAP, sessions, CSRF, ACL, temp accounts) into new files:
-   - `src/phpincludes/auth/LDAP.php` (LDAP authentication)
-   - `src/phpincludes/auth/SessionManager.php` (session handling)
-   - `src/phpincludes/auth/CSRFProtection.php` (CSRF tokens)
-   - `src/phpincludes/auth/ACL.php` (permission loading)
-   - `src/phpincludes/auth/TempAccounts.php` (temp account lookup)
-
-2. **Update all references** from engineAPI calls to new distilled modules
-
-3. **Delete entire engine/ directory** (after verification)
+1. Identify which engine/ subdirectories are unused
+2. Create ordered deletion plan (delete dependencies last)
+3. Note: Keep all code in same location, just remove unused modules
 
 ## Execution Steps
 
@@ -115,41 +110,34 @@ Document strategy:
 
 1. Execute investigation steps above
 2. Document all findings in: `doc/ENGINEAPI_DISTILLATION_AUDIT.md`
-   - List all 88 files with usage status (used / unused / transitive)
-   - Identify core functions for extraction
-   - Create distillation plan (which modules to extract, how to reorganize)
+   - List all engine/ subdirectories with usage status (used / unused)
+   - Identify which modules are actively referenced in Authentication code
+   - Create deletion plan (ordered list of which directories to remove)
 3. Run full test suite: `./scripts/run-tests.sh` (baseline: 70/70 passing)
 
-### Phase 2: Extract & Migrate (Implementation)
+### Phase 2: Delete Unused Modules (Cleanup)
 
-1. Create new `src/phpincludes/auth/` directory structure
-2. Extract core functions from engine/ modules into distilled versions
-3. Update all includes/requires in application code
-4. Verify tests still pass after each module extraction: `./scripts/run-tests.sh` (must stay 70/70)
-5. Commit changes incrementally: `refactor: Extract LDAP from engineAPI`, `refactor: Extract sessions...` etc.
+1. Delete unused engine/ subdirectories identified in audit
+2. Verify tests still pass after each deletion: `./scripts/run-tests.sh` (must stay 70/70)
+3. Commit changes incrementally: `refactor: Remove unused engineAPI module (xyz/)`
+4. Final test run after all deletions: `./scripts/run-tests.sh` (must pass 70/70)
+5. Commit summary: `refactor: Remove unused engineAPI modules (88 files → distilled)`
 
-### Phase 3: Cleanup (Deletion)
-
-1. Delete `src/phpincludes/engineAPI/engine/` directory (after all migrations complete)
-2. Delete or archive `src/phpincludes/engineAPI/` if it becomes empty
-3. Final test run: `./scripts/run-tests.sh` (must pass 70/70)
-4. Commit: `refactor: Remove unused engineAPI framework (88 files → distilled codebase)`
+**Note**: engineAPI stays in same location (`src/phpincludes/engineAPI/engine/`), just with bloat removed.
 
 ## Success Criteria
 
 ✅ **Phase 1: Audit Complete**
 - [ ] Dependency map created and committed to `doc/ENGINEAPI_DISTILLATION_AUDIT.md`
-- [ ] All 88 files categorized (used / transitive / unused)
-- [ ] Core functions identified for extraction
-- [ ] Distillation plan documented with file-by-file strategy
-- [ ] 70/70 tests pass before changes
+- [ ] All engine/ subdirectories categorized (used / unused)
+- [ ] Deletion plan documented with ordering/dependencies noted
+- [ ] 70/70 tests pass before deletions
 
-✅ **Phase 2: Extraction & Migration**
-- [ ] New `src/phpincludes/auth/` directory created with distilled modules
-- [ ] All engineAPI references in application code updated to new distilled modules
-- [ ] All 70 tests passing after each extraction commit
-- [ ] 5-10 commits made (one per major function extraction)
-- [ ] No breaking changes to public API (external calls still work)
+✅ **Phase 2: Deletion & Cleanup**
+- [ ] All unused engine/ modules deleted from `src/phpincludes/engineAPI/engine/`
+- [ ] All 70 tests passing after each deletion
+- [ ] Multiple commits made (one per module deletion or group)
+- [ ] 70/70 tests pass after all deletions
 
 ✅ **Phase 3: Cleanup & Verification**
 - [ ] Entire `src/phpincludes/engineAPI/engine/` directory deleted
@@ -159,11 +147,11 @@ Document strategy:
 
 ## Testing Strategy
 
-Run tests after each logical extraction:
+Run tests after each logical deletion:
 ```bash
 cd ~/Documents/git/Authentication
 ./scripts/run-tests.sh
-# ✅ Must show 70/70 passing (Seq 1+2 tests + Seq 3/4 validation)
+# ✅ Must show 70/70 passing
 ```
 
 Stop and debug if tests fall below 70. All code paths have test coverage via:
@@ -177,52 +165,48 @@ Stop and debug if tests fall below 70. All code paths have test coverage via:
 
 **Phase 1 Commit** (audit results):
 ```bash
-git commit -m "docs: EngineAPI distillation audit (dependency mapping)
+git commit -m "docs: EngineAPI distillation audit (bloat identification)
 
 88-file framework analyzed:
-- X files used (core functions)
-- Y files transitive dependencies
-- Z files unused (candidates for deletion)
+- X modules used (core functions for Authentication)
+- Y modules unused (candidates for deletion)
 
-Distillation plan: Extract core → new src/phpincludes/auth/ → delete engine/
-All 70 tests baseline passed before distillation."
+Deletion plan: Remove Y unused modules from src/phpincludes/engineAPI/engine/
+All 70 tests baseline passed before deletions."
 ```
 
-**Phase 2 Commits** (extraction, one per major function):
+**Phase 2 Commits** (deletion, one per module group):
 ```bash
-git commit -m "refactor: Extract LDAP auth from engineAPI framework
+git commit -m "refactor: Remove unused engineAPI modules (xyz/, abc/)
 
-- Migrated LDAP bind logic to src/phpincludes/auth/LDAP.php
-- Updated references in login-3.0.php, authentication/index.php
+- Deleted engine/xyz/ directory (not used by Authentication)
+- Deleted engine/abc/ directory (not used by Authentication)
 - All 70 tests passing"
 
-git commit -m "refactor: Extract session management from engineAPI framework
-...
-git commit -m "refactor: Extract CSRF protection from engineAPI framework
-...
+# Continue with more deletions...
 ```
 
-**Phase 3 Commit** (final cleanup):
+**Final Commit** (summary):
 ```bash
-git commit -m "refactor: Remove unused engineAPI framework (88 files → distilled)
+git commit -m "refactor: Remove unused engineAPI framework bloat
 
-- Deleted src/phpincludes/engineAPI/engine/ directory
-- All core functions migrated to src/phpincludes/auth/
-- Codebase reduced from 88 framework files to ~500 lines of purpose-built code
+- Deleted all unused engine/ modules
+- Kept only core modules used by Authentication (LDAP, sessions, CSRF, ACL, temp accounts)
+- Reduced 88-file framework to distilled version
 - All 70 tests passing
-- Result: Authentication now has zero external framework dependencies"
+- engineAPI stays in src/phpincludes/engineAPI/engine/, just with bloat removed"
 ```
 
 ## Long-Term Impact
 
-- **Authentication**: Zero framework dependency (self-contained, minimal codebase)
+- **Authentication**: Reduced engineAPI footprint (unused modules removed)
 - **engineAPI**: Can be archived/deprecated once this task complete (no remaining active users after MFCS retirement)
-- **Maintenance**: Future Authentication changes don't require framework upgrades/maintenance
-- **New developers**: Easier onboarding (minimal codebase to understand)
+- **Maintenance**: Smaller local codebase = easier to navigate and maintain
+- **New developers**: Clearer engineAPI usage (only core modules present locally)
 
 ## Reference Docs
 
 - Audit plan: `doc/ENGINEAPI_DISTILLATION_AUDIT.md` (will be created during Phase 1)
-- Framework files: `src/phpincludes/engineAPI/engine/` (88 files total)
+- Framework files: `src/phpincludes/engineAPI/engine/` (88 files → distilled)
 - Current tests: `tests/LoginTest.php`, `tests/Unit/AuthenticationTest.php`
 - Test runner: `scripts/run-tests.sh`
