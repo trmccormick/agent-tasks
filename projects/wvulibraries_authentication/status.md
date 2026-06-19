@@ -1,5 +1,5 @@
 # WVU Libraries Authentication — Project Status & Task Tracking
-**Last Updated:** June 18, 2026
+**Last Updated:** June 19, 2026
 
 ---
 
@@ -14,22 +14,55 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
 ---
 
 ## Current Status
-- **Status:** ✅ Seq 1 + Seq 2 + R1 COMPLETE — Ready for Seq 3 (MySQL Functions Migration)
-- **Last Session:** 2026-06-18 (R1 research complete: MySQL instance isolated, zero external dependencies, SAFE to refactor)
+- **Status:** ✅ Seq 3 COMPLETE (Phase 1: Extraction) — Ready for Phase 2 decision or next sequence
+- **Last Session:** 2026-06-19 (Seq 3 Phase 1 complete via engineAPI 3.2 extraction strategy)
 - **Production Branch:** `main`; **Working Branch:** `refactor/authentication-modernization`
 - **MySQL Status:** Production 8.0.46 (EOL); Target 8.4 LTS ✅ VALIDATED COMPATIBLE; Dev: 8.4 LTS
-- **Testing Infrastructure:** ✅ LIVE — 35/35 passing tests, MockLDAPServer, test isolation, Xdebug coverage
+- **Testing Infrastructure:** ✅ LIVE — 70/70 passing tests, MockLDAPServer, test isolation, Xdebug coverage
 - **Critical Security Finding:** ⚠️ Temp account passwords stored in PLAIN TEXT (Seq 4 priority)
-- **Next Action:** Start Seq 3 (MySQL Functions Migration) — no blockers identified
+- **Next Action:** Strategist decision: Phase 2 hardening vs. proceed to Seq 4
 
 ---
 
 ## Active Tasks (Ready to Start)
-- **Seq 3**: [Maintenance] Deprecated MySQL Functions Migration — HIGH priority (Seq 1 ✅ + Seq 2 ✅ + R1 ✅ all unblocked)
+**Decision Required**: Phase 2 hardening vs. proceed to next sequence
+- **Seq 4:** [Maintenance] PHP Security Audit (OWASP) — MEDIUM priority (unblocked, addresses critical plain text password storage)
+- **Phase 2 Optional:** Prepared Statement Hardening — HIGH security value but not blocking other work
 
 ---
 
-## Recently Completed (2026-06-18)
+## Recently Completed (2026-06-19)
+
+### **Seq 3: Deprecated MySQL Functions Migration** ✅ **PHASE 1 COMPLETE — DELIVERED**
+- **File:** `2026-06-18-HIGH-MAINTENANCE-DEPRECATED-MYSQL-FUNCTIONS.md`
+- **Status:** PHASE 1 COMPLETED (task file moved to completed/ folder)
+- **Strategy Executed:** Option B — Extract engineAPI 3.2 from external repo instead of manual refactoring
+- **Phase 1 Results**:
+  * ✅ Replaced entire bundled `src/phpincludes/engineAPI/engine/` with v3.2-develop branch (83 files changed)
+  * ✅ Zero deprecated mysql_* functions remain in production codebase (all mysqli_*)
+  * ✅ Fixed emailSendBulk.php migration to mysqli_fetch_assoc()
+  * ✅ Removed legacy /old/ directory and search_old.php dead code
+  * ✅ **70/70 tests passing** — full backward compatibility verified
+- **Commit:** `81482a5` "refactor: Extract engineAPI 3.2 — Replace bundled copy with upgraded mysqli version"
+- **Branch:** `refactor/authentication-modernization`
+- **Impact**: All deprecated mysql_* functions eliminated; modernized error handling from v3.2
+- **Phase 2 Status** (Prepared Statement Hardening): ⏸️ PAUSED awaiting strategist decision
+  * Current state: engineAPI 3.2 uses string interpolation (`vsprintf()`) instead of true prepared statements
+  * Security gap documented in R2 assessment at `doc/ENGINEAPI_3.2_ASSESSMENT.md`
+  * Recommendation: Defer to Seq 4 or separate security initiative (not blocking other work)
+- **Timeline:** Phase 1 completed in single session (~2 hours extraction + testing)
+
+### **R2: EngineAPI 3.2 Completeness Review** ✅ **DELIVERED**
+- **File:** `2026-06-18-MEDIUM-RESEARCH-ENGINEAPI-3.2-COMPLETENESS.md`
+- **Status:** COMPLETED (task file moved to completed/ folder)
+- **Deliverable:** doc/ENGINEAPI_3.2_ASSESSMENT.md (comprehensive 400+ line assessment report)
+- **Key Findings**:
+  * ✅ Migration completeness: 100% — zero deprecated PHP mysql_* functions in production code
+  * ✅ Code quality: Good — proper error handling, logging improvements over bundled version
+  * ⚠️ Limitations identified: No true prepared statements (uses string interpolation), no automated tests
+  * ✅ Compatibility: Zero breaking changes vs Authentication's current usage patterns
+- **Recommendation:** SAFE TO EXTRACT — Proceed with replacing bundled copy (executed in Seq 3 Phase 1)
+- **Timeline:** ~2 hours investigation
 - **R1: MySQL Instance Dependency Analysis** ✅ **DELIVERED**
   - File: `2026-06-18-MEDIUM-RESEARCH-TEMP-ACCOUNT-PASSWORD-RESET.md`
   - Status: COMPLETED (task file moved to completed/ folder)
