@@ -1,12 +1,18 @@
 # Galaxy Game — Project Status & Task Tracking  
-**Last Updated:** 2026-06-23 Morning Session Complete
+**Last Updated:** 2026-06-23 Afternoon Session — LSPU Design Complete
 
-**Session Summary (2026-06-23):**
+**Session Summary (2026-06-23 Morning)**:
 - ✅ **Blueprint cleanup COMPLETE** — robot_charging_port duplicate removed (1dfb2a0d), gas_separator duplicate deleted, final rake validation: 8/8 Phase 1-3 tasks passing
 - ✅ **Phase 4 task file corrections applied** (bee4922) — Prerequisite Fixes section added, success criteria updated (8/8 → 12/12), profile paths corrected, task clarifications added
 - ✅ **Agent-tasks repo reorganization** — README.md updated with role definitions, routing logic clarified, task file symlink workflow documented
 - ✅ **Session workflow corrected** — m4 session stopped (freed for other work), Ryzen continuing solo with cleanup task closeout + remaining active work
-- **Current state**: Cleanup task (2026-06-19) being closed to completed/, Phase 4 implementation ready for m4 pickup (when resumed), 3 active tasks await focused work
+
+**Session Summary (2026-06-23 Afternoon)**:
+- ✅ **LSPU Design COMPLETE** — Microwave-sintering unit blueprint created (1200kg, 28m³, 45kW processing, unit_blueprint_v1.3 compliant)
+- ✅ **Closed-loop regolith recycling workflow integrated** — Regolith Harvester Rover + LSPU deployed in Phase 1; depleted regolith from TEU/PVE fed to LSPU for foundation prep
+- ✅ **Phase 1 reordered for closed-loop logic** — Deploy rover → Deploy LSPU → Set foundation_sintered → Power/Comms (6 tasks total)
+- ✅ **Manifest updated** — Both Regolith Harvester Rover and LSPU added with task_affinity mappings
+- **Current state**: Closed-loop regolith recycling fully designed; m4 executing final rake validation (expect 14/14 tasks: +2 new regolith/LSPU tasks); all changes ready to commit
 
 ---
 
@@ -40,6 +46,45 @@ Both look superficially similar during a backlog audit (an old task file that do
 
 ## Active Tasks
 
+### 🔄 LSPU Design & Closed-Loop Regolith Recycling Implementation (HIGH)
+- **Task file:** `2026-06-23-HIGH-IMPLEMENTATION-LSPU-DESIGN-AND-PHASE1-INTEGRATION.md`
+- **Machine:** M4 (Copilot) — **Implementation COMPLETE, final rake validation IN PROGRESS**
+- **Status:** Design & integration complete (2026-06-23 afternoon):
+  - ✅ **LSPU Blueprint Created** — `surface_prep_unit_lspu_bp.json` at `blueprints/units/construction/`
+    - Microwave-sintering unit (1200 kg, 28 m³)
+    - Input: depleted regolith @ 150 kg/hr
+    - Output: compacted foundation material @ 180 kg/hr (20% volume reduction)
+    - Energy: 45 kW @ 900°C
+    - Template: unit_blueprint_v1.3 compliant (has ports, empty_mass_kg, deployment_data)
+    - Materials: stainless steel 400kg, titanium 150kg, ceramics 200kg, electronics 80kg, cable harness 50kg
+  - ✅ **Regolith Harvester Rover Deployment Task** — `task_deploy_regolith_harvester_rover.json`
+    - task_id: "deploy_regolith_harvester_rover"
+    - Phase 1, execution_order 5 (early deployment)
+    - Effect: deploy_unit → regolith_harvester_rover, count 1
+    - Prerequisites: None
+  - ✅ **LSPU Deployment Task** — `task_deploy_lspu.json`
+    - task_id: "deploy_lspu"
+    - Phase 1, execution_order 6 (after rover)
+    - Effect: deploy_unit → surface_prep_unit_lspu, count 1
+    - Prerequisites: ["deploy_regolith_harvester_rover"]
+  - ✅ **Phase 1 Reordered** — `phases/phase_1_power_comms.json`
+    - New task order: rover (5) → LSPU (6) → foundation_sintered (original) → comms → PUH+PPMU → solar_rig
+    - Description updated: "Site preparation (regolith harvesting and sintering) happens in parallel with comms/power deployment"
+    - Total Phase 1 tasks: 6 (was 4)
+  - ✅ **Manifest Updated** — `manifests_v2/lunar_precursor_manifest_v2_DRAFT.json`
+    - Added: regolith_harvester_rover (count 1, task_affinity: "deploy_regolith_harvester_rover")
+    - Added: surface_prep_unit_lspu (count 1, task_affinity: "deploy_lspu")
+    - Both units placed at top of required_hardware list for visibility
+  - **Workflow (Closed Loop)**:
+    - Phase 1: Rover excavates raw regolith from pad/tank sites → LSPU positioned for processing
+    - Phase 2: TEU/PVE extracts volatiles from excavated regolith → depleted regolith fed to LSPU
+    - Phase 3: LSPU produces foundation material → tanks/pads deploy on sintered foundation
+  - **m4 Next Steps (In Progress)**:
+    1. Validate all JSON files (python3 -m json.tool)
+    2. Run rake validation: expect 14/14 tasks (6 Phase 1 + 2 Phase 2 + 3 Phase 3 + 3 pad/shell/surface)
+    3. Commit all changes to galaxyGame
+    4. Deliver synthesis report with rake output + confirmation
+
 ### 🔄 Luna Precursor V2 Sequence Reconciliation (HIGH)
 - **Task file:** `2026-06-19-HIGH-VERIFICATION-LUNA-PRECURSOR-V2-SEQUENCE-RECONCILIATION.md`
 - **Machine:** M4 (Copilot) — **Verification phase complete, Step 4/5 implementation approved for execution**
@@ -50,7 +95,7 @@ Both look superficially similar during a backlog audit (an old task file that do
     - **Shell Printing Task (High)** → APPROVED: Wire `task_print_inflatable_tank_shells` into Phase 2 after tank deployment. ⚠️ Known gap: does not advance tank deployment.stages (separate feature, acceptable for MVP)
     - **Landing Pad (Medium)** → APPROVED: Use existing `task_surface_preparation_unit_operations.json` (metadata-only), add as final Phase 3 task
     - **Task Count Mismatch (Low)** → DOCUMENTED: 9 actual tasks, not 8 (discrepancy is resolved — documentation was off, data is correct)
-  - **Step 4/5 Implementation** → APPROVED: Proceed with phase wiring + final rake validation (expect 12/12 tasks)
+  - ✅ **Step 4/5 Implementation** → APPROVED: Proceed with phase wiring + final rake validation (expect 14/14 tasks after LSPU integration)
   - **Real gaps left unfixed (design decisions, not wiring)**: Tank shell stage advancement (3c feature incomplete), landing pad sequencing (3d metadata-only) — both flagged as report-only for MVP, do not block rake pass
   - Step 4 port-model revision **confirmed actioned 2026-06-20**: `connect_units_from_effect` rewritten to use generic typed-count port categories (`internal_unit_ports`/`propulsion_ports`/`rig_ports`/`storage_ports`) via `determine_port_category` + `check_and_decrement_port`; named effect strings (`"power_output"`, `"main_power_in"`) correctly treated as human-readable labels only, never resolved against unit data; `HeavyLander`'s `charging_ports` correctly excluded as a special case, not generalized. Existing spec (`luna_settlement_integration_spec.rb`): 4 examples, 0 failures.
   - **3c/3d explicitly held as report-only per direct instruction** — shell printing wired but feature incomplete (stages not advanced); landing pad already in Phase 3. Both flagged as MVP gaps, not blocking rake pass.
