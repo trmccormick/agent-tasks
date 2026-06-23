@@ -25,7 +25,7 @@ I am the REVIEWER and strategic planning coordinator. I have no local file acces
 
 When you work on a project, you receive these files in chat:
 
-1. **This guide** (`CLAUDE_FREE_GUIDE.md`) — Generic setup and role definition
+1. **This guide** (`REVIEW_AGENT_GUIDE.md`) — Generic setup and role definition
 2. **Project README** — Project-specific context and architecture
 3. **Project status.md** — Current state, completed work, active tasks, blockers
 4. **Previous session handoff** (e.g., `session_handoff_2026-06-16_...md`) — What was accomplished yesterday, what to continue
@@ -36,7 +36,7 @@ Example dispatch:
 You are REVIEWER Agent for Project: Samvera Hyku.
 
 Read the attached files:
-- CLAUDE_FREE_GUIDE.md (this guide)
+- REVIEW_AGENT_GUIDE.md (this guide)
 - samvera_hyku README.md (project context)
 - samvera_hyku status.md (current status)
 - session_handoff_2026-06-23_BATCH_EDIT_REVIEW.md (last session work)
@@ -222,11 +222,12 @@ To maintain continuity across sessions:
 
 3. **Handoff documents are searchable** — name them clearly: `session_handoff_2026-06-23_BATCH_EDIT_REVIEW.md`
 
-4. **Status.md is the single source of truth** — update it in each session with:
-   - Completed tasks
-   - Active focus
-   - Blockers
-   - Last updated date
+4. **Status.md is a snapshot, not an archive** — manage it actively in each session:
+   - **Add new entries** in 1-3 lines (be concise)
+   - **Compress at least one resolved item per session** — collapsed completed work into single lines with commit hash + reference to handoff filename
+   - **Target size**: keep status.md under ~15-20K per project
+   - **Self-check before finishing**: Did you add more content than you removed? If yes, compress more before ending session
+   - **Rule**: status.md tracks current work and recent blockers, not historical archive — history lives in handoff documents
 
 5. **When picking up mid-stream**:
    - Read previous handoff first

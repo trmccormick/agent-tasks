@@ -282,12 +282,13 @@ When dispatching a review agent:
 | Ambiguous handoff recommendations | Be specific: "Priority 1: Implement X because Y" not "keep working" |
 | Forgetting to update status.md | Update status.md in each session — it's the single source of truth |
 | Saving handoff to wrong location | Always: `projects/[PROJECT]/handoffs/session_handoff_YYYY-MM-DD_[TOPIC].md` |
+| Restating full handoff/commit detail in status.md | Reference the commit hash or handoff filename instead — don't duplicate narrative |
 
 ---
 
 ## Quick Reference — Review Agent Checklist
 
-- [ ] Read generic guide (CLAUDE_FREE_GUIDE.md)
+- [ ] Read generic guide (REVIEW_AGENT_GUIDE.md)
 - [ ] Read project README
 - [ ] Read project status.md
 - [ ] Read previous session handoff

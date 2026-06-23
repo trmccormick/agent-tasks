@@ -1,7 +1,7 @@
 # Galaxy Game — Project-Specific Context for Review Agents
 **Last Updated**: 2026-06-23
 **For Role**: REVIEWER / PLANNING agents reviewing Galaxy Game work
-**Generic Guide**: See `/Users/tam0013/Documents/git/agent-tasks/CLAUDE_FREE_GUIDE.md` for generic setup, dispatch workflow, and role definition
+**Generic Guide**: See `/Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md` for generic setup, dispatch workflow, and role definition
 
 ---
 
@@ -9,7 +9,7 @@
 
 When you're assigned to review Galaxy Game work:
 
-1. **Read the generic guide first**: `/Users/tam0013/Documents/git/agent-tasks/CLAUDE_FREE_GUIDE.md`
+1. **Read the generic guide first**: `/Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md`
 2. **Then read this file** for Galaxy Game–specific context
 3. **Then read**: Project README, status.md, previous session handoff (pasted in chat)
 4. **Then**: Create STATUS REPORT and proceed with your assignment
@@ -37,7 +37,7 @@ When you're assigned to review Galaxy Game work:
 
 When dispatching executor agents to work on Galaxy Game, provide them with:
 
-1. Generic guide: `/Users/tam0013/Documents/git/agent-tasks/CLAUDE_FREE_GUIDE.md`
+1. Generic guide: `/Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md`
 2. Project README: `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/README.md`
 3. Galaxy Game project guide: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/README.md` (or in galaxyGame repo)
 4. Task file: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/active/[FILENAME].md`
@@ -53,7 +53,7 @@ Previous session: See session_handoff_2026-06-23_LOGISTICS_PHASE_2.md (pasted be
 Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/active/YYYY-MM-DD-PRIORITY-TYPE-TASK.md
 
 STEP 1 — Read these files in order:
-1. Generic setup: /Users/tam0013/Documents/git/agent-tasks/CLAUDE_FREE_GUIDE.md
+1. Generic setup: /Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md
 2. Project README: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/README.md
 3. Task file (above)
 
@@ -198,7 +198,7 @@ Flag immediately if any task file contradicts these. Full details in `rules/DECI
 ## Session Startup Checklist
 
 Hand me these files at the start of each session:
-1. This file (`CLAUDE_FREE_GUIDE.md`) — updated copy
+1. This file (`GALAXY_GAME_CONTEXT.md`) — updated copy
 2. `status.md` — with full suite results filled in after startup run
 3. Any synthesis reports awaiting review
 4. Any task files needing audit before going active
