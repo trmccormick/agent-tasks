@@ -42,10 +42,18 @@ Both look superficially similar during a backlog audit (an old task file that do
 
 ### 🔄 Luna Precursor V2 Sequence Reconciliation (HIGH)
 - **Task file:** `2026-06-19-HIGH-VERIFICATION-LUNA-PRECURSOR-V2-SEQUENCE-RECONCILIATION.md`
-- **Machine:** M4/Ryzen (Copilot) — **resumed live iteration 2026-06-22, not held for a separate fresh-review session as originally planned**
-- **Status:** Steps 1-4 previously confirmed (see history below). Step 5 (`luna_mission.rake`) is **actively being debugged and corrected in real time** — significant progress since the 2026-06-21 holding point, several real bugs found and fixed, currently at **3 passed / 5 not-passed (8 total tasks)**, narrowing toward genuine sequencing/data gates rather than harness bugs.
+- **Machine:** M4 (Copilot) — **Verification phase complete, Step 4/5 implementation approved for execution**
+- **Status:** Steps 1-4 verification **COMPLETE** (2026-06-23 morning):
+  - ✅ **Step 1: File Existence** — 3 phase files, 1 profile file, 9 task files (actual count, not 8) — all present
+  - ✅ **Step 2: Engine Stubs** — All 4 required methods implemented (deploy_unit, connect_units, set_unit_state, set_settlement_state) — no stubs remain
+  - ✅ **Step 3: Reconciliation** — 3 issues identified + sign-off received:
+    - **Shell Printing Task (High)** → APPROVED: Wire `task_print_inflatable_tank_shells` into Phase 2 after tank deployment. ⚠️ Known gap: does not advance tank deployment.stages (separate feature, acceptable for MVP)
+    - **Landing Pad (Medium)** → APPROVED: Use existing `task_surface_preparation_unit_operations.json` (metadata-only), add as final Phase 3 task
+    - **Task Count Mismatch (Low)** → DOCUMENTED: 9 actual tasks, not 8 (discrepancy is resolved — documentation was off, data is correct)
+  - **Step 4/5 Implementation** → APPROVED: Proceed with phase wiring + final rake validation (expect 12/12 tasks)
+  - **Real gaps left unfixed (design decisions, not wiring)**: Tank shell stage advancement (3c feature incomplete), landing pad sequencing (3d metadata-only) — both flagged as report-only for MVP, do not block rake pass
   - Step 4 port-model revision **confirmed actioned 2026-06-20**: `connect_units_from_effect` rewritten to use generic typed-count port categories (`internal_unit_ports`/`propulsion_ports`/`rig_ports`/`storage_ports`) via `determine_port_category` + `check_and_decrement_port`; named effect strings (`"power_output"`, `"main_power_in"`) correctly treated as human-readable labels only, never resolved against unit data; `HeavyLander`'s `charging_ports` correctly excluded as a special case, not generalized. Existing spec (`luna_settlement_integration_spec.rb`): 4 examples, 0 failures.
-  - 3c/3d explicitly held as report-only per direct instruction — **not wired in, not built**, still correctly flagged in rake output as of latest run.
+  - **3c/3d explicitly held as report-only per direct instruction** — shell printing wired but feature incomplete (stages not advanced); landing pad already in Phase 3. Both flagged as MVP gaps, not blocking rake pass.
   - **2026-06-22 session — real bugs found and fixed during dev-DB rerun:**
     - **Port lookup bug**: engine was reading port counts from a flat top-level key, but canonical blueprints (per `rig_blueprint_v1.2`/`module_blueprint_v1.2` templates) nest them under a `ports` block. Engine's `check_and_decrement_port` updated to read `bp['ports'][port_category]` first, falling back to legacy top-level for compatibility.
     - **`solar_expansion_rig_bp.json` and `gas_separator_bp.json` rewritten** to match current template versions, with proper `ports` blocks (`rig_ports: 1` for the rig; `internal_unit_ports: 1` / `storage_ports: 3` for the gas separator module).
