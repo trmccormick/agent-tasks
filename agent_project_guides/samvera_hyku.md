@@ -117,16 +117,87 @@ See `agent_guides/wvulibraries_knapsack.md` for details on WVU-specific override
 
 ---
 
+## Stack Car — Local Development Tool
+**Stack Car** (`sc`) is the standard Hyku local development orchestration tool. It is NOT a normal Docker application—it uses Traefik for DNS/TLS proxy routing and requires specific commands.
+
+### Prerequisites
+- Docker Desktop running
+- Stack Car installed: `gem install stack_car`
+- Stack Car proxy running: `sc proxy up`
+- Verify proxy at https://traefik.localhost.direct/dashboard/#/
+
+### Essential Stack Car Commands
+| Command | Purpose |
+|---------|---------|
+| `sc sh` | Open an interactive shell in the web container (use this, not `docker exec bash`) |
+| `sc exec <command>` | Run a command in the web container without interactive shell |
+| `sc exec bundle exec rails <cmd>` | Run Rails commands (console, migrate, etc.) |
+| `sc exec rake <task>` | Run Rake tasks (e.g., asset precompilation) |
+| `sc logs web -f` | Watch web container logs in real-time |
+| `sc up -d` | Start the stack |
+| `sc down` | Stop the stack |
+
+### Common Development Tasks
+
+**Asset Compilation (CSS/JavaScript changes)**:
+```bash
+# After modifying SCSS or JavaScript
+sc exec bundle exec rails assets:precompile
+# Then restart the web container
+sc down && sc up -d
+```
+
+**Create a Superadmin Account**:
+```bash
+sc exec rake hyku:superadmin:create
+# Follow the prompts for email and password
+```
+
+**Rails Console**:
+```bash
+sc sh
+# Inside the shell:
+bundle exec rails console
+```
+
+**Run Migrations**:
+```bash
+sc exec bundle exec rails db:migrate
+```
+
+### Multi-Tenant Access
+Hyku with Stack Car uses subdomain-based tenant routing via Traefik:
+
+| URL | Purpose |
+|-----|---------|
+| `https://admin-hyku.localhost.direct` | Superadmin interface |
+| `https://{tenant}-hyku.localhost.direct` | Individual tenant access |
+
+Example: After creating tenant "test", access it at `https://test-hyku.localhost.direct`
+
+### Important Notes
+- **DO NOT use raw `docker` commands** for this setup. Always use `sc` commands.
+- `.env.development` is pre-configured with Stack Car values; do not modify unless needed.
+- Assets are compiled to `public/assets/` in the container; changes to SCSS require recompilation.
+- Use `sc sh` for interactive work; use `sc exec` for one-off commands.
+- Container restart: Use `sc down && sc up -d`, not `docker restart`.
+
+**For WVU Knapsack**: The detailed setup and troubleshooting guide is at `/Users/tam0013/Documents/git/wvu_knapsack/HYKU_BUILD_GUIDE.md` — refer there for comprehensive Stack Car workflows and issue resolution.
+
+---
+
 ## Common Workflows
 - **Setup Steps**:
   1. Clone the repo: `git clone https://github.com/samvera/hyku.git`.
-  2. For Docker: Install Stack Car for DNS/TLS, run `docker compose build && docker compose up`.
-  3. For local: Install dependencies, run `bin/setup`, then `rails s` and background services (Solr, Fedora via wrappers).
-  4. Seed database: `rails db:seed` (creates admin user).
-  5. Generate work types: `rails generate hyrax:work_resource MyWork`.
-  6. Configure Hyrax (e.g., in `config/initializers/hyrax.rb`): Set paths (e.g., `config.fits_path`), enable features, register workflows.
-  7. Start servers: `rails s` (dev); use Puma/Sidekiq for production.
-  8. Enable notifications/workflows as needed.
+  2. For Docker with Stack Car: Ensure proxy is running, then run `sc up -d`.
+  3. Watch logs: `sc logs web -f` until "Listening on" appears.
+  4. Create admin: `sc exec rake hyku:superadmin:create`.
+  5. Access at `https://admin-hyku.localhost.direct`.
+  6. For local (non-Docker): Install dependencies, run `bin/setup`, then `rails s` and background services (Solr, Fedora via wrappers).
+  7. Seed database: `rails db:seed` (creates admin user).
+  8. Generate work types: `rails generate hyrax:work_resource MyWork`.
+  9. Configure Hyrax (e.g., in `config/initializers/hyrax.rb`): Set paths (e.g., `config.fits_path`), enable features, register workflows.
+  10. For CSS/SCSS changes: Modify, then run `sc exec bundle exec rails assets:precompile && sc down && sc up -d`.
 
 - **Key Env Vars**:
   - `HYKU_MULTITENANT`: Enable multi-tenancy (default: true).

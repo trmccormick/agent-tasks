@@ -1,11 +1,13 @@
 # WVU Libraries Knapsack — Domain Context Guide
-**Last Updated**: May 14, 2026
+**Last Updated**: 2026-06-23
 **Populated By**: GitHub Copilot
 **Source**: `docs/agent/`
 
-> This file provides context for any agent working on WVU Libraries local
-> customizations delivered via the knapsack pattern.
+> This file provides context for any agent working on WVU Libraries local customizations delivered via the knapsack pattern.
 > `@file` this into your Continue session for any WVU-specific task.
+> 
+> **PRIMARY REFERENCE FOR LOCAL DEVELOPMENT**: See `/Users/tam0013/Documents/git/wvu_knapsack/HYKU_BUILD_GUIDE.md` for authoritative, step-by-step guidance on Stack Car setup, deployment workflows, and troubleshooting.
+>
 > See also: `samvera_hyku.md` and `samvera_hyrax.md` for upstream context.
 
 ---
@@ -103,6 +105,44 @@ Best Practices: Follow the [Decorators and Overrides wiki](https://github.com/sa
   - **VM Production**: Clone, copy env files, `sh up.sh` (builds/pulls images), run `setup.sh`, reverse proxy to port 3000.
 
 - **Updates**: Pull submodule (`git submodule update`), restart. Run `setup.sh` for migrations/assets.
+
+---
+
+## Stack Car — Local Development Tool
+**Stack Car** (`sc`) is the standard Hyku local development orchestration tool. It is NOT a normal Docker application—it uses Traefik for DNS/TLS proxy routing and requires specific commands.
+
+**📍 PRIMARY REFERENCE**: `/Users/tam0013/Documents/git/wvu_knapsack/HYKU_BUILD_GUIDE.md` contains the authoritative, detailed guide for Stack Car setup and day-to-day development. Refer to that guide for comprehensive instructions.
+
+### Quick Reference for Stack Car Commands
+| Command | Purpose |
+|---------|---------|
+| `sc sh` | Open an interactive shell in the web container |
+| `sc exec <command>` | Run a command in the web container |
+| `sc exec bundle exec rails <cmd>` | Run Rails commands (console, migrate, db:seed, etc.) |
+| `sc exec bundle exec rspec spec/path` | Run specs (use targeted paths only, never full suite) |
+| `sc logs web -f` | Watch web container logs in real-time |
+| `sc up -d` | Start the stack |
+| `sc down` | Stop the stack |
+| `sh up.sc.local.sh` | Full rebuild + start (for major changes) |
+| `sh down.sc.local.sh` | Stop and clean up |
+
+### Environment
+- `.env.development` is pre-configured with Stack Car values — do not modify
+- Domains use `admin-wvu-knapsack.localhost.direct` and `{tenant}-wvu-knapsack.localhost.direct` (Traefik proxy)
+- Verify proxy is running: https://traefik.localhost.direct/dashboard/#/
+
+### Multi-Tenant Access
+| URL | Purpose |
+|-----|---------|
+| `https://admin-wvu-knapsack.localhost.direct` | Superadmin interface |
+| `https://{tenant}-wvu-knapsack.localhost.direct` | Individual tenant access |
+
+### Key Notes
+- **DO NOT use raw `docker` commands**. Always use `sc` commands.
+- After code changes to gems or knapsack overrides, run `sh up.sc.local.sh` for clean rebuild.
+- For quick iteration without rebuild: `sc up -d`, then `sc logs web -f` to watch.
+- Branch switching: Always run `docker compose down -v` to clear DB volumes (seeds are APP_NAME-specific).
+- Common troubleshooting (routing errors, Puma won't start, ports in use): See HYKU_BUILD_GUIDE.md "Troubleshooting Stack Car" section.
 
 ---
 
