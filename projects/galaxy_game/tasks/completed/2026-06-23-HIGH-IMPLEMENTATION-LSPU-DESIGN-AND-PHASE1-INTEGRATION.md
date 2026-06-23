@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 priority: HIGH
 assigned_to: m4
 created: 2026-06-23
