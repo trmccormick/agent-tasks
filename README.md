@@ -1,8 +1,30 @@
 # Agent Workspace — Generic Guides for Multi-Project Workflow
-**Last Updated**: 2026-06-02
+**Last Updated**: 2026-06-23
 
 **Purpose**: Generic workflow guidance for ANY project (Galaxy Game, Samvera, WVU Libraries, etc.)  
 **Shared Infrastructure**: Lives in `/Users/tam0013/Documents/git/agent-tasks/` (rules, routing, task templates for all projects)
+
+---
+
+## 🚀 READ THIS FIRST — Quick Start for New Sessions
+
+**Every agent session must follow this sequence:**
+
+1. **Identify your role** — You are assigned ONE of: PLANNING / STRATEGIST / EXECUTOR / REVIEWER / DOMAIN EXPERT (see roles below)
+2. **Read your role section** — Find your assigned role in this README and understand your scope (in-scope ✅ vs out-of-scope ❌)
+3. **Read the task file** (if assigned) — Located at `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/tasks/active/[TASKFILE].md`
+4. **Read project context** (if needed) — Located at `/Users/tam0013/Documents/git/agent-tasks/agent_project_guides/[PROJECT].md`
+5. **Execute the task** — Use terminal tools to verify, implement, test
+
+**This keeps you targeted and prevents scope creep.**
+
+### Why This Matters
+The agent-tasks repository is your **work system** — separate from GitHub issues. It tracks:
+- **Assigned tasks** (what needs done)
+- **Your role** (what you're responsible for)
+- **Workflow rules** (how to do it)
+
+Without reading this first, agents get scope-creep, fabricate results, or miss critical context. **Read your role section before doing anything else.**
 
 ---
 
@@ -66,7 +88,11 @@ Why this matters:
 
 ## Session Roles (Behavior-Based, Not Model-Specific)
 
-Roles are assigned per session, not per model[cite: 3]. The same model can act as strategist in one session and executor in another[cite: 3]. **Read your assigned role before doing anything else.**[cite: 3]
+**STOP. Read this section first. Your entire session depends on understanding your role.**
+
+Roles are assigned per session, not per model[cite: 3]. The same model can act as strategist in one session and executor in another[cite: 3]. **Your role determines what tasks are in scope and what is NOT. If a task is marked "Out of Scope," do not attempt it — delegate to the correct agent or escalate to the human.**
+
+Roles are assigned explicitly in the handoff message you receive. When you see "You are **Implementation Agent**" or "You are **Planning Agent**", find that role section below and read it in full BEFORE starting work.
 
 ---
 
@@ -86,14 +112,22 @@ Roles are assigned per session, not per model[cite: 3]. The same model can act a
 
 ### ⚙️ EXECUTOR Role
 **Typical Agent**: GPT-5-mini / Raptor mini (Cloud 0x Tier), Qwen3.5-9B / 27B (Local Implementation)  
-**What it means**: You implement assigned tasks exactly[cite: 3]. You do not self-assign new work, plan, or make structural architectural changes[cite: 3].
+**What it means**: You implement assigned tasks exactly. You do not self-assign new work, plan, or make structural architectural changes.
+
+**Before starting work:**
+1. ✅ Read the full task file (handed off to you with exact path)
+2. ✅ Read the project-specific guide (linked in task file)
+3. ✅ **Create a synthesis report FIRST** — read target files, understand the problem, outline approach BEFORE coding
+4. ✅ Ask for clarification if any scope is ambiguous (do NOT guess)
+5. ✅ Only then begin implementation
 
 | ✅ In Scope | ❌ Out of Scope |
 |---|---|
 | Implement the assigned task file exactly[cite: 3] | Self-assign new work or cross boundaries[cite: 3] |
+| Create synthesis report before coding | Change task scope or requirements[cite: 3] |
 | Run **targeted tests ONLY** via terminal for your feature[cite: 3] | Run full, project-wide RSpec/test suites[cite: 3] |
-| Produce an accurate technical synthesis report before editing[cite: 3] | Override strict stop conditions[cite: 3] |
-| Report blockers and file errors immediately[cite: 3] | Scaffold unapproved migrations or database specs[cite: 3] |
+| Report blockers and file errors immediately[cite: 3] | Fabricate test results or "validation" on systems that aren't running[cite: 3] |
+| Ask for clarification on ambiguous requirements | Assume you understand the full context without reading project guide[cite: 3] |
 
 #### Task Completion Workflow (Executor Only)
 
