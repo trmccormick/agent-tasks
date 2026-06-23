@@ -6,7 +6,7 @@
 > This file provides domain context for any agent working on Hyku.
 > `@file` this into your Continue session before starting any Hyku task.
 > Hyku is a multi-tenant repository application built on Hyrax.
-> See also: `agent_guides/samvera_hyrax.md` for Hyrax engine context.
+> See also: `projects/samvera_hyrax/README.md` for Hyrax engine context.
 
 ---
 
@@ -135,7 +135,7 @@ For full details, refer to the [Hyku GitHub Wiki](https://github.com/samvera/hyk
 ## WVU Deployment Context
 WVU uses a customized instance of Hyku called "WVU Knapsack", which isolates WVU-specific customizations (themes, work types, authorities) from the core Hyku application. This allows transparent overrides without modifying upstream code, ensuring maintainability as Hyku updates can be pulled via git submodule.
 
-See `agent_guides/wvulibraries_knapsack.md` for details on WVU-specific overrides, deployment, and local development setup.
+See `projects/wvulibraries_knapsack/README.md` for details on WVU-specific overrides, deployment, and local development setup.
 
 ---
 

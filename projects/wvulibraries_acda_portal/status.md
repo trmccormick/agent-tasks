@@ -31,10 +31,10 @@ ACDA Portal — WVU Libraries institutional repository and content management sy
 ---
 
 ## Special Warnings & Conventions
-- Follow all agent workflow and commit protocols as documented in agent_guides/wvulibraries_acda_portal.md
+- Follow all agent workflow and commit protocols as documented in projects/wvulibraries_acda_portal/README.md
 
 ---
 
 ## Session Notes
 - Project status tracking initialized (2026-05-29)
-- See agent_guides/wvulibraries_acda_portal.md for domain context
+- See projects/wvulibraries_acda_portal/README.md for domain context

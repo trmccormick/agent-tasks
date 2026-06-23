@@ -98,4 +98,4 @@ All task management lives in `/Documents/git/agent-tasks/projects/wvulibraries_k
 - Two prototype branches with detailed task specs created for local agent assignment
 - Main branch validated with pagination + featured collections features
 - Ready for distributed work via local agents
-- See agent_guides/wvulibraries_knapsack.md for domain context
+- See projects/wvulibraries_knapsack/README.md for domain context

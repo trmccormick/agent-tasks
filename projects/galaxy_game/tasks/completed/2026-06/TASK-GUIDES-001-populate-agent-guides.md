@@ -10,7 +10,7 @@
 ## Objective
 
 Read the legacy agent documentation in `docs/agent/` and populate the
-stub files in `docs/new_agent/agent_guides/` with relevant content.
+project README files in `projects/[PROJECT]/` with relevant content.
 
 Do not invent content. Only extract and reorganize what exists in the
 legacy docs. If a section has no relevant content in the legacy docs,
@@ -32,10 +32,10 @@ If a file's purpose is unclear, note it in your Synthesis Report.
 
 | Guide | Path | Domain |
 |---|---|---|
-| Galaxy Game | `docs/new_agent/agent_guides/galaxy_game.md` | Game project |
-| Samvera Hyku | `docs/new_agent/agent_guides/samvera_hyku.md` | Hyku app |
-| Samvera Hyrax | `docs/new_agent/agent_guides/samvera_hyrax.md` | Hyrax engine |
-| WVU Knapsack | `docs/new_agent/agent_guides/wvulibraries_knapsack.md` | WVU local overrides |
+| Galaxy Game | `projects/galaxy_game/README.md` | Game project |
+| Samvera Hyku | `projects/samvera_hyku/README.md` | Hyku app |
+| Samvera Hyrax | `projects/samvera_hyrax/README.md` | Hyrax engine |
+| WVU Knapsack | `projects/wvulibraries_knapsack/README.md` | WVU local overrides |
 
 ---
 
@@ -70,7 +70,7 @@ Follow `docs/new_agent/COMMUNICATION_PROTOCOL.md` exactly.
 Each file must be output as:
 
 ```
-[CODE_PAYLOAD: docs/new_agent/agent_guides/galaxy_game.md]
+[CODE_PAYLOAD: projects/galaxy_game/README.md]
 ```
 followed by the complete file in a fenced code block.
 

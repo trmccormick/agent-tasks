@@ -6,7 +6,7 @@
 > This file provides domain context for any agent working with the Hyrax engine.
 > `@file` this into your Continue session before starting any Hyrax-level task.
 > Hyrax is the underlying engine Hyku is built on.
-> See also: `agent_guides/samvera_hyku.md` for Hyku-specific context.
+> See also: `projects/samvera_hyku/README.md` for Hyku-specific context.
 
 ---
 

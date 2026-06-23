@@ -31,7 +31,7 @@ Samvera Hyrax — flexible, extensible institutional repository framework.
 ---
 
 ## Special Warnings & Conventions
-- Follow all agent workflow and commit protocols as documented in agent_guides/samvera_hyrax.md
+- Follow all agent workflow and commit protocols as documented in projects/samvera_hyrax/README.md
 
 ---
 

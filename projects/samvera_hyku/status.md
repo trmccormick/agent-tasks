@@ -84,7 +84,7 @@ Most recent issues are accessibility-related from automated scans and manual tes
 ---
 
 ## Special Warnings & Conventions
-- Follow all agent workflow and commit protocols as documented in agent_guides/samvera_hyku.md
+- Follow all agent workflow and commit protocols as documented in projects/samvera_hyku/README.md
 - Do NOT modify core Hyku code directly; use decorators or overrides for customizations
 - All version control operations must be executed on the host node (not inside Docker)
 - Targeted testing only — never run full RSpec suite

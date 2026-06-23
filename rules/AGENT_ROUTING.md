@@ -136,7 +136,7 @@ If asked to run a command the model cannot execute:
 
 1. **The Code-to-Doc Audit**: When a local agent changes code, Claude (web) must audit the output against master design intent — ensure no drift into generic 4X/turn-based tropes.
 2. **The Doc-to-Code Audit**: When a design rule is updated, the local execution agent must run targeted terminal checks to verify the codebase physically reflects the documentation.
-3. **The Contradiction Ban**: Agents must cross-reference active output against `docs/new_agent/agent_guides/galaxy_game.md`. If a generated pattern contradicts the guide, halt and flag for the human.
+3. **The Contradiction Ban**: Agents must cross-reference active output against `projects/galaxy_game/README.md`. If a generated pattern contradicts the guide, halt and flag for the human.
 4. **Synthesis Report Gate**: Executor produces synthesis report and stops. No changes applied until human explicitly approves.
 
 ---
