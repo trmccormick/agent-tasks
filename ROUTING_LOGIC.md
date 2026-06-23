@@ -74,20 +74,66 @@ These workstreams are independent — task files in agent-tasks are namespaced b
 
 ---
 
+## Synthesis Review Workflow (New as of 2026-06-23)
+
+**All executable tasks now follow synthesis-gating pattern:**
+
+```
+Task Creation (Claude web or Planning agent)
+         ↓
+Minimal Handoff to Executor (2-4 lines)
+         ↓
+Executor Reads Task File + Prerequisites
+         ↓
+Executor Creates STATUS SYNTHESIS REPORT (mandatory)
+         ↓
+REVIEW GATE (Synthesis posted to chat for approval)
+         │
+         ├─→ Tier 1 Review (User or Strategist)
+         │   • Catches domain/architecture gaps
+         │   • Redirects if wrong approach
+         │   • Approves or requests changes
+         │
+         ├─→ Tier 2 Review (Gemini / Perplexity / Claude web if free time)
+         │   • Deep architecture/nuance review
+         │   • Finds edge cases
+         │   • Suggests optimizations
+         │
+         └─→ Approved ✅
+         ↓
+Executor Implements (can't deviate from synthesis)
+         ↓
+Executor Reports Results (with evidence: logs, diffs)
+         ↓
+Spot-Check (Planning/Review agents verify work)
+         ↓
+Task Complete → Move to completed/
+```
+
+**Why this works**:
+- ✅ Prevents fabrication: synthesis gates execution
+- ✅ Enables collaborative review: multiple agents catch gaps at synthesis stage
+- ✅ Clear alignment: everyone agrees on approach BEFORE coding
+- ✅ Catches tier mismatches: lower-tier agents prove understanding before execution
+
+---
+
 ## Quick Routing Table
 
 | Task | Agent | Notes |
 |---|---|---|
-| Architecture decisions / design | Claude (web) | Current session role |
-| Task file creation | Claude (web) | Primary task author |
-| Agent handoff documents | Perplexity (free) | Or Claude (web) if complex |
-| STATUS.md / DECISIONS.md updates | qwen3.5:9b | Fast, low complexity |
-| Session handoff summaries | qwen3.5:9b | Lightweight markdown |
-| Code implementation | qwen3.6:27b | Primary executor (improved reasoning) |
-| Multi-file reasoning | qwen3.6:27b | Proven reliable |
-| Spec writing / debugging | qwen3.6:27b | With terminal verification |
-| Complex implementation (heavy tasks) | qwen3.6:35b (Ryzen) | First choice for complex/multi-file work |
-| Any task after two local failures | Claude Haiku 4.5 (Copilot) | 0.33x escalation |
+| **Task file creation** | Claude (web) or Strategist | Primary task author — comprehensive spec with gotchas + synthesis template |
+| **Task synthesis review** | User + Tier 2 reviewers | Gemini, Perplexity, Claude web (if free time) — architecture/edge case review |
+| **Architecture decisions** | Claude (web) | Strategic planning |
+| **Agent handoff documents** | Perplexity (free) | Or Claude (web) if complex |
+| **STATUS.md / DECISIONS.md updates** | qwen3.6:9b | Fast, low complexity |
+| **Session handoff summaries** | qwen3.6:9b | Lightweight markdown |
+| **Code implementation** | qwen3.6:27b | Primary executor (improved reasoning) |
+| **Multi-file reasoning** | qwen3.6:27b | Proven reliable |
+| **Spec writing / debugging** | qwen3.6:27b | With terminal verification |
+| **Complex implementation** | qwen3.6:35b (Ryzen) | Heavy tasks, complex multi-file work |
+| **Spot-check completed work** | Gemini (web) or Planning agent | Post-execution review, catch issues before merge |
+| **Any task after two local failures** | Claude Haiku 4.5 (Copilot) | 0.33x escalation |
 
 ---
 

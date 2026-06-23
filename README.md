@@ -114,12 +114,31 @@ Roles are assigned explicitly in the handoff message you receive. When you see "
 **Typical Agent**: GPT-5-mini / Raptor mini (Cloud 0x Tier), Qwen3.5-9B / 27B (Local Implementation)  
 **What it means**: You implement assigned tasks exactly. You do not self-assign new work, plan, or make structural architectural changes.
 
+**CRITICAL: Synthesis-Gated Workflow**
+
+Every EXECUTOR task follows this mandatory pattern:
+
+```
+1. Read task file + prerequisites
+2. Create STATUS SYNTHESIS REPORT (template in task file)
+3. POST synthesis to chat (this gates execution)
+4. WAIT for approval from user or review agent
+5. Only THEN implement the work
+```
+
+**Why synthesis is mandatory**:
+- Proves you understand the gotchas and architecture before executing
+- Enables human/reviewer to catch misalignments early (before code is written)
+- Prevents fabrication — synthesis is explicit about what you will actually test
+- Allows collaborative review — Gemini, Perplexity, or other review agents can spot nuances
+
 **Before starting work:**
 1. ✅ Read the full task file (handed off to you with exact path)
 2. ✅ Read the project-specific guide (linked in task file)
 3. ✅ **Create a synthesis report FIRST** — read target files, understand the problem, outline approach BEFORE coding
-4. ✅ Ask for clarification if any scope is ambiguous (do NOT guess)
-5. ✅ Only then begin implementation
+4. ✅ **POST synthesis to chat** — do not start any implementation until approved
+5. ✅ Ask for clarification if any scope is ambiguous (do NOT guess)
+6. ✅ Only then begin implementation
 
 | ✅ In Scope | ❌ Out of Scope |
 |---|---|
@@ -190,19 +209,131 @@ This pattern ensures task files stay current with progress across sessions witho
 
 ---
 
-### 🔬 REVIEWER Role
-**Typical Agent**: Claude (web)[cite: 3]  
-**What it means**: High-level spot checks, architecture review, and complex task file validation[cite: 3]. This role utilizes limited messages per session for high-reasoning audits[cite: 3].
+### 🔬 REVIEWER / SYNTHESIS GATE Role
+**Typical Agent**: Claude (web) (Tier 1 + deep review), Gemini (web) (Tier 2 nuance), Perplexity (Tier 2 research)  
+**What it means**: Review executor's synthesis report before they implement. Catch architectural gaps, missing gotchas, or edge cases before code is written.
+
+**When synthesis reviews happen**:
+- EXECUTOR posts STATUS SYNTHESIS REPORT in chat (after reading all prereqs)
+- REVIEWER reads synthesis and task file
+- REVIEWER either:
+  - ✅ **Approves** — "Looks good, proceed with implementation"
+  - ❓ **Questions** — "I see you're using admin domain, but the gotchas say use tenant domain — did you catch that?"
+  - ❌ **Rejects** — "You missed architecture point X. Re-read [file] section Y, then re-synthesize"
+
+**In Scope for REVIEWER**:
+- ✅ Read synthesis reports and spot gaps
+- ✅ Question executor's understanding of architecture/gotchas
+- ✅ Spot-check completed work after implementation (verify against synthesis)
+- ✅ Audit task files for clarity and completeness
+- ✅ Validate that synthesis matches what executor actually implemented
+
+**Out of Scope for REVIEWER**:
+- ❌ Do NOT implement code yourself
+- ❌ Do NOT move tasks between folders
+- ❌ Do NOT modify task files (only suggest changes to STRATEGIST)
+
+**Tier System for Synthesis Review**:
+
+| Tier | Who | Typical Issues Caught | When to Use |
+|---|---|---|---|
+| **Tier 1** | User / Strategist | Domain/business logic gaps, wrong approach for context | Always first |
+| **Tier 2 (Arch)** | Claude (web) with free time | Complex architecture interactions, subtle design issues | High-complexity tasks |
+| **Tier 2 (Nuance)** | Gemini (web) | Edge cases, domain-specific expertise (if task involves geological/game balance) | Domain-heavy tasks |
+| **Tier 2 (Research)** | Perplexity (free) | Missing external context, incomplete understanding of external systems | Tasks needing research |
 
 ---
 
 ### 🌐 DOMAIN EXPERT Role
-**Typical Agent**: Gemini (web)[cite: 3]  
-**What it means**: Deep geological, astronomical, or game-balance domain expertise. No local file access — operates entirely as a high-level theoretical advisor.
+**Typical Agent**: Gemini (web), Claude (web)  
+**What it means**: Deep geological, astronomical, game-balance, or project-domain expertise. Can act as reviewer for domain-heavy synthesis reports or as standalone advisor.
 
 ---
 
-## Agent Stack Quick Reference (Updated June 2026)
+## Typical Task Workflow (From Creation to Completion)
+
+**Phase 1: Task Creation (Planning Agent or Claude Web)**
+
+1. Planning agent or Claude web creates comprehensive task file using `TASK_TEMPLATE.md`
+   - Includes: Prerequisites, credentials, architecture gotchas, synthesis template
+   - Single source of truth for all task info
+   
+2. Task placed in `projects/[project]/tasks/active/[TASKFILE].md`
+
+3. Git commit with clear message (e.g., "task: Create batch edit descriptions fix task")
+
+**Phase 2: Minimal Handoff to Executor**
+
+1. User sends executor 2-4 line handoff:
+   ```
+   You are **Implementation Agent**.
+   Project: [project]
+   Task: /Users/tam0013/Documents/git/agent-tasks/projects/[project]/tasks/active/[TASKFILE].md
+   READ FIRST: Task file has all prerequisites, credentials, gotchas, and verification steps.
+   REQUIRED: Create STATUS SYNTHESIS REPORT before starting (template in task file).
+   ```
+
+2. Executor receives minimal message, knows exactly what to read and in what order
+
+**Phase 3: Synthesis Report (Mandatory Gate)**
+
+1. Executor reads: README.md → Project guide → Task file
+2. Executor creates STATUS SYNTHESIS REPORT (template in task file)
+3. Executor posts synthesis to chat: "Here's what I understand about this task..."
+4. **STOPS and WAITS** — does not implement anything yet
+
+**Phase 4: Synthesis Review (Collaborative)**
+
+1. **Tier 1 Review** (User or Strategist):
+   - Reads synthesis
+   - Asks clarifying questions or approves
+   - "Looks good, proceed" or "Wait, did you catch this gotcha?"
+
+2. **Tier 2 Review** (Optional, if free time):
+   - Gemini (web): Architecture/edge cases
+   - Perplexity (free): External research
+   - Claude (web): Complex nuance
+   - "Good catch on the tenant domain issue" or "Consider also handling X"
+
+3. **Approval**: Once Tier 1 approves (Tier 2 optional), executor proceeds
+
+**Phase 5: Implementation & Testing**
+
+1. Executor implements exactly as described in synthesis
+2. Executor runs **targeted tests only** (not full suite)
+3. Executor reports actual results (with logs/diffs as evidence)
+4. Cannot fabricate — synthesis gates what was promised
+
+**Phase 6: Spot-Check (Planning/Review Agent)**
+
+1. Planning agent or reviewer spot-checks the work:
+   - "Did they do what they synthesized?"
+   - "Any issues with the implementation?"
+   - "Test results legit?"
+
+2. If issues found, executor fixes or escalates
+
+**Phase 7: Task Completion**
+
+1. Executor moves task from `active/` → `completed/`
+2. Updates project `status.md`
+3. Git commit and push
+4. Task done
+
+---
+
+## Summary: Why This Workflow Works
+
+| Benefit | How It Works |
+|---|---|
+| **Prevents Fabrication** | Synthesis gates execution; executor can't claim work without committing to specific tests |
+| **Enables Collaboration** | Multiple reviewers see synthesis and can spot gaps before code is written |
+| **Catches Tier Mismatches** | If lower-tier executor misunderstands architecture, synthesis reveals it early |
+| **Minimal Handoff** | No duplication — handoff is 2-4 lines, all detail in task file |
+| **Single Source of Truth** | Task file contains everything; no scattered docs |
+| **Clear Approval Gates** | Synthesis review is explicit checkpoint; no ambiguity about "ready to start" |
+
+---
 
 **Primary Workflow**: Single-model sessions using Qwen3.5-27B on M4 Mac to avoid token limit errors when switching models in VS Code extension.
 
