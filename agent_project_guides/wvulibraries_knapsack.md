@@ -132,10 +132,21 @@ Best Practices: Follow the [Decorators and Overrides wiki](https://github.com/sa
 - Verify proxy is running: https://traefik.localhost.direct/dashboard/#/
 
 ### Multi-Tenant Access
-| URL | Purpose |
-|-----|---------|
-| `https://admin-wvu-knapsack.localhost.direct` | Superadmin interface |
-| `https://{tenant}-wvu-knapsack.localhost.direct` | Individual tenant access |
+| URL | Purpose | What You Can Do |
+|-----|---------|-----------------|
+| `https://admin-wvu-knapsack.localhost.direct` | **Admin/Proprietor interface only** | Create new tenants, manage accounts, configure system-wide settings. **NO works, NO batch edit, NO repository operations.** |
+| `https://testing-wvu-knapsack.localhost.direct` | **Default test tenant** (working repository) | Standard testing domain for WVU Knapsack. Create works, batch edit, upload files, search. **Always use this for testing unless otherwise specified.** |
+| `https://{tenant}-wvu-knapsack.localhost.direct` | **Custom tenant** (working repository) | Any custom tenant domain. Same capabilities as testing tenant. |
+
+**Convention**: A "testing" tenant is pre-created on WVU Knapsack (matching Hyku main) for consistency across both systems. Always use `https://testing-wvu-knapsack.localhost.direct` for testing repository features unless otherwise instructed.
+
+**If testing tenant doesn't exist:**
+```bash
+# Login to admin: https://admin-wvu-knapsack.localhost.direct/users/sign_in
+# Use: admin@example.com / testing123
+# Create new tenant with name "testing"
+# Then access at: https://testing-wvu-knapsack.localhost.direct
+```
 
 ### Key Notes
 - **DO NOT use raw `docker` commands**. Always use `sc` commands.

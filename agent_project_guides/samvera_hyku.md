@@ -193,18 +193,20 @@ Hyku with Stack Car uses subdomain-based tenant routing via Traefik:
 | URL | Purpose | What You Can Do |
 |-----|---------|-----------------|
 | `https://admin-hyku.localhost.direct` | **Admin/Proprietor interface only** | Create new tenants, manage accounts, configure system-wide settings. **NO works, NO batch edit, NO repository operations.** |
-| `https://{tenant}-hyku.localhost.direct` | **Individual tenant** (working repository) | Create works, batch edit, upload files, search, all repository operations. **This is where you test features.** |
+| `https://testing-hyku.localhost.direct` | **Default test tenant** (working repository) | Standard testing domain. Create works, batch edit, upload files, search, all repository operations. **Always use this for testing unless otherwise specified.** |
+| `https://{tenant}-hyku.localhost.direct` | **Custom tenant** (working repository) | Any custom tenant domain. Same capabilities as testing tenant. |
+
+**Convention**: A "testing" tenant is pre-created on both Hyku and WVU Knapsack for consistency. Always use `https://testing-hyku.localhost.direct` for testing repository features unless otherwise instructed.
+
+**If testing tenant doesn't exist:**
+```bash
+# Login to admin: https://admin-hyku.localhost.direct/users/sign_in
+# Use: admin@example.com / testing123
+# Create new tenant with name "testing"
+# Then access at: https://testing-hyku.localhost.direct
+```
 
 **Critical**: You MUST use a tenant domain (not admin domain) to access batch edit, works list, or any repository features. The admin domain only manages tenant creation.
-
-To create a test tenant:
-```bash
-sc sh
-# Inside shell:
-bundle exec rake hyku:superadmin:create        # Create superadmin account
-# Then via admin interface: admin-hyku.localhost.direct → create new tenant
-# Then access tenant at: https://new-tenant-hyku.localhost.direct
-```
 
 ### Important Notes
 - **DO NOT use raw `docker` commands** for this setup. Always use `sc` commands.
