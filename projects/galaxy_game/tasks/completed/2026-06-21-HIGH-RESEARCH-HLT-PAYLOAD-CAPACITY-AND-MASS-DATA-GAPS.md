@@ -4,10 +4,10 @@
 **Type:** Research + Implementation
 **Created:** 2026-06-21
 **Author:** Claude (web), session handoff — dry run surfaced this gap, see Context
-**Status:** ACTIVE
+**Status:** COMPLETED
 **Relocated:** From reorganization_attempt_3/ on 2026-06-22 (confirmed MVP blocker for manifest validation)
 **Moved to active:** 2026-06-22 by Implementation Agent
-**Moved to active:** 2026-06-22 by Implementation Agent
+**Completed:** 2026-06-23 by Implementation Agent (Ryzen 7)
 
 ---
 
@@ -168,3 +168,62 @@ additions, not architectural changes) can be done directly and reported.
 - Standing rule applies: grep/confirm before trusting any of this task's
   "already confirmed" section against the live codebase — it was compiled from
   file uploads in a web session, not direct local access.
+
+---
+
+## Completion Summary (2026-06-23)
+
+### Step 1: empty_mass_kg vs materials-sum discrepancy ✅ RESOLVED
+- **Authoritative**: `empty_mass_kg: 163000.0` is the correct dry mass (used by `HasMassCalculation`)
+- **Discrepancy source**: Materials list (193,000 kg) represents construction inputs with waste/machining scrap; `empty_mass_kg` is final assembled mass
+- **No fix needed** — both values are intentionally different
+
+### Step 2: Cargo/payload mass calculation ✅ CONFIRMED MISSING
+- `HasMassCalculation.calculate_mass()` only sums base craft + mounted units/modules/rigs (NOT cargo/inventory)
+- `LaunchPaymentService` uses mass for cost calculation but has NO cargo-mass summation
+- **Legacy test scripts** (`starship_integration_test.rb`, `test_build.rb`) show original design intended this but it was never completed
+
+### Step 3: Capacity-limit check ✅ CONFIRMED MISSING
+- No capacity check exists in production code
+- HLT mk1 blueprint has `max_payload_kg: 150000.0` (added Phase 2)
+- **Legacy test scripts** (`blueprint_integrity_checker.rb`) validate `max_cargo_mass_kg` was a required field — original design intent confirmed
+- **No existing check contradicts** the 150,000 kg baseline
+
+### Step 4: Luna precursor manifest mass data ✅ ALL 12 ITEMS NOW HAVE MASS
+| Item | Blueprint Path | Mass (kg) | Status |
+|------|---------------|-----------|--------|
+| solar_expansion_rig | rigs/power/ | 800.0 | ✅ Added Phase 3 |
+| planetary_power_management_unit_mk1 | infrastructure/ | 500.0 | ✅ Pre-existing |
+| comms_equipment_mk1 | electronics/ | 150.0 | ✅ Pre-existing |
+| planetary_umbilical_hub_mk1 | infrastructure/ | 300.0 | ✅ Pre-existing |
+| thermal_extraction_unit_mk1 | production/extractors/ | 2800.0 | ✅ Pre-existing |
+| planetary_volatiles_extractor_mk1 | production/extractors/ | 800.0 | ✅ Pre-existing |
+| inflatable_pressure_tank | storage/ | 800.0 | ✅ Pre-existing |
+| inflatable_cryo_tank | storage/ | 1200.0 | ✅ Pre-existing |
+| inflatable_gas_storage | storage/ | 150.0 | ✅ Pre-existing |
+| gas_separator_unit | production/refineries/ | 1200.0 | ✅ Added Phase 3 |
+| car_300_deployment_robot_mk1 | robots/deployment/ | 4500.0 | ✅ Added Phase 3 |
+| robot_charging_port | infrastructure/ | 350.0 | ✅ Pre-existing |
+
+### Additional Findings
+- **RTG blueprint** (`radioisotope_thermoelectric_generator_bp.json`) also missing mass — added 280 kg (NASA MMRTG scaled to 5 kW)
+- **robot_charging_port** updated with `deployment_data` section supporting dual-state (mounted OR deployed, both valid)
+- **Gas separator duplicate** deleted (1800kg infrastructure version removed, keeping 1200kg production/refineries canonical)
+
+### Recommendations Implemented (Phases 1-3)
+- ✅ Phase 1: HLT blueprint renamed to `heavy_lift_transport_mk1_bp.json`
+- ✅ Phase 2: Added `max_payload_kg: 150000.0` to HLT mk1 physical_properties
+- ✅ Phase 3: Added mass data to 3 blueprints (solar_expansion_rig, gas_separator_unit, car_300_deployment_robot_mk1)
+
+### Phase 4 Status
+- **NOT IMPLEMENTED** — requires architectural design review
+- Proposed: `HasPayloadCapacity` concern + integration into `LaunchPaymentService`
+- Blocked pending sign-off on approach (per task stop conditions)
+
+### Validation
+- Final rake run: 8/9 tasks passing (1 failure is known gap [3c], not related to this research)
+- No blueprint collisions or lookup errors
+- All JSON files validated with `python3 -m json.tool`
+
+**Completed by**: Implementation Agent (Ryzen 7)
+**Completion date**: 2026-06-23
