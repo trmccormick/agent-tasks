@@ -1,184 +1,72 @@
-# Claude (Free Tier) — Galaxy Game Session Guide
-**Last Updated**: 2026-06-06
-**Role**: REVIEWER + STRATEGIC DISPATCH
-**Message Budget**: Limited — reserved for review, task file drafting, and handoff prompts
+# Galaxy Game — Project-Specific Context for Review Agents
+**Last Updated**: 2026-06-23
+**For Role**: REVIEWER / PLANNING agents reviewing Galaxy Game work
+**Generic Guide**: See `/Users/tam0013/Documents/git/agent-tasks/CLAUDE_FREE_GUIDE.md` for generic setup, dispatch workflow, and role definition
 
 ---
 
-## My Role in This Stack
+## Quick Start
 
-I am the REVIEWER and strategic dispatch coordinator. I do not implement, run tests, or commit code. I have no local file access — drop files directly into the chat when I need to read them.
+When you're assigned to review Galaxy Game work:
 
-| ✅ In Scope | ❌ Out of Scope |
-|---|---|
-| Review files dropped into chat | Write or modify application code |
-| Draft task files from findings | Run RSpec or terminal commands |
-| Write handoff prompts for agents | Access local files directly |
-| Flag nil risks, spec boundary issues, stop conditions | Make git commits |
-| Strategic dispatch — which agent gets which task | Self-assign implementation work |
-| Audit synthesis reports before human approves | Manage task file moves (I draft, human copies) |
+1. **Read the generic guide first**: `/Users/tam0013/Documents/git/agent-tasks/CLAUDE_FREE_GUIDE.md`
+2. **Then read this file** for Galaxy Game–specific context
+3. **Then read**: Project README, status.md, previous session handoff (pasted in chat)
+4. **Then**: Create STATUS REPORT and proceed with your assignment
 
 ---
-
-## What Works — Lessons from 2026-06-06
-
-- **Qwen3.5-27B only** — confirmed by the agent itself. Do not switch models mid-session. Context accumulation from model switching causes token limit errors. Use 27B for everything in a single session.
-- **Copilot + 27B is the preferred workflow** — restored after Ollama model re-pull. More seamless than Continue (Apply buttons work, no manual approval clicks).
-- **Continue is the documented fallback** — works but has friction: manual approval on every terminal command, no Apply button for file edits in current config, manual copy-paste required.
-- **Ollama model re-pull fixes tool call format issues** — if 27B starts printing XML tool calls (`<tool_use>`, `<read_file_tool>`) instead of executing, run `ollama pull qwen3.5:27b` on M4 and retry.
-- **Always start Copilot 27B sessions with a full structured handoff prompt** — not a simple canary command. The overnight working session proved complex prompts trigger proper tool mode initialization.
-- **Synthesis report review before approval is the key gate** — do not skip. Caught critical issues (empty stub, missing dig, sed file corruption).
-- **sed is dangerous for Ruby file edits** — the Continue agent corrupted strategy_selector.rb with literal "n" characters. Always use Continue's Apply feature or manual VS Code editing for file changes.
-- **Copilot tools list in agent file** — keep minimal. Expanded tools list caused premium usage jump (12% → 15%) without user requests. Stick to: `['vscode', 'execute', 'read', 'edit', 'search']`
-- **Custom Copilot agent file required** — tool use in new Copilot windows requires a `.agent.md` file with explicit tool declarations. Without it, models print tool calls as text instead of executing.
-- **`chat.permissions.default: bypassApprovals`** in settings.json is required for tool execution in new sessions.
-
----
-
-## Agent Stack
-
-| Agent | Best For | Interface | File Access | Test Execution |
-|---|---|---|---|---|
-| **Claude (web) — FREE** | Review, task file drafting, handoff prompts, strategic dispatch | claude.ai | ❌ Drop files into chat | ❌ None |
-| **Qwen3.5-27B (M4)** | **Primary implementation worker** — all Galaxy Game tasks | Copilot (preferred) / Continue (fallback) | Host reads | `docker exec web bundle exec rspec spec/...` |
-| Qwen3.5-9B (M4) | Fallback only if 27B unavailable | Copilot / Continue | Host reads | `docker exec web bundle exec rspec spec/...` |
-| Qwen3.5-4B (Ryzen 7) | Planning/Inspector — read-only data gathering | Copilot / Continue | Host reads | ❌ Too small |
-| Gemini (web) | Domain expertise, game balance | gemini.google.com | ❌ None | ❌ None |
-
-**Cloud agents (GPT-5 mini, Raptor mini) are no longer available** — GitHub Copilot removed 0x tier agents. Do not reference them as fallback options.
-
----
-
-## Hardware Topology
-
-| System | Role | Ollama | Models | Notes |
-|---|---|---|---|---|
-| Intel MacBook | VS Code host only | ❌ None | — | Routes to M4 and Ryzen 7 via static IP |
-| M4 Mac | Primary inference | ✅ 0.30.6 (official app) | qwen3.5:27b, qwen3.5:9b, codestral, deepseek-coder-v2:16b, qwen2.5-coder:14b, qwen2.5-coder:7b | 100% Metal GPU, fast inference |
-| Ryzen 7 | Large model capacity | ✅ 0.30.6 | qwen3:8b, qwen3.5:4b, qwen2.5:7b, deepseek-r1:8b, deepseek-r1:14b, qwen2.5-coder:32b, qwen3-coder:30b, llama3.1:8b | 128GB RAM, Vulkan GPU (77% CPU / 23% GPU — slow) |
-
-**Critical rule**: No duplicate models across M4 and Ryzen 7. Duplicates cause Copilot routing confusion on Intel Mac.
-
-**Ollama maintenance**: M4 uses brew install (`brew upgrade ollama` to update). After any update run `ollama --version` — must show single clean version with no client/server mismatch warning. If warning appears, the brew client didn't update — run `brew upgrade ollama` again.
-
----
-
-## Copilot Agent Setup (Required for Tool Use)
-
-Tool use in new Copilot windows requires:
-
-**1. Custom agent file** at `~/.../globalStorage/github.copilot-chat/` or workspace level:
-
-```markdown
----
-name: Ollama
-description: Local Ollama executor agent for implementation tasks.
-argument-hint: A task to implement, file to read, or command to run.
-tools: ['vscode', 'execute', 'read', 'edit', 'search']
----
-
-You are a local Ollama implementation agent for the Galaxy Game project.
-Always read README first at /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/README.md
-All application code: /Users/tam0013/Documents/git/galaxyGame/galaxy_game/
-RSpec: docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS_ENV=test bundle exec rspec [SPEC_PATH] 2>&1 | tail -30'
-Git commands: host only, never inside Docker.
-Produce synthesis report and stop before applying changes.
-```
-
-**2. settings.json on Intel Mac** must include:
-```json
-"chat.permissions.default": "bypassApprovals",
-"chat.tools.global.autoApprove": true
-```
-
-**3. Model selection**: Select qwen3.5:27b from model dropdown after opening Ollama agent window.
-
-**4. First message must be a full structured handoff prompt** — not a simple command. Complex prompts trigger proper tool mode initialization for 27B.
-
-**Tool use verification** — before dispatching any task, confirm tool use is active:
-- Working: shows `Ran ls...` or `Read [file]...` as distinct UI elements
-- Broken: shows printed JSON, XML (`<tool_use>`), or text description of commands
-- Fix if broken: `ollama pull qwen3.5:27b` on M4, then retry with full handoff prompt
-
----
-
-## Continue Setup (Fallback)
-
-Continue config at `~/.continue/config.yaml` on Intel Mac. Key settings:
-- M4 endpoint: `http://10.6.186.161:11434`
-- Ryzen 7 endpoint: `http://10.6.186.50:11434`
-- All models have `capabilities: []` — tool use is handled by Continue natively, not model function calling
-- Models output code in markdown blocks, Continue applies edits
-- Terminal commands require manual approval per command — no auto-approve configured yet
-
-**Continue limitations vs Copilot**:
-- No Apply button for qwen3.5:27b in current config — manual copy-paste required for file edits
-- Manual approval click required for every terminal command
-- Do not use `sed` for file edits — caused file corruption. Use Continue's edit feature or manual VS Code editing.
-
----
-
-## Path Reference — Critical, Always Use These
+## Path Reference (Galaxy Game Specific)
 
 | Purpose | Path |
 |---|---|
 | App code (host file reads) | `/Users/tam0013/Documents/git/galaxyGame/galaxy_game/` |
 | Host repo root | `/Users/tam0013/Documents/git/galaxyGame/` |
-| README (agents read first) | `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/README.md` |
+| Project README (read first) | `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/README.md` |
 | Task files root | `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/` |
 | Task file structure | `tasks/[backlog|active|completed]/YYYY-MM/YYYY-MM-DD-PRIORITY-TYPE-NAME.md` |
-| Status file | `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/status.md` |
+| Status file (track progress here) | `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/status.md` |
 | Context docs | `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/context/` |
+| Session handoffs | `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/handoffs/` |
 | RSpec execution | `docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS_ENV=test bundle exec rspec [SPEC_PATH] 2>&1 | tail -30'` |
 | Git commands | Host only — never inside Docker |
-| agent-tasks repo | Symlinked to `docs/new_agent/` inside the galaxyGame repo |
+| Agent-tasks symlink | `docs/new_agent/` inside galaxyGame repo symlinks to `/Users/tam0013/Documents/git/agent-tasks` |
 
 ---
 
-## Handoff Prompt Format
+## Executor Agent Setup for Galaxy Game
 
-All handoff prompts are plain text. No markdown decoration.
+When dispatching executor agents to work on Galaxy Game, provide them with:
 
-### Copilot Implementation Handoff (Qwen3.5-27B)
+1. Generic guide: `/Users/tam0013/Documents/git/agent-tasks/CLAUDE_FREE_GUIDE.md`
+2. Project README: `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/README.md`
+3. Galaxy Game project guide: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/README.md` (or in galaxyGame repo)
+4. Task file: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/active/[FILENAME].md`
+5. Previous session handoff (if applicable): `handoffs/session_handoff_[DATE]_[TOPIC].md`
+
+**Example executor handoff**:
 ```
-Implement the task below. Read the README first at /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/README.md then follow all rules in it.
+You are Implementation Agent for Galaxy Game.
 
-CRITICAL: Move task from backlog to active FIRST before writing any code:
-1. git mv tasks/backlog/YYYY-MM/[FILENAME] tasks/active/YYYY-MM/[FILENAME]
-2. Update YAML: status: backlog → status: active
-3. git commit -m "Start task: [FILENAME]"
+Project: Galaxy Game (Luna Phase — AI Manager integration)
+Previous session: See session_handoff_2026-06-23_LOGISTICS_PHASE_2.md (pasted below)
 
-Task file:
-/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/active/YYYY-MM/[FILENAME]
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/active/YYYY-MM-DD-PRIORITY-TYPE-TASK.md
 
-All application code is at /Users/tam0013/Documents/git/galaxyGame/galaxy_game/ on the host.
-All RSpec runs use: docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS_ENV=test bundle exec rspec [SPEC_PATH] 2>&1 | tail -30'
-All git commands run on the host only, never inside Docker.
+STEP 1 — Read these files in order:
+1. Generic setup: /Users/tam0013/Documents/git/agent-tasks/CLAUDE_FREE_GUIDE.md
+2. Project README: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/README.md
+3. Task file (above)
 
-STEP 1 BEFORE ANY CODE — read these files and report findings:
-- [FILE 1]
-- [FILE 2]
+STEP 2 — Create STATUS SYNTHESIS REPORT in chat
+[Template in task file]
 
-Targets:
-- [IMPLEMENTATION FILE]
-- [SPEC FILE]
+STEP 3 — Wait for approval, then implement
 
-Produce synthesis report and stop. Do not apply changes until explicitly told to proceed.
-```
-
-### Read-Only Inspection
-```
-Read the README first at /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/README.md
-
-Then read and report on:
-- [FULL HOST PATH 1]
-- [FULL HOST PATH 2]
-
-Return full contents or public interface summary, inputs, outputs, nil risks.
-Do not run any tests or make any edits.
-```
-
+[Previous session handoff content pasted below]
 ---
+[handoff content]
+```
+
 
 ## Confirmed Flaky Tests — Never Fix, Never Touch
 
