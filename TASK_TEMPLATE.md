@@ -31,6 +31,16 @@
 #
 # AGENT SELECTION RULE: Always assign to local Qwen3.5-27B first.
 # Only escalate to cloud after two genuine failures in fresh local sessions.
+#
+# HANDOFF STRATEGY:
+#   The HANDOFF MESSAGE should be minimal (2-4 lines) and ONLY point to this file.
+#   All critical information goes HERE in the task file:
+#     - Credentials (usernames, passwords, URLs)
+#     - Multi-step workflows (prerequisites, read order)
+#     - Architecture gotchas (what NOT to do, why)
+#     - Acceptance criteria (what "done" looks like)
+#     - Synthesis requirement (agent must report before starting work)
+#   DO NOT duplicate this info in the handoff. Keep handoff as minimal pointer.
 
 ---
 status: backlog
@@ -39,6 +49,23 @@ type: bug-fix
 system_domain: AI_MANAGER | MANUFACTURING | TERRA_SIM | CONTROLLERS | UNITS | OTHER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT | ISRU_PRODUCTION | SPEC_HEALTH | OTHER
 local_worker_safe: true | false
+---
+
+## ⚡ Minimal Handoff (Copy this to send to agent)
+
+```
+You are **Implementation Agent**.
+
+Project: [project_name]
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/[project]/tasks/active/[FILENAME].md
+
+READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
+
+CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (template in task file).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
+
 ---
 
 # TASK: [Short descriptive title]
@@ -50,8 +77,9 @@ local_worker_safe: true | false
 
 ---
 
-## Local Worker Triage Report
+## Local Worker Triage Report (Optional — for backlog review only)
 *Filled in by local model (Ollama via Continue) during backlog review*
+*This section is NOT sent to agents — it's for human task management only*
 *Local models read task files only — they cannot run commands or access the DB*
 
 - **Template Conformance**: PASS | FAIL — [note missing sections]
@@ -62,7 +90,7 @@ local_worker_safe: true | false
 
 ---
 
-## Agent Assignment
+## Agent Assignment (Human-filled, not seen by agents)
 
 **Assigned To**: [Qwen3.5-27B local (primary) | Qwen3.5-9B local | Claude Haiku 0.33x | GPT-5 mini 0.33x | Raptor mini 0.33x]
 **Why This Agent**: [one line — if cloud agent, state why local failed]
@@ -80,6 +108,16 @@ local_worker_safe: true | false
 
 ---
 
+## Prerequisites — READ FIRST (Sequential Order)
+
+1. **Workflow**: `/path/to/agent-tasks/README.md` (EXECUTOR Role section)
+2. **Project Guide**: `/path/to/agent-tasks/agent_project_guides/[project].md`
+3. **This Task File**: Everything below
+
+> Agent MUST read in this order. Do not skip. Synthesis report goes in chat BEFORE starting work.
+
+---
+
 ## Context
 [2-4 sentences explaining what this part of the system does and why this task exists.]
 
@@ -90,6 +128,84 @@ local_worker_safe: true | false
 
 > If a doc doesn't exist for this area, do not create one during this task.
 > Flag the gap in your completion report instead.
+
+---
+
+## Critical Information for This Task
+
+### Credentials (if needed)
+| Field | Value | Notes |
+|-------|-------|-------|
+| Username/Email | `[email]` | [shared/unique/one-time] |
+| Password | `[password]` | [scope — what systems can this access] |
+| API Key | `[key]` | [environment — prod/staging/local] |
+| URL/Endpoint | `https://[url]` | [usage — where to test] |
+
+> Credentials are pre-seeded. DO NOT create new users unless explicitly instructed.
+
+### Architecture Gotchas (Critical to understand BEFORE starting)
+
+⚠️ **GOTCHA 1**: [What NOT to do]
+- ❌ Wrong: [example of wrong approach]
+- ✅ Right: [example of correct approach]
+- Why: [explanation]
+
+⚠️ **GOTCHA 2**: [What NOT to do]
+- ❌ Wrong: [example]
+- ✅ Right: [example]
+- Why: [explanation]
+
+### Multi-Domain / Multi-Tenant Routing (if applicable)
+
+| Domain/Route | Purpose | What Features Available | What NOT Available |
+|---|---|---|---|
+| Admin domain | System config, tenant creation | User management, settings | NO feature work, NO content repos |
+| Tenant domain | Repository operations | Works, collections, batch edit | NO system config |
+
+> If confused, ask: "Which domain am I supposed to be testing on?" If you're getting 404 or permission errors, you may be on the wrong domain.
+
+---
+
+## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
+
+Before navigating to any URLs, running any commands, or modifying any files, you MUST create and post a **synthesis report** in chat. This report demonstrates you understand the task before executing.
+
+**Synthesis Report Template**:
+```
+## STATUS SYNTHESIS REPORT
+
+**Task**: [name from filename]
+**Status**: [backlog → active → completed]
+**Date**: YYYY-MM-DD
+
+### What I'm About to Do
+[2-3 sentences: the goal, the verification method, the success criteria]
+
+### Files I'll Reference
+| File | Purpose | Status |
+|---|---|---|
+| `path/to/file` | [description] | [not started / pending / done] |
+
+### Prerequisites Completed
+- ✅ Read README.md EXECUTOR section
+- ✅ Read project guide  
+- ✅ Read this task file
+- ✅ Understand architecture gotchas above
+- ✅ Know which domain/credentials to use
+
+### Expected Outcomes
+[Exact description of what "done" looks like]
+
+### Critical Gotchas I Will Avoid
+- ❌ [wrong approach] — instead ✅ [right approach]
+- ❌ [wrong approach] — instead ✅ [right approach]
+
+---
+
+**SYNTHESIS COMPLETE.** Ready to proceed with [PRIORITY 1 / PRIORITY 2 / etc].
+```
+
+**POST THIS TO CHAT BEFORE PROCEEDING.** Do not start actual work until synthesis is approved.
 
 ---
 
@@ -131,11 +247,13 @@ local_worker_safe: true | false
 
 ## Implementation Steps
 
-> All agents: follow these steps exactly in order.
-> Do not skip steps or reorder them.
-> Do not proceed to the next step if the current step has not produced a clean result.
+> ⚠️ **BEFORE YOU START**: You must have completed and posted your STATUS SYNTHESIS REPORT above.
+> Do not proceed with any of these steps until synthesis is posted and approved.
 
-**Debug prints OK for complex callbacks** — add temporary `puts` statements, remove after verification.
+All agents: follow these steps exactly in order.
+- Do not skip steps or reorder them.
+- Do not proceed to the next step if the current step has not produced a clean result.
+- Debug prints OK for complex callbacks — add temporary `puts` statements, remove after verification.
 
 ### Step 1 — [action]
 [Exact description of what to do]
@@ -159,7 +277,7 @@ end
 
 > CRITICAL EXECUTION MANDATE: All RSpec commands must use the Docker wrapper below.
 > The container working directory is already /home/galaxy_game — do NOT add cd /home/galaxy_game.
-> Never run bare local test commands. Never fabricate test results.
+> Never run bare local test commands. Never fabricate test results. Actually run the specs.
 
 ```bash
 docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec [SPEC_PATH] 2>&1 | tail -20'
