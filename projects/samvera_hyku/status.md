@@ -16,11 +16,18 @@ Main repo: https://github.com/samvera/hyku (278 open issues)
 ---
 
 ## Active Tasks
-- None currently assigned
+- None currently assigned (ready for dispatch)
 
 ---
 
-## Backlog (Potential Issues to Address)
+## Current Sprint (2026-06-23)
+**Added to Sprint**: 
+- #2989 — PDF Viewer/Download Button Toggles (ALREADY RESOLVED - verify only)
+- #2990 — Batch Edit Descriptions Formatting Regression (ACTIVE IN BACKLOG)
+
+---
+
+## Recent Backlog Updates
 
 ### Accessibility Issues (High Priority - Hyku 7 Release)
 Most recent issues are accessibility-related from automated scans and manual testing:

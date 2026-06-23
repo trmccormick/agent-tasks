@@ -10,7 +10,7 @@
 
 This document reflects a transitional setup following new hardware addition (Ryzen 7 16GB GPU) and GitHub Copilot model changes. The Pi 4 home server reload and Open WebUI aggregator deployment are **pending** — routing will be revisited once that infrastructure is live.
 
-**2026-06-17 update**: qwen3.5:35b-a3b on Ryzen 7 now confirmed validated. Dual-machine parallel execution (27B on M4 + 35B on Ryzen simultaneously, different tasks) tested successfully in live session — no collision, no context bleed, both outputs usable.
+**2026-06-23 update**: qwen3.6 models deployed on both systems. M4: qwen3.6:27b (primary), Ryzen 7: qwen3.6:35b (primary for heavy work). Both validated as drop-in replacements for qwen3.5 with improved reasoning. Retiring qwen3.5:27b and qwen3.5:35b-a3b as primary executors.
 
 ---
 
@@ -52,9 +52,9 @@ These workstreams are independent — task files in agent-tasks are namespaced b
 | **Gemini (web)** | gemini.google.com | Brainstorming, documentation, game balance / domain expertise, macro planning | Free |
 | **ChatGPT (web)** | chatgpt.com | Image generation (game assets, UI concepts, world-building visuals) | Free tier |
 | **Perplexity** | perplexity.ai | Agent handoff documents, external research | Free |
-| **qwen3.5:27b** | M4 (local Ollama) | Primary implementation executor | Free/local |
-| **qwen3.5:9b** | M4 (local Ollama) | Fast lightweight tasks, planning support | Free/local |
-| **qwen3.5:35b-a3b** | Ryzen 7 (local Ollama) | Heavy execution — **validated 2026-06-17, confirmed working** | Free/local |
+| **qwen3.6:27b** | M4 & Ryzen 7 (both have it) | Primary implementation executor — improved reasoning over 3.5 | Free/local |
+| **qwen3.6:35b** | M4 & Ryzen 7 (both have it) | Heavy execution, complex multi-file work — validated 2026-06-23 | Free/local |
+| **qwen3.6:9b** | M4 (local Ollama) | Fast lightweight tasks, planning support | Free/local |
 | **Claude Haiku 4.5** | GitHub Copilot (0.33x) | Escalation when local gets stuck | 0.33x tier |
 
 ---
@@ -67,9 +67,9 @@ These workstreams are independent — task files in agent-tasks are namespaced b
 | **BRAINSTORM / DOMAIN EXPERT** | Gemini (web) | Brainstorming, documentation agent, game balance, geological/simulation expertise, macro planning |
 | **IMAGE GENERATION** | ChatGPT (web) | Game assets, UI concepts, world-building visuals |
 | **HANDOFF WRITER** | Perplexity (free) | Agent handoff documents between sessions |
-| **EXECUTOR (Primary)** | qwen3.5:27b (M4) | Implementation, multi-file reasoning, spec work, terminal verification |
-| **EXECUTOR (Light)** | qwen3.5:9b (M4) | Fast tasks — STATUS.md updates, task file edits, quick triage |
-| **EXECUTOR (Heavy)** | qwen3.5:35b-a3b (Ryzen) | Complex implementation — validated 2026-06-17. Use for heavy tasks directly, not only as 27B fallback |
+| **EXECUTOR (Primary)** | qwen3.6:27b (M4 or Ryzen) | Implementation, multi-file reasoning, spec work |
+| **EXECUTOR (Heavy)** | qwen3.6:35b (M4 or Ryzen) | Complex implementation, heavy reasoning — validated 2026-06-23 |
+| **EXECUTOR (Light)** | qwen3.6:9b (M4 only) | Fast tasks, triage, STATUS.md updates |
 | **ESCALATION** | Claude Haiku 4.5 (Copilot) | When local models fail after fresh session retry |
 
 ---
@@ -83,10 +83,10 @@ These workstreams are independent — task files in agent-tasks are namespaced b
 | Agent handoff documents | Perplexity (free) | Or Claude (web) if complex |
 | STATUS.md / DECISIONS.md updates | qwen3.5:9b | Fast, low complexity |
 | Session handoff summaries | qwen3.5:9b | Lightweight markdown |
-| Code implementation | qwen3.5:27b | Primary executor |
-| Multi-file reasoning | qwen3.5:27b | Proven reliable |
-| Spec writing / debugging | qwen3.5:27b | With terminal verification |
-| Complex implementation (heavy tasks) | qwen3.5:35b-a3b (Ryzen) | First choice for complex/multi-file work when Ryzen available |
+| Code implementation | qwen3.6:27b | Primary executor (improved reasoning) |
+| Multi-file reasoning | qwen3.6:27b | Proven reliable |
+| Spec writing / debugging | qwen3.6:27b | With terminal verification |
+| Complex implementation (heavy tasks) | qwen3.6:35b (Ryzen) | First choice for complex/multi-file work |
 | Any task after two local failures | Claude Haiku 4.5 (Copilot) | 0.33x escalation |
 
 ---
@@ -97,23 +97,23 @@ These workstreams are independent — task files in agent-tasks are namespaced b
 
 ### Permitted Modelfile customization (collision avoidance only):
 ```
-ollama run qwen3.5:27b
+ollama run qwen3.6:27b
 >>> /set nothink
->>> /save qwen3.5-27b-m4
+>>> /save qwen3.6-27b-m4
 >>> /bye
 ```
 
 ```
-ollama run qwen3.5:35b-a3b
+ollama run qwen3.6:35b
 >>> /set nothink
->>> /save qwen3.5-35b-ryzen
+>>> /save qwen3.6-35b-ryzen
 >>> /bye
 ```
 
 ```
-ollama run qwen3.5:9b
+ollama run qwen3.6:9b
 >>> /set nothink
->>> /save qwen3.5-9b-m4
+>>> /save qwen3.6-9b-m4
 >>> /bye
 ```
 
@@ -163,12 +163,12 @@ Routing table will be updated as models are validated against real Galaxy Game t
 
 ## ⚠️ Known Agent Behavior Issues
 
-### qwen3.5:27b — git mv
-Does not reliably use `git mv` for task file moves. Creates a copy in destination, leaves original in place.
+### qwen3.6:27b — git mv
+Does not reliably use `git mv` for task file moves. Creates a copy in destination, leaves original in place (inherited from qwen3.5).
 
 **Mitigation:** Task files must include explicit `git mv` with full source and destination paths. Human must run `git status` after every session that moves task files. If duplicate found: `git rm -f` the stale copy, commit manually on host.
 
-### qwen3.5:27b — Long session instability
+### qwen3.6 models — Long session instability
 Sessions running longer than one major implementation task accumulate context and become prone to tool execution failures.
 
 **Mitigation:** One task per session. If session produced large implementation (100+ lines), start fresh for next task.
