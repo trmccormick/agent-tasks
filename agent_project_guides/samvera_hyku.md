@@ -217,15 +217,37 @@ bundle exec rake hyku:superadmin:create        # Create superadmin account
 
 ---
 
+## Default Superadmin Account
+
+The system is pre-seeded with a default superadmin account. **You do not need to create a new user.**
+
+| Field | Value |
+|-------|-------|
+| Email | `admin@example.com` |
+| Password | `testing123` |
+
+**To login:**
+1. Navigate to: `https://admin-hyku.localhost.direct/users/sign_in`
+2. Enter email: `admin@example.com`
+3. Enter password: `testing123`
+4. Create tenants and manage the system
+
+This default account exists in both **Hyku main repo** and **WVU Knapsack** deployments.
+
+---
+
 ## Common Workflows
 - **Setup Steps**:
   1. Clone the repo: `git clone https://github.com/samvera/hyku.git`.
   2. For Docker with Stack Car: Ensure proxy is running, then run `sc up -d`.
   3. Watch logs: `sc logs web -f` until "Listening on" appears.
-  4. Create admin: `sc exec rake hyku:superadmin:create`.
-  5. Access at `https://admin-hyku.localhost.direct`.
+  4. ✅ **Use default admin account** (already seeded):
+     - Email: `admin@example.com`
+     - Password: `testing123`
+     - Access at: `https://admin-hyku.localhost.direct/users/sign_in`
+  5. Create a test tenant via admin interface, then access at `https://{tenant}-hyku.localhost.direct`
   6. For local (non-Docker): Install dependencies, run `bin/setup`, then `rails s` and background services (Solr, Fedora via wrappers).
-  7. Seed database: `rails db:seed` (creates admin user).
+  7. Seed database: `rails db:seed` (creates default admin user).
   8. Generate work types: `rails generate hyrax:work_resource MyWork`.
   9. Configure Hyrax (e.g., in `config/initializers/hyrax.rb`): Set paths (e.g., `config.fits_path`), enable features, register workflows.
   10. For CSS/SCSS changes: Modify, then run `sc exec bundle exec rails assets:precompile && sc down && sc up -d`.

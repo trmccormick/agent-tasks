@@ -144,6 +144,21 @@ Best Practices: Follow the [Decorators and Overrides wiki](https://github.com/sa
 - Branch switching: Always run `docker compose down -v` to clear DB volumes (seeds are APP_NAME-specific).
 - Common troubleshooting (routing errors, Puma won't start, ports in use): See HYKU_BUILD_GUIDE.md "Troubleshooting Stack Car" section.
 
+### Default Superadmin Account
+
+The system is pre-seeded with a default superadmin account. **You do not need to create a new user.**
+
+| Field | Value |
+|-------|-------|
+| Email | `admin@example.com` |
+| Password | `testing123` |
+
+**To login to WVU Knapsack admin:**
+1. Navigate to: `https://admin-wvu-knapsack.localhost.direct/users/sign_in`
+2. Enter email: `admin@example.com`
+3. Enter password: `testing123`
+4. Create tenants and manage the system
+
 ---
 
 ## Testing Conventions
