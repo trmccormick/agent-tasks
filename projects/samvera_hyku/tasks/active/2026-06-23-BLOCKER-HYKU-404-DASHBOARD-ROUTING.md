@@ -185,7 +185,7 @@ Once resolved:
 
 ## Agent Notes
 
-**Important Context**: Review `/Users/tam0013/Documents/git/agent-tasks/agent_project_guides/samvera_hyku.md` before proceeding. This provides domain context on:
+**Important Context**: Review `/Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/README.md` before proceeding. This provides domain context on:
 - Multi-tenant architecture (Apartment gem, schema-based isolation)
 - Domain-based routing (`admin-hyku.localhost.direct` vs tenant subdomains)
 - Docker setup and environment variables

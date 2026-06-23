@@ -70,7 +70,7 @@ REQUIRED: Create STATUS SYNTHESIS REPORT before starting (template in task file)
 ## Prerequisites — READ FIRST (Sequential Order)
 
 1. **Workflow**: `/Users/tam0013/Documents/git/agent-tasks/README.md` (EXECUTOR Role section)
-2. **Project Guide**: `/Users/tam0013/Documents/git/agent-tasks/agent_project_guides/samvera_hyku.md`
+2. **Project Guide**: `/Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/README.md`
 3. **This Task File**: Everything below
 
 > Agent MUST read in this order. Do not skip. Synthesis report goes in chat BEFORE starting work.
@@ -248,7 +248,7 @@ Before navigating to any URLs, running any commands, or modifying any files, you
 
 Ensure you understand the architecture before proceeding:
 - `/Users/tam0013/Documents/git/agent-tasks/README.md` (EXECUTOR Role workflow)
-- `/Users/tam0013/Documents/git/agent-tasks/agent_project_guides/samvera_hyku.md` (multi-tenant routing, Stack Car commands, default credentials)
+- `/Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/README.md` (multi-tenant routing, Stack Car commands, default credentials)
 
 ### Step 2 — Visual verification on TENANT domain
 

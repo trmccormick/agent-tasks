@@ -91,7 +91,7 @@ followed by the complete file in a fenced code block.
 
 **Completed by**: GitHub Copilot (Qwen3.5-27B implementation agent)  
 **Date**: 2026-06-06  
-**Files populated**: All 5 project guides in `agent_project_guides/` folder:
+**Files populated**: All 6 project guides in `projects/[PROJECT]/` folders (as README.md):
 1. ✅ galaxy_game.md — Domain context, tech stack, testing protocols (~60 lines)
 2. ✅ samvera_hyku.md — Multi-tenancy model, tenant creation details (~50+ lines)  
 3. ✅ samvera_hyrax.md — Works/FileSets relationships, Valkyrie patterns (~40+ lines)
@@ -101,7 +101,7 @@ followed by the complete file in a fenced code block.
 **Sections with no legacy content**: N/A — All sections populated from existing documentation and internal project knowledge
 
 **Notes**: 
-- Used `agent_project_guides/` folder instead of specified `agent_guides/` (naming convention adjustment)
+- Files now organized as `projects/[PROJECT]/README.md` (moved during repo cleanup 2026-06-23)
 - Added 5th guide file (acda_portal.md) beyond original 4 requirements
 - Source: Extracted from `docs/agent/` legacy docs and internal project knowledge as permitted by task constraints
 - All guides follow the same markdown structure with headers, context blocks, and domain-specific details

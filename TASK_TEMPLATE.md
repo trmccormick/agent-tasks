@@ -111,7 +111,7 @@ CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (templ
 ## Prerequisites — READ FIRST (Sequential Order)
 
 1. **Workflow**: `/path/to/agent-tasks/README.md` (EXECUTOR Role section)
-2. **Project Guide**: `/path/to/agent-tasks/agent_project_guides/[project].md`
+2. **Project Guide**: `/path/to/agent-tasks/projects/[project]/README.md`
 3. **This Task File**: Everything below
 
 > Agent MUST read in this order. Do not skip. Synthesis report goes in chat BEFORE starting work.

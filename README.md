@@ -13,7 +13,7 @@
 1. **Identify your role** — You are assigned ONE of: PLANNING / STRATEGIST / EXECUTOR / REVIEWER / DOMAIN EXPERT (see roles below)
 2. **Read your role section** — Find your assigned role in this README and understand your scope (in-scope ✅ vs out-of-scope ❌)
 3. **Read the task file** (if assigned) — Located at `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/tasks/active/[TASKFILE].md`
-4. **Read project context** (if needed) — Located at `/Users/tam0013/Documents/git/agent-tasks/agent_project_guides/[PROJECT].md`
+4. **Read project context** (if needed) — Located at `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/README.md`
 5. **Execute the task** — Use terminal tools to verify, implement, test
 
 **This keeps you targeted and prevents scope creep.**

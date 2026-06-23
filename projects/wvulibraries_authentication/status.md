@@ -386,7 +386,7 @@ WVU Libraries Authentication System — Centralized LDAP-based authentication ga
   - **MFCS**: Legacy application (uses EngineAPI); no longer updated; being retired
     - Data extraction process to WVU Knapsack (https://github.com/wvulibraries/wvu_knapsack) already happening
     - Data extraction is independent/unrelated to Authentication/EngineAPI strategy
-    - See: `agent_project_guides/wvulibraries_knapsack.md` (already in agent-tasks)
+    - See: `projects/wvulibraries_knapsack/README.md` (already in agent-tasks)
   - **EngineAPI**: Used by Authentication (only active user); MFCS legacy but not maintained
     - Clear retirement path once Authentication migrates off EngineAPI
     - MFCS retirement process does not impact EngineAPI deprecation timeline
