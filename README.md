@@ -135,6 +135,25 @@ Provide brief summary:
 - ⚠️ What (if anything) was deferred and why
 - 📋 Recommendation on next sequence (if applicable)
 
+#### Task Review & Update Pattern (When Reviewing Existing Work)
+
+When you review an active task to assess completion status or add progress notes:
+
+1. **Open the active task file** at `[project]/tasks/active/[TASKFILE].md`
+2. **Add completion notes section** if work continues tomorrow:
+   ```
+   ## Completion Notes (Updated [DATE])
+   - ✅ Work completed: [specific items]
+   - ⏳ Remaining: [items deferred to tomorrow]
+   - 📌 Next steps: [what to resume with]
+   ```
+3. **Decide**: Is work 100% done?
+   - **YES** → Move to completed/ (follow full Task Completion Workflow above)
+   - **NO** → Keep in active/, update notes, commit with message: `"task: Update progress notes — [brief status]"`
+4. **Commit**: Push task file updates to agent-tasks repo
+
+This pattern ensures task files stay current with progress across sessions without duplicate work.
+
 ---
 
 ### 🔬 REVIEWER Role
