@@ -1,5 +1,5 @@
 ---
-status: completed
+status: active
 priority: HIGH
 type: bug-fix
 system_domain: Hyku 7 Release
@@ -9,7 +9,7 @@ local_worker_safe: true
 
 # TASK: Fix Batch Edit Descriptions Formatting Regression
 
-**Status**: ACTIVE
+**Status**: ACTIVE (CSS implemented, blocked on blocker resolution) → **BLOCKER RESOLVED** — proceed with visual verification
 **Priority**: HIGH
 **Type**: bug-fix
 **Created**: 2026-06-23
