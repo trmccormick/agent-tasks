@@ -42,7 +42,7 @@ You are REVIEWER Agent for [PROJECT].
 
 Read these files (in order):
 
-1. /Users/tam0013/Documents/git/agent-tasks/CLAUDE_FREE_GUIDE.md
+1. /Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md
    → Generic setup, role definition, session workflow
 
 2. /Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/README.md
@@ -173,7 +173,7 @@ You are Implementation Agent for [PROJECT].
 Previous session review: [reference this handoff]
 
 TODAY:
-1. Read generic guide: /Users/tam0013/Documents/git/agent-tasks/CLAUDE_FREE_GUIDE.md
+1. Read generic guide: /Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md
 2. Read project README
 3. Read task file: [FULL PATH]
 4. Create synthesis report (template in task file)
@@ -233,7 +233,7 @@ Session 4 (Executor):
 When dispatching a review agent:
 
 1. **Prepare the package**:
-   - Generic guide: `/Users/tam0013/Documents/git/agent-tasks/CLAUDE_FREE_GUIDE.md`
+   - Generic guide: `/Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md`
    - Project README: `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/README.md`
    - Project status.md: `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/status.md`
    - Previous handoff: `projects/[PROJECT]/handoffs/session_handoff_YYYY-MM-DD_[TOPIC].md`
