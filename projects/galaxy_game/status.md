@@ -1,5 +1,12 @@
 # Galaxy Game — Project Status & Task Tracking  
-**Last Updated:** 2026-06-23 10:00 UTC (Blueprint cleanup in progress: robot_charging_port duplicate removed ✅, gas_separator duplicate deletion pending. Ryzen cleanup task and m4 Phase 4 implementation task both RESUMED in active/ status. Claude free session ended early; real work resuming in evening session.)
+**Last Updated:** 2026-06-23 Morning Session Complete
+
+**Session Summary (2026-06-23):**
+- ✅ **Blueprint cleanup COMPLETE** — robot_charging_port duplicate removed (1dfb2a0d), gas_separator duplicate deleted, final rake validation: 8/8 Phase 1-3 tasks passing
+- ✅ **Phase 4 task file corrections applied** (bee4922) — Prerequisite Fixes section added, success criteria updated (8/8 → 12/12), profile paths corrected, task clarifications added
+- ✅ **Agent-tasks repo reorganization** — README.md updated with role definitions, routing logic clarified, task file symlink workflow documented
+- ✅ **Session workflow corrected** — m4 session stopped (freed for other work), Ryzen continuing solo with cleanup task closeout + remaining active work
+- **Current state**: Cleanup task (2026-06-19) being closed to completed/, Phase 4 implementation ready for m4 pickup (when resumed), 3 active tasks await focused work
 
 ---
 
@@ -176,6 +183,24 @@ Tracy confirmed: the planned **mk1/mk2/mk3 craft versions are a distinct version
 ---
 
 ## Completed
+
+### 2026-06-23 Morning Session — Blueprint Cleanup Complete + Phase 4 Task Corrections
+- ✅ **Blueprint cleanup finalized** — gas_separator_unit_bp.json duplicate at `units/infrastructure/` deleted; canonical 1200kg version at `units/production/refineries/` retained. robot_charging_port duplicate (250kg module at `modules/energy/`) deleted 2026-06-23 morning (commit 1dfb2a0d); canonical 350kg unit at `units/infrastructure/` retained.
+- ✅ **Final rake validation** — 8/8 Phase 1-3 tasks passing (3 power_comms + 2 isru_deployment + 3 gas_processing phases). 1 expected failure: deploy_gas_separator (3c gap: tank stage advancement). No blueprint collision errors, deterministic lookups confirmed working.
+- ✅ **Phase 4 implementation task file finalized** (commit bee4922):
+  - Added "Prerequisite Fixes" section documenting gas_separator cleanup gate and robot_charging_port verification status
+  - Corrected success criteria: 8/8 → **12/12 total tasks** (all 4 phases: 3+2+3+4)
+  - Fixed profile path references (removed `data/json-data/missions/` prefix, using relative paths)
+  - Added task clarifications: CAR-300 pre-deployed (state transition), ISRU stockpiling as simulation trigger (inventory population)
+  - **Implementation-ready** pending Ryzen cleanup task closure
+- ✅ **Agent-tasks repo infrastructure updates** (applied 2026-06-23 morning, completed by m4):
+  - README.md: Added role definitions (STRATEGIST, EXECUTOR, REVIEWER, DOMAIN EXPERT), file organization clarity, symlink workflow guidance, task lifecycle rules
+  - ROUTING_LOGIC.md: Qwen3.6 agent stack defined, synthesis review workflow documented, hardware topology current, agent assignments clear
+  - Session workflow improved: role-based routing, clear handoff patterns, cost-efficiency focus
+- ✅ **Session reorganization completed** — m4 session stopped (freed for other work), Ryzen continuing solo with immediate cleanup task closeout, remaining active work unchanged
+- **Files modified**: status.md (this file), Phase 4 task file (bee4922), README.md + ROUTING_LOGIC.md (agent-tasks repo)
+- **Cleanup task status**: Moving to completed/ (Ryzen continuing session solo)
+- **Phase 4 implementation status**: Backlog ready, awaiting m4 resumption for implementation work
 
 ### 2026-06-20 Session — Canonical Phase Docs Received: `DEVELOPMENT_ROADMAP.md` + `PHASE_ALIGNMENT_SUMMARY_2026-06-18.md`
 - ✅ **`DEVELOPMENT_ROADMAP.md`** (dated 2026-06-19) — now the single canonical reference for System A (complete, Phases 1-4) + System B (5+/6+/9+) + Narrative Acts cross-mapping. Explicitly supersedes the original January 2026 roadmap (old Phase 1-5 Sol→Wormhole NPC buildout sequence — fully retired, mapped onto the new structure in its "Historical Context" section). Confirms Phase 5+ is Luna calibration **only** — explicit principle: "Only create tasks that are prerequisites needed BEFORE the Luna simulation can run. Do NOT add new features to phase5+." Lists supporting docs for both ISRU/operations and planning — including `GALAXY-GAME-PHASE-ALIGNMENT.md` and `AI-MANAGER-LUNA-BEHAVIOR-GOALS.md`, confirming both those docs (reviewed earlier this session) are correctly cross-referenced from the canonical source.
