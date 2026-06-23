@@ -1,6 +1,6 @@
-# Simple Handoff Template — 2-4 Lines Only
+# Simple Handoff Template — Concise Paragraph Format
 
-**Copy-paste friendly format for chat sessions. All details belong in task file.**
+**Copy-paste friendly format for chat sessions. All details belong in task file. If handoff gets long, create a task file instead.**
 
 ---
 
@@ -38,8 +38,8 @@ Implement Seq 4 security audit.
 
 ## Rules
 
-✅ **Keep handoff to 2-4 lines max** — Must be copy-paste friendly across chat sessions
-✅ **All details in task file** — Comprehensive context, target files, requirements, testing instructions
-✅ **If handoff gets long** — Move content to task file OR split into multiple smaller tasks
+✅ **Keep handoff concise and copy-paste friendly** — Typically a short paragraph, not verbose prose
+✅ **All details in task file** — Comprehensive context, target files, requirements, testing instructions belong there
+✅ **If handoff exceeds ~10 lines** — Move content to a new task file and reference it in handoff
 ✅ **Task file is source of truth** — Executor reads full details there, not in handoff
-✅ **Handoff is dispatch only** — "Read this task file and implement it"
+✅ **Handoff is dispatch only** — "You are [role]. Read task file at [path]. Implement [scope]."

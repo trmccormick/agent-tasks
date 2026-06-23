@@ -179,13 +179,14 @@ For example, Galaxy Game has a dedicated Docker command guide at:
 
 ## Agent Handoff Generation Process (Updated June 2026)
 
-**Core Pattern**: Handoffs must be **2-4 lines max** (copy-paste friendly). All details belong in task files.
+**Core Pattern**: Handoffs should be **concise and copy-paste friendly** — typically a short paragraph. All details belong in task files. If a handoff grows too long (more than ~10 lines of substantive content), create a task file instead.
 
 ### Why This Pattern?
-- Handoffs get copied across chat sessions and long text causes issues
+- Handoffs get copied across chat sessions; long text creates friction
 - Task files are persistent, detailed repositories of work
 - Handoff is dispatch only: "Read this task and implement it"
 - Planning agent documents everything in task file, not handoff
+- When content becomes verbose → move to task file, reference it in handoff
 
 ### Handoff Template (Proven Working Format)
 ```
