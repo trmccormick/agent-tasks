@@ -79,7 +79,29 @@ The architecture supports both ActiveFedora (legacy) and Valkyrie (modern) persi
 
 ---
 
-## Community Conventions
+## ⚠️ CRITICAL ARCHITECTURE REMINDER
+
+**Admin domain has NO repository features.** The admin tenant (`admin-hyku.localhost.direct`) is ONLY for:
+- Creating new tenants
+- System-wide configuration
+- Superadmin account management
+
+**It does NOT have:**
+- Works list
+- Batch edit
+- Collections
+- File uploads
+- Search
+- Any repository functionality
+
+**To test repository features (batch edit, works, collections, etc.), you MUST:**
+1. Create a separate tenant via admin interface
+2. Access that tenant via its subdomain (e.g., `testing-hyku.localhost.direct`)
+3. Test features on the TENANT domain, never the admin domain
+
+This is by design — admin and tenants are completely separated by Apartment gem schema isolation.
+
+---
 - **README**: Overview, getting started, links to docs/wiki.
 - **Docs**: `docs/getting-started.md` (installation), `docs/configuration.md` (env vars), `docs/using-hyku.md` (usage), `docs/wiki/` (detailed guides on multi-tenancy, themes, etc.).
 - **Architectural Decisions**:
@@ -168,12 +190,21 @@ sc exec bundle exec rails db:migrate
 ### Multi-Tenant Access
 Hyku with Stack Car uses subdomain-based tenant routing via Traefik:
 
-| URL | Purpose |
-|-----|---------|
-| `https://admin-hyku.localhost.direct` | Superadmin interface |
-| `https://{tenant}-hyku.localhost.direct` | Individual tenant access |
+| URL | Purpose | What You Can Do |
+|-----|---------|-----------------|
+| `https://admin-hyku.localhost.direct` | **Admin/Proprietor interface only** | Create new tenants, manage accounts, configure system-wide settings. **NO works, NO batch edit, NO repository operations.** |
+| `https://{tenant}-hyku.localhost.direct` | **Individual tenant** (working repository) | Create works, batch edit, upload files, search, all repository operations. **This is where you test features.** |
 
-Example: After creating tenant "test", access it at `https://test-hyku.localhost.direct`
+**Critical**: You MUST use a tenant domain (not admin domain) to access batch edit, works list, or any repository features. The admin domain only manages tenant creation.
+
+To create a test tenant:
+```bash
+sc sh
+# Inside shell:
+bundle exec rake hyku:superadmin:create        # Create superadmin account
+# Then via admin interface: admin-hyku.localhost.direct → create new tenant
+# Then access tenant at: https://new-tenant-hyku.localhost.direct
+```
 
 ### Important Notes
 - **DO NOT use raw `docker` commands** for this setup. Always use `sc` commands.
