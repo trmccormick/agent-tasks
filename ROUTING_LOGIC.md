@@ -256,3 +256,35 @@ Agents under pressure may attempt to recreate spec files from scratch rather tha
 | **M4 Mac** | localhost (27B, 9B) — mobile, works anywhere | Can optionally hit Ryzen 7 for heavy tasks | Do not depend on Pi — M4 travels |
 | **Intel MacBook** | Ryzen 7 direct (no local models) | Pi/WebUI if deployed | — |
 | **Ryzen 7** | localhost (35B) — serves remote requests | — | — |
+
+## Daily Budget & Session Hygiene (added 2026-06-23)
+
+**Context**: Github Copilot's 0x tier was removed, shifting load to local Ollama models
+(qwen3.6 on M4/Ryzen) with Haiku 4.5 (0.33x) as escalation. This requires daily attention
+that wasn't needed under the old subscription — usage can spike fast and silently.
+
+### Daily Pin Check (Intel MacBook)
+- First action each session: open the Copilot gear icon, check the active model.
+- Known-good: Haiku 4.5 pinned, qwen3.6 (M4/Ryzen) visible.
+- Known-bad: Auto. If Auto is selected, re-pin before doing anything else.
+- **Confirmed bug (2026-06-23)**: pinning via the gear/model-management UI has not reliably
+  held overnight — reverted to Auto unprompted at least twice. Root cause not yet isolated
+  (candidates: extension auto-update, Settings Sync overwrite). Treat the pin as something
+  that must be re-verified daily, not something that holds once set, until root-caused.
+- Real-world cost of missing this: usage jumped from ~32-33% to 78% over one weekend
+  (2026-06-21/22) when Auto silently ran 2 concurrent sessions on a non-0x model.
+
+### Session Length Discipline (all agents, not just qwen)
+- Start fresh sessions daily rather than letting any single session run long.
+- Applies to qwen (already documented above — context accumulation causes tool failures)
+  AND to Claude/cloud planning sessions — long sessions risk the same kind of drift even
+  without the tool-execution failure mode: scope confusion, stale context, abrupt endings
+  that skip proper handoff documentation.
+- A session that ends abruptly without a handoff document is a session that didn't finish
+  its job — see Multi-Session Continuity Rules. Budget time to close a session properly
+  (handoff written) rather than letting it run until it's cut off.
+
+### Month-End Budget Note (2026-06)
+- ~1 week remaining as of 2026-06-23, at 78% usage — extra burn this week is acceptable,
+  the priority is establishing the daily-check habit before next month, not minimizing
+  spend in the next 7 days specifically.
