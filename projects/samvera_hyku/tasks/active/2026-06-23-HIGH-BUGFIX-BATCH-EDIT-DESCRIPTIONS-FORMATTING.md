@@ -32,6 +32,50 @@ local_worker_safe: true
 - Access with: admin@example.com / testing123 (default system user)
 
 ---
+status: active
+priority: HIGH
+type: bug-fix
+system_domain: Hyku 7 Release
+mvp_alignment: Hyku 7 Regression Fix
+local_worker_safe: true
+---
+
+# TASK: Fix Batch Edit Descriptions Formatting Regression
+
+**Status**: ACTIVE (CSS implemented in hyrax.scss, asset precompile validated, blocker resolved) → AWAITING VISUAL VERIFICATION + SPECS
+**Priority**: HIGH
+**Type**: bug-fix
+**Created**: 2026-06-23
+**Last Updated**: 2026-06-23
+**GitHub Issue**: https://github.com/samvera/hyku/issues/2990
+
+---
+
+## ⚡ Minimal Handoff
+
+```
+You are **Implementation Agent**.
+
+Project: samvera_hyku
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/tasks/active/2026-06-23-HIGH-BUGFIX-BATCH-EDIT-DESCRIPTIONS-FORMATTING.md
+
+CSS fix already implemented. Needs visual verification + targeted specs.
+
+READ FIRST: Task file has all credentials, gotchas, and verification steps.
+REQUIRED: Create STATUS SYNTHESIS REPORT before starting (template in task file).
+```
+
+---
+
+## Prerequisites — READ FIRST (Sequential Order)
+
+1. **Workflow**: `/Users/tam0013/Documents/git/agent-tasks/README.md` (EXECUTOR Role section)
+2. **Project Guide**: `/Users/tam0013/Documents/git/agent-tasks/agent_project_guides/samvera_hyku.md`
+3. **This Task File**: Everything below
+
+> Agent MUST read in this order. Do not skip. Synthesis report goes in chat BEFORE starting work.
+
+---
 
 ## Context
 
@@ -44,10 +88,45 @@ However, this fix did **not carry forward to Hyku 7**, and the regression has re
 - PALS board: notch8/palni_palci_knapsack#386
 - Hyrax duplicate: samvera/hyrax#7071
 
-**Relevant Architecture**:
-- Batch editing inherits from Hyrax's batch edit forms
-- Hyku may have overrides in `app/views/hyrax/batch_edits/` or CSS in `app/assets/stylesheets/`
-- Check `Gemfile` to determine Hyrax version
+---
+
+## Critical Information for This Task
+
+### Credentials
+| Field | Value | Scope |
+|-------|-------|-------|
+| Email | `admin@example.com` | Pre-seeded system account, shared across all Hyku instances |
+| Password | `testing123` | Default for all environments (development/test) |
+| Admin URL | `https://admin-hyku.localhost.direct` | Tenant creation and system config ONLY |
+| Tenant URL | `https://testing-hyku.localhost.direct` | WHERE YOU TEST — full repository features |
+
+> This account already exists. DO NOT create a new user.
+
+### Architecture Gotchas (CRITICAL — Read Carefully)
+
+⚠️ **GOTCHA 1: Admin Domain vs Tenant Domain**
+- ❌ Wrong: Access batch edit at `https://admin-hyku.localhost.direct` → Will get 404
+- ✅ Right: Access batch edit at `https://testing-hyku.localhost.direct` → Works correctly
+- Why: Admin domain is ONLY for tenant management. Batch edit, works, collections exist ONLY on tenant domains
+
+⚠️ **GOTCHA 2: CSS Fix is Already Done**
+- ❌ Wrong: Re-investigate the CSS, try alternative implementations, modify hyrax.scss further
+- ✅ Right: CSS is correct (lines 53-73 in hyrax.scss) — just verify it works visually and run specs
+- Why: Implementation was already completed, asset precompile validated. Your job is verification only.
+
+⚠️ **GOTCHA 3: Specs Must Be Targeted**
+- ❌ Wrong: Run full test suite (`bundle exec rspec`) or specs outside batch edit
+- ✅ Right: Only run `spec/features/batch_edit*` and `spec/views/hyrax/batch_edits/`
+- Why: Full suite is slow and may have unrelated failures. We only care about batch edit functionality.
+
+### CURRENT STATUS (Session 2026-06-23)
+
+✅ **CSS FIX IMPLEMENTED**: Lines 53-73 in `/Users/tam0013/Documents/git/hyku/app/assets/stylesheets/hyrax.scss`
+✅ **ASSET PRECOMPILE VALIDATED**: No errors, CSS compiled successfully
+✅ **CONTAINER RESTARTED**: CSS changes live in running container
+✅ **BLOCKER RESOLVED**: 404 was specification error (admin ≠ tenant)
+
+**YOUR JOB**: Verify it works + run specs + move task to completed
 
 ---
 
@@ -93,6 +172,55 @@ On the Work Batch Edit page, when a user:
 ```
 
 **Status**: ✅ Compiled successfully via `bundle exec rails assets:precompile`
+
+---
+
+## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
+
+Before navigating to any URLs, running any commands, or modifying any files, you MUST create and post a **synthesis report** in chat. This demonstrates you understand the task before executing.
+
+**Synthesis Report Template** (copy and fill in):
+```
+## STATUS SYNTHESIS REPORT
+
+**Task**: Fix Batch Edit Descriptions Formatting (#2990)
+**Status**: Active → Verification Phase
+**Date**: YYYY-MM-DD
+
+### What I'm About to Do
+[2-3 sentences: CSS is already done, my job is verify visually + run specs]
+
+### Files I'll Reference
+| File | Purpose | Status |
+|---|---|---|
+| hyrax.scss (lines 53-73) | CSS fix location | Already implemented ✅ |
+| spec/features/batch_edit* | Targeted test suite | Pending run |
+| https://testing-hyku.localhost.direct/dashboard/my/works | Visual verification | Pending |
+
+### Prerequisites Completed
+- ✅ Read README.md EXECUTOR section
+- ✅ Read project guide (samvera_hyku.md)
+- ✅ Read this task file
+- ✅ Understand admin ≠ tenant domains
+- ✅ Know credentials: admin@example.com / testing123
+
+### Expected Outcomes
+1. **Visual Verification**: Labels render horizontally on Descriptions tab (not vertically)
+2. **Specs**: All batch edit tests pass (0 failures)
+3. **Task Movement**: Move from active/ to completed/
+
+### Critical Gotchas I Will Avoid
+- ❌ DO NOT test on admin domain — use testing-hyku.localhost.direct
+- ❌ DO NOT run full test suite — only batch_edit* specs
+- ❌ DO NOT re-investigate CSS — just verify and test
+- ✅ DO screenshot passing visual verification
+
+---
+
+**SYNTHESIS COMPLETE.** Ready to proceed with Priority 1 (visual verification).
+```
+
+**POST THIS TO CHAT BEFORE PROCEEDING.** Do not start work until synthesis is approved.
 
 ---
 
