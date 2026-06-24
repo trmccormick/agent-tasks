@@ -67,27 +67,27 @@ exit
 **Reference**: #2990, original fix #2527
 
 ---
-### Batch Edit Issue #2990 — Upstream Investigation Required (2026-06-24)
+### Batch Edit Issue #2990 — Approved with CSS Refinement (2026-06-24)
 
-**Initial Assessment**: Suspected fix belonged upstream in Hyrax, not Hyku
-**Community Validation**: LaRita Robinson's feedback confirmed this
-- Arrow should be on same line as property (architectural issue, not CSS)
-- Found prior fix in Hyrax: https://github.com/samvera/hyrax/commit/60807663
-- Edit broken in Hyrax (indicates upstream component issue)
+**Investigation Result**: LaRita Robinson confirmed fix IS in correct location (Hyku hyrax.scss)
+- Checked Hyrax rendering: "it seems to look like what you did"
+- Verified against prior fix: Layout matches expected behavior
+- **APPROVED**: "Based on this layout, I would say what you have is fine"
 
-**Decision**: ✅ CONFIRMED — Fix needs to go to Hyrax, not Hyku
-- Hyku CSS patch is incomplete/incorrect layer
-- Investigate Hyrax commit 60807663 for original fix pattern
-- Determine if fix was lost in Hyrax updates
+**CSS Refinement Feedback** (Shana Moore):
+- Team preference: Avoid `!important` in CSS when possible
+- Current fix uses `!important` for specificity override
+- **Before PR**: Investigate if CSS can be refactored to avoid `!important`
+  - Check if styles can use higher specificity selector
+  - Consider if inline styles in template can be targeted differently
+  - Preserve functionality while improving CSS quality
 
-**Key Lesson**: When you suspect a fix belongs upstream, community review validates that intuition. The Slack working group confirms: this is a Hyrax component issue, not a Hyku styling issue. Feature branch stays up for reference, but PR is blocked until upstream fix is in place.
+**Status**: Ready for PR once CSS refinement complete
+- LaRita ready to approve: "Tag me when you have a PR up and green"
+- Feature branch: `fix/batch-edit-descriptions-2990` (ready to push)
+- Next: Address `!important` feedback, then submit PR
 
-**For Future Agents**: Recognize upstream issues by:
-- ❌ CSS-only fixes for component behavior = likely wrong layer
-- ✅ Architectural problems (layout, rendering order) = investigate component code first
-- ✅ Issue broken in both Hyrax AND Hyku = fix at Hyrax level
-- ✅ Community pushback on "CSS fix" for behavioral issue = probably needs upstream
-- Use `git log --oneline [file]` to find related commits in upstream and check what changed
+**Key Learning**: Community review raised questions about upstream placement, but LaRita's investigation proved fix IS correct at Hyku layer. Also teaches: even "approved" fixes may need refinement for team standards (avoiding `!important`).
 
 ---
 ## Stack-Aware Patching: Hyku's Role in the Dependency Chain
