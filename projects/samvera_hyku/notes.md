@@ -67,27 +67,38 @@ exit
 **Reference**: #2990, original fix #2527
 
 ---
-### Batch Edit Issue #2990 — Approved with CSS Refinement (2026-06-24)
+### Batch Edit Issue #2990 — Approved, CSS Refinement Complete (2026-06-24)
 
 **Investigation Result**: LaRita Robinson confirmed fix IS in correct location (Hyku hyrax.scss)
-- Checked Hyrax rendering: "it seems to look like what you did"
-- Verified against prior fix: Layout matches expected behavior
-- **APPROVED**: "Based on this layout, I would say what you have is fine"
 
-**CSS Refinement Feedback** (Shana Moore):
-- Team preference: Avoid `!important` in CSS when possible
-- Current fix uses `!important` for specificity override
-- **Before PR**: Investigate if CSS can be refactored to avoid `!important`
-  - Check if styles can use higher specificity selector
-  - Consider if inline styles in template can be targeted differently
-  - Preserve functionality while improving CSS quality
+**Initial Request**: Shana Moore asked to avoid `!important` in CSS (team standard)
 
-**Status**: Ready for PR once CSS refinement complete
-- LaRita ready to approve: "Tag me when you have a PR up and green"
-- Feature branch: `fix/batch-edit-descriptions-2990` (ready to push)
-- Next: Address `!important` feedback, then submit PR
+**Root Cause Found**: Parent `.accordion-toggle` link had `overflow-wrap: anywhere` which broke text character-by-character in narrow columns
 
-**Key Learning**: Community review raised questions about upstream placement, but LaRita's investigation proved fix IS correct at Hyku layer. Also teaches: even "approved" fixes may need refinement for team standards (avoiding `!important`).
+**Solution Delivered** (NO `!important`):
+```scss
+.descriptions_display, #descriptions_display {
+  .accordion-toggle {
+    display: block;
+    line-height: normal;
+    overflow-wrap: normal;  ← This is the key property
+  }
+  .accordion-toggle label,
+  .accordion-toggle > label {
+    display: inline;
+    white-space: nowrap;
+    letter-spacing: normal;
+  }
+}
+```
+
+**Why This Works**: Instead of fighting CSS cascade with `!important`, we target the **root cause** property (`overflow-wrap: anywhere`) and override it with `overflow-wrap: normal`. This achieves the same visual result without `!important` by addressing what's actually causing the wrapping.
+
+**Key Learning**: When CSS won't work without `!important`, investigate the ACTUAL PROPERTY causing the problem, not just competing selectors. Use browser DevTools to see which rules are applied, then fix the root cause rather than increasing specificity.
+
+**Status**: ✅ Fix tested working, ready for PR submission
+
+---
 
 ---
 ## Stack-Aware Patching: Hyku's Role in the Dependency Chain
