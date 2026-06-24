@@ -98,17 +98,28 @@ exit
 
 ### Migration Pattern
 
+Fixes made in downstream projects (Knapsack) can be contributed upstream for community review:
+
 ```
-Fix made in Knapsack (WVU-specific) 
+Fix made in Knapsack (WVU-specific or generally useful)
   ↓
-Upstream PR to Hyku (if generally useful)
+Submit PR/issue to Hyku (or Hyrax if applicable)
   ↓
-Merge to Hyku main
+Community review and discussion
   ↓
-Knapsack updates hyrax-webapp submodule
+If accepted: merged to Hyku/Hyrax main
   ↓
-Remove WVU override, inherit upstream fix
+Knapsack updates submodule when ready
+  ↓
+Remove WVU override, inherit upstream fix (if merged)
 ```
+
+**Important**: Upstreaming requires community review and acceptance. Not all Knapsack-specific fixes need to go upstream — only those that would benefit the broader Samvera ecosystem.
+
+**Issue tracking**: Each project has its own GitHub issue tracker for feature requests and discussions:
+- Hyku issues: https://github.com/samvera/hyku/issues
+- Hyrax issues: https://github.com/samvera/hyrax/issues
+- Knapsack issues: (internal WVU project)
 
 ### Example: Batch Edit Descriptions Fix (#2990)
 - **Location**: `samvera_hyku` (this repo)
