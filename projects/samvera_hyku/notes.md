@@ -67,7 +67,23 @@ exit
 **Reference**: #2990, original fix #2527
 
 ---
+### Batch Edit Issue #2990 — Upstream Investigation Required (2026-06-24)
 
+**Community Feedback Summary:**
+- LaRita Robinson found that arrow should be on same line as property (like prior implementation)
+- Located prior fix in Hyrax: https://github.com/samvera/hyrax/commit/60807663
+- Issue appears to be deeper than CSS styling in Hyku
+- Edit functionality not even working in Hyrax on pg.nurax (broader problem)
+
+**Current Status**: Hyku CSS fix on hold pending upstream investigation
+**Decision**: May need to:
+1. Investigate Hyrax commit 60807663 to understand what changed
+2. Determine if fix should go upstream to Hyrax instead of Hyku
+3. Clarify whether Edit is broken in Hyrax core or just specific deployments
+
+**This is a teaching moment**: Sometimes what looks like a Hyku CSS problem is actually an upstream component issue. The working group's community review caught that this needs deeper investigation before merging.
+
+---
 ## Stack-Aware Patching: Hyku's Role in the Dependency Chain
 
 **Important**: Hyku is at the middle of a three-layer stack:

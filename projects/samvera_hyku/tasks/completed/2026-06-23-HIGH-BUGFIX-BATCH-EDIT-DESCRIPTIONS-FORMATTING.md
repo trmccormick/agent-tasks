@@ -1,21 +1,21 @@
 ---
-status: completed
+status: active
 priority: HIGH
 type: bug-fix
 system_domain: Hyku 7 Release
 mvp_alignment: Hyku 7 Regression Fix
-review_status: awaiting-community-review
-completed_date: 2026-06-24
+review_status: needs-upstream-investigation
+escalation_date: 2026-06-24
 ---
 
 # TASK: Fix Batch Edit Descriptions Formatting Regression
 
-**Status**: ✅ COMPLETED (CSS verified, ready for PR after community review)
+**Status**: 🔍 INVESTIGATION REQUIRED (community found issue may be upstream in Hyrax)
 **Priority**: HIGH
 **Type**: bug-fix
 **GitHub Issue**: https://github.com/samvera/hyku/issues/2990
-**Feature Branch**: `fix/batch-edit-descriptions-2990` (pushed to samvera/hyku)
-**Created**: 2026-06-23 | **Completed**: 2026-06-24
+**Feature Branch**: `fix/batch-edit-descriptions-2990` (pushed, PR on hold)
+**Created**: 2026-06-23 | **Escalated**: 2026-06-24
 
 ## COMPLETION SUMMARY (Session 2026-06-24)
 
@@ -25,11 +25,24 @@ completed_date: 2026-06-24
 ✅ **FEATURE BRANCH CREATED**: `fix/batch-edit-descriptions-2990`
 ✅ **COMMIT PUSHED**: Ready for review
 
+## COMMUNITY FEEDBACK (2026-06-24 — Slack Review)
+
+**Finding**: Issue may be deeper than Hyku CSS styling
+- LaRita Robinson flagged that arrow should be on same line as property (like before)
+- Found prior fix in Hyrax: https://github.com/samvera/hyrax/commit/60807663
+- Edit functionality not working in Hyrax on pg.nurax (suggests broader upstream issue)
+- Question: Did this fix get lost in Hyrax? Is it broken upstream?
+
+**Status Change**: ⏸️ HOLD PR — Pending upstream investigation
+- Current Hyku CSS may be incomplete or addressing wrong layer
+- Need to investigate Hyrax commit 60807663 to understand original fix
+- May need to push fix to Hyrax instead of (or in addition to) Hyku
+
 ## NEXT STEPS
 
-🔄 **COMMUNITY REVIEW**: Confirming with samvera/hyku Slack channel
-👥 **WORKING GROUP REVIEW**: Will request review from working group member before PR submission
-📋 **PR SUBMISSION**: After community feedback received
+🔍 **UPSTREAM INVESTIGATION**: Determine if fix needs to go to Hyrax
+👥 **WORKING GROUP**: Continue Slack discussion with LaRita and team
+📋 **PR STATUS**: HOLD — Do not merge until upstream status determined
 
 ---
 status: completed
