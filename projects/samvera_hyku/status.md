@@ -11,7 +11,37 @@ Main repo: https://github.com/samvera/hyku (278 open issues)
 
 ## Current Status
 - **Status:** Ready for task assignment from GitHub issue review
-- **Last Session:** 2026-06-17 — Initial planning session, reviewed GitHub issues
+- **Last Session:** 2026-06-24 — Batch edit descriptions fix verified, environment setup documented
+
+---
+
+## Agent Notes & Discoveries
+
+### HTTP Basic Auth (2026-06-24)
+**Issue**: Testing agents may encounter HTTP Basic Auth popup when accessing non-public tenants.
+
+**Root Cause**: Application-level authentication in `app/controllers/application_controller.rb` 
+- Method: `authenticate_if_needed` (lines 65-79)
+- Triggers when: `hidden?` is true (account.is_public? == false) AND not in test mode
+- Default credentials: `samvera` / `hyku`
+
+**Solutions for Local Testing**:
+1. **Set test tenant to public** (recommended for local work):
+   ```bash
+   sc sh
+   bundle exec rails console
+   account = Account.find_by(cname: 'testing-hyku')
+   account.update(is_public: true)
+   ```
+
+2. **Use curl with credentials**:
+   ```bash
+   curl -u samvera:hyku https://testing-hyku.localhost.direct/
+   ```
+
+3. **Browser prompt**: Enter samvera/hyku when prompted
+
+**For Future Agents**: This is application-level auth, not Traefik/proxy. It's by design for staging/hidden tenants. Check `is_public` status on any testing tenant before reporting access issues.
 
 ---
 
