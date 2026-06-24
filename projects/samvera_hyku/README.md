@@ -238,6 +238,59 @@ This default account exists in both **Hyku main repo** and **WVU Knapsack** depl
 
 ---
 
+## HTTP Basic Auth (Application-Level Authentication)
+
+⚠️ **Important**: Hyku includes application-level HTTP Basic Auth that is **separate from** Devise login authentication.
+
+### When Basic Auth Is Triggered
+HTTP Basic Auth is triggered when:
+- Account's `is_public?` is set to `false` (hidden tenant)
+- AND Rails environment is NOT test mode
+- AND request is not for API/PDF endpoints
+
+**Default credentials**:
+| Field | Value |
+|-------|-------|
+| Username | `samvera` |
+| Password | `hyku` |
+
+### For Local Testing
+To avoid the basic auth popup when testing locally:
+
+**Option 1: Make tenant public (recommended)**
+```bash
+sc sh
+# Inside container:
+bundle exec rails console
+
+# Find the testing tenant
+account = Account.find_by(cname: 'testing-hyku')
+account.update(is_public: true)
+exit
+```
+
+Then access `https://testing-hyku.localhost.direct` without being prompted for basic auth.
+
+**Option 2: Provide credentials via curl**
+```bash
+curl -u samvera:hyku https://testing-hyku.localhost.direct/
+```
+
+**Option 3: Browser basic auth**
+When prompted, enter:
+- Username: `samvera`
+- Password: `hyku`
+
+### Code Location
+The logic is in `app/controllers/application_controller.rb`:
+- `authenticate_if_needed` method (lines 65-79) handles basic auth
+- `hidden?` method (line 48) determines if tenant requires auth
+- `class_attribute` declarations (lines 62-73) set default credentials
+
+For local development where you want unrestricted access, setting `is_public: true` on your test tenant is the cleanest approach.
+
+---
+
 ## Common Workflows
 - **Setup Steps**:
   1. Clone the repo: `git clone https://github.com/samvera/hyku.git`.

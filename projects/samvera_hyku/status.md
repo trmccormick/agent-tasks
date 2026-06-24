@@ -11,7 +11,8 @@ Main repo: https://github.com/samvera/hyku (278 open issues)
 
 ## Current Status
 - **Status:** Ready for task assignment from GitHub issue review
-- **Last Session:** 2026-06-17 — Initial planning session, reviewed GitHub issues
+- **Last Session:** 2026-06-24 — Batch edit descriptions fix verified, environment setup documented
+- **Agent Notes**: See `notes.md` for technical discoveries and contextual findings from work sessions
 
 ---
 
