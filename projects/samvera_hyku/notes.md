@@ -68,6 +68,56 @@ exit
 
 ---
 
+## Stack-Aware Patching: Hyku's Role in the Dependency Chain
+
+**Important**: Hyku is at the middle of a three-layer stack:
+- **Layer 1 (Upstream)**: Hyrax gem (samvera_hyrax)
+- **Layer 2 (Middle)**: Hyku application (samvera_hyku) — built on Hyrax
+- **Layer 3 (Downstream)**: WVU Knapsack (wvulibraries_knapsack) — pulls Hyku as submodule
+
+### Patch Direction Rules
+
+**When fixing an issue:**
+
+1. **Is it a Hyrax core bug?**
+   - Fix in: `samvera_hyrax`
+   - Automatically inherited by: Hyku and Knapsack (when they update gem/dependency)
+
+2. **Is it a Hyku-specific bug?**
+   - Fix in: `samvera_hyku` (this repo)
+   - Automatically inherited by: Knapsack (when it updates the hyrax-webapp submodule)
+
+3. **Is it a WVU-specific bug or enhancement?**
+   - Fix in: `wvulibraries_knapsack`
+   - Consider: Could this be upstreamed to Hyku or Hyrax? If yes, coordinate upstream migration later.
+
+4. **Bug appears in Knapsack but is actually Hyku/Hyrax code?**
+   - Don't duplicate the fix in Knapsack
+   - Fix it upstream (Hyku/Hyrax)
+   - Update Knapsack's submodule when upstream is merged
+
+### Migration Pattern
+
+```
+Fix made in Knapsack (WVU-specific) 
+  ↓
+Upstream PR to Hyku (if generally useful)
+  ↓
+Merge to Hyku main
+  ↓
+Knapsack updates hyrax-webapp submodule
+  ↓
+Remove WVU override, inherit upstream fix
+```
+
+### Example: Batch Edit Descriptions Fix (#2990)
+- **Location**: `samvera_hyku` (this repo)
+- **Why**: Bug is in Hyku's view/style rendering, not WVU-specific
+- **Migration**: Knapsack automatically gets fix when it updates hyrax-webapp submodule
+- **No WVU override needed**: Fix is clean upstream, no customization required
+
+---
+
 ## Future Agent Template
 
 When adding new discoveries, use this format:
