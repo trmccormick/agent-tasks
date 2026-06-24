@@ -69,19 +69,25 @@ exit
 ---
 ### Batch Edit Issue #2990 — Upstream Investigation Required (2026-06-24)
 
-**Community Feedback Summary:**
-- LaRita Robinson found that arrow should be on same line as property (like prior implementation)
-- Located prior fix in Hyrax: https://github.com/samvera/hyrax/commit/60807663
-- Issue appears to be deeper than CSS styling in Hyku
-- Edit functionality not even working in Hyrax on pg.nurax (broader problem)
+**Initial Assessment**: Suspected fix belonged upstream in Hyrax, not Hyku
+**Community Validation**: LaRita Robinson's feedback confirmed this
+- Arrow should be on same line as property (architectural issue, not CSS)
+- Found prior fix in Hyrax: https://github.com/samvera/hyrax/commit/60807663
+- Edit broken in Hyrax (indicates upstream component issue)
 
-**Current Status**: Hyku CSS fix on hold pending upstream investigation
-**Decision**: May need to:
-1. Investigate Hyrax commit 60807663 to understand what changed
-2. Determine if fix should go upstream to Hyrax instead of Hyku
-3. Clarify whether Edit is broken in Hyrax core or just specific deployments
+**Decision**: ✅ CONFIRMED — Fix needs to go to Hyrax, not Hyku
+- Hyku CSS patch is incomplete/incorrect layer
+- Investigate Hyrax commit 60807663 for original fix pattern
+- Determine if fix was lost in Hyrax updates
 
-**This is a teaching moment**: Sometimes what looks like a Hyku CSS problem is actually an upstream component issue. The working group's community review caught that this needs deeper investigation before merging.
+**Key Lesson**: When you suspect a fix belongs upstream, community review validates that intuition. The Slack working group confirms: this is a Hyrax component issue, not a Hyku styling issue. Feature branch stays up for reference, but PR is blocked until upstream fix is in place.
+
+**For Future Agents**: Recognize upstream issues by:
+- ❌ CSS-only fixes for component behavior = likely wrong layer
+- ✅ Architectural problems (layout, rendering order) = investigate component code first
+- ✅ Issue broken in both Hyrax AND Hyku = fix at Hyrax level
+- ✅ Community pushback on "CSS fix" for behavioral issue = probably needs upstream
+- Use `git log --oneline [file]` to find related commits in upstream and check what changed
 
 ---
 ## Stack-Aware Patching: Hyku's Role in the Dependency Chain
