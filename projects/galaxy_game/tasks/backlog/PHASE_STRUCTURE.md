@@ -314,25 +314,24 @@ Everything in Phases 5–15 has been building the world-state players inherit at
 
 ---
 
-## Current Backlog State (as of 2026-06-23)
+## Current Backlog State (as of 2026-06-26)
 
 | Phase | Count | Status | Intent |
 |-------|-------|--------|--------|
-| phase5+ | 39 | **ACTIVE** (cleanup in progress) — Luna simulation testing prerequisites ONLY | Reduce to ~25-30 by completing cleanup |
-| reorganization_attempt_3 | ~22 remaining (per 2026-06-22 handoff — confirm against live folder) | REVIEW NEEDED | Misplaced tasks awaiting reclassification to correct phases |
-| phase6+ | 7 | **NEXT** — Lava-tube base construction (7 task_v2 JSON + consolidation) | Structural enclosure, pressurization, failure analysis |
-| phase7+ | 16 | PLANNED — Depot building | Resource deposits, LEO infrastructure |
+| phase5+ | 28 | **ACTIVE** — Reorganization Attempt 3 complete | Luna simulation testing prerequisites ONLY |
+| phase6+ | 44 | **NEXT** — Lava-tube base construction + post-Luna cleanup | Structural enclosure, pressurization, failure analysis |
+| phase7+ | 31 | PLANNED — Depot building | Resource deposits, LEO infrastructure |
 | phase8+ | 10 | PLANNED — Shipyards & cyclers | Large craft construction |
-| phase9+ | 11 | PLANNED (needs cleanup) — Mars footholds | Phobos/Deimos hollowing, station, first cycler loop |
+| phase9+ | 14 | PLANNED — Mars footholds | Phobos/Deimos hollowing, station, first cycler loop |
 | phase10+ | TBD | PLANNED — Venus footholds | Asteroid capture, station, second cycler-tug pair |
 | phase11+ | TBD | PLANNED — Cycler logistics maturation | Docking/cargo/heavy logistics validation |
 | phase12+ | 1 | PLANNED (optional) — Ceres/Titan-Saturn branch expansion | Previously mislabeled "Advanced Systems"; corrected |
 | phase13+ | TBD | PLANNED — Psyche mining & Mars terraforming | Core-remnant mining, terraforming initiation |
 | phase14+ | TBD | PLANNED — AI Manager independence test | Sol autonomous handoff, Eden discovery |
 | phase15+ | 1 | PLANNED — Unplanned Eden expansion / Snap trigger | Mass-limit discovery, Snap crisis event |
-| design/ | TBD | EXTERNAL — Asset generation and style guides | Not part of MVP task flow |
-| backlog_april_2026 | 218 | AUDIT IN PROGRESS | Old-format files being verified or archived |
-| `reorganization attempt 2` | TBD | **UNRESOLVED** — found on disk 2026-06-23, predates attempt 3, not referenced in any current doc | Confirm whether dead/archivable or has unmigrated content |
+| design/ | 4 | EXTERNAL — Asset generation and style guides | Not part of MVP task flow |
+| deprecated/ | 5 | ARCHIVED — Stale/silently-resolved tasks | Verified obsolete or superseded |
+| backlog_april_2026 | 218 | SOURCE — Original old-format files | Being audited via reorganization attempts |
 
 ---
 

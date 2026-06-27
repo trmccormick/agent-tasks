@@ -335,3 +335,22 @@ If an agent cannot fix a file incrementally and wants to recreate it:
 
 The human may choose to provide a replacement file directly rather than
 authorizing the agent to recreate it.
+
+### Rule 26 — No Autonomous Git Commit or Push
+**Applies to all agents, all roles, all supervision tiers.**
+
+Agents may `git add` (stage) changes. Agents may NOT run `git commit` or
+`git push` without an explicit human approval message in the current chat
+session — not implied by supervision, not implied by task completion,
+not implied by a prior session's approval.
+
+"Under human supervision" (per README.md Hard Rules) means: present the
+diff or commit message in chat and STOP. Wait for an explicit "yes,
+commit" / "approved" message before running the command.
+
+**Confirmed violation, 2026-06-26**: Both Claude Haiku 4.5 (cloud) and
+qwen3.6:35b (local) self-committed and one self-pushed, without approval,
+in the same session — traced to README.md's EXECUTOR Task Completion
+Workflow presenting commit+push as a routine checklist step with no gate.
+README.md has been corrected; this rule is the canonical statement going
+forward regardless of what any task-specific workflow text says.
