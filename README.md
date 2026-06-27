@@ -162,11 +162,9 @@ mv active/[TASKFILE].md completed/[TASKFILE].md
 **Step 2: Commit task file move**
 ```bash
 git add completed/[TASKFILE].md
-git commit -m "task: Complete [TASK_TITLE]
-
-[2-3 bullet points of what was accomplished]"
-git push origin main
 ```
+🛑 **STOP. Post the exact commit message and `git diff --stat` output to chat.
+Wait for explicit approval before running `git commit` or `git push`.**
 
 **Step 3: Update project status.md** (located in the project repo, not agent-tasks)
 Navigate to: `[project_repo]/doc/status.md`
@@ -178,9 +176,9 @@ Navigate to: `[project_repo]/doc/status.md`
 ```bash
 cd /Users/tam0013/Documents/git/[project]
 git add doc/status.md
-git commit -m "docs: Update status.md — [TASK] complete"
-git push origin [working_branch]
 ```
+🛑 **STOP. Post the exact commit message and `git diff --stat` output to chat.
+Wait for explicit approval before running `git commit` or `git push`.**
 
 **Step 5: Report to Strategist**
 Provide brief summary:
@@ -440,7 +438,7 @@ Task files are the source of truth. Executors read full context there.
 ---
 
 ## Hard Rules (Non-Negotiable)
-
+- **No Autonomous Git Commits or Pushes**: Agents may prepare and stage changes (`git add`) on the host. Commits and pushes require an explicit human approval message in chat before execution — never assumed from session presence or task completion alone. See GUARDRAILS.md Rule 26.
 - **No Continue Sidebar**: All local models must be invoked directly inside the editor via GitHub Copilot custom agent commands.
 - **The Verified Execution Rule**: Local models utilizing terminal privileges MUST use them to verify file paths and run targeted container specs instead of fabricating or assuming test outcomes.
 - **Targeted Testing Only**: Executors must never run a project's full test suite. Only run specific, targeted specs relevant to the task file.
