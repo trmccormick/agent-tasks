@@ -81,6 +81,7 @@ Why this matters:
 - `rules/DECISIONS.md` — Locked cross-project architectural decisions[cite: 3]
 - `rules/AGENT_ROUTING.md` — Full routing table matrices[cite: 3]
 - `TASK_TEMPLATE.md` — Template blueprint for constructing new tasks[cite: 3]
+- `SIMPLE_HANDOFF_TEMPLATE.md` — Concise agent task dispatch format (copy-paste ready)
 - `COMMUNICATION_PROTOCOL.md` — Agent output formatting rules[cite: 3]
 - `SESSION_STRATEGIST.md` — Detailed strategist role definition and workflow[cite: 3]
 
