@@ -171,6 +171,56 @@ Reserve strategic context for handoff commands.
 Keep active implementation discussion focused on the current sub-task only.
 When switching tasks, produce a new handoff command — do not carry context forward.
 
+### Rule 13a — Handoff Format Discipline (NO EXPANSION)
+**CRITICAL ANTI-PATTERN to prevent:**
+
+Agents sometimes expand handoff messages with extra context, gotchas, or implementation notes instead of keeping them minimal and putting everything in the task file.
+
+**HANDOFF MUST ALWAYS BE MINIMAL:**
+- Role + Project + Task file path (backlog location) + Read order + Synthesis gate requirement
+- **9 lines maximum** (fits on one screen)
+- **No extra context, gotchas, prerequisites, or implementation details**
+- **All details belong IN the task file**, not in the handoff
+
+**ANTI-PATTERN ❌ (Do NOT do this):**
+```
+You are the Implementation Agent.
+Project: galaxy_game
+Task file: /path/to/task.md
+
+READ FIRST:
+1) README.md
+2) GUARDRAILS.md
+3) Task file
+
+Here's some extra context about why this task exists... [❌ NO - belongs in task file]
+Note that you'll need to handle the cryo port issue... [❌ NO - belongs in task file]
+Make sure to test with docker exec... [❌ NO - belongs in task file]
+```
+
+**CORRECT PATTERN ✅:**
+```
+You are the Implementation Agent.
+Project: galaxy_game
+Task file (backlog): /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/[FOLDER]/[FILENAME].md
+
+READ FIRST:
+1) /Users/tam0013/Documents/git/agent-tasks/README.md
+2) /Users/tam0013/Documents/git/agent-tasks/rules/GUARDRAILS.md
+3) The task file above, then move it to active/ and update status to active.
+
+REQUIRED: Create the STATUS SYNTHESIS REPORT in the task file before making any changes, then wait for human approval.
+```
+
+**Why this matters:**
+- Task files are persistent knowledge repositories; handoffs are ephemeral dispatch messages
+- Expanding handoffs duplicates information (wasteful, creates sync problems)
+- Minimal handoffs work across chat sessions without truncation
+- Synthesis report gates execution — agent MUST read full task file to create synthesis
+
+**If you (as agent or human) catch yourself writing more than the template above, STOP:** 
+Move that content to the task file instead. Task file completeness is the agent's job during synthesis review; handoff is only dispatch.
+
 ### Rule 14 — Code Payload Protocol
 All agents must output a raw code block for any file changes.
 Precede every block with `[CODE_PAYLOAD: path/to/file]`:

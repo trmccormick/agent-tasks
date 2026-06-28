@@ -1,6 +1,8 @@
 # Simple Handoff Template
 **Use this for straightforward task assignments — copy and paste into chat**
 
+⚠️ **CRITICAL**: Do NOT expand this template. Keep exactly this format. All extra information belongs IN the task file, not in the handoff.
+
 ---
 
 ```
@@ -17,6 +19,45 @@ READ FIRST:
 
 REQUIRED: Create the STATUS SYNTHESIS REPORT in the task file before making any changes, then wait for human approval.
 ```
+
+---
+
+## ⚠️ ANTI-PATTERNS — DO NOT DO THIS
+
+**❌ DO NOT add extra context:**
+```
+...task file above, then move it to active/ and update status to active.
+
+⚠️ Note: This task involves the cryo port integration, which has known issues...
+```
+→ Context belongs in task file, not handoff
+
+**❌ DO NOT add implementation hints:**
+```
+...wait for human approval.
+
+Here's what you'll likely need to do:
+- First read the strategy_selector.rb file
+- Check the terraform variables...
+```
+→ Implementation details belong in task file synthesis template
+
+**❌ DO NOT add prerequisite explanation:**
+```
+...rules/GUARDRAILS.md
+
+This task builds on previous work where we implemented...
+```
+→ Prerequisite context belongs in task file "Prerequisites" section
+
+**❌ DO NOT "save time" by adding extra bulletpoints:**
+```
+REQUIRED: Create STATUS SYNTHESIS REPORT. Also:
+- Verify Docker is running
+- Check that database is migrated
+- Run targeted RSpec only
+```
+→ All these belong in GUARDRAILS.md or task file; handoff stays minimal
 
 ---
 
