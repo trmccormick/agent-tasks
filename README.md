@@ -86,6 +86,23 @@ Why this matters:
 
 ---
 
+## ⚠️ Tool Availability (All Agents — Read This First)
+
+**You have access to these tools ONLY:**
+- `run_in_terminal` — Execute shell commands and Docker operations
+- `file_search`, `grep_search`, `semantic_search` — Find files and search codebase
+- `read_file`, `replace_string_in_file`, `list_dir`, `create_file` — Manipulate files
+- `run_task` — Execute VS Code tasks
+
+**Do NOT request or ask for:**
+- `run_script` — Not available (use `run_in_terminal` instead)
+- `search_codebase` — Not available (use `file_search`, `grep_search`, or `semantic_search`)
+- Any tools not listed above — They will not be provided
+
+**Why this matters**: Larger language models sometimes request unavailable tools. If you ask for a tool not listed above, the system cannot provide it. Use only the tools above.
+
+---
+
 ## Session Roles (Behavior-Based, Not Model-Specific)
 
 **STOP. Read this section first. Your entire session depends on understanding your role.**

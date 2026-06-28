@@ -1,9 +1,28 @@
 # Operational Guardrails
-**Last Updated**: 2026-06-14
+**Last Updated**: 2026-06-28
 **Maintained By**: Session Strategist (Claude)
 
 > Read before every task. These rules are non-negotiable.
 > If a task file conflicts with these rules, STOP and flag before proceeding.
+
+---
+
+## Tool Availability (Rule 0 — Critical for All Models)
+
+**You have access to these tools ONLY:**
+- `run_in_terminal` — Execute shell commands and Docker operations
+- `file_search`, `grep_search`, `semantic_search` — Find files and search codebase  
+- `read_file`, `replace_string_in_file`, `list_dir`, `create_file` — Manipulate files
+- `run_task` — Execute VS Code tasks
+
+**You do NOT have access to:**
+- `run_script` — Use `run_in_terminal` instead
+- `search_codebase` — Use `file_search`, `grep_search`, or `semantic_search` instead
+- Any other tools — They cannot be provided
+
+**Why this matters**: Larger language models sometimes request unavailable tools due to context truncation or incomplete tool manifests. If you ask for a tool not listed above, you will not receive it. Always use only the tools available above.
+
+**If you encounter "tools not available" message mid-session**: This indicates your tool manifest was not fully loaded. Request the user explicitly enable the tools listed above by telling you: "You have full access to run_in_terminal, file_search, grep_search, semantic_search, read_file, replace_string_in_file, list_dir, create_file."
 
 ---
 
