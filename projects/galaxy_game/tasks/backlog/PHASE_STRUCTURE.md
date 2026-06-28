@@ -42,16 +42,63 @@ The resulting world-state becomes the backstory players inherit when they arrive
 
 **Goal**: Validate AI Manager can autonomously expand across Sol system using pattern-based decision-making, then initiate early terraforming efforts.
 
-**Scope**: Earth → Luna → Mars → Venus → Ceres/Titan → Psyche → Terraforming initiation
+**Scope**: Earth → Luna → (parallel: Mars + Venus + Optional Branches + Psyche) → Coordinated multi-world operations
 **Player Experience**: None during Act 1. Players inherit the result post-Snap.
 
-**Critical Process for Act 1**: Mission Validation → Settlement Option Testing → AI Training → Autonomous Decision Making
+**CRITICAL ARCHITECTURE: Parallel Expansion, Not Sequential**
 
-Each settlement location follows this workflow:
-1. **Mission Validation**: Run JSON mission profiles to ensure they work with current codebase
-2. **Settlement Option Testing**: Test multiple settlement approaches (orbital vs surface, different material sources, various infrastructure options)
-3. **AI Training**: Feed validated patterns to AI Manager for pattern learning
-4. **Autonomous Decision Making**: AI learns to evaluate options and pick by real cost (ROI, available resources, economics)
+Once orbital infrastructure (shipyards, cyclers, depots) is operational, multiple worlds expand **simultaneously**:
+- Mars settles its surface while Venus builds cloud cities
+- Multiple cycler routes operate in parallel
+- Multiple mining and settlement operations coordinate concurrently
+- AI Manager orchestrates across all simultaneous efforts
+
+This models how a real civilization-scale system would operate — not a linear sequence of colonies settling one at a time, but a coordinated multi-world expansion.
+
+**Flow Structure**:
+```
+Phase 5: Luna (foundation + mission validation)
+    ↓
+Phase 6: Luna + Orbital Infrastructure (LEO/L1/Shipyards)
+    ↓
+PARALLEL START (Once orbital infrastructure ready):
+    ├─ Phase 9: Mars (orbital + surface settlement + terraforming)
+    ├─ Phase 10: Venus (cloud cities + atmospheric operations + asteroid capture)
+    ├─ Phase 11: Multi-world Logistics (coordinating Mars + Venus + others)
+    ├─ Phase 12: Optional Branches (Ceres/Titan-Saturn parallel expansion)
+    └─ Phase 13: Psyche + Coordinated Terraforming
+```
+
+Each world can progress at its own pace, with the AI Manager learning to prioritize and coordinate across them.
+
+---
+
+## Current Backlog State — Parallel Execution Model
+
+| Phase | Structure | Status | Execution Model | Purpose |
+|-------|-----------|--------|---|---------|
+| **1-4** | Foundation | ✅ Complete | Sequential baseline | AI Manager core logic + service integration |
+| **5** | 5a/5b/5c | **ACTIVE** | Sequential prerequisite | Luna validation → option testing → AI training |
+| **6** | 6a/6b/6c | **QUEUED** | Sequential prerequisite | Luna infrastructure validation → AI training |
+| **7** | 7a/7b/7c | **QUEUED** | Sequential prerequisite<br>→ **PARALLEL TRIGGER** | Orbital infrastructure validation<br>🔁 Enables Phases 9-13 to start in parallel |
+| **8** | 8a/8b/8c | **QUEUED** | Sequential prerequisite<br>+ **PARALLEL SUPPORT** | Shipyard/craft validation<br>🔁 Supports concurrent world expansion |
+| **9** | 9a/9b/9c/9d/9e | **PLANNED** | 🔁 **PARALLEL** with 10,11,12,13 | Mars: orbital + surface + terraforming + AI training |
+| **10** | 10a/10b/10c/10d | **PLANNED** | 🔁 **PARALLEL** with 9,11,12,13 | Venus: cloud cities + atmospheric + asteroid + AI training |
+| **11** | 11a/11b/11c/11d | **PLANNED** | 🔁 **PARALLEL** with 9,10,12,13 | Multi-world logistics coordination + AI training |
+| **12** | 12a/12b/12c | **PLANNED (optional)** | 🔁 **PARALLEL** with 9,10,11,13 | Optional branch expansion (Ceres/Titan) |
+| **13** | 13a/13b/13c | **PLANNED** | 🔁 **PARALLEL** with 9,10,11,12 | Psyche + coordinated terraforming + AI training |
+| **14+** | TBD | **FUTURE** | Sequential gate | AI operational independence + Eden expansion |
+
+**🔁 Parallel Trigger**: Phase 7 completion triggers Phases 9-13 to begin simultaneously. All four world-expansion streams run concurrently, with Phase 11 coordinating logistics across them.
+
+**Why This Structure**:
+- **Phases 5-8**: Sequential foundation (can't build Mars infrastructure before orbital infrastructure exists)
+- **Phases 9-13**: Parallel execution (Mars surface doesn't wait for Venus cloud cities; they develop concurrently)
+- **AI complexity**: Learning to manage 4-5 simultaneous expansion efforts teaches AI realistic coordination decisions
+- **Resource prioritization**: When cyclers are scarce, AI learns to allocate them across competing world demands
+- **Stress testing**: Logistics and economics tested under realistic multi-world load, not in isolation
+
+---
 
 ### Phase 1–4: Foundation (Already Complete)
 **Status**: ✅ Complete — System A AI Manager Service Integration
@@ -121,6 +168,8 @@ Each settlement location follows this workflow:
 
 **Gate**: Orbital infrastructure patterns tested, validated, and AI trained. Economics impact verified: transport costs from LEO operations drop ~30%.
 
+**🔁 PARALLEL EXPANSION TRIGGER**: Once Phase 7 complete, Phases 9, 10, 11, 12, 13 begin simultaneously. Mars doesn't wait for Venus; multiple worlds expand concurrently.
+
 ---
 
 ### Phase 8 — Orbital Construction & Craft: Testing & AI Training
@@ -172,94 +221,131 @@ Each settlement location follows this workflow:
 - Terraforming-focused: Surface + atmospheric work from phase 1
 AI learns to evaluate these by real cost and pick the pattern that works best given Mars-specific conditions (moon availability, surface resources, economics, etc.)
 
-**Gate**: Mars settlement patterns tested, validated, and AI trained on multi-option selection. Mars station operational, first cycler resupply loop validated, terraforming pathway established. Ready for Phase 10 (Venus repeat with different options).
+**Parallel Dependencies**: 
+- Requires Phase 6 complete (orbital infrastructure operational)
+- **Runs CONCURRENTLY with Phase 10** (Venus), Phase 11 (multi-world logistics), Phase 12 (optional branches), Phase 13 (Psyche)
+- Mars and Venus expand simultaneously; they don't wait for each other
+
+**Gate**: Mars settlement patterns tested, validated, and AI trained on multi-option selection. Mars station operational, first cycler resupply loop validated, terraforming pathway established. **Can run simultaneously with Venus and other worlds.**
 
 ---
 
-### Phase 10 — Venus Orbital & Surface: Testing & AI Training
+### Phase 10 — Venus Cloud Cities & Adaptation: Testing & AI Training
 **Goal**: Test Venus settlement options (asteroid capture, orbital, surface); train AI on adaptation to moon-free environment.
 
-**Scope**: Venus footholds including asteroid capture, alternative orbital approaches, surface options
+### Phase 10 — Venus Cloud Cities & Adaptation: Testing & AI Training
+**Goal**: Test Venus settlement options (cloud cities, atmospheric harvesting, asteroid capture); train AI on adaptation to moon-free environment. **Runs in parallel with Phases 9, 11, 12, 13.**
+
+**Scope**: Venus footholds including cloud cities, atmospheric operations, orbital infrastructure, and asteroid capture options
 **Structure**:
-- **Phase 10a**: Venus asteroid capture mission validation (multiple asteroid options, different trajectories)
-- **Phase 10b**: Venus orbital station options mission validation (stationed asteroid variants)
-- **Phase 10c**: Venus surface settlement options mission validation (if available)
-- **Phase 10d**: Venus option comparison and AI training (AI learns how to adapt when moons aren't available; different cost hierarchy applies)
+- **Phase 10a**: Venus orbital infrastructure mission validation (depot options, different architectures)
+- **Phase 10b**: Venus cloud city mission validation (atmospheric floating platforms, habitats, industrial operations)
+- **Phase 10c**: Venus atmospheric operations mission validation (harvesting, industrial integration, terraforming pathways)
+- **Phase 10d**: Venus asteroid capture mission validation (alternative to moons: capturing asteroids from belt, repositioning into Venus orbit)
+- **Phase 10e**: Venus cloud city vs atmospheric vs asteroid comparison and AI training (AI learns to evaluate which Venus approach provides best ROI for moon-free world)
 
 **Key Deliverables**:
-- Asteroid identification and capture mission profiles validated
-- Asteroid repositioning into Venus orbit mission profiles tested
-- Hollowing and station construction mission profiles validated
-- Alternative orbital infrastructure for moon-free worlds tested
+- Orbital depot establishment validated
+- Cloud city habitation options tested
+- Atmospheric harvesting mission profiles validated
+- Industrial integration infrastructure tested
+- Asteroid relocation options tested (alternative to natural moons)
 - Parallel second cycler-tug pair construction validated
-- Cost comparison: asteroid capture vs other options
+- Terraforming pathways identified
+- Cost comparison: asteroid capture vs pure atmospheric operations vs cloud cities
 
-**Critical Note**: Venus has NO moons, so cost hierarchy differs from Mars:
-- Can't reposition existing moons
-- Must capture asteroid from belt
-- Requires different transport/logistics
-- Different economics apply
-AI learns this different pattern and adapts decision logic accordingly.
+**Critical Note**: Venus differs from Mars in critical ways:
+- NO natural moons (can't reposition Phobos/Deimos like Mars)
+- Must use alternative approaches: cloud cities, asteroid capture, pure atmospheric ops
+- Different cost hierarchy applies (no moon-repositioning costs; instead has long-haul asteroid capture costs)
+- AI learns these distinctions and adapts decision logic accordingly
+- Multiple valid strategies (cloud-city-first vs asteroid-first vs hybrid atmospheric)
 
-**Gate**: Venus settlement patterns tested, validated, and AI trained on moon-free adaptation. Venus station operational, alternative orbital approaches proven, logistics loop with Mars validated.
+**Parallel Dependencies**:
+- Requires Phase 6 complete (orbital infrastructure operational)
+- **Runs CONCURRENTLY with Phase 9** (Mars), Phase 11 (multi-world logistics), Phase 12 (optional branches), Phase 13 (Psyche)
+- Mars and Venus expand simultaneously; they don't wait for each other
+- Can share cycler routes and logistics coordination with Mars
+
+**Gate**: Venus settlement patterns tested, validated, and AI trained on moon-free adaptation. Venus cloud city or asteroid infrastructure operational, logistics loop with Mars validated. **Can run simultaneously with Mars and other worlds.**
 
 ---
 
 ### Phase 11 — Multi-World Logistics Maturation: Testing & AI Training
-**Goal**: Test and validate cycler logistics, docking, cargo transfer across multiple worlds; train AI on complex logistics management.
+### Phase 11 — Multi-World Logistics Maturation: Testing & AI Training
+**Goal**: Test and validate cycler logistics, docking, cargo transfer across multiple worlds running simultaneously. **Runs in parallel with Phases 9, 10, 12, 13.**
 
-**Scope**: Earth-Mars-Venus cycler logistics validation and optimization
+**Scope**: Earth-Mars-Venus cycler logistics validation and optimization, coordinating parallel world expansion
 **Structure**:
-- **Phase 11a**: Cycler docking mission validation (multiple cycler-world pair combinations)
-- **Phase 11b**: Cargo transfer mission validation (docking, undocking, cargo movement protocols)
-- **Phase 11c**: Heavy logistics stress testing mission validation (multiple simultaneous transit legs)
-- **Phase 11d**: Multi-world logistics AI training (AI learns to coordinate multiple simultaneous operations)
+- **Phase 11a**: Cycler docking mission validation (multiple cycler-world pair combinations, Mars + Venus + others)
+- **Phase 11b**: Cargo transfer mission validation (docking, undocking, cargo movement protocols across multiple simultaneous routes)
+- **Phase 11c**: Heavy logistics stress testing mission validation (multiple simultaneous transit legs across different cycler routes)
+- **Phase 11d**: Multi-world logistics AI training (AI learns to coordinate multiple simultaneous operations, prioritize resources, handle conflicts)
 
 **Key Deliverables**:
-- Docking/undocking reliability across all three footholds validated
-- Cargo transfer validation under realistic load scenarios
+- Docking/undocking reliability across multiple footholds validated
+- Cargo transfer validation under realistic load scenarios with concurrent traffic
 - Heavy logistics stress testing with multiple simultaneous transits
-- Cycler scheduling and coordination patterns tested
-- Multi-world resource arbitrage patterns identified
+- Multi-route cycler scheduling and coordination patterns tested
+- Resource arbitrage patterns identified across multiple worlds
+- AI learns conflict resolution when multiple worlds compete for cycler capacity
 
-**Gate**: Earth-Mars-Venus cycler logistics loop stable and repeatable. Core inner-system trade network proven, ready for Phase 12 (branch expansion options testing).
+**Parallel Dependencies**:
+- Requires Phase 6 complete (orbital infrastructure ready)
+- Requires Phase 9 and Phase 10 making progress **simultaneously**
+- **Coordinates across Mars + Venus + other parallel expansion efforts**
+- Stress-tests system behavior under realistic multi-world load (not sequential testing)
+
+**Gate**: Multi-world cycler logistics loop validated under concurrent operations. AI trained on complex coordination across parallel expansion efforts. Core inner-system trade network proven under realistic simultaneous load.
 
 ---
 
 ### Phase 12 — Optional Branch Expansion: Testing & AI Training
-**Goal**: Test optional branch settlement approaches (Ceres/Titan-Saturn); train AI on parallel expansion decisions.
+**Goal**: Test optional branch settlement approaches (Ceres/Titan-Saturn) running in parallel with core worlds. **Runs in parallel with Phases 9, 10, 11, 13.**
 
-**Scope**: Belt mining infrastructure, gas giant moon settlement options
+**Scope**: Belt mining infrastructure, gas giant moon settlement options, parallel to main expansion
 **Structure**:
 - **Phase 12a**: Ceres belt mining mission profiles validation (multiple mining approaches)
 - **Phase 12b**: Titan/Saturn settlement mission profiles validation (if available)
-- **Phase 12c**: Branch economics and AI training (AI learns to evaluate whether branch expansion is cost-effective given current state)
+- **Phase 12c**: Branch economics and AI training (AI learns to evaluate whether branch expansion is cost-effective given current state of main worlds)
 
 **Key Deliverables**:
 - Ceres belt mining infrastructure options validated (if pursued)
 - Titan/Saturn settlement support options validated (if pursued)
 - Branch vs core loop economics compared
 - Parallel expansion patterns tested
+- AI learns resource allocation decisions between main worlds and branches
 
-**Gate**: N/A (optional) — branches can be pursued independently or skipped based on AI economic evaluation; does not gate Phase 13 progression.
+**Parallel Dependencies**:
+- **Runs concurrently with Phase 9** (Mars), **Phase 10** (Venus), **Phase 11** (logistics), **Phase 13** (Psyche)
+- Optional — AI can decide not to pursue branches if core world expansion is more economically viable
+- Doesn't block progression of main worlds or other parallel efforts
+
+**Gate**: N/A (optional) — branches can be pursued independently or skipped based on AI economic evaluation; does not gate Phase 13 or other parallel efforts.
 
 ---
 
 ### Phase 13 — Psyche Mining & Terraforming: Testing & AI Training
-**Goal**: Test advanced mining (core-remnant extraction) and terraforming options; train AI on late-stage expansion patterns.
+**Goal**: Test advanced mining (core-remnant extraction) and coordinated terraforming options running in parallel with other worlds. **Runs in parallel with Phases 9, 10, 11, 12.**
 
-**Scope**: Psyche core-remnant mining + multi-world terraforming infrastructure validation
+**Scope**: Psyche core-remnant mining + multi-world terraforming infrastructure validation, coordinated with other parallel settlements
 **Structure**:
 - **Phase 13a**: Psyche mining mission profiles validation (core-remnant-specific extraction patterns)
-- **Phase 13b**: Mars/Venus terraforming mission profiles validation (atmospheric enrichment, gas export logistics)
-- **Phase 13c**: Advanced terraforming AI training (AI learns to coordinate multi-world atmospheric engineering)
+- **Phase 13b**: Multi-world terraforming mission profiles validation (Mars + Venus atmospheric enrichment, gas export logistics)
+- **Phase 13c**: Coordinated terraforming AI training (AI learns to coordinate multi-world atmospheric engineering while managing main settlements)
 
 **Key Deliverables**:
 - Psyche mining infrastructure options validated
-- Mars terraforming pathway options validated
+- Mars/Venus terraforming pathway options validated
 - Venus/Titan gas export mission profiles validated
 - Multi-world atmospheric engineering patterns tested
 - Long-haul logistics for terraforming support tested
+- AI learns to balance terraforming efforts with main settlement operations
+
+**Parallel Dependencies**:
+- **Runs concurrently with Phase 9** (Mars), **Phase 10** (Venus), **Phase 11** (logistics), **Phase 12** (optional branches)
+- Coordinates with Phase 11 for long-haul cycler logistics to support terraforming
+- Doesn't require completion of other phases before starting
 
 **Gate**: Terraforming initiation systems operational, gas export pipelines validated. All Sol system settlement and infrastructure patterns tested, validated, and AI trained. AI Manager ready for operational independence test in Phase 14+.
 
