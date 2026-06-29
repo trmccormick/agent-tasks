@@ -1,5 +1,5 @@
 # Samvera Hyku — Project Status & Task Tracking
-**Last Updated:** 2026-06-17
+**Last Updated:** 2026-06-26
 
 ---
 
@@ -10,14 +10,19 @@ Main repo: https://github.com/samvera/hyku (278 open issues)
 ---
 
 ## Current Status
-- **Status:** Ready for task assignment from GitHub issue review
-- **Last Session:** 2026-06-24 — Batch edit descriptions fix verified, environment setup documented
+- **Status:** Multi-tenant GA issues researched & documented, ready for working group review
+- **Last Session:** 2026-06-26 — GA issues #2985 & #2995 root cause analysis completed, fixes proposed
 - **Agent Notes**: See `notes.md` for technical discoveries and contextual findings from work sessions
 
 ---
 
 ## Active Tasks
-- None currently assigned (ready for dispatch)
+- **[RESEARCH COMPLETE + PRODUCTION VALIDATION]** [#2985 & #2995 — Multi-Tenant GA Issues](tasks/active/2026-06-26-HIGH-RESEARCH-MULTITENANT-GA-ISSUES-2985-2995.md)
+  - Root cause identified: All tenants share same GA property ID instead of using tenant-specific IDs
+  - Concrete fixes proposed for both issues
+  - **REAL-WORLD VALIDATION**: [PALNI/PALCI Issue #611](tasks/active/2026-06-26-VALIDATION-PALNI-PALCI-ISSUE-611-CONFIRMS-GA-ROOT-CAUSE.md) — Production case with 248+ phantom entries, 46 cross-tenant ID overlap (proof of concept at scale)
+  - **URGENT**: Affects production Hyku Commons instances today
+  - Ready for Samvera working group review & immediate implementation
 
 ---
 
