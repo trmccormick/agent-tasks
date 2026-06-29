@@ -1,13 +1,17 @@
----
-name: "Add gcc_account Convenience Method"
-priority: LOW
-phase: 5
-created: 2026-06-21
-status: backlog
-type: refactor
+status: deprecated
+superseded_by: 2026-06-29-HIGH-REFACTOR-BASE-SETTLEMENT-GCC-ACCOUNT.md
 ---
 
-# TASK: Add GCC Account Convenience Method to BaseSettlement
+# TASK: Add GCC Account Convenience Method to BaseSettlement (DEPRECATED)
+
+**⚠️ DEPRECATED — Superseded by `2026-06-29-HIGH-REFACTOR-BASE-SETTLEMENT-GCC-ACCOUNT.md`**
+
+This task has been archived. The research revealed a duplicate `gcc_account` definition bug
+and 4 fragile production services that need migration. The new active task covers all of this
+with a comprehensive Phase 1 strategy.
+
+**Archived**: 2026-06-29  
+**Moved to**: `projects/galaxy_game/tasks/archive/2026-06/`
 
 **Priority**: LOW  
 **Phase**: 5  
