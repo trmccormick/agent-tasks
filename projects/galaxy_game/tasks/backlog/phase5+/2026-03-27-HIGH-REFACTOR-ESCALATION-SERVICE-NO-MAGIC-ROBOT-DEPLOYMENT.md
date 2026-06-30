@@ -8,7 +8,7 @@ local_worker_safe: false
 created: 2026-03-27
 last_updated: 2026-06-22
 relocated_from: reorganization_attempt_3/ (2026-06-22)
-codebase_status: "VIOLATION STILL PRESENT — app/services/ai_manager/escalation_service.rb contains multiple Units::Robot.create! calls (lines 124, 141, 159, 182) that violate No-Magic Protocol. Robot instantiation bypasses inventory checks and manufacturing constraints. Task requires: (1) refactor create_automated_harvester to check settlement inventory first, (2) implement manufacturing job queuing when materials available, (3) implement 3-tier sourcing hierarchy escalation, (4) update specs to verify No-Magic compliance."
+codebase_status: "VIOLATION STILL PRESENT — app/services/ai_manager/escalation_service.rb contains multiple Units::Robot.create! calls (lines 225, 242, 260, 283 — re-confirmed 2026-06-29 via grep after EscalationService resource-shortage feature shifted line numbers; create_automated_harvester now starts at line 214) that violate No-Magic Protocol. Robot instantiation bypasses inventory checks and manufacturing constraints. Task requires: (1) refactor create_automated_harvester to check settlement inventory first, (2) implement manufacturing job queuing when materials available, (3) implement 3-tier sourcing hierarchy escalation, (4) update specs to verify No-Magic compliance."
 ---
 
 # TASK: Refactor EscalationService#create_automated_harvester — No-Magic Robot Deployment
@@ -56,7 +56,7 @@ codebase_status: "VIOLATION STILL PRESENT — app/services/ai_manager/escalation
 ---
 
 ## Problem Statement
-`create_automated_harvester` uses `Units::Robot.create!` to instantiate a robot directly without checking inventory, manufacturing capability, or material availability. This violates the No-Magic Protocol and bypasses `load_unit_info` which loads operational defaults from the JSON blueprint.
+`create_automated_harvester` (line ~214, re-confirmed 2026-06-29) uses `Units::Robot.create!` (lines 225, 242, 260, 283) to instantiate a robot directly without checking inventory, manufacturing capability, or material availability. This violates the No-Magic Protocol and bypasses `load_unit_info` which loads operational defaults from the JSON blueprint.
 
 **Error output**:
 ```
@@ -81,7 +81,7 @@ expected: ({unit_type: "robot", operational_data: {...5 keys...}})
 ### Primary Files — you will edit these
 | File | Purpose | Key Method/Section |
 |---|---|---|
-| `galaxy_game/app/services/ai_manager/escalation_service.rb` | Core escalation logic | `#create_automated_harvester` line ~113 |
+| `galaxy_game/app/services/ai_manager/escalation_service.rb` | Core escalation logic | `#create_automated_harvester` line 214 (re-confirmed 2026-06-29) |
 | `galaxy_game/spec/services/ai_manager/escalation_service_spec.rb` | Spec — must be rewritten to test correct pattern | line ~27 |
 
 ### Reference Files — read but do not edit
