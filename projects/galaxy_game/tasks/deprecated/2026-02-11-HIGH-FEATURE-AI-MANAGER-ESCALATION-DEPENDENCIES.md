@@ -68,3 +68,6 @@ module AIManager
     end
   end
 end
+---
+## Research Note (2026-06-29)
+- Status: OBSOLETE. Superseded by handle_resource_shortage in EscalationService. Pricing logic now uses Market::NpcPriceCalculator.
