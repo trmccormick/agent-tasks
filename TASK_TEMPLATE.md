@@ -22,14 +22,18 @@
 #     - No date prefix = task must be reviewed before assignment, may be obsolete.
 #
 # DEPTH GUIDE — how much detail to include per agent tier:
-#   Local Qwen3.5-27B (primary) — explicit file paths, before/after code, exact docker commands
-#   0.33x cloud fallback (Haiku/GPT-5 mini/Raptor mini) — same as above, only after two local failures
-#   Claude Sonnet (premium/web) — architecture and strategy only, never implementation
+#   Local Qwen (primary, via GitHub Copilot custom agent config) — explicit file paths,
+#     before/after code, exact docker commands. Has terminal/tool-use access — can run
+#     commands, grep the codebase, and check state beyond just reading this file.
+#   Cloud fallback (paid Copilot agents) — same depth as above, only after two local
+#     failures in fresh local sessions
+#   Claude Sonnet (premium/web) — architecture and strategy only, never implementation.
+#     No filesystem/terminal access — works only from what's pasted into chat.
 #
 # Rule: when in doubt, add more detail. An over-specified task wastes nothing.
 # An under-specified task burns premium requests on clarification.
 #
-# AGENT SELECTION RULE: Always assign to local Qwen3.5-27B first.
+# AGENT SELECTION RULE: Always assign to local Qwen (Copilot) first.
 # Only escalate to cloud after two genuine failures in fresh local sessions.
 #
 # HANDOFF STRATEGY:
@@ -78,9 +82,13 @@ CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (templ
 ---
 
 ## Local Worker Triage Report (Optional — for backlog review only)
-*Filled in by local model (Ollama via Continue) during backlog review*
+*Filled in by local model (Qwen via GitHub Copilot custom agent config) during backlog review*
 *This section is NOT sent to agents — it's for human task management only*
-*Local models read task files only — they cannot run commands or access the DB*
+*Local models run via Copilot have terminal/tool-use access — they can grep the codebase,
+check status.md, and run read-only research commands to verify state before triaging.
+Continue is installed but is not part of the active workflow — a Continue session is
+read-only (task files only, no commands, no DB access) and should not be assumed to have
+the same capability.*
 
 - **Template Conformance**: PASS | FAIL — [note missing sections]
 - **Docker Wrapper Check**: PASS | FAIL | N/A — [verify RSpec strings use correct docker exec format without cd /home/galaxy_game]
@@ -92,18 +100,18 @@ CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (templ
 
 ## Agent Assignment (Human-filled, not seen by agents)
 
-**Assigned To**: [Qwen3.5-27B local (primary) | Qwen3.5-9B local | Claude Haiku 0.33x | GPT-5 mini 0.33x | Raptor mini 0.33x]
+**Assigned To**: [Qwen local via Copilot (primary) | Cloud fallback agent]
 **Why This Agent**: [one line — if cloud agent, state why local failed]
 **Local attempts before cloud**: [N/A | 1 | 2 — cloud only dispatched after 2 local failures]
 **Supervision Level**: [watched carefully | standard | autonomous OK]
 
 **Supervision Legend**:
 - Watched carefully = all agents on first dispatch of a task
-- Standard = local Qwen3.5-27B on well-specified repeat task types
+- Standard = local Qwen (Copilot) on well-specified repeat task types
 - Autonomous OK = not currently used — all tasks require human approval before commit
 
-> **Primary executor is always local Qwen3.5-27B (Copilot).**
-> Cloud agents (Haiku, GPT-5 mini, Raptor mini) are fallback only.
+> **Primary executor is always local Qwen via the GitHub Copilot custom agent config.**
+> Cloud/paid agents are fallback only.
 > If assigning to cloud, document which local attempts failed and why.
 
 ---

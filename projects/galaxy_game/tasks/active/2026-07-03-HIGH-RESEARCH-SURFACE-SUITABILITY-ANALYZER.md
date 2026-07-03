@@ -1,12 +1,14 @@
 [MOVED_FROM: projects/galaxy_game/tasks/backlog/phase5+/2026-06-26-HIGH-RESEARCH-SURFACE-SUITABILITY-ANALYZER.md]
 [RATIONALE: Luna surface/hardening work — belongs in Phase 6, not sim calibration]
 ---
-status: BACKLOG
+status: ACTIVE
 priority: HIGH
-type: architecture
+type: implementation
 system_domain: AI_MANAGER
 mvp_alignment: LUNA_SIMULATION_STABILIZATION
-codebase_status: "Research Required — No Geosphere-to-AI data contract exists."
+codebase_status: "Approved — Phase 1 implementation pending"
+approved_by: user
+approved_date: 2026-07-03
 ---
 
 # TASK: Research & Define Geosphere Suitability Data Contract
@@ -17,7 +19,14 @@ The AI Manager currently relies on a hard-coded landing site for the Luna MVP. F
 The current architecture uses `StarSim::SystemBuilderService` to ingest GeoTIFF raster data into `CelestialBody#geosphere`. This task is to research and define a "Data Contract" so the AI Manager can query this data.
 
 ## Goal
-Design a lightweight service/interface (`SurfaceSuitabilityAnalyzer`) that extracts suitability scores (resource density vs. terrain clearance) from the existing `geosphere` object.
+Create Phase 1: `SurfaceSuitabilityAnalyzer` service using existing geosphere data only (elevation, resource_grid, biomes). No schema changes, no crater/buildability work.
+
+### Approval Notes (2026-07-03)
+- Architecture approved: dedicated service called by StrategySelector
+- Phase 1 limited to existing terrain_map fields: elevation, resource_grid, biomes
+- Do NOT assume lat/lon-to-grid mapping exists — use grid indices directly
+- Do NOT block on crater/buildability schema work
+- Analyzer MUST return a simple stable contract with safe fallbacks when terrain data is missing
 
 ## Research Requirements
 1. **Data Access Path**: Determine how to bridge `CelestialBody#geosphere.terrain_map` (currently used by the frontend) to the backend AI Manager.

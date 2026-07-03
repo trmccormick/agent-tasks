@@ -11,7 +11,7 @@ priority: HIGH
 type: architecture
 system_domain: UNITS
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
-local_worker safe: false
+local_worker_safe: false
 note: "Step 5 deferred — register_to_bus engine action required, see HIGH-ARCHITECTURE-HUB-BUS-ROUTING task (pending creation)"
 ---
 
@@ -154,7 +154,7 @@ separator task logic, validate against the rake suite + new targeted unit tests.
 ### Files I'll Reference
 | File | Purpose | Status |
 |---|---|---|
-| `[engine file containing check_and_decrement_port]` | Confirm/evaluate existing fix | pending |
+| `app/services/ai_manager/task_execution_engine_v2.rb` | Confirm/evaluate existing check_and_decrement_port fix | pending |
 | `inflatable_cryo_tank_bp.json` | Migrate to v1.9 connection_schema | pending |
 | `inflatable_gas_storage_bp.json` | Read-only reference — confirm adapter compatibility | pending |
 | `inflatable_pressure_tank.json` | Read-only reference — confirm zero-port handling | pending |
@@ -212,8 +212,8 @@ units), with the engine never assuming a non-zero port count.
 ### Primary Files — you will edit these
 | File | Purpose | Key Method/Section |
 |---|---|---|
-| `[engine file — confirm path]` | Port lookup/decrement logic | `check_and_decrement_port` |
-| `[BlueprintLookupService file — confirm path]` | Blueprint resolution | wrap for v1.9/legacy dual-mode |
+| `app/services/ai_manager/task_execution_engine_v2.rb` | Port lookup/decrement logic | `check_and_decrement_port` |
+| `app/services/lookup/blueprint_lookup_service.rb` | Blueprint resolution | wrap for v1.9/legacy dual-mode |
 | `data/json-data/.../inflatable_cryo_tank_bp.json` | Migrate to v1.9 `connection_schema` | full ports block replacement |
 | `[deploy_gas_separator task file — confirm path]` | Connection logic | shift to `register_to_bus` |
 
@@ -235,17 +235,26 @@ units), with the engine never assuming a non-zero port count.
 > ⚠️ Synthesis report must be posted and approved before any of these steps begin.
 
 ### Step 1 — Confirm current state (read-only)
-- Confirm exact galaxyGame commit hash for the `check_and_decrement_port` change.
+- Confirm exact galaxyGame commit hash for the `check_and_decrement_port` change in
+  `app/services/ai_manager/task_execution_engine_v2.rb`.
+- **Note**: this same file contains a separate, already-known unresolved issue —
+  `task_execution_engine_v2.rb:107` is flagged elsewhere as a CRITICAL BLOCKER where
+  `BaseSettlement.create!` bypasses `SettlementDeploymentService`. That issue is OUT OF SCOPE
+  for this task. Do not touch it, but if your changes land anywhere near line 107, note that
+  explicitly in your synthesis report so it's not accidentally disturbed or conflated with
+  this task's port-adapter work.
 - Open `inflatable_cryo_tank_bp.json`, confirm its current local-only port structure.
 - Re-run the Luna V2 rake suite, confirm the 12/13 baseline holds before changing anything.
   If it doesn't match, STOP and report — do not proceed on an unverified baseline.
 
 ### Step 2 — Evaluate the existing engine fix against the adapter design
 ```ruby
+# In app/services/ai_manager/task_execution_engine_v2.rb:
 # Confirm: does the existing check_and_decrement_port change (using unit.unit_type for
 # blueprint lookup) work as-is inside a LegacyPortAdapter wrapper, need modification, or
-# conflict with the wrapper approach? Do not assume compatibility — check it directly
-# against the BlueprintLookupService wrapping design in PORT_CONNECTION_SYSTEM.md.
+# conflict with the wrapper approach? Check it directly against how
+# app/services/lookup/blueprint_lookup_service.rb will need to be wrapped for v1.9/legacy
+# dual-mode resolution per PORT_CONNECTION_SYSTEM.md. Do not assume compatibility.
 ```
 If unsure which applies, STOP and report findings rather than guessing.
 
