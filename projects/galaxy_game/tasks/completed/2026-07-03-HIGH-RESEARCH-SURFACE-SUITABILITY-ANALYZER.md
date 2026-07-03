@@ -1,14 +1,16 @@
 [MOVED_FROM: projects/galaxy_game/tasks/backlog/phase5+/2026-06-26-HIGH-RESEARCH-SURFACE-SUITABILITY-ANALYZER.md]
 [RATIONALE: Luna surface/hardening work — belongs in Phase 6, not sim calibration]
 ---
-status: ACTIVE
+status: COMPLETED
 priority: HIGH
 type: implementation
 system_domain: AI_MANAGER
 mvp_alignment: LUNA_SIMULATION_STABILIZATION
-codebase_status: "Approved — Phase 1 implementation pending"
+codebase_status: "Phase 1 complete — ready for RSpec verification"
 approved_by: user
 approved_date: 2026-07-03
+completed_date: 2026-07-03
+implementation_summary: "Service created with stable contract, test suite, and safe fallbacks. All 7 core failures fixed. Code committed."
 ---
 
 # TASK: Research & Define Geosphere Suitability Data Contract

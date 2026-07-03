@@ -10,12 +10,13 @@ cross_project_impact: true
 
 # TASK: GUARDRAILS.md Consolidation — Four-Way Sort & Unified Task File
 
-**Status**: BACKLOG
+**Status**: ACTIVE
 **Priority**: HIGH
 **Type**: documentation
 **Created**: 2026-07-02
-**Last Updated**: 2026-07-02
+**Last Updated**: 2026-07-03
 **Author**: STRATEGIST (session strategy)
+**Moved to active**: 2026-07-03 by Implementation Agent
 
 **⚠️ CROSS-PROJECT IMPACT**: This task edits `/Users/tam0013/Documents/git/agent-tasks/rules/GUARDRAILS.md`, the authoritative generic agent rules file read by every project (Galaxy Game, Samvera, WVU Libraries), not just this one. Review this task with that in mind — a bad edit here affects agent behavior everywhere, not just galaxyGame.
 
@@ -296,7 +297,14 @@ Galaxy Game–specific process/agent rules (not generic, not game design).
 - [x] **Target Directories Verified**: All destination directories exist or are created; content conflicts identified and merge strategies produced
 - [x] **Consolidated Plan Ready**: One unified execution plan ready for executor handoff — no ambiguity remaining
 - [x] **Prior Files Correctly Scoped**: Superseded list matches the corrected 10-file list above — excludes the dispatch file and `reorganization attempt 2/`
-- [ ] **Human Approval Received**: Awaiting explicit approval before any edits to either GUARDRAILS file or creation of new files
+- [x] **Human Approval Received**: Approved by human on 2026-07-03
+- [x] **Directories Created**: `docs/architecture/terrain/`, `docs/flavor/`
+- [x] **New Files Created (7)**: galaxy_game_agent_rules.md, generation_and_rendering.md, player_experience_boundaries.md, sci_fi_easter_eggs.md, em_power_shield_tiers.md, sphere_creation_optimization.md, monitor_interface_layers.md
+- [x] **Economy Merges Complete**: MARKET_OPERATIONS.md, CURRENCY_AND_EXCHANGE.md, FISCAL_POLICY_AND_FEES.md updated
+- [x] **AI Manager Merges Complete**: AI_MANAGER_CODE_REVIEW_PROTOCOL.md, AI_MANAGER_WORMHOLE_EXPANSION.md, AI_MANAGER_ARCHITECTURE.md, 00_architecture_overview.md updated
+- [x] **docs/GUARDRAILS.md Trimmed**: 680 lines → 73 lines (migration index only)
+- [ ] **Gap A Approved & Merged**: `unset DATABASE_URL && RAILS_ENV=test` mandatory prefix — AWAITING HUMAN APPROVAL
+- [ ] **Gap B Approved & Merged**: Container lifecycle prohibition clause — AWAITING HUMAN APPROVAL
 
 ---
 
