@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 priority: HIGH
 type: bugfix
 system_domain: AI_MANAGER
