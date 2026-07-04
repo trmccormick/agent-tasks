@@ -181,14 +181,23 @@ Every task follows this exact path:
 ```
 backlog/ → active/ → (work happens) → completed/
 ```
-Use `git mv` to move task files between folders — never copy and delete.
+Use plain `mv` to move task files between folders — **never use `git mv`**.
+
+**Why**: Task files are often untracked in the agent-tasks repo. `git mv` only works on tracked files and leaves stale copies behind when the source file is untracked. Plain `mv` always works regardless of git tracking status.
+
+```bash
+# Correct — always works:
+mv /path/to/source /path/to/destination
+git add destination_path
+git rm -f source_path   # only if source was previously tracked
+git commit ...
+
+# Wrong — leaves stale copies when file is untracked:
+git mv source destination  # FAILS silently on untracked files
+```
+
 A task in active/ with no completion report is abandoned — flag it.
 Never leave a task in active/ after work is done.
-
-> **Known Agent Issue**: Qwen3.5-27B frequently creates a copy in the destination
-> folder instead of using `git mv`, leaving a duplicate in the source folder.
-> After every session that moves task files, human must run `git status` and
-> `git rm -f` any stale duplicate.
 
 ### Rule 13 — Handoff Commands
 Reserve strategic context for handoff commands.
