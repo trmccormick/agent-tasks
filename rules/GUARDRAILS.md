@@ -50,6 +50,28 @@ docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rs
 docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/logistics/shortage_detector_spec.rb 2>&1 | tail -20'
 ```
 
+### Rule 1a — Container Lifecycle Management
+
+**CRITICAL: Containers are assumed ALWAYS RUNNING during development sessions.**
+
+**NEVER:**
+- `docker-compose up` — containers are already running
+- `docker-compose restart` — do not restart containers
+- `docker-compose stop` or `docker-compose down` — do not stop or shut down
+- `docker-compose build` — do not rebuild containers
+- `docker-compose exec` — use `docker exec -it web` instead
+
+**IF a command fails due to container issues:**
+- Report to the human immediately
+- Do NOT attempt to restart, rebuild, or diagnose container state
+- The human will handle container lifecycle management
+
+**Why**: Multiple agents may work simultaneously. Container operations affect all sessions. Agent-level container management creates workflow conflicts and data corruption risks.
+
+**Permitted container diagnostics only:**
+- `docker-compose ps` — read-only status check
+- `docker-compose logs` — read-only log inspection
+
 ### Rule 2 — Database Migrations
 Always generate migration files using the Rails generator inside Docker.
 Never create migration files manually.
@@ -64,8 +86,10 @@ The generator produces a correctly sequenced timestamp automatically.
 
 After generating, run in both environments:
 ```bash
-docker exec -it web bash -c 'rails db:migrate && RAILS_ENV=test rails db:migrate'
+docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test rails db:migrate'
 ```
+
+> **Note**: Use the standard command prefix from Rule 1 (`unset DATABASE_URL && RAILS_ENV=test`) to ensure test environment isolation.
 
 If a migration is needed mid-task, this is a **Stop Condition** (see Rule 19) —
 stop, generate the migration, confirm it runs cleanly, then continue.
