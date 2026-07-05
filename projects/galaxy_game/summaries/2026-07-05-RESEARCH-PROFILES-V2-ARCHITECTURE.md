@@ -9,6 +9,330 @@
 
 ---
 
+## ⚠️ DATA AVAILABILITY NOTICE
+
+**`data/` is gitignored.** None of the JSON files in `data/json-data/missions/` are accessible from the git repo. All critical file contents are embedded below in this document for Gemini's use.
+
+Gemini should treat this summary as the **complete data source** — no repo lookups will find these files.
+
+---
+
+## 0. EMBEDDED FILE CONTENTS (Local-Only JSON)
+
+### 0.1 Working Profile: luna_settlement_profile_v1.json
+
+**Path**: `data/json-data/missions/luna_base_establishment/luna_settlement_profile_v1.json`
+
+```json
+{
+  "template": "mission_profile",
+  "mission_id": "luna_base_establishment",
+  "name": "Luna Base Establishment",
+  "description": "Bootstrap ISRU production on Luna. TEU extracts regolith volatiles during lunar day. PVE extracts oxygen. Gas Separator and cryo tanks store outputs overnight.",
+  "manifest_file": "luna_base_establishment_manifest_v2.json",
+  "world_requirements": {
+    "body_type": "airless_rocky",
+    "has_regolith": true,
+    "gravity_range": [0.1, 0.3],
+    "notes": "Pattern applies to any airless rocky body with regolith. Luna is the reference implementation."
+  },
+  "phases": [
+    {
+      "phase_id": "power_comms",
+      "name": "Initial Power and Comms",
+      "task_list_file": "phases/phase_1_power_comms.json"
+    },
+    {
+      "phase_id": "isru_deployment",
+      "name": "ISRU Unit Deployment",
+      "task_list_file": "phases/phase_2_isru_deployment.json"
+    },
+    {
+      "phase_id": "gas_processing",
+      "name": "Gas Separation and Cryo Storage",
+      "task_list_file": "phases/phase_3_gas_processing.json"
+    },
+    {
+      "phase_id": "robot_logistics_site_hardening",
+      "name": "Robot Logistics & Site Hardening",
+      "task_list_file": "phases/phase_4_robot_logistics.json"
+    }
+  ],
+  "parameters": {
+    "target_body": "LUNA-01",
+    "isru_mode": "regolith_teu_pve",
+    "day_night_cycle_hours": 708,
+    "early_isru_outputs": ["O2", "H2", "He3"],
+    "mid_tier_outputs": ["H2O"],
+    "import_dependencies": ["CH4", "N2"]
+  },
+  "success_conditions": {
+    "complete_phases": ["power_comms", "isru_deployment", "gas_processing", "robot_logistics_site_hardening"],
+    "isru_producing": true,
+    "construction_zone_leveled": true
+  },
+  "metadata": {
+    "version": "1.0",
+    "type": "mission_profile",
+    "template_compliance": "mission_profile",
+    "pattern_class": "airless_rocky_isru",
+    "reference_body": "LUNA-01"
+  }
+}
+```
+
+### 0.2 Phase Files
+
+#### Phase 1: power_comms
+
+**Path**: `data/json-data/missions/luna_base_establishment/phases/phase_1_power_comms.json`
+
+```json
+{
+  "phase": "power_comms",
+  "description": "Deploy initial power and communications infrastructure for Luna base. Site preparation (regolith harvesting and sintering) happens in parallel with comms/power deployment.",
+  "tasks": [
+    { "task_ref": "tasks_v2/task_deploy_regolith_harvester_rover.json" },
+    { "task_ref": "tasks_v2/task_deploy_lspu.json" },
+    { "task_ref": "tasks_v2/task_site_prep_foundation.json" },
+    { "task_ref": "tasks_v2/task_deploy_comms_equipment.json" },
+    { "task_ref": "tasks_v2/task_deploy_puh_and_ppmu.json" },
+    { "task_ref": "tasks_v2/task_deploy_solar_rig.json" }
+  ]
+}
+```
+
+#### Phase 2: isru_deployment
+
+**Path**: `data/json-data/missions/luna_base_establishment/phases/phase_2_isru_deployment.json`
+
+```json
+{
+  "phase": "isru_deployment",
+  "description": "Deploy ISRU units: TEU, PVE, and inflatable pressure tank.",
+  "tasks": [
+    { "task_ref": "tasks_v2/task_deploy_thermal_extraction_unit.json" },
+    { "task_ref": "tasks_v2/task_deploy_pve_unit.json" },
+    { "task_ref": "tasks_v2/task_inflatable_tank_deployment.json" },
+    { "task_ref": "tasks_v2/task_print_inflatable_tank_shells.json" }
+  ]
+}
+```
+
+#### Phase 3: gas_processing
+
+**Path**: `data/json-data/missions/luna_base_establishment/phases/phase_3_gas_processing.json`
+
+```json
+{
+  "phase": "gas_processing",
+  "description": "Deploy gas separator and cryogenic storage tanks for ISRU outputs.",
+  "tasks": [
+    { "task_ref": "tasks_v2/task_deploy_volatiles_storage.json" },
+    { "task_ref": "tasks_v2/task_deploy_gas_separator.json" },
+    { "task_ref": "tasks_v2/task_surface_preparation_unit_operations.json" }
+  ]
+}
+```
+
+#### Phase 4: robot_logistics_site_hardening
+
+**Path**: `data/json-data/missions/luna_base_establishment/phases/phase_4_robot_logistics.json`
+
+```json
+{
+  "phase": "robot_logistics_site_hardening",
+  "description": "Deploy surface charging stations, validate CAR-300 robot readiness, and initiate ISRU stockpiling for Mission 2 construction materials. Harden autonomous robot support infrastructure and ISRU supply chain.",
+  "tasks": [
+    { "task_ref": "tasks_v2/task_deploy_robot_charging_port.json" },
+    { "task_ref": "tasks_v2/task_car_300_charge_cycle.json" },
+    { "task_ref": "tasks_v2/task_isru_stockpile_initiation.json" },
+    { "task_ref": "tasks_v2/task_construction_zone_leveling.json" }
+  ]
+}
+```
+
+### 0.3 Task Files (Key Examples)
+
+#### task_deploy_pve_unit.json
+
+**Path**: `data/json-data/missions/tasks_v2/task_deploy_pve_unit.json`
+
+```json
+{
+  "metadata": {
+    "template": "generic_repeatable_task",
+    "description": "Deploy the Planetary Volatiles Extractor (PVE) Mk1 and link it for volatile processing.",
+    "intended_usage": "Reference in mission profiles for any PVE deployment.",
+    "author": "AI Copilot",
+    "date_created": "2026-04-09"
+  },
+  "tasks": [
+    {
+      "task_id": "deploy_pve_unit",
+      "name": "Deploy PVE Mk1",
+      "description": "Deploy the PVE Mk1 and link it for volatile processing.",
+      "priority": 7,
+      "effects": [
+        { "action": "deploy_unit", "unit": "Planetary Volatiles Extractor Mk1", "count": 1 },
+        { "action": "connect_units", "unit1": "Planetary Volatiles Extractor Mk1", "port1": "output", "unit2": "Planetary Umbilical Hub", "port2": "volatiles_processing" }
+      ],
+      "completion_criteria": { "type": "unit_state", "unit": "Planetary Volatiles Extractor Mk1", "state": "ready" }
+    }
+  ]
+}
+```
+
+#### task_deploy_puh_and_ppmu.json
+
+**Path**: `data/json-data/missions/tasks_v2/task_deploy_puh_and_ppmu.json`
+
+```json
+{
+  "metadata": {
+    "template": "generic_repeatable_task",
+    "description": "Deploy the Planetary Umbilical Hub and Power Management Unit, then connect them.",
+    "intended_usage": "Reference in mission profiles for any PUH and PPMU deployment and connection.",
+    "author": "AI Copilot",
+    "date_created": "2026-04-09"
+  },
+  "tasks": [
+    {
+      "task_id": "deploy_puh_and_ppmu",
+      "name": "Deploy PUH and PPMU",
+      "description": "Deploy the Planetary Umbilical Hub and Power Management Unit, then connect them.",
+      "priority": 3,
+      "effects": [
+        { "action": "deploy_unit", "unit": "Planetary Umbilical Hub", "count": 1 },
+        { "action": "deploy_unit", "unit": "Planetary Power Management Unit", "count": 1 },
+        { "action": "connect_units", "unit1": "Planetary Umbilical Hub", "port1": "main_power_in", "unit2": "Planetary Power Management Unit", "port2": "main_power_out" }
+      ],
+      "completion_criteria": {
+        "type": "event",
+        "event": "puh_and_ppmu_connected"
+      }
+    }
+  ]
+}
+```
+
+#### task_deploy_gas_separator.json
+
+**Path**: `data/json-data/missions/tasks_v2/task_deploy_gas_separator.json`
+
+```json
+{
+  "metadata": {
+    "template": "generic_repeatable_task",
+    "description": "Deploy a Gas Separator unit and connect it to volatiles storage for cryogenic separation of H2, O2, He3 and other extracted gases.",
+    "intended_usage": "Reference in mission profiles for Phase 3 gas processing on any ISRU-capable body. Required after TEU and PVE are operational.",
+    "author": "Claude (Session Strategist)",
+    "date_created": "2026-05-02"
+  },
+  "tasks": [
+    {
+      "task_id": "deploy_gas_separator",
+      "name": "Deploy Gas Separator",
+      "description": "Deploy the Gas Separator unit, connect to volatiles storage input, and configure for target gas fractions (H2, O2, He3). Unit performs cryogenic separation of mixed gas output from TEU and PVE during daytime operating cycles.",
+      "priority": 8,
+      "preconditions": [
+        { "type": "unit_state", "unit": "Thermal Extraction Unit", "state": "ready" },
+        { "type": "unit_state", "unit": "Planetary Volatiles Extractor Mk1", "state": "ready" }
+      ],
+      "effects": [
+        { "action": "deploy_unit", "unit": "Gas Separator", "count": 1 },
+        {
+          "action": "register_to_bus",
+          "unit": "Gas Separator",
+          "hub": "Planetary Umbilical Hub",
+          "ports": [
+            { "port_type": "input", "hub_port": "volatiles_processing", "direction": "in" },
+            { "port_type": "methane_output", "hub_port": "cryo_grid_methane", "direction": "out" },
+            { "port_type": "oxygen_output", "hub_port": "cryo_grid_o2", "direction": "out" },
+            { "port_type": "water_output", "hub_port": "cryo_grid_water", "direction": "out" },
+            { "port_type": "hydrogen_output", "hub_port": "cryo_grid_h2", "direction": "out" },
+            { "port_type": "carbon_dioxide_output", "hub_port": "cryo_grid_co2", "direction": "out" },
+            { "port_type": "nitrogen_output", "hub_port": "cryo_grid_nitrogen", "direction": "out" }
+          ]
+        },
+        { "action": "set_unit_state", "unit": "Gas Separator", "state": "ready" }
+      ],
+      "completion_criteria": { "type": "unit_state", "unit": "Gas Separator", "state": "ready" }
+    }
+  ]
+}
+```
+
+### 0.4 Manifest: lunar_precursor_manifest_v2_DRAFT.json
+
+**Path**: `data/json-data/missions/manifests_v2/lunar_precursor_manifest_v2_DRAFT.json`
+
+```json
+{
+  "manifest_id": "lunar_precursor_manifest_v2",
+  "version": "2.0",
+  "archetype": "Lunar_Precursor",
+  "description": "Initial Luna precursor deployment: power, comms, deployment robotics, ISRU (TEU/PVE/Gas Separator), and volatiles storage buildout for first settlement establishment. Unmanned — AI Manager and base infrastructure only, no crew support items.",
+  "required_hardware": [
+    { "id": "regolith_harvester_rover", "count": 1, "role": "Regolith Excavation and Transport", "task_affinity": "deploy_regolith_harvester_rover" },
+    { "id": "surface_prep_unit_lspu", "count": 1, "role": "Regolith Sintering and Foundation Preparation", "task_affinity": "deploy_lspu" },
+    { "id": "solar_expansion_rig", "count": 1, "role": "Power Generation Expansion", "task_affinity": "deploy_solar_rig" },
+    { "id": "planetary_power_management_unit_mk1", "count": 1, "role": "Power Distribution / Management", "task_affinity": "deploy_solar_rig" },
+    { "id": "comms_equipment_mk1", "count": 1, "role": "Communications Uplink", "task_affinity": "deploy_comms_equipment" },
+    { "id": "planetary_umbilical_hub_mk1", "count": 1, "role": "Central Power/Volatiles Routing Hub", "task_affinity": "deploy_puh_and_ppmu" },
+    { "id": "thermal_extraction_unit_mk1", "count": 1, "role": "Initial Regolith Heating / Volatile Driving", "task_affinity": "deploy_thermal_extraction_unit" },
+    { "id": "planetary_volatiles_extractor_mk1", "count": 1, "role": "Volatile Processing", "task_affinity": "deploy_pve_unit" },
+    { "id": "inflatable_pressure_tank", "count": 2, "role": "Pressurized Gas Storage", "task_affinity": "inflatable_tank_deployment, deploy_volatiles_storage" },
+    { "id": "inflatable_cryo_tank", "count": 5, "role": "Cryogenic Gas Storage (H2/O2/He3 separation outputs, raw gas buffering)", "task_affinity": "deploy_gas_separator, deploy_volatiles_storage" },
+    { "id": "inflatable_gas_storage", "count": 1, "role": "Raw Gas Buffering", "task_affinity": "deploy_volatiles_storage" },
+    { "id": "gas_separator", "count": 1, "role": "Cryogenic Gas Separation (H2/O2/He3 from TEU+PVE output)", "task_affinity": "deploy_gas_separator" },
+    { "id": "car_300_deployment_robot_mk1", "count": 2, "role": "General-Purpose Deployment/Construction Robot", "task_affinity": null },
+    { "id": "robot_charging_port", "count": 2, "role": "Robot Recharge Station (supports CAR-300 deployment robots)", "task_affinity": null }
+  ],
+  "structural_assets": [],
+  "consumables": [
+    { "id": "repair_kit", "count": 3, "purpose": "General maintenance and repair" },
+    { "id": "power_cell_pack", "count": 4, "purpose": "Backup/portable power" },
+    { "id": "maintenance_spare_parts_kit", "count": 2, "purpose": "Equipment repair stock" },
+    { "id": "cryo_insulation_repair_material", "count": 1, "purpose": "Cryo tank insulation repair" }
+  ],
+  "data_outputs": [
+    "settlement_power_online_status",
+    "comms_uplink_active_status",
+    "isru_chain_operational_status",
+    "volatiles_storage_capacity_remaining"
+  ]
+}
+```
+
+### 0.5 Gen 1 Profile: luna_base_establishment_profile_v1.json (Old Style)
+
+**Path**: `data/json-data/missions/profiles/luna_base_establishment_profile_v1.json` (3,623 bytes)
+
+Key differences from Gen 2:
+- Has `target_environment: "lunar_surface"` (hardcoded Luna) vs `world_requirements.body_type`
+- Phases use `phase_id`, `name`, `task_list_file`, `environmental_modifiers` — no `dependencies`, no `estimated_duration_hours`
+- `economic_role` is narrative text, not structured data
+- `success_conditions` is flat string array (no scoring)
+- No `parameters` section for AI Manager dynamic selection
+- No `metadata.pattern_class` or `metadata.auto_generatable`
+- References 4 phase files that were never committed to git
+
+**Gen 1 profiles directory** (`data/json-data/missions/profiles/`) contains 9 total profiles:
+- `earth_mars_venus_cycler_route_establishment_profile_v1.json`
+- `l1_station_depot_profile_v1.json`
+- `leo_depot_construction_profile_v1.json`
+- `luna_base_establishment_profile_v1.json` ← analyzed above
+- `mars_ceres_transport_route_profile_v1.json`
+- `mars_orbital_adjustment_v1.json`
+- `mars_saturn_cycler_route_establishment_profile_v1.json`
+- `psyche_asteroid_capture_v1.json`
+- `solar_system_infrastructure_deployment_v1.json`
+
+**Gen 1 phase directory**: `data/json-data/missions/profiles/phases/` does NOT exist. Phase files referenced by Gen 1 profiles were never committed.
+
+---
+
 ## 1. File Inventory
 
 ### Generation 1 (Old Style — Verbose, Narrative-Based)
