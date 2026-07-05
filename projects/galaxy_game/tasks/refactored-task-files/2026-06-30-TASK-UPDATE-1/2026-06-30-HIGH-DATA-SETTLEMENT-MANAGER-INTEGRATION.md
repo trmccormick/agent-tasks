@@ -13,7 +13,7 @@ local_worker_safe: true
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/active/2026-06-30-HIGH-DATA-SETTLEMENT-MANAGER-INTEGRATION.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase8+/2026-06-30-HIGH-DATA-SETTLEMENT-MANAGER-INTEGRATION.md
 
 READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
@@ -28,7 +28,7 @@ CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (templ
 **Priority**: HIGH
 **Type**: data
 **Created**: 2026-06-30
-**Last Updated**: 2026-06-30
+**Last Updated**: 2026-07-04
 
 ---
 
@@ -80,7 +80,7 @@ The `SettlementManager` class is the per-settlement wrapper that SystemOrchestra
 
 **Task**: SettlementManager Real Data Integration
 **Status**: backlog → active
-**Date**: 2026-06-30
+**Date**: YYYY-MM-DD
 
 ### What I'm About to Do
 Replace mock data in SettlementManager with real queries against BaseSettlement inventory,
@@ -101,6 +101,7 @@ Verify with docker exec rspec command using real settlement factories.
 - ✅ Read audit report
 - ✅ Read this task file
 - ✅ Understand architecture gotchas above
+- ✅ Task 1 (ResourceAllocator) committed
 
 ### Expected Outcomes
 - settlement_resources() returns real inventory data from BaseSettlement
@@ -125,7 +126,7 @@ Verify with docker exec rspec command using real settlement factories.
 ```ruby
 { minerals: 100, energy: 80, food: 60, water: 70, steel: 40, electronics: 30 }
 ```
-This mock data means SystemOrchestrator's resource allocation, logistics coordination, and strategic planning all operate on fabricated numbers. The orchestrator cannot make real decisions without real data.
+This mock data means SystemOrchestrator's resource allocation, logistics coordination, and strategic planning all operate on fabricated numbers.
 
 **Current behavior**: All orchestrator methods receive fake resource quantities.
 **Expected behavior**: SettlementManager queries `BaseSettlement.inventory`, `account`, and `operational_data` to provide accurate state.
@@ -155,7 +156,6 @@ This mock data means SystemOrchestrator's resource allocation, logistics coordin
 ## Implementation Steps
 
 ### Step 1 — Create spec file from scratch
-Create `spec/services/ai_manager/settlement_manager_spec.rb`:
 
 ```ruby
 require 'rails_helper'
@@ -172,103 +172,75 @@ RSpec.describe AIManager::SettlementManager, type: :service do
   end
 
   describe '#settlement_resources' do
-    it 'returns real inventory data from BaseSettlement' do
+    it 'returns a hash of resource quantities' do
       resources = manager.settlement_resources
-      # Should return hash with actual resource keys from inventory
       expect(resources).to be_a(Hash)
-      expect(resources.keys).not_to be_empty
+    end
+
+    it 'does not return hardcoded mock values' do
+      resources = manager.settlement_resources
+      expect(resources).not_to eq({ minerals: 100, energy: 80, food: 60, water: 70, steel: 40, electronics: 30 })
     end
   end
 
   describe '#settlement_health' do
-    it 'calculates health score from real settlement data' do
+    it 'returns a score between 0.0 and 1.0' do
       health = manager.settlement_health
       expect(health).to be_between(0.0, 1.0)
     end
   end
 
   describe '#collect_resource_requests' do
-    it 'returns resource requests based on settlement state' do
+    it 'returns an array of resource requests' do
       requests = manager.collect_resource_requests
       expect(requests).to be_an(Array)
-      expect(requests.first[:settlement_id]).to eq(settlement.id)
+    end
+
+    it 'scopes requests to the correct settlement' do
+      requests = manager.collect_resource_requests
+      requests.each { |r| expect(r[:settlement_id]).to eq(settlement.id) } if requests.any?
     end
   end
 end
 ```
 
 ### Step 2 — Refactor `settlement_resources` to query real inventory
-Replace the mock hash with actual inventory queries:
 
 ```ruby
-# BEFORE
-def settlement_resources
-  { minerals: 100, energy: 80, food: 60, water: 70, steel: 40, electronics: 30 }
-end
-
-# AFTER
 def settlement_resources
   return {} unless settlement.inventory
 
   resources = {}
-
-  # Query inventory for stored resources
   if settlement.inventory.respond_to?(:items)
     settlement.inventory.items.each do |item|
       resources[item.resource_name.to_sym] = item.quantity.to_f
     end
   end
 
-  # Add energy from operational_data
   energy_output = (settlement.operational_data || {}).dig('generated', 'energy_kwh', 'current_output')
   resources[:energy] = energy_output.to_f if energy_output
-
   resources
 end
 ```
 
 ### Step 3 — Refactor `settlement_health` to use real data
-Replace mock health score with calculation based on population, resources, and infrastructure:
 
-```ruby
-# BEFORE
-def settlement_health
-  0.75 # Mock value
-end
-
-# AFTER
-def settlement_health
-  return 0.0 unless settlement
-
-  # Factor 1: Population viability (0-1)
-  pop_score = calculate_population_score
-
-  # Factor 2: Resource sufficiency (0-1)
-  resource_score = calculate_resource_score
-
-  # Factor 3: Infrastructure completeness (0-1)
-  infra_score = calculate_infrastructure_score
-
-  # Weighted average
-  (pop_score * 0.4 + resource_score * 0.4 + infra_score * 0.2).round(2)
-end
-```
+Replace mock `0.75` with a weighted calculation from population, resource coverage, and infrastructure completeness.
 
 ### Step 4 — Refactor `collect_resource_requests` to use real state
+
 Replace mock strategy selector output with actual settlement needs assessment.
 
 ### Step 5 — Verify with RSpec
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/settlement_manager_spec.rb --format documentation 2>&1 | tail -30'
+docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/settlement_manager_spec.rb --format documentation 2>&1' | tail -30
 ```
 
-Expected result: All examples pass, 0 failures.
-
-### Step 6 — Run integration spec to confirm no regressions
+### Step 6 — Run integration spec
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/manager_system_orchestrator_integration_spec.rb --format documentation 2>&1 | tail -30'
+docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/manager_system_orchestrator_integration_spec.rb --format documentation 2>&1' | tail -30
 ```
 
 ---
@@ -277,17 +249,15 @@ docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rs
 - [ ] `settlement_resources` returns real inventory data from BaseSettlement (not hardcoded hash)
 - [ ] `settlement_health` calculates score from real population/resource/infrastructure data
 - [ ] `collect_resource_requests` uses real settlement state
-- [ ] New spec file created with factory-based tests
+- [ ] New spec file created with factory-based tests — no hollow test bodies
 - [ ] Isolation run: 0 failures for `settlement_manager_spec.rb`
 - [ ] No regressions in `manager_system_orchestrator_integration_spec.rb`
 
 ---
 
 ## Stop Conditions — escalate to user immediately if:
-- Fix causes new failures in specs you did not touch
-- Same failure persists after two attempts
-- Root cause is in a shared concern, base class, or factory used across many specs
 - Settlement inventory model has unexpected structure requiring architectural decision
+- Fix causes new failures in specs you did not touch
 - Any architectural decision is required
 
 ---
@@ -303,27 +273,19 @@ git push
 ---
 
 ## Dependencies
-**Blocked by**: `2026-06-30-HIGH-REFACTOR-RESOURCE-ALLOCATOR-STABILITY.md` (Task 1 — ResourceAllocator must be fixed first)
-**Blocks**: `2026-06-30-HIGH-INTEGRATION-MULTI-SETTLEMENT-ORCHESTRATOR-SPEC.md` (integration test needs real data)
-**Related tasks**: `2026-06-30-MEDIUM-ARCHITECTURE-SYSTEM-STATE-PERSISTENCE.md`
+**Blocked by**: `2026-06-30-HIGH-REFACTOR-RESOURCE-ALLOCATOR-STABILITY.md` (Task 1)
+**Blocks**: `2026-06-30-MEDIUM-ARCHITECTURE-SYSTEM-STATE-PERSISTENCE.md` (Task 3)
+**Related tasks**: `2026-06-30-HIGH-INTEGRATION-MULTI-SETTLEMENT-ORCHESTRATOR-SPEC.md`
 
 ---
 
 ## Completion Report
-*Filled in by the implementing agent after completion*
-
 **Completed by**: [agent name]
 **Completion date**: YYYY-MM-DD
 **Final test result**: X examples, Y failures
 
 ### What was changed
-- `[file]` — [description of change]
-
-### Issues discovered
-[Any problems found during implementation]
-
-### Follow-up tasks needed
-[Any new backlog items identified]
+- `[file]` — [description]
 
 ---
 

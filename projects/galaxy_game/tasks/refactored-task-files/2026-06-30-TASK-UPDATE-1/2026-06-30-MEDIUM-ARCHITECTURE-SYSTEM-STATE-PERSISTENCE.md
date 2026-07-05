@@ -13,7 +13,7 @@ local_worker_safe: true
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/active/2026-06-30-MEDIUM-ARCHITECTURE-SYSTEM-STATE-PERSISTENCE.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase8+/2026-06-30-MEDIUM-ARCHITECTURE-SYSTEM-STATE-PERSISTENCE.md
 
 READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
@@ -28,7 +28,7 @@ CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (templ
 **Priority**: MEDIUM
 **Type**: architecture
 **Created**: 2026-06-30
-**Last Updated**: 2026-06-30
+**Last Updated**: 2026-07-04 (cache key nil-risk fixed, spec body filled, handoff path corrected)
 
 ---
 
@@ -67,7 +67,14 @@ The `SystemState` class tracks system-wide state: total resources across all set
 ⚠️ **GOTCHA 3**: Cached state should have a TTL (time-to-live)
 - ❌ Wrong: Cache forever with no expiration
 - ✅ Right: Set reasonable TTL (e.g., 1 hour) — state is recomputed on each orchestration cycle anyway
-- Why: Stale cached state worse than fresh computation. The orchestrator calls `update_system_state` every tick.
+- Why: Stale cached state is worse than fresh computation.
+
+⚠️ **GOTCHA 4**: Do NOT use `shared_context.id` as the cache key — it may be nil
+- ❌ Wrong: `"ai_manager/system_state/#{shared_context.id}"` — SharedContext may not have an `id`,
+  producing key `"ai_manager/system_state/"` and causing all settlements to share one cache slot
+- ✅ Right: Use a stable literal key: `"ai_manager/system_state/global"` or derive from
+  a field that is guaranteed to exist (e.g., settlement id if orchestrator is settlement-scoped)
+- Why: A nil interpolation silently produces a valid-looking but wrong cache key
 
 ---
 
@@ -105,6 +112,7 @@ Verify with docker exec rspec command.
 - SystemState has save_state() and load_state(cache_key) methods
 - State survives across separate SystemState instances via Redis cache
 - TTL set to prevent stale data accumulation
+- Cache key is a stable literal — never derived from a potentially nil value
 - New spec file tests persistence round-trip
 - All specs pass: 0 failures
 
@@ -112,6 +120,7 @@ Verify with docker exec rspec command.
 - ❌ Creating DB model/migration — instead ✅ Use Rails.cache (Redis)
 - ❌ Assuming singleton — instead ✅ Explicit save/load methods
 - ❌ No TTL — instead ✅ Set 1-hour expiration
+- ❌ shared_context.id as cache key — instead ✅ Use stable literal key
 
 ---
 
@@ -159,6 +168,7 @@ When a new `SystemOrchestrator` instance is created (e.g., between requests), al
 ## Implementation Steps
 
 ### Step 1 — Create spec file from scratch
+
 Create `spec/services/ai_manager/system_state_spec.rb`:
 
 ```ruby
@@ -168,13 +178,8 @@ RSpec.describe AIManager::SystemState, type: :service do
   let(:state) { described_class.new }
   let(:cache_key) { 'test_system_state' }
 
-  before do
-    Rails.cache.delete(cache_key)
-  end
-
-  after do
-    Rails.cache.delete(cache_key)
-  end
+  before { Rails.cache.delete(cache_key) }
+  after  { Rails.cache.delete(cache_key) }
 
   describe '#save_state / #load_state' do
     it 'persists and restores state across instances' do
@@ -188,37 +193,58 @@ RSpec.describe AIManager::SystemState, type: :service do
       expect(new_state.total_resources).to eq({ minerals: 500, energy: 300 })
       expect(new_state.strategic_objectives).to eq(['expand_to_mars'])
     end
+
+    it 'returns false when no cached state exists' do
+      result = state.load_state('nonexistent_key')
+      expect(result).to be false
+    end
+
+    it 'overwrites previous cache entry on re-save' do
+      state.total_resources = { minerals: 100 }
+      state.save_state(cache_key)
+
+      state.total_resources = { minerals: 999 }
+      state.save_state(cache_key)
+
+      new_state = described_class.new
+      new_state.load_state(cache_key)
+      expect(new_state.total_resources[:minerals]).to eq(999)
+    end
   end
 
   describe '#analyze_system_health' do
-    it 'calculates health metrics from settlement states' do
-      # Test with mock settlement data
+    it 'returns a hash with health metric keys' do
+      result = state.analyze_system_health
+      expect(result).to be_a(Hash)
+    end
+
+    it 'returns numeric values for all health metrics' do
+      result = state.analyze_system_health
+      result.each_value do |v|
+        expect(v).to be_a(Numeric)
+      end
     end
   end
 end
 ```
 
 ### Step 2 — Add persistence methods to SystemState
+
 Add `save_state` and `load_state` using Rails.cache:
 
 ```ruby
-# app/services/ai_manager/system_state.rb
-
-# Add these public methods:
-
 CACHE_TTL = 1.hour.freeze
 
 def save_state(cache_key)
   state_data = {
-    total_resources: @total_resources,
-    settlement_states: @settlement_states,
-    system_health: @system_health,
+    total_resources:     @total_resources,
+    settlement_states:   @settlement_states,
+    system_health:       @system_health,
     strategic_objectives: @strategic_objectives,
-    dependencies: @dependencies,
-    economic_balance: @economic_balance,
-    saved_at: Time.current.iso8601
+    dependencies:        @dependencies,
+    economic_balance:    @economic_balance,
+    saved_at:            Time.current.iso8601
   }
-
   Rails.cache.write(cache_key, state_data, expires_in: CACHE_TTL)
   Rails.logger.info "[SystemState] Saved state to cache key #{cache_key}"
 end
@@ -227,12 +253,12 @@ def load_state(cache_key)
   state_data = Rails.cache.read(cache_key)
   return false unless state_data
 
-  @total_resources = state_data[:total_resources] || {}
-  @settlement_states = state_data[:settlement_states] || {}
-  @system_health = state_data[:system_health] || {}
+  @total_resources      = state_data[:total_resources]      || {}
+  @settlement_states    = state_data[:settlement_states]    || {}
+  @system_health        = state_data[:system_health]        || {}
   @strategic_objectives = state_data[:strategic_objectives] || []
-  @dependencies = state_data[:dependencies] || {}
-  @economic_balance = state_data[:economic_balance] || {}
+  @dependencies         = state_data[:dependencies]         || {}
+  @economic_balance     = state_data[:economic_balance]     || {}
 
   Rails.logger.info "[SystemState] Loaded state from cache key #{cache_key}"
   true
@@ -240,20 +266,27 @@ end
 ```
 
 ### Step 3 — Wire into SystemOrchestrator lifecycle
-In `system_orchestrator.rb`, call `load_state` on initialization and `save_state` after orchestration:
+
+Use a stable literal cache key — NOT `shared_context.id` which may be nil:
 
 ```ruby
 # In initialize, after creating @system_state:
-@system_state.load_state("ai_manager/system_state/#{shared_context.id}")
+@system_state.load_state("ai_manager/system_state/global")
 
 # In orchestrate_system, at the end:
-@system_state.save_state("ai_manager/system_state/#{shared_context.id}")
+@system_state.save_state("ai_manager/system_state/global")
+```
+
+If the orchestrator ever becomes settlement-scoped, use the settlement's database id:
+```ruby
+# Settlement-scoped variant (only if orchestrator has a real settlement record):
+@system_state.load_state("ai_manager/system_state/settlement_#{@settlement.id}")
 ```
 
 ### Step 4 — Verify with RSpec
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/system_state_spec.rb --format documentation 2>&1 | tail -30'
+docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/system_state_spec.rb --format documentation 2>&1' | tail -20
 ```
 
 Expected result: All examples pass, 0 failures.
@@ -261,7 +294,7 @@ Expected result: All examples pass, 0 failures.
 ### Step 5 — Run integration spec to confirm no regressions
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/manager_system_orchestrator_integration_spec.rb --format documentation 2>&1 | tail -30'
+docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/manager_system_orchestrator_integration_spec.rb --format documentation 2>&1' | tail -20
 ```
 
 ---
@@ -269,8 +302,9 @@ docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rs
 ## Acceptance Criteria
 - [ ] `SystemState` has `save_state(cache_key)` and `load_state(cache_key)` methods
 - [ ] Uses Rails.cache with TTL of 1 hour
+- [ ] SystemOrchestrator uses stable literal cache key (never `shared_context.id`)
 - [ ] SystemOrchestrator calls load on init, save after orchestration
-- [ ] New spec file tests persistence round-trip
+- [ ] New spec file tests persistence round-trip with real assertions (not hollow comments)
 - [ ] Isolation run: 0 failures for `system_state_spec.rb`
 - [ ] No regressions in integration spec
 

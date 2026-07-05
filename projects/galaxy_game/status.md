@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-02 — Planning Agent (Claude web) — post full-suite run + audit workflow session
+**Last Updated:** 2026-07-04 — Planning Agent (Claude web + Qwen Ryzen) — full day multi-session
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -18,73 +18,53 @@
 ---
 
 ## Baseline & Test Status
-- **RSpec Baseline (full suite):** 4059 examples, 6 failures — run 2026-07-02
-  - 3 confirmed flaky (never touch): `game_data_generator_spec.rb:13`,
-    `material_lookup_service_spec.rb:251`, `orbital_shipyard_service_spec.rb:129`
-  - 1 pre-existing (tracked): `escalation_service_spec.rb:429`
-    (`schedule_harvester_completion` — `a_value_within` matcher vs keyword-arg hash)
-  - 2 **NEW regressions**: `escalation_integration_spec.rb:205 + :216`
-    (`"oxygen"`/`"water"` expected, got `"O2"`/`"H2O"` — target_material string
-    normalization, needs task file)
-  - 1 **status unclear**: `procedural_generator_spec.rb:144` — removed from flaky list
-    2026-06-05, now failing again; needs targeted run to confirm flaky vs regression
-- **Suite growth:** 3957 → 4059 (+102 examples, Phase C + EscalationService specs)
+- **RSpec Baseline (full suite):** 4097 examples, 7 failures — run 2026-07-04
+  - 4 confirmed flaky (never touch): `game_data_generator_spec.rb:13`,
+    `material_lookup_service_spec.rb:251`, `orbital_shipyard_service_spec.rb:129`,
+    `procedural_generator_spec.rb:144` (passes 3/3 targeted but failed overnight — genuine flaky)
+  - 3 accepted new failures (SurfaceSuitabilityAnalyzer Phase 1 scope limits):
+    - `surface_suitability_analyzer_spec.rb:71` — buildability :too_steep for flat
+      terrain; slope calc logic bug, task file in `backlog/current/`
+    - `surface_suitability_analyzer_spec.rb:152 + :157` — Atmosphere model has no
+      `name` attribute; spec schema wrong, task file in `backlog/current/`
+  - **escalation_service_spec.rb:429** — ✅ FIXED 2026-07-04 (hash_including matcher),
+    committed and pushed
+  - **procedural_generator_spec.rb:144** — confirmed flaky (added to confirmed list)
+- **Suite growth:** 4059 → 4097 (+38 examples)
 - **Branch:** main
-- **Material identifier convention (locked):** chemical formulas (`O2`, `H2O`, `N2`)
-  are the Ruby codebase standard. Display names are JSON/UI only.
+- **Material identifier convention (locked):** chemical formulas (`O2`, `H2O`, `N2`,
+  `CH4`) are the Ruby codebase standard. Display names are JSON/UI only.
 
 ---
 
 ## Active Tasks
 
-### 🔴 escalation_integration_spec regressions (x2) — needs task file
-- `escalation_integration_spec.rb:205 + :216`
-- `"oxygen"`/`"water"` expected, got `"O2"`/`"H2O"` in `operational_data['target_material']`
-- String normalization mismatch introduced by EscalationService work. Single-file fix.
 
-### 🔴 procedural_generator_spec.rb:144 — status unclear
-- Was removed from flaky list 2026-06-05, now failing again.
-- Run targeted spec before classifying. Do not add back to flaky list without confirmation.
+### 📌 Backlog reorganization — completed (Qwen session 2026-07-04)
+- Moved 6 stale task files from backlog root to correct phase folders:
+  - `2026-06-22-HIGH-IMPLEMENTATION-PHASE4-ROBOT-LOGISTICS-SITE-HARDENING.md` → `phase5+/` (Luna robots)
+  - `2026-06-30-LOW-PHASE-8B-DEFERRAL-WORMHOLE-AND-ECONOMICS.md` → `phase14+/` (post-wormhole Eden)
+  - `2026-07-03-MEDIUM-DOCUMENTATION-CLEANUP-LEGACY-AGENT-REPO.md` → `deferred-cleanup/`
+  - 3 Phase 8 specs → `phase8+/`
+- Created `current/` folder for urgent fixes (3 files moved in)
+- Created `deferred-cleanup/` folder for non-urgent cleanup tasks
+- Moved 6 files from `backlog/deprecated/` → `tasks/deprecated/`, removed empty `backlog/deprecated/`
+- Removed `reorganization_attempt_3/` folder (empty, only README)
 
-### 📌 schedule_harvester_completion — needs task file
-- Pre-existing. `a_value_within(60)` matcher vs keyword-arg hash `{wait_until: time}`.
-- Single-file spec fix, LOW/MEDIUM, `local_worker_safe: true`.
+### 📌 Review folder audit — completed (Qwen session 2026-07-04)
+- Analyzed 874 files across `review/`, `backlog_april_2026/`, `reorganization attempt 2/`
+- Only **14 of 874 (1.6%)** found in current locations — rest are stale
+- Created two summary reports:
+  - `summaries/2026-07-04-REVIEW-FOLDER-AUDIT-ACTIONABILITY.md` — actionability assessment
+  - `summaries/2026-07-04-REVIEW-FOLDER-CONTENT-TYPE-CATEGORIZATION.md` — content type breakdown for Claude's review
+- **Key finding**: `reorganization attempt 2/` is confirmed not needed (abandoned reorg)
+- **Claude note**: Focus on HIGH-FEATURE/HIGH-ARCHITECTURE files first (~15 files may contain useful specs)
 
-### 📌 HUB-BUS-ROUTING — dispatched
-- Task file: `backlog/phase5+/2026-07-01-HIGH-ARCHITECTURE-HUB-BUS-ROUTING.md`
-- Perplexity design pass complete. Governing modifier: capacity-based inventory routing
-  (storage/throughput limits), not unit-to-unit topology. Hub = settlement-wide routing
-  bus; avoid overcomplicating with unnecessary unit connections when a hub-mediated
-  capacity check is sufficient.
+### 📌 Misplaced Phase 8 files — source identified, Claude has updates
+- Source of stale Phase 8 task files: `refactored-task-files/2026-06-30-TASK-UPDATE-1` (stale task generation)
+- Claude has a few updates before corrected files can be moved to `phase8+/`
 
-### 📌 No-Magic Robot Deployment — ready to dispatch
-- Task file: `backlog/phase5+/2026-03-27-HIGH-REFACTOR-ESCALATION-SERVICE-NO-MAGIC-ROBOT-DEPLOYMENT.md`
-- Line numbers confirmed current: 225, 242, 260, 283.
-
-### 📌 Phase 5 SystemOrchestrator pipeline — awaiting authorization
-- 8 task files in `proposed new tasks/2026-06-30-TASK-UPDATE-1/` awaiting move to
-  `backlog/phase5+/`. Two red flags must be patched before any dispatch:
-  - RED 1: Stub spec bodies in Tasks 1 + 2 (hollow coverage)
-  - RED 2: `shared_context.id` as Redis cache key in Task 3 (may be nil)
-
-### 📌 GUARDRAILS.md consolidation — workflow ready, test pending
-- `STALE_TASK_AUDIT_WORKFLOW.md` + `DISPATCH_STALE_TASK_AUDIT.md` in `refactored-task-files/`
-- `TASK_TEMPLATE.md` corrected (stale Continue-era line fixed)
-- Canonical file question resolved: four-way sort defined
-  (see `2026-07-02-SESSION-SUMMARY-AUDIT-WORKFLOW.md`)
-- `em_power_shield_tiers.md` target path still unresolved — carry forward
-- Next step: test workflow against GUARDRAILS consolidation task using 2026-07-01
-  five-file set as prior research input
-
-### 📌 Luna Precursor V2 rake — post-patch confirmation pending
-- Sequence Reconciliation task ✅ closed (rake footer confirmed 2026-07-02).
-- Post-patch rake run not yet done (LegacyPortAdapter + Phase C commits landed after
-  last known run). Run `rails luna_mission:execute` and confirm gas_processing phase.
-
-### 📌 Non-idempotent rake runs — undrafted
-- 453 deployed `BaseUnit`s observed across sequential IDs. Setup block clears inventory
-  but not previously-deployed units. Small additive fix to `luna_mission.rake` setup
-  block. Quick to draft.
+### 📌 GUARDRAILS.md consolidation — in progress (Ryzen session)
 
 ---
 
@@ -105,33 +85,58 @@
 
 ---
 
+## Backlog Structure (updated 2026-07-04)
+
+New folders established this session:
+- `backlog/current/` — urgent fixes outside phase structure (2 HIGH SurfaceSuitabilityAnalyzer tasks)
+- `backlog/deferred-cleanup/` — non-urgent housekeeping (1 file: legacy agent repo cleanup)
+- `backlog/phase8+/` — received 3 spec tasks (SystemOrchestrator, LogisticsCoordinator, PriorityArbitrator)
+- `backlog/phase14+/` — received wormhole/economics deferral doc
+- `backlog/deprecated/` — REMOVED (merged into `tasks/deprecated/`, 6 files migrated)
+- `backlog/reorganization_attempt_3/` — REMOVED (only contained README)
+
+Task file movements this session:
+- Phase 4 Robot Logistics → `phase5+/` (robots needed for Luna settlement)
+- Multi-Settlement Orchestrator Spec + 2 related specs → `phase8+/`
+- Wormhole/Economics deferral → `phase14+/`
+- Legacy agent repo cleanup → `deferred-cleanup/`
+
+---
+
 ## Parked / Not Yet Filed
 
+- **Review folder audit complete** — 874 files analyzed, 98.4% stale. Two summary
+  reports in `summaries/`: `2026-07-04-REVIEW-FOLDER-AUDIT-ACTIONABILITY.md` and
+  `2026-07-04-REVIEW-FOLDER-CONTENT-TYPE-CATEGORIZATION.md`. Claude to review ~13-18
+  HIGH-FEATURE/ARCHITECTURE files for salvageable specs. `reorganization_attempt_2/`
+  confirmed not needed — abandoned reorg. `backlog_april_2026/` is the authoritative source.
+- **has_facility? refactor** — task created in `backlog/phase6+/`. Not blocking
+  current work. Fix: replace dead `has_facility?` abstraction with direct unit checks
+  in `NpcPriceCalculator` and `ProcurementService`.
+- **Luna equipment provisioning task** — ARCHIVED to `tasks/deprecated/` (2026-07-04).
+  Task was based on flawed assumption. Architecture already handles equipment via
+  DRAFT manifest `required_hardware` → rake → settlement inventory. No resources
+  section was ever designed for mission profiles.
 - **TASK-luna-mvp-ai-manager-settlement.md** — ready to dispatch; implements real V2
   stub handlers + non-`rand()` settlement-siting decision function. Read
   `AI-MANAGER-LUNA-BEHAVIOR-GOALS.md` before dispatching.
-- **Shell-printing/tank-stage-advancement gap (3c)** — confirmed real missing feature;
-  inserting print tasks into phase order does NOT advance `deployment.stages` on the
-  tank. Needs own implementation task. Do not mistake as resolved.
+- **Shell-printing/tank-stage-advancement gap (3c)** — confirmed real missing feature.
+  Needs own implementation task. Do not mistake as resolved.
 - **Landing pad insertion (3d)** — `task_surface_preparation_unit_operations.json`
   covers it (metadata only); agreed insertion point is end of Phase 3. Report-only,
   not wired in.
 - **Drone Bay Operational Data** — task file `2026-06-19-LOW-DESIGN-DRONE-BAY-OPERATIONAL-DATA.md`
   created, not yet copied to repo. LOW priority.
-- **AI-MANAGER-SERVICE-INTEGRATION placeholder** — confirmed empty template by two
-  independent reviews; archive to `deprecated/` decision made, `git mv` not yet executed.
+- **AI-MANAGER-SERVICE-INTEGRATION placeholder** — confirmed empty template; archive
+  to `deprecated/` decision made, `git mv` not yet executed.
 - **Titan atmospheric transfer task file** — creation unconfirmed; verify before
   assuming it exists.
 - **ROUTING_LOGIC.md** — mid-revision since 2026-06-16; not finalized.
 - **L1/LEO Depot task** (Perplexity research handoff) — not yet reviewed.
 - **Image asset generation** — `GALAXY-GAME-IMAGE-ASSETS.md` style guide complete;
   Cycler priority-10 component images still need ChatGPT generation time.
-- **Agent folder cleanup** — migrating old tasks from legacy `agent/` folder into
-  `agent-tasks` repo. Low priority, gated before `agent/` removal.
-- **Backlog reorganization audit** — `reorganization_attempt_3/` Gemini thread status
-  unknown as of 2026-06-27. Confirm scope before assuming M4 cleanup covers it.
-- **HLT payload capacity gaps** — task file `2026-06-21-HIGH-RESEARCH-HLT-PAYLOAD-CAPACITY-AND-MASS-DATA-GAPS.md`
-  created, not yet dispatched. 150,000 kg payload baseline adopted (Starship reusable-mode).
+- **HLT payload capacity gaps** — task file created, not yet dispatched. 150,000 kg
+  payload baseline adopted (Starship reusable-mode).
 - **Deposit/Spawning gap** — `Deposit::PlausibilityEngine` + `DepositSpawner` designed,
   never implemented. Explicitly deprioritized below Luna MVP.
 
@@ -141,18 +146,25 @@
 
 | Date | Item | Commit |
 |---|---|---|
+| 2026-07-04 | escalation_service_spec.rb:429 matcher fix (hash_including) | committed + pushed |
+| 2026-07-04 | Luna equipment provisioning task archived to deprecated/ | — |
+| 2026-07-04 | Backlog structure reorganized (current/, deferred-cleanup/, phase folders) | — |
+| 2026-07-04 | Review folder audit — 874 files analyzed, reports in summaries/ | — |
+| 2026-07-03 | Hub Bus Routing — register_to_bus engine action | `bd549c15` |
+| 2026-07-03 | Sabatier Reactor JSON files + methane.json update | `1daf2ab4` |
+| 2026-07-03 | strategy_selector.rb duplicate method removed | `7ea5bd44` |
+| 2026-07-03 | SurfaceSuitabilityAnalyzer Phase 1 service | `a2c6a680` |
+| 2026-07-03 | cell_num NameError fixed in SurfaceSuitabilityAnalyzer | `e59cce02` |
+| 2026-07-03 | sabatier_reactor_spec.rb paths fixed + redundant tests removed | committed |
+| 2026-07-03 | escalation_integration_spec.rb O2/H2O formula fix | committed |
+| 2026-07-03 | GUARDRAILS consolidation committed (verification pending) | Ryzen session |
 | 2026-07-02 | LegacyPortAdapter task closed | `e196ff4` |
-| 2026-07-02 | Luna Precursor V2 Sequence Reconciliation closed | rake footer confirmed |
+| 2026-07-02 | Luna Precursor V2 Sequence Reconciliation closed | rake 13/13 confirmed |
 | 2026-07-01 | Phase C (StrategySelector→V2 bridge) | `4441a74d` |
 | 2026-07-01 | EscalationService resource-shortage handling | `50f70486` |
 | 2026-06-29 | GCC Account Refactor Phase 1 | `2bf82245` |
 | 2026-06-29 | `advance_deployment_stages` dispatch fix | committed |
 | 2026-06-27 | LegacyPortAdapter core (Steps 1–4) | `b3beff34` + `fd0b96d7` |
 | 2026-06-23 | Docs reorganization | `415805b7` |
-| 2026-06-20 | `PRICE_DISCOVERY_LIFECYCLE.md` recovered | manual backup |
-| 2026-06-15 | Luna Phase 4 (re-implemented after loss) | `5a2af17a` |
-| 2026-06-06 | Luna Phase 2 | `21b10ef0` |
-| 2026-06-05 | Luna Phase 1 | `cd4d6800` |
-| 2026-06-03 | ShortageDetector + ServiceCoordinator fixes | committed |
 
 **Handoffs**: `agent-tasks/projects/galaxy_game/handoffs/` — full session detail lives there.

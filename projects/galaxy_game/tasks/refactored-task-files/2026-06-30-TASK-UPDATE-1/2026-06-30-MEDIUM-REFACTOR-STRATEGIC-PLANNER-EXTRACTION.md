@@ -13,7 +13,7 @@ local_worker_safe: true
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/active/2026-06-30-MEDIUM-REFACTOR-STRATEGIC-PLANNER-EXTRACTION.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase8+/2026-06-30-MEDIUM-REFACTOR-STRATEGIC-PLANNER-EXTRACTION.md
 
 READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
@@ -28,7 +28,7 @@ CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (templ
 **Priority**: MEDIUM
 **Type**: refactor
 **Created**: 2026-06-30
-**Last Updated**: 2026-06-30
+**Last Updated**: 2026-07-04 (spec body filled, handoff path corrected)
 
 ---
 
@@ -106,7 +106,7 @@ Verify with docker exec rspec command.
 - New StrategicPlanner class with plan() method
 - SystemOrchestrator delegates to StrategicPlanner instead of private stubs
 - EconomicForecasterService wired into StrategicPlanner
-- New spec file tests planning logic independently
+- New spec file tests planning logic independently with real assertions
 - All specs pass: 0 failures
 
 ### Critical Gotchas I Will Avoid
@@ -158,6 +158,7 @@ These should be a standalone, testable service.
 ## Implementation Steps
 
 ### Step 1 — Create spec file from scratch
+
 Create `spec/services/ai_manager/strategic_planner_spec.rb`:
 
 ```ruby
@@ -165,27 +166,39 @@ require 'rails_helper'
 
 RSpec.describe AIManager::StrategicPlanner, type: :service do
   let(:shared_context) { AIManager::SharedContext.new }
-  let(:system_state) { AIManager::SystemState.new }
-  let(:forecaster) { instance_double(AIManager::EconomicForecasterService) }
-  let(:planner) { described_class.new(shared_context, forecaster) }
+  let(:system_state)   { AIManager::SystemState.new }
+  let(:forecaster)     { instance_double(AIManager::EconomicForecasterService) }
+  let(:planner)        { described_class.new(shared_context, forecaster) }
 
   describe '#plan' do
-    it 'returns strategic plan based on system state' do
+    it 'returns a hash with required strategic plan keys' do
       plan = planner.plan(system_state)
       expect(plan).to be_a(Hash)
       expect(plan.keys).to include(:objectives, :expansion_plans, :economic_balance)
     end
+
+    it 'returns an array of objectives' do
+      plan = planner.plan(system_state)
+      expect(plan[:objectives]).to be_an(Array)
+    end
+
+    it 'includes a generated_at timestamp' do
+      plan = planner.plan(system_state)
+      expect(plan[:generated_at]).to be_a(Time)
+    end
   end
 
   describe '#evaluate_opportunities' do
-    it 'identifies expansion and resource opportunities' do
-      # Test opportunity evaluation
+    it 'returns an array of opportunity hashes' do
+      result = planner.evaluate_opportunities(system_state)
+      expect(result).to be_an(Array)
     end
   end
 end
 ```
 
 ### Step 2 — Create StrategicPlanner class
+
 Create `app/services/ai_manager/strategic_planner.rb`:
 
 ```ruby
@@ -198,49 +211,48 @@ module AIManager
       @forecaster = forecaster || AIManager::EconomicForecasterService.new(shared_context)
     end
 
-    # Main planning entry point
     def plan(system_state)
-      opportunities = evaluate_opportunities(system_state)
-      expansion_plans = coordinate_expansion(opportunities, system_state)
+      opportunities    = evaluate_opportunities(system_state)
+      expansion_plans  = coordinate_expansion(opportunities, system_state)
       economic_balance = balance_economy(system_state)
-      objectives = generate_objectives(opportunities, expansion_plans, system_state)
+      objectives       = generate_objectives(opportunities, expansion_plans, system_state)
 
       {
-        objectives: objectives,
-        expansion_plans: expansion_plans,
+        objectives:       objectives,
+        expansion_plans:  expansion_plans,
         economic_balance: economic_balance,
-        opportunities: opportunities,
-        generated_at: Time.current
+        opportunities:    opportunities,
+        generated_at:     Time.current
       }
+    end
+
+    def evaluate_opportunities(system_state)
+      # Extracted from SystemOrchestrator stub — implement logic here
+      []
     end
 
     private
 
-    def evaluate_opportunities(system_state)
-      # Extracted from SystemOrchestrator stub
-    end
-
     def coordinate_expansion(opportunities, system_state)
-      # Extracted from SystemOrchestrator stub
+      []
     end
 
     def balance_economy(system_state)
-      # Use forecaster for projections if available
       if @forecaster.respond_to?(:forecast)
-        forecast = @forecaster.forecast(system_state)
-        # Balance based on forecast
+        @forecaster.forecast(system_state)
+      else
+        {}
       end
     end
 
     def generate_objectives(opportunities, expansion_plans, system_state)
-      # Generate strategic objectives from analysis
+      []
     end
   end
 end
 ```
 
 ### Step 3 — Wire into SystemOrchestrator
-Update `system_orchestrator.rb`:
 
 ```ruby
 # In initialize, add:
@@ -249,19 +261,18 @@ Update `system_orchestrator.rb`:
 # Replace execute_strategic_planning:
 def execute_strategic_planning
   plan = @strategic_planner.plan(@system_state)
-
-  # Apply results to system state
   @system_state.update_strategic_objectives(plan[:objectives])
 end
 ```
 
 ### Step 4 — Remove old private stubs from SystemOrchestrator
-Delete `evaluate_system_opportunities`, `coordinate_expansion_plans`, `balance_economic_development`, `update_strategic_objectives` from SystemOrchestrator.
+Delete `evaluate_system_opportunities`, `coordinate_expansion_plans`,
+`balance_economic_development`, `update_strategic_objectives` from SystemOrchestrator.
 
 ### Step 5 — Verify with RSpec
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/strategic_planner_spec.rb --format documentation 2>&1 | tail -30'
+docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/strategic_planner_spec.rb --format documentation 2>&1' | tail -20
 ```
 
 Expected result: All examples pass, 0 failures.
@@ -269,16 +280,17 @@ Expected result: All examples pass, 0 failures.
 ### Step 6 — Run integration spec to confirm no regressions
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/manager_system_orchestrator_integration_spec.rb --format documentation 2>&1 | tail -30'
+docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/manager_system_orchestrator_integration_spec.rb --format documentation 2>&1' | tail -20
 ```
 
 ---
 
 ## Acceptance Criteria
 - [ ] New `StrategicPlanner` class with `plan(system_state)` method
+- [ ] `evaluate_opportunities` is a public method (testable)
 - [ ] SystemOrchestrator delegates to StrategicPlanner (no private stubs remaining)
 - [ ] EconomicForecasterService wired as dependency
-- [ ] New spec file tests planning logic independently
+- [ ] New spec file has real assertions — no hollow comment placeholders
 - [ ] Isolation run: 0 failures for `strategic_planner_spec.rb`
 - [ ] No regressions in integration spec
 

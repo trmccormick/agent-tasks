@@ -13,7 +13,7 @@ local_worker_safe: true
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/active/2026-06-30-HIGH-REFACTOR-RESOURCE-ALLOCATOR-STABILITY.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase8+/2026-06-30-HIGH-REFACTOR-RESOURCE-ALLOCATOR-STABILITY.md
 
 READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
@@ -28,7 +28,7 @@ CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (templ
 **Priority**: HIGH
 **Type**: refactor
 **Created**: 2026-06-30
-**Last Updated**: 2026-06-30
+**Last Updated**: 2026-07-04 (spec bodies filled, handoff path corrected)
 
 ---
 
@@ -153,27 +153,6 @@ Read `resource_allocator.rb` in full. Identify:
 Keep the system-wide version as the base. Remove the legacy `SUPPLY_REQUIREMENTS` and `ISRU_PRIORITIES` constants (these belong in `SettlementManager` or a settlement bootstrap service, not the system allocator).
 
 ```ruby
-# BEFORE — two class definitions
-module AIManager
-  class ResourceAllocator
-    SUPPLY_REQUIREMENTS = { ... }
-    ISRU_PRIORITIES = [ ... ]
-    def initialize(settlement_size: 'small')
-      # legacy
-    end
-    # ...
-  end
-end
-
-module AIManager
-  class ResourceAllocator
-    def initialize(shared_context)
-      # new system-wide
-    end
-    # ...
-  end
-end
-
 # AFTER — single class definition
 module AIManager
   class ResourceAllocator
@@ -182,16 +161,15 @@ module AIManager
     end
 
     # allocate_resources, identify_transfers, etc. (system-wide methods)
-    # ...existing system-wide methods...
   end
 end
 ```
 
 ### Step 3 — Rewrite spec for new constructor
+
 Replace `resource_allocator_spec.rb` entirely:
 
 ```ruby
-# spec/services/ai_manager/resource_allocator_spec.rb
 require 'rails_helper'
 
 RSpec.describe AIManager::ResourceAllocator, type: :service do
@@ -199,14 +177,29 @@ RSpec.describe AIManager::ResourceAllocator, type: :service do
   let(:allocator) { described_class.new(shared_context) }
 
   describe '#allocate_resources' do
-    it 'allocates resources based on arbitrated requests and system state' do
-      # Test with mock arbitrated requests and system state
+    it 'returns an array of allocations for valid requests' do
+      system_state = instance_double(AIManager::SystemState)
+      requests = [
+        { settlement_id: 1, resource: :energy, quantity: 100, priority: :high },
+        { settlement_id: 2, resource: :water,  quantity: 50,  priority: :medium }
+      ]
+      result = allocator.allocate_resources(requests, system_state)
+      expect(result).to be_an(Array)
+    end
+
+    it 'returns empty array when no requests provided' do
+      system_state = instance_double(AIManager::SystemState)
+      result = allocator.allocate_resources([], system_state)
+      expect(result).to eq([])
     end
   end
 
   describe '#identify_transfers' do
-    it 'identifies transfers between source and target settlements' do
-      # Test transfer identification logic
+    it 'returns an array of transfer objects between settlements' do
+      source = instance_double(AIManager::SettlementManager)
+      target = instance_double(AIManager::SettlementManager)
+      result = allocator.identify_transfers(source, target)
+      expect(result).to be_an(Array)
     end
   end
 end
@@ -220,7 +213,7 @@ Confirm that `SystemOrchestrator` and `PriorityArbitrator` still call into Resou
 ### Step 5 — Verify with RSpec
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/resource_allocator_spec.rb --format documentation 2>&1 | tail -30'
+docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/resource_allocator_spec.rb --format documentation 2>&1' | tail -20
 ```
 
 Expected result: All examples pass, 0 failures.
@@ -228,10 +221,8 @@ Expected result: All examples pass, 0 failures.
 ### Step 6 — Run integration spec to confirm no regressions
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/manager_system_orchestrator_integration_spec.rb --format documentation 2>&1 | tail -30'
+docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/manager_system_orchestrator_integration_spec.rb --format documentation 2>&1' | tail -20
 ```
-
-Expected result: All examples pass, 0 failures.
 
 ---
 

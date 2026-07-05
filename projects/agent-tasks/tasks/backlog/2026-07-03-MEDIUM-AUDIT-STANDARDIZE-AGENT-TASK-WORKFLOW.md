@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: MEDIUM
 type: documentation
 system_domain: OTHER
@@ -23,7 +23,7 @@ CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (templ
 ---
 
 # TASK: Audit and Standardize Agent Workflow Documentation
-**Status**: BACKLOG
+**Status**: ACTIVE
 **Priority**: MEDIUM
 **Type**: documentation
 **Created**: 2026-07-03
