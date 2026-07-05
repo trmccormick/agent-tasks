@@ -63,6 +63,9 @@ You are **Implementation Agent**.
 Project: [project_name]
 Task: /Users/tam0013/Documents/git/agent-tasks/projects/[project]/tasks/active/[FILENAME].md
 
+LIFECYCLE: current → active → completed
+  - If file not yet tracked: git add first, then git mv
+  - Never copy task files between folders
 READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
 CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (template in task file).
@@ -346,6 +349,10 @@ git push
 
 **Task file move on completion — use git mv, never copy:**
 ```bash
+# If the task file was just created (not yet tracked), add it first:
+git add projects/galaxy_game/tasks/active/[FILENAME]
+
+# Then move to completed:
 git mv projects/galaxy_game/tasks/active/[FILENAME] projects/galaxy_game/tasks/completed/[YYYY-MM]/[FILENAME]
 git commit -m "chore: move [FILENAME] to completed/"
 ```
