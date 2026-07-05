@@ -167,4 +167,28 @@ Task file movements this session:
 | 2026-06-27 | LegacyPortAdapter core (Steps 1–4) | `b3beff34` + `fd0b96d7` |
 | 2026-06-23 | Docs reorganization | `415805b7` |
 
-**Handoffs**: `agent-tasks/projects/galaxy_game/handoffs/` — full session detail lives there.
+---
+
+## Today's Work (2026-07-05 — Planning Agent)
+
+### Phase 8 Task Reorganization — completed
+- Updated handoff sections on all 7 Phase 8 tasks with lifecycle + synthesis MD pattern
+- Moved deferral task from refactored-task-files to phase14+ with Dependencies section
+- Renamed and moved summary files to summaries/ folder (TASK_REFACTOR_SUMMARY → 2026-06-30-SUMMARY-TASK-REFACTOR-COMPLETION.md)
+- Moved systemorchestrator_development.md review file to deprecated/
+- Deleted refactored-task-files/2026-06-30-TASK-UPDATE-1/ (all stale copies removed)
+- Committed + pushed: c84865b
+
+### Emergency Mission System Design Task — completed
+- Created `backlog/design/2026-07-05-LOW-ARCHITECTURE-EMERGENCY-MISSION-SYSTEM-DESIGN.md`
+- EmergencyMissionService exists (not missing) — post-player-entry design work, not Phase 5 bugfix
+- Renamed from RESEARCH to ARCHITECTURE type per TASK_TEMPLATE convention
+- Moved from tasks/design/ to backlog/design/ for consistency with other design tasks
+- Deleted stale fix_ai_manager_escalation_dependencies.md from phase5+
+- Committed + pushed: bb244b3
+
+### Template Fixes — completed (earlier session)
+- Updated TASK_TEMPLATE.md handoff section with lifecycle instructions (backlog → active → completed)
+- Added synthesis MD file pattern to all task files (replaced "in chat" pattern)
+- Committed + pushed: 47a22dc
+
