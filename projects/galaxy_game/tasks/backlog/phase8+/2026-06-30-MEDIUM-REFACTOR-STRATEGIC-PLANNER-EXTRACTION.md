@@ -15,10 +15,19 @@ You are **Implementation Agent**.
 Project: galaxy_game
 Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase8+/2026-06-30-MEDIUM-REFACTOR-STRATEGIC-PLANNER-EXTRACTION.md
 
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv to new folder
+  - New/untracked file: move with filesystem (mv), then git add the final path
+  - Never copy task files between folders
 READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
-CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (template in task file).
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
 ```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
 
 ---
 

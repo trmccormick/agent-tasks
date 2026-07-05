@@ -7,18 +7,36 @@ mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 ---
 
-## ⚡ Minimal Handoff
+## ⚡ Minimal Handoff (Copy this to send to agent)
 
 ```
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/active/2026-06-30-MEDIUM-TEST-PRIORITY-ARBITRATOR-COVERAGE.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase8+/2026-06-30-MEDIUM-TEST-PRIORITY-ARBITRATOR-COVERAGE.md
 
-READ FIRST: Task file contains all prerequisites and verification steps.
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv to new folder
+  - New/untracked file: move with filesystem (mv), then git add the final path
+  - Never copy task files between folders
+READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
-CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work.
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
 ```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff. Never copy task files between folders
+READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
 
 ---
 
