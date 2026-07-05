@@ -57,7 +57,7 @@ STEP 1 — Read these files in order:
 2. Project README: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/README.md
 3. Task file (above)
 
-STEP 2 — Create STATUS SYNTHESIS REPORT in chat
+STEP 2 — Save STATUS SYNTHESIS REPORT as MD file to summaries folder (see TASK_TEMPLATE.md for path/pattern)
 [Template in task file]
 
 STEP 3 — Wait for approval, then implement

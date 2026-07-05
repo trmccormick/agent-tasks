@@ -230,8 +230,8 @@ This pattern ensures task files stay current with progress across sessions witho
 **What it means**: Review executor's synthesis report before they implement. Catch architectural gaps, missing gotchas, or edge cases before code is written.
 
 **When synthesis reviews happen**:
-- EXECUTOR posts STATUS SYNTHESIS REPORT in chat (after reading all prereqs)
-- REVIEWER reads synthesis and task file
+- EXECUTOR saves STATUS SYNTHESIS REPORT as MD file to summaries folder (after reading all prereqs)
+- REVIEWER reads synthesis report and task file
 - REVIEWER either:
   - ✅ **Approves** — "Looks good, proceed with implementation"
   - ❓ **Questions** — "I see you're using admin domain, but the gotchas say use tenant domain — did you catch that?"
@@ -286,7 +286,7 @@ This pattern ensures task files stay current with progress across sessions witho
    Project: [project]
    Task: /Users/tam0013/Documents/git/agent-tasks/projects/[project]/tasks/active/[TASKFILE].md
    READ FIRST: Task file has all prerequisites, credentials, gotchas, and verification steps.
-   REQUIRED: Create STATUS SYNTHESIS REPORT before starting (template in task file).
+   REQUIRED: Save STATUS SYNTHESIS REPORT as MD file to summaries folder (see TASK_TEMPLATE.md for path/pattern).
    ```
 
 2. Executor receives minimal message, knows exactly what to read and in what order

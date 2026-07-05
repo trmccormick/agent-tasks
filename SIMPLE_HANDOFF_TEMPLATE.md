@@ -94,7 +94,7 @@ REQUIRED: Create STATUS SYNTHESIS REPORT. Also:
 2. **No duplication** — Everything except role/project/path goes IN the task file
 3. **Concise** — Fits on one screen (mobile-friendly)
 4. **Copy-paste ready** — Works across chat sessions without editing
-5. **Synthesis gate mandatory** — Agent creates STATUS SYNTHESIS REPORT before doing work and waits for approval
+5. **Synthesis gate mandatory** — Agent saves STATUS SYNTHESIS REPORT as MD file to summaries folder before doing work and waits for approval
 
 ---
 

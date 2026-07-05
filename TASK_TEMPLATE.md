@@ -68,7 +68,10 @@ LIFECYCLE: current → active → completed
   - Never copy task files between folders
 READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
-CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (template in task file).
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
 ```
 
 **That's it.** Everything else should be IN this task file, not duplicated in handoff.
@@ -181,8 +184,8 @@ the same capability.*
 
 Before navigating to any URLs, running any commands, or modifying any files, you MUST create and post a **synthesis report** in chat. This report demonstrates you understand the task before executing.
 
-**Synthesis Report Template**:
-```
+**Synthesis Report Template** (save as MD file, do NOT paste in chat):
+```markdown
 ## STATUS SYNTHESIS REPORT
 
 **Task**: [name from filename]
