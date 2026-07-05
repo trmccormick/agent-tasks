@@ -1,9 +1,28 @@
 ---
 status: backlog
 priority: HIGH
-category: IMPLEMENTATION
+type: feature
+system_domain: AI_MANAGER
+mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
+local_worker_safe: true
 date_created: 2026-06-22
 phase: 4_robot_logistics
+---
+
+## ⚡ Minimal Handoff (Copy this to send to agent)
+
+```
+You are **Implementation Agent**.
+
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase5+/2026-06-22-HIGH-IMPLEMENTATION-PHASE4-ROBOT-LOGISTICS-SITE-HARDENING.md
+
+LIFECYCLE: current → active → completed (use git mv, never copy)
+READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
+
+CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (template in task file).
+```
+
 ---
 
 # Phase 4: Robot Logistics & Site Hardening Implementation
@@ -33,21 +52,15 @@ Establish autonomous robot support infrastructure and harden the ISRU supply cha
 ✅ Robot charging ports (2x) — already staged in manifest
 ✅ Total Phase 4 mass: ~5,900 kg (well within HLT 150,000 kg capacity)
 
-**Manifest Note**: Two manifests exist for Luna precursor work:
-- `data/json-data/missions/luna_base_establishment/luna_base_establishment_manifest_v2.json` — profile-referenced (canonical)
-- `data/json-data/missions/manifests_v2/lunar_precursor_manifest_v2_DRAFT.json` — draft (referenced by this task)
-Clarify which manifest Phase 4 tasks should target during implementation.
-
 ## ⚠️ Prerequisite Fixes (MUST Complete Before Implementation)
 
 **Blocking Issues from 2026-06-23 debugging session:**
 
-1. **Gas Separator Blueprint Cleanup** — Verify which file is the duplicate:
-   - `data/json-data/blueprints/modules/production/gas_separator_bp.json` (id: "gas_separator", module version)
-   - `data/json-data/blueprints/units/production/refineries/gas_separator_unit_bp.json` (id: "gas_separator_unit", unit version)
-   - Both lack `mass_kg` — verify which is canonical and remove the other if duplicate
-   - Reason: BlueprintLookupService picks alphabetically first; without cleanup, rake may nondeterministically pick wrong version
-   - Status: Needs verification — task file originally described a 1800kg malformed duplicate that no longer exists at the documented path
+1. **Gas Separator Blueprint Duplicate** — Delete one file to prevent lookup collision:
+   - **Delete**: `data/json-data/blueprints/units/infrastructure/gas_separator_unit_bp.json` (1800kg duplicate, malformed from troubleshooting)
+   - **Keep**: `data/json-data/blueprints/units/production/refineries/gas_separator_unit_bp.json` (1200kg, canonical ISRU unit)
+   - Reason: BlueprintLookupService picks alphabetically first; without deletion, rake may nondeterministically pick wrong version
+   - Status: Cleanup task (2026-06-19) will handle this; Phase 4 implementation cannot proceed until complete
 
 2. **Verify Robot Charging Port Cleanup Complete**:
    - Confirm `modules/energy/robot_charging_port_bp.json` (250kg module, malformed id) has been deleted
@@ -57,11 +70,7 @@ Clarify which manifest Phase 4 tasks should target during implementation.
 **Gate**: Do NOT create Phase 4 task files or wire into profile until both prerequisites verified. Cleanup task must move to completed/ with clean final rake run (8/8 Phases 1-3 tasks passing) before starting here.
 
 ## Implementation Steps
-**Pre-implementation note**: Only 1 of 4 Phase 4 task files currently exists:
-- ✅ `task_deploy_robot_charging_port.json` — EXISTS
-- ❌ `task_car_300_charge_cycle.json` — MUST BE CREATED during implementation
-- ❌ `task_isru_stockpile_initiation.json` — MUST BE CREATED during implementation
-- ❌ `task_construction_zone_leveling.json` — MUST BE CREATED during implementation
+
 1. **Create phase_4_robot_logistics.json** (luna_base_establishment/phases/)
    - Reference the 4 tasks above
    - Set task_ref entries pointing to tasks_v2/ files
