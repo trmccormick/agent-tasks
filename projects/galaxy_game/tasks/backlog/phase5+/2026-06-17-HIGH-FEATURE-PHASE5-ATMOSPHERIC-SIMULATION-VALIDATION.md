@@ -1,27 +1,135 @@
 ---
-id: "2026-06-17-HIGH-FEATURE-PHASE5-ATMOSPHERIC-SIMULATION-VALIDATION"
 status: backlog
 priority: HIGH
-type: FEATURE/TESTING
-created_date: 2026-06-17
-system_domain: TERRAFORMING/SKIMMER_OPERATIONS
-mvp_alignment: PHASE5_SIMULATION_VALIDATION
+type: feature
+system_domain: TERRA_SIM
+mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 ---
 
-# Phase 5 Task — Validate Atmospheric Composition Tracking During Skimmer Operations
+## ⚡ Minimal Handoff (Copy this to send to agent)
 
-## Context & Strategic Purpose
+```
+You are **Research Agent**.
 
-**Why This Matters for Luna MVP:** Early skimmer operations on Venus and Titan **do affect atmospheric composition**, even if the effects are small. The game must track these changes correctly because:
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase5+/2026-06-17-HIGH-FEATURE-PHASE5-ATMOSPHERIC-SIMULATION-VALIDATION.md
 
-1. **Venus CO2→O2 conversion efficiency** — affects long-term terraforming trajectory
-2. **Titan CH4 harvesting with gas venting** — burning CH4/LOX leaves different gases in atmosphere  
-3. **Cumulative effects over time** — repeated extraction cycles could slowly adjust composition if not tracked
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv to new folder
+  - New/untracked file: move with filesystem (mv), then git add the final path
+  - Never copy task files between folders
+READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
-Per your clarification: skimmers extract raw atmosphere, process desired components (CH4 on Titan), and may vent excess or byproduct gases back into the atmosphere. This creates a feedback loop that must be simulated correctly before we can trust any terraforming calculations in Phase 6+.
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
 
-**Core Principle**: Atmospheric composition is **stateful simulation data**, not static configuration. We need to validate existing tracking mechanisms work correctly under skimmer operation scenarios.
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
+
+---
+
+# RESEARCH: Validate Atmospheric Tracking for MVP Skimmer Operations
+
+**Status**: BACKLOG
+**Priority**: HIGH
+**Type**: feature
+**Created**: 2026-06-17
+**Last Updated**: 2026-07-05 — Planning Agent (Qwen3.6-35b)
+
+---
+
+## Context
+
+Skimmers are **MVP fuel delivery** — Venus skimmer delivers LOX/CO2/N2 to Luna, Titan skimmer delivers CH4/N2 to Luna. This task validates that atmospheric composition tracking works correctly under skimmer operation scenarios so the Luna fuel loop simulation is trustworthy.
+
+**Core Principle**: Atmospheric composition is **stateful simulation data**, not static configuration. We need to validate existing tracking mechanisms work correctly when skimmers extract, process, and vent gases.
+
+**MVP Scope**: Skimmer fuel delivery validation only. Terraforming atmospheric tracking is Phase 9+ (separate task: `2026-07-05-LOW-RESEARCH-TERRAFORMING-ATMOSPHERIC-GAP-ANALYSIS.md`).
+
+---
+
+## Prerequisites — READ FIRST (Sequential Order)
+
+1. **Workflow**: `/Users/tam0013/Documents/git/agent-tasks/README.md` (RESEARCHER Role section)
+2. **Project Guide**: `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/README.md`
+3. **Skimmer Intent**: `docs/architecture/intent/skimmer_craft_intent.md` — skimmers are fuel harvesters, not terraformers
+4. **MVP Design**: `docs/new_agent/projects/galaxy_game/research/LUNA-MVP-SIMULATION-DESIGN.md` — skimmer fuel loops
+5. **Phase Structure**: `docs/new_agent/projects/galaxy_game/tasks/backlog/PHASE_STRUCTURE.md` — Phase 5 = Luna validation only
+6. **This Task File**: Everything below
+
+---
+
+## Critical Information for This Task
+
+### Architecture Gotchas
+
+⚠️ **GOTCHA 1**: Skimmers deliver raw mixed atmospheric gas, NOT pre-sorted components
+- ❌ Wrong: Assume skimmers deliver pure CH4 or pure CO2 to Luna
+- ✅ Right: AstroLift delivers mixed atmospheric cargo; LDC's onsite processing units extract value from the mix
+- Why: `skimmer_craft_intent.md` confirms "cargo is not pre-sorted" — this is a key MVP design constraint
+
+⚠️ **GOTCHA 2**: Terraforming is Phase 9+, NOT MVP scope
+- ❌ Wrong: Include terraforming calculations or CO2→O2 conversion efficiency in validation
+- ✅ Right: Focus on fuel delivery tracking (CH4/LOX/N2 for Luna tank farm)
+- Why: Terraforming atmospheric tracking has been split to `phase9+/2026-07-05-LOW-RESEARCH-TERRAFORMING-ATMOSPHERIC-GAP-ANALYSIS.md`
+
+⚠️ **GOTCHA 3**: Skimmers are continuous mobile processing plants
+- ❌ Wrong: Treat skimmers as simple delivery vehicles that only process on delivery
+- ✅ Right: Skimmers process continuously during transit and docked dwell time
+- Why: `LUNA-MVP-SIMULATION-DESIGN.md` confirms "processing does not stop at delivery"
+
+---
+
+## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
+
+**POST THIS TO CHAT BEFORE PROCEEDING.** Do not start actual work until synthesis is approved.
+
+```
+## STATUS SYNTHESIS REPORT
+
+**Task**: Validate Atmospheric Tracking for MVP Skimmer Operations
+**Status**: backlog → active
+**Date**: YYYY-MM-DD
+
+### What I'm About to Do
+Audit `TerraSim::AtmosphereSimulationService` and skimmer extraction/venting code to validate
+atmospheric composition tracking works correctly under skimmer operation scenarios. Create
+focused RSpec tests for MVP fuel delivery validation (Venus → LOX/CO2/N2, Titan → CH4/N2).
+
+### Files I'll Reference
+| File | Purpose | Status |
+|---|---|---|
+| `app/services/terra_sim/atmosphere_simulation_service.rb` | Atmosphere tracking — audit gas mass updates | not started |
+| `app/services/skimmer/` (if exists) | Skimmer extraction logic | pending |
+| `docs/architecture/intent/skimmer_craft_intent.md` | MVP skimmer intent reference | pending |
+| `data/json-data/missions/tasks/titan_harvester_mission/` | Titan harvest mission data | pending |
+| `data/json-data/missions/tasks/venus_harvester_mission/` | Venus harvest mission data | pending |
+
+### Prerequisites Completed
+- ✅ Read README.md RESEARCHER section
+- ✅ Read project guide
+- ✅ Read skimmer intent doc (fuel delivery, not terraforming)
+- ✅ Read MVP simulation design (skimmer fuel loops)
+- ✅ Read phase structure (Phase 5 = Luna validation only)
+- ✅ Understand architecture gotchas above
+
+### Expected Outcomes
+- Audit report documenting which atmospheric tracking features exist for skimmer operations
+- RSpec test suite covering Titan CH4 harvesting and Venus CO2/N2 delivery scenarios
+- Clear identification of MVP gaps vs Phase 9+ terraforming gaps
+
+### Critical Gotchas I Will Avoid
+- ❌ Including terraforming calculations — instead ✅ Focus on fuel delivery tracking only
+- ❌ Assuming pre-sorted skimmer cargo — instead ✅ Validate mixed atmospheric gas handling
+- ❌ Treating skimmers as simple delivery vehicles — instead ✅ Account for continuous processing during transit
+
+---
+
+**SYNTHESIS COMPLETE.** Ready to proceed with Phase 1 (codebase audit).
+```
 
 ---
 
@@ -32,95 +140,67 @@ Per your clarification: skimmers extract raw atmosphere, process desired compone
 - ✅ Atmosphere has gas composition data (`@celestial_body.atmosphere.gases`)  
 - ⚠️ **Unknown**: Does skimmer extraction/venting actually modify this state in simulation?
 
-### Current State — What We Need to Validate
-```ruby
-# Skimmer operation scenario (Titan example):
-1. Extract 100 units of raw atmosphere → removes CH4, N2 from atmospheric mass
-2. Process CH4 for fuel tanks  
-3. Vent excess gases or byproducts back into atmosphere:
-   - Burning CH4 + LOX leaves CO2 and H2O as exhaust products
-   - Unprocessed components may be vented (N2 on Titan)
-4. Net effect = extraction minus processing losses plus venting additions
+### MVP Validation Scenarios (Fuel Delivery Only)
 
-# Question to answer in Phase 5 testing:
-Does the current simulation track this correctly? Or does it just reduce atmospheric mass without composition changes?
+**Scenario 1 — Titan CH4 harvesting with venting (MVP fuel delivery)**
+```ruby
+# Setup: Titan has N2 (95%) + CH4 (5%) atmospheric composition
+# Operation: Extract 10 units, process CH4 for fuel tanks, vent excess N2
+# Expected: Atmospheric mass decreases by extracted amount; composition shifts based on what's processed vs. vented
+# MVP Goal: Validate CH4 delivery to Luna tank farm tracking works correctly
+```
+
+**Scenario 2 — Venus CO2/N2 skimming (MVP fuel delivery)**
+```ruby
+# Setup: Venus has ~96% CO2 atmosphere at 90 bar pressure
+# Operation: Extract CO2, process LOX for self-fueling, deliver N2+CO2 mixed payload to Luna
+# Expected: Atmospheric mass decreases; venting tracks which gases are released (not just mass)
+# MVP Goal: Validate Venus skimmer fuel loop and mixed gas delivery tracking
+```
+
+**Scenario 3 — Cumulative effects over extended simulation**
+```ruby
+# Run multiple extraction cycles on same world
+# Track whether composition changes accumulate or reset each cycle
+# MVP Goal: Ensure repeated skimmer operations produce coherent atmospheric state changes
 ```
 
 ### Expected Behavior After Validation
-- ✅ If tracking exists and works → document scenarios, create regression tests  
-- ⚠️ If partial implementation found → identify gaps for Phase 6 terraforming work
-- ❌ If no tracking exists → this becomes a critical gap to address before any terraforming calculations can be trusted
+- ✅ If tracking exists and works → document scenarios, create regression tests for MVP fuel delivery
+- ⚠️ If partial implementation found → identify gaps for Phase 9+ terraforming work (separate task)
+- ❌ If no tracking exists → document as critical gap for MVP fuel loop validation
 
 ---
 
-## Implementation Scope (Phase 5 Testing Only)
+## Implementation Steps
 
-### In Scope — Validation & Discovery Tasks
-
-**1. Audit Existing Atmosphere Tracking Mechanisms**
-   - Trace `AtmosphereSimulationService` gas mass updates during simulation cycles
-   - Check if skimmer operations modify atmospheric composition in codebase
-   - Review TerraSim service interactions: does extraction affect atmosphere state?
-
-**2. Create Test Scenarios for Skimmer Operations**
-   ```ruby
-   # Scenario 1 — Titan CH4 harvesting with venting
-   - Start: Titan has N2 (95%) + CH4 (5%) atmospheric composition  
-   - Operation: Extract 10 units, process to fuel tanks, vent excess gases
-   - Expected: Atmospheric mass decreases by extracted amount; composition shifts based on what's processed vs. vented
-   
-   # Scenario 2 — Venus CO2 skimming with O2 production
-   - Start: Venus has ~96% CO2 atmosphere at 90 bar pressure
-   - Operation: Extract CO2, convert to O2 via processing (terraforming goal)  
-   - Expected: Atmospheric mass decreases; if venting occurs, what gases are released?
-
-   # Scenario 3 — Cumulative effects over extended simulation
-   - Run multiple extraction cycles on same world
-   - Track whether composition changes accumulate or reset each cycle
-   ```
-
-**3. Identify Gaps for Phase 6+ Terraforming Work**
-   - Document which atmospheric tracking features exist vs. missing  
-   - Create task list of gaps that must be filled before terraforming calculations can proceed
-   - Determine if hardcoded extraction limits (Venus/Titan special cases) are sufficient or need data-driven approach
-
-### Out of Scope — Implementation Tasks (Phase 6+)
-- Implementing new atmospheric composition tracking mechanisms ❌  
-- Adding terraforming calculation logic for Venus CO2→O2 conversion ❌
-- Creating multi-system Cycler route operations with bulk resource movement ❌
-- Refactoring hardcoded world names to data-driven schema (unless discovered as critical gap)
-
----
-
-## Technical Requirements
-
-### Phase 1: Codebase Audit (Research — Day 1-2)
-**Goal**: Understand what atmospheric tracking already exists.
+### Step 1 — Codebase Audit (Research)
+**Goal**: Understand what atmospheric tracking already exists for skimmer operations.
 
 ```bash
-# Step 1 — Trace atmosphere state modifications during skimmer operations:
+# Trace atmosphere state modifications during skimmer operations:
 grep -rn "atmosphere.*gas\|extract.*atmosphere" galaxy_game/app/services/terra_sim/ --include="*.rb" | head -30  
 
-# Step 2 — Check if extraction modifies atmospheric composition:
+# Check if extraction modifies atmospheric composition:
 find galaxy_game/app/models -name "*atmosphere*" -o -name "*celestial_body*" 
 grep -rn "extract\|vent\|process" galaxy_game/app/services/skimmer/ --include="*.rb" | head -30
 
-# Step 3 — Review simulation service interactions:
+# Review simulation service interactions:
 cat galaxy_game/app/services/terra_sim/atmosphere_simulation_service.rb
 ```
 
-**Deliverable**: Audit report documenting which atmospheric tracking features exist, how they work, and what gaps were found.
+**Deliverable**: Audit report documenting which atmospheric tracking features exist for skimmer operations.
 
-### Phase 2: Test Scenario Development (Testing — Day 3-4)  
-**Goal**: Create focused RSpec tests to validate existing behavior under skimmer operation scenarios.
+### Step 2 — Test Scenario Development (Testing)
+**Goal**: Create focused RSpec tests to validate existing behavior under MVP skimmer operation scenarios.
 
 ```ruby
 # spec/services/terra_sim/atmosphere_simulation_service_spec.rb
 
 RSpec.describe TerraSim::AtmosphereSimulationService do
-  describe 'skimmer operations impact on atmospheric composition' do
+  describe 'MVP skimmer operations impact on atmospheric composition' do
     
-    context 'Titan CH4 harvesting with gas venting' do
+    context 'Titan CH4 harvesting with venting (fuel delivery)' do
       it 'tracks extraction of raw atmosphere components correctly' do
         # Setup: Titan has N2 (95%) + CH4 (5%) 
         titan = create(:celestial_body, name: 'Titan', atmosphere_attributes: { ... })
@@ -151,11 +231,11 @@ RSpec.describe TerraSim::AtmosphereSimulationService do
       end
     end
     
-    context 'Venus CO2 extraction and O2 production' do
+    context 'Venus CO2/N2 delivery (fuel delivery)' do
       it 'tracks atmospheric mass reduction from skimmer operations' do
         # Setup: Venus 96% CO2 atmosphere at ~90 bar
         
-        # Operation: Extract CO2 for terraforming processing
+        # Operation: Extract CO2 for LOX self-fueling, deliver mixed N2+CO2 to Luna
         
         # Expected: Atmospheric pressure decreases; if venting occurs, what gases released?
       end
@@ -167,23 +247,13 @@ RSpec.describe TerraSim::AtmosphereSimulationService do
     end
     
   end
-  
-  describe 'atmospheric composition tracking gaps' do
-    it 'identifies missing features needed for terraforming calculations' do
-      # This test will document what's NOT implemented yet
-      pending "Document gap: Does simulation track gas byproducts from CH4/LOX combustion?"
-      
-      # Example finding to validate during Phase 5 testing:
-      # Current code may just reduce atmospheric mass without tracking which gases are removed vs. vented back
-    end
-  end
 end
 ```
 
-**Deliverable**: RSpec test suite that validates existing behavior and documents gaps via pending tests with clear descriptions of missing features.
+**Deliverable**: RSpec test suite that validates existing behavior for MVP fuel delivery scenarios.
 
-### Phase 3: Gap Analysis & Task Creation (Synthesis — Day 5)  
-**Goal**: Create actionable task list for Phase 6+ terraforming work based on discovered gaps.
+### Step 3 — Gap Analysis (Synthesis)
+**Goal**: Create actionable task list for Phase 9+ terraforming work based on discovered gaps.
 
 ```markdown
 # Terraforming Implementation Gaps Discovered in Phase 5 Testing
@@ -197,6 +267,59 @@ end
 4. ⚪ Data-driven extraction limits vs. hardcoded world names (currently works with special cases)  
 5. ⚪ Multi-world atmospheric interaction via Cycler routes (requires bulk resource movement first)
 ```
+
+**Deliverable**: Task files for Phase 9+ terraforming work, prioritized by criticality to MVP simulation validity.
+
+---
+
+## Acceptance Criteria
+- [ ] Audit report documents all existing atmosphere state modification code paths for skimmer operations
+- [ ] RSpec test suite covers Titan CH4 harvesting and Venus CO2/N2 delivery scenarios (MVP fuel delivery only)
+- [ ] Clear identification of MVP gaps vs Phase 9+ terraforming gaps
+- [ ] Isolation run: 0 failures
+- [ ] No regressions in related specs
+
+---
+
+## Stop Conditions — escalate to user immediately if:
+- Skimmer operations don't modify atmosphere state at all (critical MVP gap)
+- Atmospheric tracking exists but is fundamentally incompatible with skimmer fuel delivery model
+- Any architectural decision is required before research can continue
+
+---
+
+## Dependencies
+
+**Blocked by**: None — this task is ready to dispatch immediately
+**Blocks**: Phase 9+ terraforming implementation tasks (based on discovered gaps)
+**Related tasks**: `2026-07-05-LOW-RESEARCH-TERRAFORMING-ATMOSPHERIC-GAP-ANALYSIS.md` (Phase 9+ terraforming gap analysis)
+
+---
+
+## Completion Report
+*Filled in by the implementing agent after completion*
+
+**Completed by**: [agent]
+**Completion date**: YYYY-MM-DD
+**Files read**: [count]
+**Summary saved to**: summaries/2026-07-05-[TYPE]-[SHORT-DESCRIPTION].md
+
+### What was changed
+- `[file]` — [description of change]
+
+### Issues discovered
+[Any problems found during implementation that weren't in the original task]
+
+### Follow-up tasks needed
+[Any new backlog items identified — do not create the files, just list them here]
+
+### Lessons learned
+[What worked, what didn't, what future tasks in this area should know]
+
+---
+
+## Handoff Summary
+HANDOFF SUMMARY: [files read] | [key findings] | [summary location for Gemini handoff]
 
 **Deliverable**: Task files for Phase 6+ terraforming work, prioritized by criticality to MVP simulation validity.
 
