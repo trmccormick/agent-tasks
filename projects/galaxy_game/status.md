@@ -39,6 +39,10 @@
 
 ## Active Tasks
 
+### 📌 Phase 4 Robot Logistics — ACTIVE (2026-07-05)
+- Task file moved from `backlog/phase5+/` → `active/phase5+/` and status updated to `active`
+- Committed: `move: Phase 4 robot logistics task from backlog to active (status: active)`
+- Implementation in progress — creating V2 task files, phase definition, wiring into profile
 
 ### 📌 Backlog reorganization — completed (Qwen session 2026-07-04)
 - Moved 6 stale task files from backlog root to correct phase folders:
@@ -191,4 +195,19 @@ Task file movements this session:
 - Updated TASK_TEMPLATE.md handoff section with lifecycle instructions (backlog → active → completed)
 - Added synthesis MD file pattern to all task files (replaced "in chat" pattern)
 - Committed + pushed: 47a22dc
+
+
+### Skimmer Intent Doc Update — completed (Qwen session 2026-07-05)
+- Updated `docs/architecture/intent/skimmer_craft_intent.md` processing model
+- Section 2 rewritten: "Limited Onboard, Mostly Raw Delivery" with phases table
+- Clarified onboard output is fuel self-sufficiency only (LOX/CH4 for skimmer's own tanks)
+- Section 3 expanded with Storage Contribution and Surface Contingency details
+- Committed + pushed: a7adb30a
+
+### Skimmer Validation Task Rewrite — completed (Qwen session 2026-07-05)
+- Rewrote Phase 5 skimmer validation task to current template format
+- Split terraforming content to separate Phase 9+ task (`phase9+/2026-07-05-LOW-RESEARCH-TERRAFORMING-ATMOSPHERIC-GAP-ANALYSIS.md`)
+- Phase 5 task now MVP scope only: Titan CH4 harvesting and Venus CO2/N2 delivery as fuel delivery scenarios
+- Updated architecture gotchas (GOTCHA 3: limited onboard processing, GOTCHA 4: docked skimmers augment base capacity)
+- Committed + pushed to agent-tasks: d3f682f
 
