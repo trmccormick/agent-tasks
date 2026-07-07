@@ -211,3 +211,33 @@ Task file movements this session:
 - Updated architecture gotchas (GOTCHA 3: limited onboard processing, GOTCHA 4: docked skimmers augment base capacity)
 - Committed + pushed to agent-tasks: d3f682f
 
+---
+
+## Today's Work (2026-07-07 — Qwen session)
+
+### V2 Mission System Architecture Research — completed
+- Research task committed to agent-tasks repo
+- Established three-tier architecture (Mission Plans → Registry/Phases → Tasks)
+- Documented LegacyPortAdapter production code at `app/services/lookup/legacy_port_adapter.rb` (4 schema versions)
+
+### Canonical V2 Examples Created in missions_v2/
+- Luna profile: 4-phase complete with world_requirements, environment, runtime_parameters
+- 4 phase files: power_comms, isru_deployment, gas_processing, robot_logistics (with task_refs, applicable_body_types)
+- Mission plan: DAG-ordered with dependencies and critical_path
+- Task index: maps all 16 Luna tasks to their phases
+- Venus migration study: preserves V1 richness (economic data, parallel execution, AI hints)
+
+### 17 V2.1 Task Files Converted
+- Copied from `tasks_v2/` → `missions_v2/tasks/` with `_v2.json` suffix
+- All have `"template": "task_v2.1"` and `"version": "2.1"` confirmed by grep
+
+### Implementation Tasks Corrected (Claude scope constraints applied)
+- `2026-07-06-HIGH-PROFILES-V2-CANONICAL-IMPLEMENTATION.md` — updated with Claude's scope constraints, committed to agent-tasks
+  - IN SCOPE: production files in missions_v2/, rake path resolution, 17-task verification
+  - EXCLUDED: engine changes, parameter interpolation, LegacyPortAdapter, Venus migration, DAG execution
+- Both implementation tasks moved back from `active/` → `backlog/current/` (Claude never approved them for execution)
+
+---
+
+## Active Tasks
+
