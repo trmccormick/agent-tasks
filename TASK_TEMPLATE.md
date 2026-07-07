@@ -61,16 +61,26 @@ local_worker_safe: true | false
 You are **Implementation Agent**.
 
 Project: [project_name]
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/[project]/tasks/active/[FILENAME].md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md \
+         projects/[project]/tasks/active/[FILENAME].md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
 LIFECYCLE: backlog → active → completed
-  - Tracked file: git mv to new folder
-  - New/untracked file: move with filesystem (mv), then git add the final path
-  - Never copy task files between folders
-READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find agent-tasks/projects/[project]/tasks -name "[FILENAME].md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
 CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
-  Summaries path: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/summaries/
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/[project]/summaries/
   Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
   Chat is for questions only — never paste synthesis into chat (formatting breaks).
 ```
@@ -202,8 +212,10 @@ Before navigating to any URLs, running any commands, or modifying any files, you
 | `path/to/file` | [description] | [not started / pending / done] |
 
 ### Prerequisites Completed
+- ✅ Step 0: Task file moved to active/ with git mv (find output pasted in chat)
+- ✅ Step 0: YAML status updated from backlog → active
 - ✅ Read README.md EXECUTOR section
-- ✅ Read project guide  
+- ✅ Read project guide
 - ✅ Read this task file
 - ✅ Understand architecture gotchas above
 - ✅ Know which domain/credentials to use
@@ -262,13 +274,40 @@ Before navigating to any URLs, running any commands, or modifying any files, you
 
 ## Implementation Steps
 
-> ⚠️ **BEFORE YOU START**: You must have completed and posted your STATUS SYNTHESIS REPORT above.
-> Do not proceed with any of these steps until synthesis is posted and approved.
+> ⚠️ **BEFORE YOU START**: Complete Step 0 first. Then complete and post your STATUS SYNTHESIS REPORT.
+> Do not proceed to Step 1 until both are done and approved.
 
 All agents: follow these steps exactly in order.
 - Do not skip steps or reorder them.
 - Do not proceed to the next step if the current step has not produced a clean result.
 - Debug prints OK for complex callbacks — add temporary `puts` statements, remove after verification.
+
+### Step 0 — Move task file to active/ and update status (MANDATORY FIRST STEP)
+
+This must be done before reading the task content, before synthesis, before any other action.
+
+```bash
+# From inside agent-tasks repo root:
+git mv projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md \
+       projects/[project]/tasks/active/[FILENAME].md
+```
+
+Then open the moved file and change the YAML status field:
+```
+status: backlog  →  status: active
+```
+
+Then verify only one copy exists:
+```bash
+find /Users/tam0013/Documents/git/agent-tasks/projects/[project]/tasks \
+     -name "[FILENAME].md"
+```
+
+**Paste the output of the find command in chat before proceeding.**
+Expected: exactly one result, at the `active/` path.
+
+> ❌ Do NOT proceed if two results appear — a stale copy exists and must be removed first.
+> ❌ Do NOT use cp or plain mv — always git mv for tracked files.
 
 ### Step 1 — [action]
 [Exact description of what to do]

@@ -1,7 +1,11 @@
 # Luna MVP Simulation Design
 **Prepared:** 2026-06-09
+**Last Updated:** 2026-07-05 — Planning Agent (Qwen3.6-35b)
 **Status:** Authoritative reference — supersedes scattered handoff notes
 **Purpose:** Define what the Luna simulation must prove before any Phase 5+ work begins
+**Scope:** MVP = Luna fuel loop + skimmer delivery chain (Venus/Titan → Luna). Terraforming is Phase 9+.
+
+> **⚠️ SCOPE NOTE:** This document covers MVP scope only. Skimmers deliver fuel/processing gases to Luna — they do NOT terraform. Terraforming begins in Phase 9+ (Mars/Venus orbital + surface settlement). Do not conflate skimmer operations with terraforming intent.
 
 ---
 
@@ -101,14 +105,49 @@ Tank farm sizing is a mission planning problem. Too small = can't pre-position f
 
 ---
 
-## The Skimmer Program
+## The Skimmer Program — MVP Fuel Delivery (Not Terraforming)
 
-### Launch Timing
-HLT tankers and skimmers launch from Earth **before** the Luna precursor mission starts. The intent is to give the precursor robots lead time to build infrastructure before craft need to land.
+### Core Intent
+Skimmers are **specialized atmospheric harvesters** owned and operated by AstroLift. Their purpose is to deliver raw atmospheric gases from Venus/Titan to Luna for processing into fuel, habitat atmosphere, and ISRU feedstock. This is **MVP fuel delivery**, not terraforming.
 
-**Titan launches first** — longest flight time, must depart earliest.
-**Venus launches later** — shorter flight time, departs after Titan.
-**All three must converge** so landing pad and tank farm are ready before first skimmer arrives.
+From `skimmer_craft_intent.md`:
+- **Venus Skimmer**: CO2 → LOX via Sabatier Reactor / CO2 Scrubbing (primary output: LOX)
+- **Titan Skimmer**: CH4 fractionation / H2 Separation (primary output: CH4)
+- Both carry "Lite" AtmosphericRefineryService for onboard processing during transit
+- Docking capability: L1 Depot (active refinement, +15% throughput per skimmer) AND Cyclers
+
+### MVP Fuel Loop Architecture
+```
+Venus Skimmer:
+  Harvests CO2 (~96%) + N2 (~3.5%) from Venus atmosphere
+  → Onboard processing: CO2 → O2 (fills own LOX tank for return)
+  → Delivers to Luna: N2 + CO2 mixed payload (unprocessed raw gas)
+  → Needs on turnaround: CH4 only (from Titan deliveries or Earth bridge)
+  → Value: LOX self-fueling economy, CO2 feedstock for Sabatier synthesis
+
+Titan Skimmer:
+  Harvests CH4 (~5%) + N2 (~95%) from Titan atmosphere
+  → Onboard processing: CH4 fractionation (fills own CH4 tank for return)
+  → Delivers to Luna: CH4 + N2 mixed payload (unprocessed raw gas)
+  → Needs on turnaround: LOX only (from LDC local production)
+  → Value: Bulk CH4 delivery, breaks Earth import dependency
+```
+
+### Key MVP Facts
+- **Cargo is NOT pre-sorted.** AstroLift delivers raw mixed atmospheric gas. LDC's onsite processing units determine what value is extracted from the mix.
+- **Skimmers are continuous mobile processing plants** — they process continuously during transit and docked dwell time, not just on delivery.
+- **Venus and Titan are complementary supply chains.** Together they eventually break all Earth propellant imports.
+- **N2 delivery is marginal per trip** from Venus (100 kg/hr), not bulk. Titan is the primary N2 source by volume (760 kg/hr).
+- **CO output from Venus skimmer** — currently vented, but Luna metal processing chain may use CO as reducing agent for oxide reduction. Assess before finalizing gas handling policy.
+
+### Phase Alignment
+| Phase | Skimmer Relevance |
+|-------|------------------|
+| Phase 5 | Luna validation — skimmers NOT yet operational (infrastructure not built) |
+| Phase 6 | Luna surface & infrastructure — tank farm, landing pad ready for skimmer arrival |
+| Phase 7 | Orbital infrastructure — L1 Depot online, skimmers can offload raw gas directly |
+| Phase 8 | Shipyard/craft — purpose-built skimmers produced at L1 Shipyard |
+| Phase 9+ | Mars/Venus terraforming — skimmers now support terraforming feedstock (post-MVP) |
 
 The equation:
 ```
@@ -221,7 +260,11 @@ Between TEU/PVU online and Titan arrival, the entire fleet runs on:
 
 ---
 
-## Phase 5 Calibration — Acceptance Criteria
+## Phase 5 Calibration — Acceptance Criteria (MVP Scope Only)
+
+> **SCOPE LIMIT:** Phase 5 = Luna validation only. Skimmer operations are NOT part of Phase 5 calibration. The simulation must prove the Luna fuel loop works BEFORE skimmers arrive.
+
+The simulation calibration phase is not "tune until it feels right." These are the specific things the simulation must demonstrate before Phase 6 (L1 infrastructure) is unlocked.
 
 The simulation calibration phase is not "tune until it feels right." These are the specific things the simulation must demonstrate before Phase 6 (L1 infrastructure) is unlocked.
 

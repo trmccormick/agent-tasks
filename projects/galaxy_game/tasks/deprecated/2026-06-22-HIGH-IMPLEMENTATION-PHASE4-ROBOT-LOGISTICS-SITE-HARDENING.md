@@ -20,7 +20,7 @@ Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlo
 LIFECYCLE: current → active → completed (use git mv, never copy)
 READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
-CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (template in task file).
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work (see TASK_TEMPLATE.md for path/pattern).
 ```
 
 ---

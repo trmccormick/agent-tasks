@@ -76,10 +76,15 @@ Skimmers are **MVP fuel delivery** — Venus skimmer delivers LOX/CO2/N2 to Luna
 - ✅ Right: Focus on fuel delivery tracking (CH4/LOX/N2 for Luna tank farm)
 - Why: Terraforming atmospheric tracking has been split to `phase9+/2026-07-05-LOW-RESEARCH-TERRAFORMING-ATMOSPHERIC-GAP-ANALYSIS.md`
 
-⚠️ **GOTCHA 3**: Skimmers are continuous mobile processing plants
-- ❌ Wrong: Treat skimmers as simple delivery vehicles that only process on delivery
-- ✅ Right: Skimmers process continuously during transit and docked dwell time
-- Why: `LUNA-MVP-SIMULATION-DESIGN.md` confirms "processing does not stop at delivery"
+⚠️ **GOTCHA 3**: Skimmers have limited onboard processing — mostly raw delivery
+- ❌ Wrong: Assume skimmers process full cargo load into refined products for Luna
+- ✅ Right: Onboard processing only refills skimmer's own fuel tanks (CH4/LOX); rest is raw mixed gas delivered to LDC
+- Why: Skimmers are continuous mobile harvesters with limited processing capacity — they add temporary processing/storage when docked at Luna, then depart with empty raw tanks
+
+⚠️ **GOTCHA 4**: Docked skimmers augment base capacity temporarily
+- ❌ Wrong: Treat docked skimmers as static storage units only
+- ✅ Right: While docked/landed at Luna, skimmers contribute both processing capacity AND storage to the base
+- Why: Skimmer processors are slaved to L1 Depot/MainRefineryController during dock time (+15% throughput per skimmer); raw tanks offload fully before departure
 
 ---
 

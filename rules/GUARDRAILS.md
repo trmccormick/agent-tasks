@@ -1,5 +1,5 @@
 # Operational Guardrails
-**Last Updated**: 2026-06-28
+**Last Updated**: 2026-07-05
 **Maintained By**: Session Strategist (Claude)
 
 > Read before every task. These rules are non-negotiable.
@@ -181,20 +181,28 @@ Every task follows this exact path:
 ```
 backlog/ → active/ → (work happens) → completed/
 ```
-Use plain `mv` to move task files between folders — **never use `git mv`**.
 
-**Why**: Task files are often untracked in the agent-tasks repo. `git mv` only works on tracked files and leaves stale copies behind when the source file is untracked. Plain `mv` always works regardless of git tracking status.
+**Moving task files — use the correct method based on tracking status:**
 
 ```bash
-# Correct — always works:
+# For tracked files (file was previously committed): use git mv
+git mv projects/galaxy_game/tasks/backlog/[SUBFOLDER]/[FILENAME].md \
+       projects/galaxy_game/tasks/active/[FILENAME].md
+
+# For untracked files (newly created, never committed): use plain mv + git add
 mv /path/to/source /path/to/destination
 git add destination_path
-git rm -f source_path   # only if source was previously tracked
-git commit ...
-
-# Wrong — leaves stale copies when file is untracked:
-git mv source destination  # FAILS silently on untracked files
+# Do NOT run git rm on untracked source — it was never tracked
 ```
+
+**After moving, always verify with find:**
+```bash
+find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks \
+     -name "[FILENAME].md"
+```
+Only ONE result should exist. If two appear, a stale copy exists — remove it before committing.
+
+**Why**: `git mv` is preferred for tracked files because it preserves git history and stages the rename atomically. Plain `mv` + `git add` is the correct fallback for untracked files — `git mv` will fail on untracked files.
 
 A task in active/ with no completion report is abandoned — flag it.
 Never leave a task in active/ after work is done.
@@ -235,14 +243,23 @@ Make sure to test with docker exec... [❌ NO - belongs in task file]
 ```
 You are the Implementation Agent.
 Project: galaxy_game
-Task file (backlog): /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/[FOLDER]/[FILENAME].md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/[FOLDER]/[FILENAME].md
 
-READ FIRST:
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  cd /Users/tam0013/Documents/git/agent-tasks
+  git mv projects/galaxy_game/tasks/backlog/[FOLDER]/[FILENAME].md \
+         projects/galaxy_game/tasks/active/[FILENAME].md
+  Then open the moved file and change: status: backlog → status: active
+  Then verify: find ... -name "[FILENAME].md"  (only one result at active/ path)
+  Paste the find output in chat before proceeding.
+  If git mv fails (untracked file): use plain mv then git add at final path.
+
+READ FIRST (after Step 0):
 1) /Users/tam0013/Documents/git/agent-tasks/README.md
 2) /Users/tam0013/Documents/git/agent-tasks/rules/GUARDRAILS.md
-3) The task file above, then move it to active/ and update status to active.
+3) The task file (now at active/ path)
 
-REQUIRED: Create the STATUS SYNTHESIS REPORT in the task file before making any changes, then wait for human approval.
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
 ```
 
 **Why this matters:**
@@ -437,6 +454,38 @@ If an agent cannot fix a file incrementally and wants to recreate it:
 
 The human may choose to provide a replacement file directly rather than
 authorizing the agent to recreate it.
+
+### Rule 27 — JSON Mission Data Path (Galaxy Game)
+**Applies to all agents working on galaxy_game mission/task/profile JSON files.**
+
+Galaxy Game has two data locations that agents consistently confuse:
+
+| Location | What lives there |
+|----------|-----------------|
+| `galaxy_game/app/` | Ruby source code, specs, initializers |
+| `data/json-data/` | ALL mission JSON files (tasks_v2, phases, profiles, manifests, blueprints) |
+
+**`data/json-data/` is at the repo root — NOT inside `galaxy_game/`.**
+
+```bash
+# Correct path to mission data:
+/Users/tam0013/Documents/git/galaxyGame/data/json-data/missions/tasks_v2/
+/Users/tam0013/Documents/git/galaxyGame/data/json-data/missions/luna_base_establishment/
+
+# Wrong — agents often search here and find nothing:
+/Users/tam0013/Documents/git/galaxyGame/galaxy_game/data/json-data/   # DOES NOT EXIST
+/Users/tam0013/Documents/git/galaxyGame/galaxy_game/app/data/         # DOES NOT EXIST
+```
+
+**When searching for JSON files, always search from repo root:**
+```bash
+find /Users/tam0013/Documents/git/galaxyGame/data -name "task_*.json" | head -20
+find /Users/tam0013/Documents/git/galaxyGame -name "luna_settlement_profile*.json" 2>/dev/null
+```
+
+**Why this matters**: Agents that only search inside `galaxy_game/` will report files as missing when they exist at the repo root. This has caused incorrect STATUS SYNTHESIS reports and wasted implementation cycles.
+
+---
 
 ### Rule 26 — No Autonomous Git Commit or Push
 **Applies to all agents, all roles, all supervision tiers.**
