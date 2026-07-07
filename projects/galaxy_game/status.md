@@ -215,6 +215,14 @@ Task file movements this session:
 
 ## Today's Work (2026-07-07 — Qwen session)
 
+### EscalationService Robot Blueprint Fix — task corrected and filed
+- Reviewed `2026-03-27-HIGH-REFACTOR-ESCALATION-SERVICE-NO-MAGIC-ROBOT-DEPLOYMENT.md` in `backlog/current/`
+- **Scope corrected**: Original task demanded No-Magic manufacturing hierarchy (inventory checks, manufacturing jobs, GCC fallback) — premature for MVP where equipment is Earth-delivered
+- **New scope**: Blueprint ID fix only — use `hrv_400_resource_harvester_mk1` instead of generic `"robot"`, load operational_data from JSON via `Lookup::UnitLookupService`
+- **Blueprint audit**: HRV-400 blueprint complete; operational data file (`hrv_400_resource_harvester_mk1_data.json`) MISSING — flagged for Gemini design task
+- Harvesting rover craft (`regolith_harvester_rover_bp.json`) is a separate entity (base_craft template) — no conflict
+- Task committed to agent-tasks repo with corrected MVP scope
+
 ### V2 Mission System Architecture Research — completed
 - Research task committed to agent-tasks repo
 - Established three-tier architecture (Mission Plans → Registry/Phases → Tasks)
