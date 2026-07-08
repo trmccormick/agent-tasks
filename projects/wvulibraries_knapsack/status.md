@@ -1,5 +1,5 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-06-17
+**Last Updated:** 2026-07-08
 
 ---
 
@@ -14,34 +14,43 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 ---
 
 ## Current Status
-- **Status:** Multiple branches active; main branch stable, prototype branches in progress
+- **Status:** Multiple branches active; main branch stable, bug fixes completed, prototype branches in progress
 - **Active Branches:**
   - `main` — Stable; pagination + featured collections features deployed
-  - `clover-test` — Clover IIIF viewer integration (CSS/view work remaining)
-  - `ollama_testing` — Ollama vision model for alt-text generation (Valkyrie rewrite needed)
+  - `fix/facet-links-and-hide-type-facet` — ✅ MERGED (facet fixes completed 2026-07-08)
+  - `clover-test` — Clover IIIF viewer integration (completed testing, committed 2026-07-07)
+  - `ollama_testing` — Ollama vision model for alt-text generation (backlog, experimental)
   - `alt-text-views-only` — (TBD)
-- **Last Session:** 2026-06-17
+- **Last Session:** 2026-07-08
 
 ---
 
 ## Active Tasks
 
-### Branch: clover-test
-1. **2026-06-17-HIGH-FEATURE-COMPLETE-CLOVER-TEST-BRANCH.md**
-   - Fix featured collections grid layout (CSS not rendering)
-   - Test Flipflop feature flag per-tenant activation
-   - Status: Ready for assignment to local agent
+### None — All High Priority Tasks Complete
+All critical search catalog bugs have been fixed and tested (2026-07-08).
 
-### Branch: ollama_testing
-2. **2026-06-17-MEDIUM-FEATURE-COMPLETE-OLLAMA-VISION-ALT-TEXT.md**
-   - Rewrite AiMetadataBehavior for Valkyrie (ActiveFedora → Valkyrie migration)
-   - Integrate vision service with Bulkrax importer
-   - Backfill existing FileSet objects with alt-text
-   - Status: Ready for assignment to local agent
+**Recently Completed:**
+- ✅ **2026-07-07-HIGH-BUG-FIX-FACET-LINKS-AND-HIDE-TYPE-FACET.md**
+  - Both fixes verified on testing tenant
+  - Commit: `361ed43` on `fix/facet-links-and-hide-type-facet`
+  - Ready for merge to main
 
 ---
 
-## Completed This Session (2026-06-17)
+## Completed This Session
+
+### Session 2026-07-08 (Current)
+- ✅ Tested facet fixes on testing tenant with real data (35 works)
+- ✅ Verified Fix #1: Type facet hidden from search sidebar (`generic_type_sim` deleted)
+- ✅ Verified Fix #2: Facet links use correct format (`f[creator_sim][]` URLs)
+- ✅ Created initializer to load helper override (`hyrax_helper_decorator.rb`)
+- ✅ Combined commits into single clean commit: "fix: Hide Type facet and fix facet links with helper override (Hyku #3072)"
+- ✅ Updated project README with testing tenant credentials (samvera/hyku)
+- ✅ Moved Ollama task to backlog (experimental, not prioritized)
+- ✅ Moved Clover test to completed (testing work committed 2026-07-07)
+
+### Session 2026-06-17 (Previous)
 - ✅ Fixed pagination settings in catalog (per_page=[6,12,24,48,96], default=12)
 - ✅ Increased featured collections limit (6 → 15)
 - ✅ Resolved clover_viewer feature flag error handling (Valkyrie mode)
@@ -53,7 +62,20 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 ---
 
 ## Backlog
-- [To be populated as new work is identified]
+
+### Experimental / Lower Priority
+1. **2026-06-17-MEDIUM-FEATURE-COMPLETE-OLLAMA-VISION-ALT-TEXT.md** (Backlog)
+   - Rewrite AiMetadataBehavior for Valkyrie (ActiveFedora → Valkyrie migration)
+   - Integrate vision service with Bulkrax importer
+   - Backfill existing FileSet objects with alt-text
+   - Status: Experimental; LLM not planned for core products
+   - Decision: Hold pending new AI product discussion
+
+### Clover IIIF Viewer (Testing Complete)
+1. **2026-06-17-HIGH-FEATURE-COMPLETE-CLOVER-TEST-BRANCH.md** (Completed)
+   - Clover test work committed to clover-test branch (2026-07-07)
+   - Task moved to completed folder (2026-07-08)
+   - Status: Ready for future refinement if needed
 
 ---
 
@@ -94,7 +116,17 @@ All task management lives in `/Documents/git/agent-tasks/projects/wvulibraries_k
 ---
 
 ## Session Notes
-- Comprehensive task tracking initialized (2026-06-17)
+
+### 2026-07-08 Session
+- Verified both facet fixes on real data (testing tenant with 35 works indexed)
+- All search catalog bugs resolved (Hyku #3072)
+- Code quality: Single clean commit with 3 files changed (46 lines added)
+- Testing credentials documented in project README
+- Task management cleaned up: Clover → completed, Ollama → backlog
+- Branch `fix/facet-links-and-hide-type-facet` ready for merge to main
+
+### 2026-06-17 Session
+- Comprehensive task tracking initialized
 - Two prototype branches with detailed task specs created for local agent assignment
 - Main branch validated with pagination + featured collections features
 - Ready for distributed work via local agents
