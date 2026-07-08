@@ -120,7 +120,7 @@ Use `ethane_rocket_engine_mk1_data.json` as template for structure. Key fields:
 
 Path: `data/json-data/blueprints/units/propulsion/hydrolox_engine_mk1_bp.json`
 
-Use `methane_engine_bp.json` as structural template. Key differences:
+Performance benchmarks must be based on RL10/SSME heritage (Vacuum ISP ~450s). You must use `unit_blueprint_v1.4.json` as your structural template to ensure `connection_schema` compliance. Key differences:
 - Higher material cost (~350,000 GCC)
 - `required_technology`: `hydrolox_staged_combustion`
 - `required_facility_type`: `advanced_manufacturing`

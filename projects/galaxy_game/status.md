@@ -164,6 +164,7 @@ Task file movements this session:
 
 | Date | Item | Commit |
 |---|---|---|
+| 2026-07-08 | Profiles V2 canonical implementation — rake path resolution | `836b0998` |
 | 2026-07-04 | escalation_service_spec.rb:429 matcher fix (hash_including) | committed + pushed |
 | 2026-07-04 | Luna equipment provisioning task archived to deprecated/ | — |
 | 2026-07-04 | Backlog structure reorganized (current/, deferred-cleanup/, phase folders) | — |
@@ -268,4 +269,15 @@ Task file movements this session:
 ---
 
 ## Active Tasks
+
+### 📌 Manifest ID ↔ Deploy Key Mismatch — READY (2026-07-08)
+- Task file: `backlog/current/2026-07-08-HIGH-MANIFEST-ID-DEPLOY-KEY-MISMATCH.md`
+- Scope: Normalize manifest hardware IDs during inventory seeding (_mk1 strip, inflatable_cryo_tank alias), fix robot_logistics phase name
+- Status: ✅ READY — created after V2 rake run revealed 9 cascading failures from manifest ID mismatch
+- Blocks: Phase Registry dispatch (need clean rake baseline first)
+
+### 📌 Phase Registry Creation — READY (2026-07-07)
+- Task file: `backlog/current/2026-07-05-HIGH-PHASE-NORMALIZATION-REGISTRY-CREATION.md`
+- Scope: Create phase_registry.json AI Manager lookup index
+- Status: ✅ READY — dispatch after Manifest ID task completes (need clean rake baseline)
 

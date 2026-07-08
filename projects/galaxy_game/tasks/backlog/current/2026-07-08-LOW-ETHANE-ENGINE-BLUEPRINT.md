@@ -92,8 +92,7 @@ If a file exists — read it, compare to operational data, document any gaps. Do
 
 ### Step 2: Create blueprint
 
-Use `methane_engine_bp.json` as the template reference for structure and field names.
-Adapt performance values from operational data file. Key fields to set:
+Use `unit_blueprint_v1.4.json` as the structural template. Ensure the `connection_schema` block is populated correctly for the `propulsion` bus. Adapt performance values from operational data file. Key fields to set:
 
 - `id`: `ethane_rocket_engine_mk1`
 - `port_type`: `propulsion` (match methane engine)
