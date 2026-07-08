@@ -505,3 +505,15 @@ in the same session — traced to README.md's EXECUTOR Task Completion
 Workflow presenting commit+push as a routine checklist step with no gate.
 README.md has been corrected; this rule is the canonical statement going
 forward regardless of what any task-specific workflow text says.
+
+### Rule 27 — Stale Active Task Protocol
+**Applies to all agents, all roles, all supervision tiers.**
+
+When encountering tasks in `active/` that have no agent actively working on them, you MUST:
+1. Review each task file's Completion Report section for any work done
+2. Check the summaries/ folder for synthesis reports or completion notes
+3. Verify code changes via git log since the task was placed in active/
+4. If work was done → move to completed/ with completion report; if no work was done → move back to backlog/current/
+5. NEVER delete task files without first verifying their status and getting human approval
+
+**Confirmed violation, 2026-07-08**: Planning Agent deleted 3 stale active tasks without reviewing them for completed work. One task (Monitor Canvas) had a fully implemented spec with 9 passing tests that was staged but never committed. The task file was lost until restored from Time Machine. This rule prevents loss of completed work and duplicate task creation by agents that recreate tasks instead of following the lifecycle protocol.

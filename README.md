@@ -463,6 +463,7 @@ Task files are the source of truth. Executors read full context there.
 - **Host-Only Supervised Git Commits**: Because Git is not accessible inside the Docker containers, all version control operations must be executed directly on the host node (Intel Mac). Agents may prepare and execute staging and commits under direct human supervision on the host, but they are strictly prohibited from attempting Git commands inside Docker.
 - **No JSON Commits**: Do not stage or commit raw JSON data files at this time. Version control is strictly reserved for application code, tests, and markdown documentation files.
 - **No Multi-Project Cross-Pollination**: Keep context isolated to the active target project repo directory. Do not reference directories from other systems unless explicitly outlined in a task blueprint.
+- **Stale Active Task Protocol**: When encountering tasks in `active/` that have no agent actively working on them, you MUST: (1) review each task file's Completion Report section for any work done, (2) check the summaries/ folder for synthesis reports or completion notes, (3) verify code changes via git log since the task was placed in active/, (4) if work was done → move to completed/ with completion report; if no work was done → move back to backlog/current/; NEVER delete task files without first verifying their status and getting human approval. This prevents loss of completed work and duplicate task creation.
 
 ---
 
