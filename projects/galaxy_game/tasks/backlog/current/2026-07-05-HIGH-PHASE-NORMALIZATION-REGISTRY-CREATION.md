@@ -16,9 +16,20 @@ You are **Implementation Agent**.
 Project: galaxy_game
 Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-07-05-HIGH-PHASE-NORMALIZATION-REGISTRY-CREATION.md
 
-LIFECYCLE: backlog → active → completed (use git mv, never copy)
-READ FIRST: Task file contains all prerequisites and implementation details.
-MOVE TO ACTIVE: Before starting work, move task file to active/ and commit the move.
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  cd /Users/tam0013/Documents/git/agent-tasks
+  git mv projects/galaxy_game/tasks/backlog/current/2026-07-05-HIGH-PHASE-NORMALIZATION-REGISTRY-CREATION.md \
+         projects/galaxy_game/tasks/active/2026-07-05-HIGH-PHASE-NORMALIZATION-REGISTRY-CREATION.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+
+LIFECYCLE: backlog → active → completed (git mv only, never cp or plain mv)
+Verify with: find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks \
+  -name "2026-07-05-HIGH-PHASE-NORMALIZATION-REGISTRY-CREATION.md"
+Only ONE result should exist. Paste this output before starting synthesis.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, gotchas, and verification steps.
+CRITICAL: Save synthesis report as MD file to summaries/ BEFORE starting any work.
 ```
 
 ---
