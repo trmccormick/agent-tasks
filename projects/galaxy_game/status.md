@@ -266,6 +266,34 @@ Task file movements this session:
 - Consolidated multiple "Today's Work" sections into single 2026-07-07 entry
 - Committed + pushed to agent-tasks: 9191aa8
 
+
+---
+
+## Today's Work (2026-07-08 — Planning Agent)
+
+### Stale Active Task Cleanup — completed
+- Reviewed 3 tasks in active/ that had no agent working on them
+- **Monitor Canvas**: ✅ COMPLETED — spec created (9 examples, 0 failures), committed as `51549438`, task moved to completed/2026-07/
+- **EscalationService**: ❌ No work done — moved back to backlog/current/
+- **Profiles V2**: ❌ No work done — moved back to backlog/current/ (Claude already updated it)
+- Committed + pushed: `87da03a`
+
+### Workflow Protection — completed
+- Added Stale Active Task Protocol to README.md Hard Rules
+- Added GUARDRAILS.md Rule 27 with violation history
+- Committed + pushed: `936142d`
+
+### V2.1 Template Versioning — completed
+- Created `unit_blueprint_v1.4.json` with connection_schema block (fixed invalid JSON comment from v1.3)
+- Updated ethane engine task file to reference v1.4 template
+- Updated hydrolox engine task file to reference v1.4 template + RL10/SSME heritage
+- Committed + pushed: `cfd03f23`
+
+### RSpec Baseline
+- 4106 examples, 2 failures (GameDataGenerator + MaterialLookupService) — confirmed clean for V2 work
+- Overnight run completed Jul 8 15:20
+
+---
 ---
 
 ## Active Tasks
