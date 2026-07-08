@@ -72,13 +72,17 @@
 
 ---
 
-## V2 Mission System — Backlog Items (reset 2026-07-07)
+## V2 Mission System — Implementation Ready (2026-07-07)
 
-Both tasks below were moved from `active/` → `backlog/current/` by Claude.
-Claude never approved them for execution. Both need clean rewrites before dispatch:
+Both tasks successfully cleaned up and ready for dispatch. No more duplicate content or path confusion.
 
-- **`2026-07-06-HIGH-PROFILES-V2-CANONICAL-IMPLEMENTATION.md`** — has duplicate conflicting content (Claude-approved rake-only scope pasted on top of old rejected engine-scope). Needs full rewrite. Canonical examples already exist in `missions_v2/`.
-- **`2026-07-05-HIGH-PHASE-NORMALIZATION-REGISTRY-CREATION.md`** — references non-existent `profiles_v2/` folder everywhere. 4 phase files + 17 tasks already done. Remaining scope unclear — needs clarification (likely just `phase_registry.json`).
+- **`2026-07-06-HIGH-PROFILES-V2-CANONICAL-IMPLEMENTATION.md`** (backlog/current) — Rake path resolution only
+  - Scope: Update `luna_mission.rake` with `missions_v2/` path resolution + legacy fallback, verify 17 tasks still hold
+  - Status: ✅ READY — removed old rejected engine-scope, kept Claude-approved rake-only work
+  
+- **`2026-07-05-HIGH-PHASE-NORMALIZATION-REGISTRY-CREATION.md`** (backlog/current) — Registry creation only
+  - Scope: Create `phase_registry.json` AI Manager lookup index (4 phases, 17 Luna tasks already done)
+  - Status: ✅ READY — removed out-of-scope work, clarified registry-only scope, updated all paths to `missions_v2/`
 
 ---
 
@@ -254,6 +258,16 @@ Task file movements this session:
   - IN SCOPE: production files in missions_v2/, rake path resolution, 17-task verification
   - EXCLUDED: engine changes, parameter interpolation, LegacyPortAdapter, Venus migration, DAG execution
 - Both implementation tasks moved back from `active/` → `backlog/current/` (Claude never approved them for execution)
+
+---
+
+## Today's Work (2026-07-07 — Planning Agent)
+
+### V2 Mission System Task Cleanup — completed
+- **2026-07-06 task rewrite**: Removed entire old rejected engine-scope implementation section. Kept only Claude-approved rake path resolution scope (Step 1-3 only). Fixed YAML status and paths.
+- **2026-07-05 task rewrite**: Changed all `profiles_v2/` references → `missions_v2/`. Added "What Already Exists" section to prevent re-work. Clarified scope: create `phase_registry.json` only (phases and tasks already complete). Fixed YAML status and paths.
+- **Both tasks**: Status `active` → `backlog`, handoff paths `tasks/active/design/` → `backlog/current/`, ready for implementation dispatch
+- Committed to agent-tasks: `12f0b78` (chore: reset V2 mission system tasks)
 
 ---
 
