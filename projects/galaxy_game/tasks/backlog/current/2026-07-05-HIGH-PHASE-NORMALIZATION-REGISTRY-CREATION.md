@@ -1,5 +1,5 @@
 ---
-status: active
+status: backlog
 priority: HIGH
 type: implementation
 system_domain: AI_MANAGER
@@ -14,17 +14,18 @@ date_created: 2026-07-05
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/active/design/2026-07-05-HIGH-PHASE-NORMALIZATION-REGISTRY-CREATION.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-07-05-HIGH-PHASE-NORMALIZATION-REGISTRY-CREATION.md
 
 LIFECYCLE: backlog → active → completed (use git mv, never copy)
 READ FIRST: Task file contains all prerequisites and implementation details.
+MOVE TO ACTIVE: Before starting work, move task file to active/ and commit the move.
 ```
 
 ---
 
-# PHASE NORMALIZATION & REGISTRY CREATION
+# PHASE REGISTRY CREATION — AI MANAGER LOOKUP INDEX
 
-**Status**: ACTIVE
+**Status**: BACKLOG
 **Priority**: HIGH
 **Type**: implementation
 **Created**: 2026-07-05
@@ -34,61 +35,46 @@ READ FIRST: Task file contains all prerequisites and implementation details.
 
 ## Context
 
-The research task (completed) established the V2 schema design. This task implements it: normalizing existing phases, creating a phase registry, and mapping all 148+ tasks.
+The V2 mission system canonical examples are complete in `missions_v2/`. All 4 phase files and 17 Luna tasks already exist. This task creates the `phase_registry.json` lookup index that enables the AI Manager to query phases by body type, capabilities, and task affinity.
 
 **Research summary location**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/2026-07-05-RESEARCH-PROFILES-V2-ARCHITECTURE.md`
-(Contains all embedded JSON data — Gemini cannot access `data/` since it's gitignored)
+
+---
+
+## What Already Exists (Do Not Recreate)
+
+| Item | Path | Status |
+|------|------|--------|
+| 4 phase files | `missions_v2/phases/*_v2.json` | ✅ Complete |
+| 17 Luna tasks | `missions_v2/tasks/*_v2.json` | ✅ Complete |
+| Task index | `missions_v2/task_index/all_tasks.json` | ✅ Complete |
+| Luna profile | `missions_v2/profiles/luna_base_profile_v2.json` | ✅ Complete |
+| Mission plan | `missions_v2/mission_plans/luna_precursor_mission_plan_v2.json` | ✅ Complete |
+
+**Do NOT:**
+- Re-normalize the 4 phase files (they are already normalized)
+- Re-convert the 17 tasks (already done with v2.1 template)
+- Re-map all 148+ tasks (out of scope — Luna only)
 
 ---
 
 ## Implementation Steps
 
-### Step 1: Create profiles_v2 Directory Structure
+### Step 1: Verify Phase Files Exist and Are Valid
 
-```
-data/json-data/missions/profiles_v2/
-├── README.md                    ← Schema documentation
-├── phase_registry.json           ← AI Manager lookup index
-├── patterns/
-│   └── airless_rocky_isru.json  ← World-agnostic profile template
-├── phases/
-│   ├── power_comms.json          ← Normalized from phase_1
-│   ├── isru_deployment.json      ← Normalized from phase_2
-│   ├── gas_processing.json       ← Normalized from phase_3
-│   └── robot_logistics.json      ← Normalized from phase_4
-└── task_index/
-    └── all_tasks.json            ← 148+ tasks mapped to phases
-```
+Check that all 4 phase files are present in `missions_v2/phases/`:
+- ✅ `power_comms_v2.json`
+- ✅ `isru_deployment_v2.json`
+- ✅ `gas_processing_v2.json`
+- ✅ `robot_logistics_v2.json`
 
-### Step 2: Normalize Phase Files
+Parse each file to confirm valid JSON. Verify they have required fields: `phase_id`, `name`, `description`, `applicable_body_types`, `dependencies`, `task_refs`.
 
-Convert each of the 4 existing phases to the V2 schema. Each normalized phase must include:
+### Step 2: Create phase_registry.json
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `phase_id` | string | Unique identifier (e.g., "power_comms") |
-| `name` | string | Human-readable name |
-| `description` | string | Purpose of this phase |
-| `applicable_body_types` | array | ["airless_rocky"] — world-agnostic filter |
-| `dependencies` | array | Phase IDs that must complete first (e.g., ["power_comms"]) |
-| `conditions` | object/null | Runtime conditions for inclusion (can be null) |
-| `task_refs` | array | Direct task file paths (no intermediate task_list_file) |
-| `estimated_duration_hours` | number | Total phase duration estimate |
-| `priority` | number | Execution priority (lower = earlier) |
-| `documentation_url` | string | Link to engine/AI Manager docs for this phase |
-| `metadata` | object | version, world_agnostic flag, source_file |
+Create `missions_v2/phase_registry.json` that maps each phase to its lookup metadata. The registry enables AI Manager to query phases by body type and task affinity.
 
-**Dependency chain:**
-```
-power_comms          → []           (no dependencies — runs first)
-isru_deployment      → ["power_comms"]  (needs power/comms before ISRU)
-gas_processing       → ["isru_deployment"]  (needs ISRU units operational)
-robot_logistics      → ["gas_processing"]   (runs after gas processing established)
-```
-
-### Step 3: Create phase_registry.json
-
-The registry enables AI Manager to query phases by body type, task_affinity, and prerequisites:
+**Schema:**
 
 ```json
 {
@@ -97,38 +83,63 @@ The registry enables AI Manager to query phases by body type, task_affinity, and
   "phases": [
     {
       "phase_id": "power_comms",
-      "phase_file": "profiles_v2/phases/power_comms.json",
+      "phase_file": "missions_v2/phases/power_comms_v2.json",
+      "name": "Power & Communications",
       "applicable_body_types": ["airless_rocky", "thin_atmosphere", "atmospheric"],
       "required_capabilities": ["power_generation", "communications"],
+      "task_count": 3,
       "task_affinity": ["deploy_solar_rig", "deploy_puh_and_ppmu", "deploy_comms_equipment"]
+    },
+    {
+      "phase_id": "isru_deployment",
+      "phase_file": "missions_v2/phases/isru_deployment_v2.json",
+      "name": "ISRU Deployment",
+      "applicable_body_types": ["airless_rocky"],
+      "required_capabilities": ["resource_extraction", "processing"],
+      "task_count": 4,
+      "task_affinity": ["deploy_lspu", "deploy_gas_separator", "deploy_pve_unit", "deploy_regolith_harvester_rover"]
+    },
+    {
+      "phase_id": "gas_processing",
+      "phase_file": "missions_v2/phases/gas_processing_v2.json",
+      "name": "Gas Processing",
+      "applicable_body_types": ["airless_rocky"],
+      "required_capabilities": ["volatiles_processing", "thermal_extraction"],
+      "task_count": 6,
+      "task_affinity": ["deploy_thermal_extraction_unit", "deploy_volatiles_storage", "isru_stockpile_initiation", "site_prep_foundation", "surface_preparation_unit_operations", "print_inflatable_tank_shells"]
+    },
+    {
+      "phase_id": "robot_logistics",
+      "phase_file": "missions_v2/phases/robot_logistics_v2.json",
+      "name": "Robot Logistics",
+      "applicable_body_types": ["airless_rocky"],
+      "required_capabilities": ["resource_transport", "charging_infrastructure"],
+      "task_count": 4,
+      "task_affinity": ["deploy_regolith_harvester_rover", "deploy_robot_charging_port", "car_300_charge_cycle", "construction_zone_leveling"]
     }
   ]
 }
 ```
 
-### Step 4: Map All 148+ Tasks to Registry
+### Step 3: Verify Task Affinity Accuracy
 
-Scan `tasks_v2/` and map each task to its phase via the normalized phase files. Create a task index that enables reverse lookup (task → applicable phases).
-
----
-
-## Schema Reference
-
-Use the minimum viable schema from the research summary (Section 6) as the baseline. Key additions for this implementation:
-- `dependencies[]` — DAG-based ordering
-- `applicable_body_types[]` — world-agnostic filtering
-- `documentation_url` — engine/AI Manager documentation linkage
-- `conditions` — runtime inclusion evaluation
+Cross-check that each `task_affinity` array matches the actual `task_refs` in the corresponding phase file. The affinity array maps task file names to readable task identifiers for AI Manager queries.
 
 ---
 
 ## Stop Conditions
-- If any of the 4 phase files don't exist at expected paths — list what was found and stop
-- If task_v2 inventory differs significantly from research findings — document and continue with actual data
+
+- If any phase file is missing or has invalid JSON — document and stop
+- If phase file schema doesn't match expected fields — document and stop
+- If task count differs from actual task_refs in phase file — flag and continue with actual data
 
 ---
 
+## Completion Report
+*Filled in by the implementing agent after completion*
+
 **Completed by**: [agent]
 **Completion date**: YYYY-MM-DD
-**Files created**: [count]
-**Output location**: `data/json-data/missions/profiles_v2/`
+**Files created**: 1 (`missions_v2/phase_registry.json`)
+**Verification**: All 4 phases registered, 17 tasks mapped
+**Output location**: `missions_v2/phase_registry.json`

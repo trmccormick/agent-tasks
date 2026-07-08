@@ -68,7 +68,17 @@
 - Source of stale Phase 8 task files: `refactored-task-files/2026-06-30-TASK-UPDATE-1` (stale task generation)
 - Claude has a few updates before corrected files can be moved to `phase8+/`
 
-### 📌 GUARDRAILS.md consolidation — in progress (Ryzen session)
+### 📌 GUARDRAILS.md consolidation — completed (Ryzen session)
+
+---
+
+## V2 Mission System — Backlog Items (reset 2026-07-07)
+
+Both tasks below were moved from `active/` → `backlog/current/` by Claude.
+Claude never approved them for execution. Both need clean rewrites before dispatch:
+
+- **`2026-07-06-HIGH-PROFILES-V2-CANONICAL-IMPLEMENTATION.md`** — has duplicate conflicting content (Claude-approved rake-only scope pasted on top of old rejected engine-scope). Needs full rewrite. Canonical examples already exist in `missions_v2/`.
+- **`2026-07-05-HIGH-PHASE-NORMALIZATION-REGISTRY-CREATION.md`** — references non-existent `profiles_v2/` folder everywhere. 4 phase files + 17 tasks already done. Remaining scope unclear — needs clarification (likely just `phase_registry.json`).
 
 ---
 
