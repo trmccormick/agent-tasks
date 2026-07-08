@@ -227,47 +227,43 @@ Task file movements this session:
 
 ---
 
-## Today's Work (2026-07-07 — Qwen session)
-
-### EscalationService Robot Blueprint Fix — task corrected and filed
-- Reviewed `2026-03-27-HIGH-REFACTOR-ESCALATION-SERVICE-NO-MAGIC-ROBOT-DEPLOYMENT.md` in `backlog/current/`
-- **Scope corrected**: Original task demanded No-Magic manufacturing hierarchy (inventory checks, manufacturing jobs, GCC fallback) — premature for MVP where equipment is Earth-delivered
-- **New scope**: Blueprint ID fix only — use `hrv_400_resource_harvester_mk1` instead of generic `"robot"`, load operational_data from JSON via `Lookup::UnitLookupService`
-- **Blueprint audit**: HRV-400 blueprint complete; operational data file (`hrv_400_resource_harvester_mk1_data.json`) MISSING — flagged for Gemini design task
-- Harvesting rover craft (`regolith_harvester_rover_bp.json`) is a separate entity (base_craft template) — no conflict
-- Task committed to agent-tasks repo with corrected MVP scope
-
-### V2 Mission System Architecture Research — completed
-- Research task committed to agent-tasks repo
-- Established three-tier architecture (Mission Plans → Registry/Phases → Tasks)
-- Documented LegacyPortAdapter production code at `app/services/lookup/legacy_port_adapter.rb` (4 schema versions)
-
-### Canonical V2 Examples Created in missions_v2/
-- Luna profile: 4-phase complete with world_requirements, environment, runtime_parameters
-- 4 phase files: power_comms, isru_deployment, gas_processing, robot_logistics (with task_refs, applicable_body_types)
-- Mission plan: DAG-ordered with dependencies and critical_path
-- Task index: maps all 16 Luna tasks to their phases
-- Venus migration study: preserves V1 richness (economic data, parallel execution, AI hints)
-
-### 17 V2.1 Task Files Converted
-- Copied from `tasks_v2/` → `missions_v2/tasks/` with `_v2.json` suffix
-- All have `"template": "task_v2.1"` and `"version": "2.1"` confirmed by grep
-
-### Implementation Tasks Corrected (Claude scope constraints applied)
-- `2026-07-06-HIGH-PROFILES-V2-CANONICAL-IMPLEMENTATION.md` — updated with Claude's scope constraints, committed to agent-tasks
-  - IN SCOPE: production files in missions_v2/, rake path resolution, 17-task verification
-  - EXCLUDED: engine changes, parameter interpolation, LegacyPortAdapter, Venus migration, DAG execution
-- Both implementation tasks moved back from `active/` → `backlog/current/` (Claude never approved them for execution)
-
----
-
 ## Today's Work (2026-07-07 — Planning Agent)
 
-### V2 Mission System Task Cleanup — completed
-- **2026-07-06 task rewrite**: Removed entire old rejected engine-scope implementation section. Kept only Claude-approved rake path resolution scope (Step 1-3 only). Fixed YAML status and paths.
-- **2026-07-05 task rewrite**: Changed all `profiles_v2/` references → `missions_v2/`. Added "What Already Exists" section to prevent re-work. Clarified scope: create `phase_registry.json` only (phases and tasks already complete). Fixed YAML status and paths.
-- **Both tasks**: Status `active` → `backlog`, handoff paths `tasks/active/design/` → `backlog/current/`, ready for implementation dispatch
-- Committed to agent-tasks: `12f0b78` (chore: reset V2 mission system tasks)
+### Stale Task Review: Settlement Pattern Serialization (`2026-02-15`)
+- Audited against current codebase: `PatternSerializer` and `SettlementPattern` don't exist
+- `docs/architecture/patterns/settlement_patterns.md` exists but is Super-Mars/L1-Depot orbital strategy (different concept)
+- Overlap check: `phase6+/2026-06-22-MEDIUM-FEATURE-WORLDHOUSE-AI-LEARNING-INTEGRATION.md` covers pattern learning for worldhouses specifically
+- **Decision**: Underlying need is valid but approach (standalone SettlementPattern model) was confirmed obsolete in 2026-06-25 handoff
+- Created new research task: `backlog/research/2026-07-07-MEDIUM-RESEARCH-PATTERN-BASED-SETTLEMENT-DECISION-LOGIC.md` — explores pattern learning via current architecture (tasks_v2 + StrategySelector/StateAnalyzer)
+- Moved stale task to `deprecated/` with notes referencing new research task
+- Committed + pushed: dd55cda
+
+### Admin Monitor Canvas Task Modernization (`2026-02-11`)
+- Audited against current codebase: monitor.js has partial fix (turbo:load listener at line 1364), no feature spec exists
+- **Decision**: UI infrastructure task, not Phase 5 — placed in `backlog/ui/` for Phase 14+ relevance
+- Created modernized task: `backlog/ui/2026-07-06-MEDIUM-BUGFIX-ADMIN-MONITOR-TURBO-CANVAS-INIT.md` (MEDIUM priority)
+- Created spec gap task: `backlog/current/2026-07-06-HIGH-BUGFIX-MONITOR-CANVAS-FEATURE-SPEC-GAP.md` (HIGH priority, closes RSpec coverage gap)
+- Moved stale task to `deprecated/`
+- Committed + pushed: e8414a7
+
+### Skimmer Intent Doc Update
+- Updated `docs/architecture/intent/skimmer_craft_intent.md` processing model
+- Section 2 rewritten: "Limited Onboard, Mostly Raw Delivery" with phases table
+- Clarified onboard output is fuel self-sufficiency only (LOX/CH4 for skimmer's own tanks)
+- Section 3 expanded with Storage Contribution and Surface Contingency details
+- Committed + pushed: a7adb30a
+
+### Skimmer Validation Task Rewrite
+- Rewrote Phase 5 skimmer validation task to current template format
+- Split terraforming content to separate Phase 9+ task (`phase9+/2026-07-05-LOW-RESEARCH-TERRAFORMING-ATMOSPHERIC-GAP-ANALYSIS.md`)
+- Phase 5 task now MVP scope only: Titan CH4 harvesting and Venus CO2/N2 delivery as fuel delivery scenarios
+- Updated architecture gotchas (GOTCHA 3: limited onboard processing, GOTCHA 4: docked skimmers augment base capacity)
+- Committed + pushed to agent-tasks: d3f682f
+
+### Status.md Update
+- Added today's work section documenting all above items
+- Consolidated multiple "Today's Work" sections into single 2026-07-07 entry
+- Committed + pushed to agent-tasks: 9191aa8
 
 ---
 
