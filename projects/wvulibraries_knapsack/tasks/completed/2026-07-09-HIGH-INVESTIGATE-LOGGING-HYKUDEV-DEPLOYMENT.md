@@ -1,10 +1,10 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: bug-fix
 system_domain: WVU_KNAPSACK
 mvp_alignment: OPERATIONS_VISIBILITY
-local_worker_safe: true
+local_worker_safe: true\ncompleted_date: 2026-07-09
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
