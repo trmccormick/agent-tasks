@@ -273,30 +273,181 @@ This pattern ensures task files stay current with progress across sessions witho
 
 ---
 
+## 💰 Premium Access Optimization: Planning-Agent-Only Workflow
+
+**Goal**: Minimize premium GitHub Copilot API usage by using the planning agent (higher token cost) ONLY for task creation and review, not implementation.
+
+**Cost Problem**:
+- Premium agents (Claude Haiku for planning) are expensive per token
+- Running synthesis reviews + implementation = 3-4x premium API calls per task
+- Local Qwen (free/cheap) can handle all implementation details
+
+**Solution: Planning-Agent-Only Pattern**
+
+| Phase | Agent | Cost | Scope |
+|---|---|---|---|
+| **1. Review & Plan** | Planning Agent (Premium) | **HIGH** (but minimal output) | Read user's work, create task files, review Qwen's synthesis |
+| **2. Implementation** | Qwen (Local) | **LOW** (unlimited local) | Execute tasks, create synthesis, make commits |
+| **3. Spot Checks** | Planning Agent | **MEDIUM** (read-only) | Review completion reports, triage failures if needed |
+
+**Workflow: Planning Agent Activities ONLY**
+
+1. **Receive Status Updates** — User or Qwen sends: "Here's what we found, here's the issue"
+2. **Review & Triage** — Read status, identify if new task needed or if work is blocked
+3. **Create Task Files** — Use `TASK_TEMPLATE.md` to write comprehensive task file (includes all gotchas, credentials, synthesis template)
+4. **Dispatch to Qwen** — Send 2-4 line minimal handoff pointing to task file
+5. **Review Qwen's Synthesis Report** — Read the MD file Qwen created (saved to summaries/), ensure understanding is correct
+6. **Spot-Check Completion** — After Qwen finishes, review the summary and completed work briefly
+
+**Planning Agent Does NOT**:
+- ❌ Run implementations yourself (waste of premium tokens)
+- ❌ Write application code (that's Qwen's job)
+- ❌ Commit large changes (just create task files and coordinate)
+- ❌ Execute long terminal commands (Qwen has local shell access, you don't need to run them)
+
+**Qwen's Activities (Everything Else)**:
+- ✅ Read task file
+- ✅ Create STATUS SYNTHESIS REPORT (MD file)
+- ✅ Execute implementation steps
+- ✅ Run tests and verification
+- ✅ Commit and push changes
+- ✅ Create completion reports
+
+**Why This Saves Money**:
+- Planning agent output = focused task files (1-2KB each) + brief status reads
+- Qwen output = full synthesis + implementation (handled locally)
+- Planning agent NEVER repeats Qwen's work or does "just in case" research
+- No synthesis review loop with premium agents (Planning agent reads Qwen's report, approves or asks to revise)
+
+**Example Cost Comparison**:
+
+**Old Way (Planning Agent Does Everything)**:
+```
+Planning Agent: Review issue → Research → Create task → Implement → Test → Commit
+Tokens: ~8,000-15,000 per task (EXPENSIVE)
+```
+
+**New Way (Planning Agent Tasks Only)**:
+```
+Planning Agent: Review issue (200 tokens) → Create task file (500 tokens) → Review Qwen's synthesis (300 tokens)
+Qwen: Read task (1,000 tokens) → Synthesis (800 tokens) → Implementation (3,000 tokens) → Tests (1,000 tokens)
+Premium tokens: ~1,000 / task  ← 10x reduction
+```
+
+---
+
 ## Typical Task Workflow (From Creation to Completion)
 
-**Phase 1: Task Creation (Planning Agent or Claude Web)**
+**Phase 1: Task Creation (Planning Agent ONLY — premium)**
 
-1. Planning agent or Claude web creates comprehensive task file using `TASK_TEMPLATE.md`
-   - Includes: Prerequisites, credentials, architecture gotchas, synthesis template
-   - Single source of truth for all task info
+1. Planning agent receives status update or user request
+   - User: "We have a logging issue on hykudev"
+   - Planning agent: Reads the context, understands the problem
    
-2. Task placed in `projects/[project]/tasks/active/[TASKFILE].md`
+2. Planning agent creates comprehensive task file using `TASK_TEMPLATE.md`
+   - Includes: Prerequisites, credentials, architecture gotchas, synthesis template, exact research steps
+   - Single source of truth for all task info
+   - **Output**: Task file (1-2 KB) saved to `projects/[project]/tasks/active/[TASKFILE].md`
+   
+3. Git commit with clear message (e.g., "task: Add logging investigation task for hykudev")
+4. Push to GitHub so Qwen can access the task
 
-3. Git commit with clear message (e.g., "task: Create batch edit descriptions fix task")
+**Planning Agent STOPS HERE.** Output is just the task file. No further work is premium-funded.
 
-**Phase 2: Minimal Handoff to Executor**
+**Phase 2: Executor (Qwen) Implementation — LOCAL/FREE**
 
-1. User sends executor 2-4 line handoff:
+1. Qwen receives minimal 2-4 line handoff from user pointing to task file location
    ```
    You are **Implementation Agent**.
    Project: [project]
    Task: /Users/tam0013/Documents/git/agent-tasks/projects/[project]/tasks/active/[TASKFILE].md
-   READ FIRST: Task file has all prerequisites, credentials, gotchas, and verification steps.
-   REQUIRED: Save STATUS SYNTHESIS REPORT as MD file to summaries folder (see TASK_TEMPLATE.md for path/pattern).
    ```
 
-2. Executor receives minimal message, knows exactly what to read and in what order
+2. Qwen reads task file prerequisites in order (no planning agent involvement)
+
+3. Qwen creates STATUS SYNTHESIS REPORT (MD file) proving understanding
+   - Saved to: `projects/[project]/summaries/YYYY-MM-DD-SYNTHESIS-[description].md`
+   - Qwen posts minimal summary to chat (not the full report)
+
+4. Planning agent briefly reviews Qwen's synthesis (2-3 min read)
+   - ✅ Looks good → "Proceed"
+   - ❓ Question → "Did you notice gotcha X?"
+   - ❌ Stop → "Re-read section Y, then re-synthesize"
+   
+5. Qwen implements the work
+   - Execute all steps in the task file
+   - Run verification tests
+   - Commit and push changes
+   
+6. Qwen creates completion report and posts to chat
+
+**Phase 3: Planning Agent Spot-Check (Optional)**
+
+1. Planning agent reads Qwen's completion report and synthesis
+2. Quickly verify work matches synthesis and task acceptance criteria
+3. If issues found:
+   - ❌ Create new task file for blockers/issues found
+   - Send to Qwen to fix (loop back to Phase 2)
+4. If work looks good:
+   - Mark task as complete in status.md
+   - Identify next priority task to create
+
+---
+
+## How Each Agent Follows the Task Workflow
+
+### Planning Agent Workflow (Task Creation Phase)
+
+1. **Read Status & Understand Issue**
+   - User provides context: "X is broken" or "We need Y"
+   - Planning agent reads related docs/files to understand architecture
+   - Output: 1-paragraph summary of what needs doing
+
+2. **Create Comprehensive Task File**
+   - Use `TASK_TEMPLATE.md` as blueprint
+   - Include ALL gotchas, credentials, exact steps
+   - Include Synthesis Report template (so Qwen knows format)
+   - Save to: `projects/[project]/tasks/active/[YYYY-MM-DD-PRIORITY-TYPE-DESCRIPTION].md`
+
+3. **Commit & Push**
+   ```bash
+   cd /Users/tam0013/Documents/git/agent-tasks
+   git add 'projects/[project]/tasks/active/[FILENAME].md'
+   git commit -m "task: [descriptive message]"
+   git push
+   ```
+
+4. **Send Minimal Handoff** (2-4 lines ONLY, not the full task)
+   - Do NOT repeat task details
+   - Just point to the file location
+
+5. **Read Qwen's Synthesis Report** (Optional but Recommended)
+   - Qwen saves MD file to summaries/
+   - Planning agent reads it (2-3 min)
+   - Approve ("Looks good, proceed") or ask questions
+
+### Executor (Qwen) Workflow (Implementation Phase)
+
+1. **Receive Minimal Handoff** (2-4 lines pointing to task file)
+2. **Read Task File in Order**
+   - Prerequisites section (in sequence)
+   - Problem statement
+   - Implementation steps
+3. **Create Synthesis Report**
+   - Before ANY implementation
+   - Prove you understand gotchas
+   - Save as MD file to summaries/
+4. **Get Approval** (Planning agent reads synthesis, approves or asks to revise)
+5. **Execute Implementation**
+   - Follow steps exactly
+   - Run verification tests
+   - Commit changes
+6. **Report Completion**
+   - Brief summary (1 paragraph)
+   - Any deferred work noted
+   - Ready for next task
+
+---
 
 **Phase 3: Synthesis Report (Mandatory Gate)**
 
