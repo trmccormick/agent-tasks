@@ -1,5 +1,5 @@
 # Samvera Hyku — Project Status & Task Tracking
-**Last Updated:** 2026-06-26
+**Last Updated:** 2026-07-07
 
 ---
 
@@ -10,19 +10,37 @@ Main repo: https://github.com/samvera/hyku (278 open issues)
 ---
 
 ## Current Status
-- **Status:** Multi-tenant GA issues researched & documented, ready for working group review
-- **Last Session:** 2026-06-26 — GA issues #2985 & #2995 root cause analysis completed, fixes proposed
+- **Status:** Multi-tenant GA issues reviewed, approved, and handed off for implementation.
+- **Last Session:** 2026-07-07 — Reviewer (Rob) approved Fix #1, created implementation handoff
 - **Agent Notes**: See `notes.md` for technical discoveries and contextual findings from work sessions
+- **Handoff**: [2026-07-07_GA-MULTITENANT-IMPLEMENTATION-READY.md](handoffs/session_handoff_2026-07-07_GA-MULTITENANT-IMPLEMENTATION-READY.md) — Ready for next session
 
 ---
 
 ## Active Tasks
-- **[RESEARCH COMPLETE + PRODUCTION VALIDATION]** [#2985 & #2995 — Multi-Tenant GA Issues](tasks/active/2026-06-26-HIGH-RESEARCH-MULTITENANT-GA-ISSUES-2985-2995.md)
+- **[APPROVED FOR IMPLEMENTATION]** [#2985 & #2995 — Multi-Tenant GA Issues](tasks/active/2026-06-26-HIGH-RESEARCH-MULTITENANT-GA-ISSUES-2985-2995.md)
   - Root cause identified: All tenants share same GA property ID instead of using tenant-specific IDs
-  - Concrete fixes proposed for both issues
-  - **REAL-WORLD VALIDATION**: [PALNI/PALCI Issue #611](tasks/active/2026-06-26-VALIDATION-PALNI-PALCI-ISSUE-611-CONFIRMS-GA-ROOT-CAUSE.md) — Production case with 248+ phantom entries, 46 cross-tenant ID overlap (proof of concept at scale)
-  - **URGENT**: Affects production Hyku Commons instances today
-  - Ready for Samvera working group review & immediate implementation
+  - **Reviewer Feedback** (Rob, 2026-07-07):
+    - ✅ **Fix #1 APPROVED**: Use tenant-specific GA property IDs in Ga4 client and report controllers
+    - ❌ **Fix #2 REJECTED**: Keep "Collection deleted" behavior (preserves visibility into genuine deletions)
+  - **REAL-WORLD VALIDATION**: [PALNI/PALCI Issue #611](tasks/active/2026-06-26-VALIDATION-PALNI-PALCI-ISSUE-611-CONFIRMS-GA-ROOT-CAUSE.md) — Production case with 248+ phantom entries, 46 cross-tenant ID overlap
+  - **WVU KNAPSACK TESTING** (2026-06-29 to 2026-06-30): Demo deletion test showed no cross-tenant event bleed, confirming issue is architectural at GA query level
+  - **Status**: Phase 1 implementation ready (~3-4 hours estimated work)
+  - **Priority**: HIGH — Blocks multi-tenant Hyku installations from using analytics reliably
+  - **Handoff**: Complete implementation plan in [2026-07-07 handoff document](handoffs/session_handoff_2026-07-07_GA-MULTITENANT-IMPLEMENTATION-READY.md)
+
+---
+
+## Recently Completed Research Phase
+
+### ✅ GA Multi-Tenant Issues Analysis (2026-06-26 to 2026-07-07)
+- **Research Completed**: Root cause analysis of Samvera issues #2985 & #2995
+- **Deliverables**: 3 detailed task files + validation documents + implementation handoff
+- **Real-World Validation**: PALNI/PALCI Issue #611 proves cross-tenant data commingling in production
+- **WVU Knapsack Testing**: Cross-tenant event bleed test performed (result: architectural issue confirmed)
+- **Reviewer Approval**: Rob approved Fix #1 (tenant-specific GA property IDs), rejected Fix #2
+- **Status**: READY FOR IMPLEMENTATION PHASE
+- **Next**: Developer picks up implementation handoff for Phase 1 (~3-4 hours work)
 
 ---
 

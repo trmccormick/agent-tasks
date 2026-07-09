@@ -46,6 +46,13 @@ Without reading this first, agents get scope-creep, fabricate results, or miss c
 **Scope**: Formal feature or refactor assignments containing detailed technical specifications[cite: 3].  
 **Status**: Lifecycle tracked via YAML header (`status: backlog` ➔ `status: active` ➔ `status: completed`)[cite: 3].
 
+### Summaries Folder (Agent Session Data)
+**Location**: `/Users/tam0013/Documents/git/agent-tasks/projects/[project_name]/summaries/`  
+**Scope**: Synthesis reports, test results, and data that agents need to pass to other agents.  
+**Why**: Summaries are saved as MD files and shared via the agent-tasks repo — avoids copy-pasting from chat and preserves formatting.  
+**Pattern**: Each agent creating a synthesis report saves it here as `SYNTHESIS-[DESCRIPTION].md` before starting work.  
+**Ownership**: Agents (created during task execution, never manually edited afterward).
+
 ## Symlinked Task Repo — Managing Task Files
 NOTE: In this workspace `docs/new_agent` is a filesystem symlink that points to the shared task repository at `/Users/tam0013/Documents/git/agent-tasks`. Editing files under `docs/new_agent` is fine, but commits and pushes must be performed from the `agent-tasks` repository on the host.
 

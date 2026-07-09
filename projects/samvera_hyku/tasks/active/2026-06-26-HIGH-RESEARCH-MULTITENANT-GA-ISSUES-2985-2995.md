@@ -114,50 +114,36 @@ Do the same in:
 - `samvera/hyrax/app/controllers/hyrax/admin/analytics/work_reports_controller.rb`
 - Any other controllers that instantiate `Hyrax::Analytics::Ga4`
 
-### Fix #2: Remove Phantom Collection Entries (Fixes #2995)
+### Fix #2: NOT RECOMMENDED (REJECTED BY REVIEWER)
 
-**File**: `samvera/hyrax/app/controllers/hyrax/admin/analytics/collection_reports_controller.rb`
+**Original proposal**: Skip missing collections instead of inserting "Collection deleted"
 
-```ruby
-def export_data
-  csv_row = CSV.generate do |csv|
-    csv << ["Name", "ID", "View of Works In Collection", "Downloads of Works In Collection", "Collection Page Views"]
-    @all_top_collections.each do |collection|
-      document = begin
-                   ::SolrDocument.find(collection[0])
-                 rescue
-                   next  # Skip instead of inserting "Collection deleted"
-                 end
-      csv << [document['title_tesim']&.first, collection[0], view_count, download_count, page_view_count]
-    end
-  end
-end
-```
+**Reviewer feedback** (Rob, 2026-07-07): "Fix 2 will fail if a connection actually is deleted, a thing that can happen. So I wouldn't do that one."
 
-**Note**: Fix #1 should prevent most phantom entries (GA won't return other tenants' collection IDs). Fix #2 handles edge cases where a collection is truly deleted.
+**Rationale**: Skipping missing collections breaks visibility into genuinely deleted collections that still have historical GA data. Once Fix #1 is applied, remaining "Collection deleted" entries will be legitimate deletions, not cross-tenant phantom entries.
+
+**Decision**: Keep the current "Collection deleted" rescue clause as-is. After Fix #1 (using tenant-specific GA properties), phantom entries will be eliminated, and remaining "Collection deleted" entries will represent actual deletions to preserve in analytics records.
 
 ---
 
 ## Implementation Plan
 
-### Phase 1 — Core GA Property Scoping (HIGH PRIORITY)
+### Phase 1 — Core GA Property Scoping (HIGH PRIORITY - APPROVED)
 - [ ] Modify `Hyrax::Analytics::Ga4` to accept optional `property_id` parameter
 - [ ] Update `CollectionReportsController` to pass tenant property_id
 - [ ] Update `WorkReportsController` to pass tenant property_id
 - [ ] Update `AnalyticsController` base class if needed
 - [ ] Test: Verify different tenants get different analytics
 
-### Phase 2 — Data Quality Cleanup (HIGH PRIORITY)
-- [ ] Modify collection report export to skip missing collections
-- [ ] Test: Verify no phantom entries in collection reports
+**Note**: Once Phase 1 is complete, phantom "Collection deleted" entries will be eliminated because GA will only return collection IDs from the correct tenant's GA property. No Phase 2 modifications needed (keeping the "Collection deleted" behavior as-is allows visibility into genuinely deleted collections).
 
-### Phase 3 — Robustness (MEDIUM PRIORITY)
+### Phase 2 — Robustness (MEDIUM PRIORITY)
 - [ ] Add explicit account/tenant scoping to `Hyrax::Analytics::Ga4::Base` query class
 - [ ] Create DRY `initialize_analytics` helper in base controller
 - [ ] Add comprehensive RSpec tests for multi-tenant property isolation
 - [ ] Document the pattern in Hyku/Hyrax contributor guide
 
-### Phase 4 — Long-Term Improvements (POST-RELEASE)
+### Phase 3 — Long-Term Improvements (POST-RELEASE)
 - [ ] Track collection deletion events in GA4 with collection metadata
 - [ ] Query GA directly for collection titles instead of Solr resolution
 
@@ -165,12 +151,14 @@ end
 
 ## Files to Modify
 
-**Hyrax Core**:
+**Hyrax Core** (Phase 1):
 - `app/services/hyrax/analytics/ga4.rb` — Add property_id parameter
-- `app/services/hyrax/analytics/ga4/base.rb` — Optional: Add account scoping helper
-- `app/controllers/hyrax/admin/analytics/collection_reports_controller.rb` — Pass tenant property_id, skip missing collections
-- `app/controllers/hyrax/admin/analytics/work_reports_controller.rb` — Pass tenant property_id
+- `app/controllers/hyrax/admin/analytics/collection_reports_controller.rb` — Pass tenant property_id to Ga4
+- `app/controllers/hyrax/admin/analytics/work_reports_controller.rb` — Pass tenant property_id to Ga4
 - `app/controllers/hyrax/admin/analytics/analytics_controller.rb` — Optional: Add initialize_analytics helper
+
+**Hyrax Core** (Phase 2):
+- `app/services/hyrax/analytics/ga4/base.rb` — Optional: Add account scoping helper
 
 **Testing**:
 - `spec/services/hyrax/analytics/ga4_spec.rb` — Test property_id parameter
@@ -191,7 +179,7 @@ end
 - [ ] Tenant A's collection report shows only Tenant A's collections/analytics
 - [ ] Tenant B's collection report shows only Tenant B's collections/analytics
 - [ ] Numbers differ between tenants (not identical)
-- [ ] No "Collection deleted" entries appear in either tenant
+- [ ] No cross-tenant phantom "Collection deleted" entries appear (genuine deletions may remain)
 - [ ] Analytics email (if implemented) shows tenant-specific data
 
 ---
@@ -199,8 +187,8 @@ end
 ## Acceptance Criteria
 
 ✓ **Issue #2985**: Multi-tenant analytics emails show DIFFERENT numbers per tenant  
-✓ **Issue #2995**: No phantom "Collection deleted" entries in collection reports  
-✓ **Code Quality**: Minimal changes, DRY implementation, backward compatible  
+✓ **Issue #2995 (Partial)**: Phantom entries from cross-tenant data commingling eliminated (genuine "Collection deleted" entries from actual deletions are preserved)  
+✓ **Code Quality**: Minimal changes (~40-50 lines), DRY implementation, backward compatible  
 ✓ **Tests**: Multi-tenant test instance verified, RSpec tests added  
 ✓ **Documentation**: Code comments explain tenant property_id scoping pattern  
 
@@ -220,5 +208,6 @@ end
 
 - **Backward Compatibility**: Changes should not break single-tenant deployments or existing GA integrations
 - **Severity**: Critical for multi-tenant Hyku deployments; affects data integrity and tenant isolation
-- **Estimated Work**: 2-3 hours implementation + 2 hours testing = 4-5 hours total
+- **Estimated Work**: 1-2 hours implementation (Phase 1 only) + 2 hours testing = 3-4 hours total
 - **Blocker Status**: Blocks any multi-tenant Hyku 7 release until resolved
+- **Reviewer Feedback** (Rob, 2026-07-07): Fix #1 approved; Fix #2 rejected to preserve visibility into genuinely deleted collections

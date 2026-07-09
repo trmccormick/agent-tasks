@@ -1,6 +1,6 @@
 # WVU Libraries Knapsack — Domain Context Guide
-**Last Updated**: 2026-06-23
-**Populated By**: GitHub Copilot
+**Last Updated**: 2026-07-07
+**Populated By**: GitHub Copilot & Agent Tasks System
 **Source**: `docs/agent/`
 
 > This file provides context for any agent working on WVU Libraries local customizations delivered via the knapsack pattern.
@@ -9,6 +9,30 @@
 > **PRIMARY REFERENCE FOR LOCAL DEVELOPMENT**: See `/Users/tam0013/Documents/git/wvu_knapsack/HYKU_BUILD_GUIDE.md` for authoritative, step-by-step guidance on Stack Car setup, deployment workflows, and troubleshooting.
 >
 > See also: `samvera_hyku.md` and `samvera_hyrax.md` for upstream context.
+
+---
+
+## Agent Tasks Folder Structure (This Repository)
+
+**This agent-tasks project folder** (`/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/`) contains:
+
+| Folder/File | Purpose |
+|---|---|
+| `README.md` | This file — project context and domain knowledge |
+| `status.md` | Living document — progress tracking, completed work, active tasks, blockers |
+| `tasks/active/` | Tasks currently being worked on — read the task file to understand assignment |
+| `tasks/completed/` | Archived tasks organized by month — reference for patterns and decisions |
+| `tasks/backlog/` | Future work — not yet assigned |
+| `summaries/` | **Agent session data** — synthesis reports, test results, handoff documents |
+
+**Key Pattern**: Agents save synthesis reports to `summaries/` folder as `SYNTHESIS-[DESCRIPTION].md` BEFORE starting work. This allows data sharing between agents without copy-pasting from chat.
+
+**Example workflow**:
+1. Agent reads task file → creates synthesis report
+2. Agent saves synthesis to `summaries/SYNTHESIS-FACET-FIXES.md`
+3. Agent implements fixes, saves results to `summaries/RESULTS-FACET-FIXES.md`
+4. Next agent reads both files to understand what was done and test results
+5. All summaries committed to agent-tasks repo for continuity
 
 ---
 
@@ -139,6 +163,15 @@ Best Practices: Follow the [Decorators and Overrides wiki](https://github.com/sa
 | `https://{tenant}-wvu-knapsack.localhost.direct` | **Custom tenant** (working repository) | Any custom tenant domain. Same capabilities as testing tenant. |
 
 **Convention**: A "testing" tenant is pre-created on WVU Knapsack (matching Hyku main) for consistency across both systems. Always use `https://testing-wvu-knapsack.localhost.direct` for testing repository features unless otherwise instructed.
+
+**Testing Tenant Credentials**:
+| Field | Value |
+|-------|-------|
+| URL | `https://testing-wvu-knapsack.localhost.direct` |
+| Username (if popup) | `samvera` |
+| Password (if popup) | `hyku` |
+
+When accessing the testing tenant, if a username/password popup appears, use the credentials above. This is a pre-configured testing user account for local development.
 
 **If testing tenant doesn't exist:**
 ```bash
