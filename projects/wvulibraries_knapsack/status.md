@@ -1,5 +1,5 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-07-08
+**Last Updated:** 2026-07-09
 
 ---
 
@@ -14,33 +14,69 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 ---
 
 ## Current Status
-- **Status:** Multiple branches active; main branch stable, bug fixes completed, prototype branches in progress
+- **Status:** 🔴 **CRITICAL PRODUCTION ISSUE** — Logging not captured outside containers
 - **Active Branches:**
   - `main` — Stable; pagination + featured collections features deployed
-  - `fix/facet-links-and-hide-type-facet` — ✅ MERGED (facet fixes completed 2026-07-08)
+  - `fix/facet-links-and-hide-type-facet` — ✅ COMPLETED (ready for production); logging fixes pending
   - `clover-test` — Clover IIIF viewer integration (completed testing, committed 2026-07-07)
   - `ollama_testing` — Ollama vision model for alt-text generation (backlog, experimental)
   - `alt-text-views-only` — (TBD)
-- **Last Session:** 2026-07-08
+- **Last Session:** 2026-07-09
+- **Last Update:** 2026-07-09 — CRITICAL: Production logging blocker created (GitHub issue #8)
+
+---
+
+## 🔴 CRITICAL BLOCKER — Production Logging Issue
+
+**GitHub Issue**: https://github.com/wvulibraries/wvu_knapsack/issues/8
+
+**Problem**: "Not seeing any logs other than some solr logs outside of the containers. We need to figure out how to map logs outside the containers so we can analyze what went wrong if a container fails to start, etc."
+
+**Impact**:
+- Cannot debug production failures
+- No diagnostics when containers fail to start
+- Blocks production operations
+
+**Status**:
+- ✅ Investigation COMPLETE — Root cause identified (synthesis report done)
+- ⏳ Implementation ACTIVE — Qwen implementing dual logging fix
+- ⏳ Testing pending — HykuDev validation
+- ⏳ Deployment pending — Production rollout
+
+**Active Task**: `2026-07-09-CRITICAL-BUGFIX-PRODUCTION-LOGGING-NOT-CAPTURED.md`
+- Assigned to: Qwen (Implementation Agent)
+- Synthesis report: `/summaries/2026-07-09-SYNTHESIS-LOGGING-HYKUDEV-INVESTIGATION.md`
+- Implementation task: Dual logging (STDOUT + file) in production.rb + Docker config
 
 ---
 
 ## Active Tasks
 
-### None — All High Priority Tasks Complete
-All critical search catalog bugs have been fixed and tested (2026-07-08).
-
-**Recently Completed:**
-- ✅ **2026-07-07-HIGH-BUG-FIX-FACET-LINKS-AND-HIDE-TYPE-FACET.md**
-  - Both fixes verified on testing tenant
-  - Commit: `361ed43` on `fix/facet-links-and-hide-type-facet`
-  - Ready for merge to main
+### 🔴 CRITICAL — Production Logging Fix
+**Task**: `2026-07-09-CRITICAL-BUGFIX-PRODUCTION-LOGGING-NOT-CAPTURED.md`
+- Root cause: `RAILS_LOG_TO_STDOUT=true` sends logs only to STDOUT, bypassing volume mount
+- File-based logging fails due to permissions
+- Solution: Implement dual logging + Docker log rotation
+- Files to modify:
+  - `config/environments/production.rb` (add dual logging)
+  - `docker-compose.production.yml` (add log rotation, verify mount)
+  - `.env.production.example` (document RAILS_LOG_TO_STDOUT)
+- Status: Ready for Qwen implementation
 
 ---
 
 ## Completed This Session
 
-### Session 2026-07-08 (Current)
+### Session 2026-07-09 (Current)
+- ✅ CRITICAL: DevOps opened GitHub issue #8 for production logging
+- ✅ Investigated logging configuration across all environments
+- ✅ Root cause identified: STDOUT overrides file-based logging
+- ✅ Created synthesis report with detailed findings and 4 proposed fixes
+- ✅ Moved investigation task to completed
+- ✅ Created CRITICAL implementation task for Qwen
+- ⏳ Waiting: Qwen to implement logging fixes
+
+### Session 2026-07-08 (Previous)
 - ✅ Tested facet fixes on testing tenant with real data (35 works)
 - ✅ Verified Fix #1: Type facet hidden from search sidebar (`generic_type_sim` deleted)
 - ✅ Verified Fix #2: Facet links use correct format (`f[creator_sim][]` URLs)
