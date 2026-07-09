@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: bug-fix
 system_domain: AI_MANAGER
@@ -14,7 +14,7 @@ date_created: 2026-07-08
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/backlog/current/2026-07-08-HIGH-PUH-PORT-SCHEMA-CONNECTION-BLOCK.md
+Task: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/active/2026-07-08-HIGH-PUH-PORT-SCHEMA-CONNECTION-BLOCK.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
   cd /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/backlog/current
@@ -35,7 +35,7 @@ CRITICAL: Save synthesis report as MD file to summaries/ BEFORE starting any wor
 
 # PUH BLUEPRINT PORT SCHEMA — CONNECTION BLOCK (6 CASCADING FAILURES)
 
-**Status**: BACKLOG
+**Status**: ACTIVE
 **Priority**: HIGH
 **Type**: bug-fix
 **Created**: 2026-07-08
