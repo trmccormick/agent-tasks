@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: bug-fix
 system_domain: AI_MANAGER
@@ -332,11 +332,21 @@ Paste full SUMMARY block in chat before committing.
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**: [agent]
-**Completion date**: YYYY-MM-DD
-**Final rake result**: X tasks pass, Y failures
-**Files created**: [list]
-**Files modified**: [list]
-**engine_manifest_param investigation**: [what the engine does with the param]
-**robot_charging_port Mk1 finding**: [needed or not]
-**Remaining failures after this task**: [list with root causes]
+**Completed by**: Implementation Agent
+**Completion date**: 2026-07-09
+**Final rake result**: 13 tasks pass, 4 failures (17 total)
+**Files created**: 
+- `data/json-data/missions_v2/manifests/lunar_precursor_manifest_v2.json` (finalized from DRAFT)
+- `data/json-data/missions_v2/tasks/task_deploy_car_robots_v2.json` (v2.1 format)
+**Files modified**:
+- `galaxy_game/config/initializers/game_data_paths.rb` — added MISSIONS_V2_MANIFESTS_PATH constant
+- `galaxy_game/lib/tasks/luna_mission.rake` — updated manifest_path to use MISSIONS_V2_MANIFESTS_PATH; pass manifest as Hash to bypass MISSIONS_PATH join bug
+- `data/json-data/missions_v2/profiles/luna_base_profile_v2.json` — updated manifest_ref to new path
+- `data/json-data/missions_v2/tasks/task_car_300_charge_cycle_v2.json` — fixed unit names (CAR-300 Robot → CAR-300 Deployment Robot Mk1)
+**engine_manifest_param investigation**: TaskExecutionEngineV2.initialize accepts String or Hash. String is joined with MISSIONS_PATH; Hash is used directly. Passing parsed manifest as Hash bypasses incorrect path joining for missions_v2/manifests/ which is NOT under MISSIONS_PATH.
+**robot_charging_port Mk1 finding**: Manifest has `"id": "robot_charging_port"` (no Mk1). Current task file unit name `"Robot Charging Port"` normalizes to `robot_charging_port` — already matches, no change needed.
+**Remaining failures after this task**:
+- `inflatable_tank_deployment` — PUH has 0 ports (separate PUH port schema task)
+- `print_inflatable_tank_shells` — cascading from #1 (no cryo tanks deployed)
+- `deploy_volatiles_storage` — same PUH port issue as #1
+- `isru_stockpile_initiation` — Regolith Extraction Unit NOT in manifest (separate manifest update task)

@@ -1,12 +1,28 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-08 — Implementation Agent (GitHub Copilot) — Manifest ID Mismatch task closed, PUH Port Schema next in queue
+**Last Updated:** 2026-07-09 — Implementation Agent (GitHub Copilot) — Manifest V2 location + CAR-300 unit names task closed
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🎯 Latest Completion (2026-07-08)
+## 🎯 Latest Completion (2026-07-09)
+✅ **Missions V2 Manifest Location + CAR-300 Unit Name Corrections** — COMPLETED  
+- **Task**: Fix 3 data correctness issues blocking Luna rake progress
+- **Root Cause**: Manifest at wrong DRAFT location; CAR-300 unit names didn't normalize to manifest hardware IDs
+- **Fix**: 
+  - Created `missions_v2/manifests/lunar_precursor_manifest_v2.json` (finalized from DRAFT)
+  - Added `MISSIONS_V2_MANIFESTS_PATH` constant to game_data_paths.rb
+  - Updated rake to pass manifest as Hash (bypasses MISSIONS_PATH join bug)
+  - Fixed CAR-300 unit names in task_car_300_charge_cycle_v2.json (4 places)
+  - Created task_deploy_car_robots_v2.json in v2.1 format
+- **Result**: 13 tasks now PASS (up from 9); CAR-300 charge cycle passes with correct unit names
+- **Commits**: `2810fad9` (main changes), `94520095` (rake container path fix)
+- **Remaining failures**: 4 — PUH port schema x3, Regolith Extraction Unit missing from manifest x1
+
+---
+
+## 🎯 Previous Completion (2026-07-08)
 ✅ **Manifest ID ↔ Deploy Key Mismatch** — COMPLETED  
 - **Task**: Fix cascading V2 task failures caused by unit name mismatches  
 - **Root Cause**: Manifest hardware IDs had `_mk1` suffixes but V2 task files didn't  

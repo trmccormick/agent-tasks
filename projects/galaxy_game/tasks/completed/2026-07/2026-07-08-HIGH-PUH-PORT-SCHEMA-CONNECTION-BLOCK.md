@@ -322,27 +322,35 @@ git commit -m "chore: move PUH port schema task to completed/"
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**: [agent]
-**Completion date**: YYYY-MM-DD
-**Final rake result**: X tasks executed, Y failures (list remaining failures)
+**Completed by**: Qwen (GitHub Copilot)
+**Completion date**: 2026-07-08
+**Final rake result**: PENDING — cannot verify until Ryzen agent's manifest fix lands (missions_v2/manifests/lunar_precursor_manifest_v2.json + profile manifest_ref update + rake manifest loading fix)
 
 ### What was changed
-- `data/json-data/blueprints/units/hub/planetary_umbilical_hub_mk1_bp.json` — added connection_schema with mounting_slots and utility_ports
-- `data/json-data/blueprints/units/power/planetary_power_management_unit_mk1_bp.json` — added rig_ports if needed
+- `data/json-data/blueprints/units/infrastructure/planetary_umbilical_hub_bp.json` — changed `"id": "planetary_umbilical_hub"` → `"id": "planetary_umbilical_hub_mk1"` (matches Mk1 naming convention)
+- `data/json-data/blueprints/units/energy/planetary_power_management_unit_bp.json` — changed `"id": "planetary_power_management_unit"` → `"id": "planetary_power_management_unit_mk1"` (matches Mk1 naming convention)
+
+### Root cause discovered
+The PUH/PPMU blueprints had `id` fields WITHOUT `_mk1` suffix, but the engine looks up blueprints using keys WITH `_mk1` suffix (e.g., `"planetary_umbilical_hub_mk1"`). BlueprintLookupService.find_blueprint does exact ID match first (PRIORITY 1), then partial ID match (PRIORITY 4) — neither matches because the blueprint `id` doesn't contain the full query string. This caused `find_blueprint` to return nil → engine used defaults with 0 ports → all connection attempts failed with "0 of 0 free".
 
 ### Issues discovered
-[Any problems found during implementation that weren't in the original task]
+- The original task file described the problem as "missing connection_schema" but the actual root cause was **blueprint ID mismatch** (same pattern as the Mk1 manifest task)
+- PUH blueprint had `"internal_unit_ports": 4` as a flat property — LegacyPortAdapter should handle this via `extract_legacy_flat_ports`, but the blueprint was never found because of the ID mismatch
+- PPMU blueprint also had no `_mk1` suffix — same issue
 
 ### Follow-up tasks needed
-- [ ] Add CAR-300 Robot and Regolith Extraction Unit to lunar_precursor_manifest_v2_DRAFT.json (separate manifest update task)
+- [ ] Verify rake passes after Ryzen agent's manifest fix lands (missions_v2/manifests/lunar_precursor_manifest_v2.json + profile manifest_ref update)
+- [ ] Add CAR-300 Robot and Regolith Extraction Unit to lunar_precursor_manifest_v2.json (separate manifest update task)
 - [ ] Fix Inflatable Cryogenic Tank name mapping if print_inflatable_tank_shells still fails
 
 ### Lessons learned
-[What worked, what didn't, what future tasks in this area should know]
+- Blueprint IDs MUST include `_mk1` suffix for initial versions — this is the established convention across all blueprints
+- The BlueprintLookupService.find_blueprint does exact ID match first, so partial matches only work when the blueprint `id` contains the full query string (not the other way around)
+- When a blueprint lookup returns nil, downstream effects cascade silently (0 ports, 0 connections, etc.) — always check blueprint lookup first before investigating port schemas
 
 ---
 
 ## Handoff Summary
 *Filled in at end of session — one scannable line for next agent*
 
-HANDOFF SUMMARY: [files updated] | [structural changes] | [next action needed]
+COMPLETED: PUH/PPMU blueprint id fields updated with _mk1 suffix. Rake verification PENDING — blocked on Ryzen agent's manifest fix (missions_v2/manifests/lunar_precursor_manifest_v2.json). 6 cascading failures should resolve when blueprint lookup succeeds.
