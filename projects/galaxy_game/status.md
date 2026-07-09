@@ -1,8 +1,19 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-04 — Planning Agent (Claude web + Qwen Ryzen) — full day multi-session
+**Last Updated:** 2026-07-08 — Implementation Agent (GitHub Copilot) — Manifest ID Mismatch task closed, PUH Port Schema next in queue
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Completion (2026-07-08)
+✅ **Manifest ID ↔ Deploy Key Mismatch** — COMPLETED  
+- **Task**: Fix cascading V2 task failures caused by unit name mismatches  
+- **Root Cause**: Manifest hardware IDs had `_mk1` suffixes but V2 task files didn't  
+- **Fix**: Updated 6 V2 task files to include "Mk1" suffixes; fixed execution_order phase name  
+- **Result**: 9 tasks now PASS (up from 0); all 4 phases execute; PUH and Comms Equipment deploy correctly  
+- **Commits**: `70fdc21a` (rake fix), `3df0d320` (V2 task files)  
+- **Remaining failures**: 8 — PUH port schema x6, CAR-300/isru inventory gaps x2
 
 ---
 
@@ -38,6 +49,12 @@
 ---
 
 ## Active Tasks
+
+### 📌 PUH Port Schema — CONNECTION BLOCK (2026-07-08)
+- Task file: `backlog/current/2026-07-08-HIGH-PUH-PORT-SCHEMA-CONNECTION-BLOCK.md`
+- Scope: Fix PUH blueprint connection_schema with mounting_slots and utility_ports; fix PPMU rig_ports if needed
+- Status: ✅ READY — next in queue after Manifest ID Mismatch task completed
+- Blocks: Solar rig, PVE unit, inflatable tanks, volatiles storage deployments
 
 ### 📌 Phase 4 Robot Logistics — ACTIVE (2026-07-05)
 - Task file moved from `backlog/phase5+/` → `active/phase5+/` and status updated to `active`
