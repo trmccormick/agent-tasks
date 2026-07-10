@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-09 — Implementation Agent (GitHub Copilot) — Phase registry creation + Manifest V2 location + CAR-300 unit names
+**Last Updated:** 2026-07-09 — Implementation Agent (GitHub Copilot) — HLT Harvester Variants V2.1 + Blueprint Refactor
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -7,35 +7,36 @@
 ---
 
 ## 🎯 Latest Completion (2026-07-09)
-✅ **Missions V2 Manifest Location + CAR-300 Unit Name Corrections** — COMPLETED  
-- **Task**: Fix 3 data correctness issues blocking Luna rake progress
-- **Root Cause**: Manifest at wrong DRAFT location; CAR-300 unit names didn't normalize to manifest hardware IDs
+✅ **HLT Harvester Variants — V2.1 Data Correction + Module Creation** — COMPLETED  
+- **Task**: Fix chemical formula violations in Venus/Mars/Titan HLT harvester operational data; create 8 missing module files; rewrite PORT_CONNECTION_SYSTEM.md to V2.1 canonical standard
+- **Root Cause**: Operational data used full English names (oxygen, nitrogen, etc.) instead of chemical formulas (O2, N2), blocking AI Manager propellant strategy evaluation. Module files referenced in recommended_fit did not exist. PORT_CONNECTION_SYSTEM.md contained stale bridge-strategy content with $variable interpolation and pending validation status.
 - **Fix**: 
-  - Created `missions_v2/manifests/lunar_precursor_manifest_v2.json` (finalized from DRAFT)
-  - Added `MISSIONS_V2_MANIFESTS_PATH` constant to game_data_paths.rb
-  - Updated rake to pass manifest as Hash (bypasses MISSIONS_PATH join bug)
-  - Fixed CAR-300 unit names in task_car_300_charge_cycle_v2.json (4 places)
-  - Created task_deploy_car_robots_v2.json in v2.1 format
-- **Result**: 13 tasks now PASS (up from 9); CAR-300 charge cycle passes with correct unit names
-- **Commits**: `2810fad9` (main changes), `94520095` (rake container path fix)
-- **Remaining failures**: 4 — PUH port schema x3, Regolith Extraction Unit missing from manifest x1
+  - Venus: Corrected output_resources (oxygen→O2, nitrogen→N2); updated gas_handling_policy to configurable mode with store_if_value_positive for CO; bumped metadata to v2.1; added connection_schema with mounting_slots
+  - Mars: Corrected output_resources (oxygen→O2, nitrogen→N2, argon→Ar, carbon_monoxide→CO); corrected gas_handling_policy formulas; bumped metadata to v2.1; added connection_schema with mounting_slots
+  - Titan: Corrected output_resources (methane→CH4, nitrogen→N2); fixed duplicate CH4 in store+process (Titan stores only, separation not processing); bumped metadata to v2.1; added connection_schema with mounting_slots
+  - Created 8 module files: harvester_control_module (control), atmospheric_harvester_system (harvester), so2_scrubber_cartridge (maintenance), soxe_processing_stack (production), solar_expansion_rig (energy), co2_splitter (production), solar_array (energy), gas_separator (production)
+  - Rewrote PORT_CONNECTION_SYSTEM.md: connection_schema + mounting_slots as canonical schema; count-based recommended_fit documented; LegacyPortAdapter status → Implemented; removed $variable and utility_ports references
+- **Result**: All 3 HLT harvester variants have correct chemical formulas, v2.1 metadata, connection_schema; 8 module files ready for AI Manager evaluation; PORT_CONNECTION_SYSTEM.md reflects current V2.1 standard
+- **Commits**: `0fb171c1` (galaxy_game: docs/PORT_CONNECTION_SYSTEM.md); JSON data files remain local (gitignored)
 
 ---
 
-## 🎯 Phase Registry Creation — COMPLETED (2026-07-09)
-✅ **2026-07-05-HIGH-PHASE-NORMALIZATION-REGISTRY-CREATION.md** — DONE  
-- **Task**: Create `phase_registry.json` AI Manager lookup index for V2 mission system
-- **Output**: `data/json-data/missions_v2/phase_registry.json` (committed `323a6060`)
-- **Verified**: All 4 phase files present and valid JSON with correct schema
-- **Key finding**: Handoff example schema had incorrect task counts — power_comms (3→6), gas_processing (6→3). Actual data from phase files used.
-- **Cross-check**: All `task_affinity` arrays match actual `task_ref` entries in phase files
-- **Task file**: Moved to `completed/2026-07/` (committed `8588495`)
-- **Synthesis report**: `summaries/2026-07-09-PHASE-REGISTRY-SYNTHESIS.md`
+## 🎯 Previous Completion (2026-07-09)
+✅ **Blueprint Refactor to V1.4 + Missing Mass Data** — COMPLETED  
+- **Task**: Bring 4 mission-relevant blueprints up to current template standard; add missing mass data for manifest validation
+- **Root Cause**: Several blueprints used outdated formats (`materials` instead of `required_materials`), had `empty_mass_kg` at wrong level, lacked `connection_schema`, and HLT was missing `payload_capacity_kg` (blocking manifest validation)
+- **Fix**: 
+  - PPMU: Converted to v1.4 blueprint_data format; moved empty_mass_kg into blueprint_data; populated required_materials from top-level data; added 2 connection slots (power_bus_main, power_bus_secondary); template_compliance → unit_blueprint_v1.4
+  - PUH: Converted to v1.4 blueprint_data format; moved empty_mass_kg into blueprint_data; populated required_materials from top-level data; added 4 connection slots (umbilical_power, umbilical_resource_1/2, umbilical_comms); template_compliance → unit_blueprint_v1.4
+  - Rover: Renamed materials→required_materials; added 1 connection slot (harvesting_equipment); template_compliance → base_craft_v1.6
+  - HLT: Added payload_capacity_kg: 30000 (unblocks manifest validation against ~24,480 kg load); renamed materials→required_materials; added 2 cargo bay connection slots; template_compliance already base_craft_v1.6
+- **Result**: All 4 blueprints now have blueprint_data.physical_properties.empty_mass_kg, required_materials (not empty), connection_schema.mounting_slots, and current template_compliance
+- **Commits**: `0fdd808` (agent-tasks: task lifecycle + synthesis report) — JSON data files remain local (gitignored)
 
 ---
 
-## 🎯 Previous Completion (2026-07-08)
-✅ **Manifest ID ↔ Deploy Key Mismatch** — COMPLETED  
+## 🎯 Previous Completion (2026-07-09)
+✅ **Missions V2 Manifest Location + CAR-300 Unit Name Corrections** — COMPLETED  
 - **Task**: Fix cascading V2 task failures caused by unit name mismatches  
 - **Root Cause**: Manifest hardware IDs had `_mk1` suffixes but V2 task files didn't  
 - **Fix**: Updated 6 V2 task files to include "Mk1" suffixes; fixed execution_order phase name  
