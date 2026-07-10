@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: refactor
 system_domain: UNITS
@@ -21,7 +21,7 @@ STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
   git mv projects/galaxy_game/tasks/backlog/current/2026-07-09-HIGH-REFACTOR-BLUEPRINTS-TO-V1.4.md \
          projects/galaxy_game/tasks/active/2026-07-09-HIGH-REFACTOR-BLUEPRINTS-TO-V1.4.md
   If git mv fails: mv the file then git add the destination path.
-  Then open the moved file and change: status: backlog → status: active
+  Then open the moved file and change: status: active → status: active
   Paste the output of both commands in chat before proceeding.
 
 LIFECYCLE: backlog → active → completed (git mv only, never cp or plain mv)
