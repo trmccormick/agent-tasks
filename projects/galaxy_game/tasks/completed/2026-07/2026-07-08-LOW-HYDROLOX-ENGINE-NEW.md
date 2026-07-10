@@ -145,9 +145,13 @@ python3 -m json.tool data/json-data/blueprints/units/propulsion/hydrolox_engine_
 
 ## Completion Report
 
-**Completed by**: [agent]
-**Completion date**: YYYY-MM-DD
-**Files created**:
+**Completed by**: Qwen (GitHub Copilot)
+**Completion date**: 2026-07-09
+**Files created** (local only, not git tracked):
+- `data/json-data/operational_data/units/propulsion/hydrolox_engine_mk1_data.json`
+- `data/json-data/blueprints/units/propulsion/hydrolox_engine_mk1_bp.json`
+**Existing files found in Step 1**: none (only hydrogen gas materials and old data — no propulsion engines)
+**NOTE**: JSON data files are gitignored (`/data/` in .gitignore:29) — local + Time Machine backup only. Do NOT force-add to git. Files exist on disk at galaxyGame repo root.
 - `data/json-data/operational_data/units/propulsion/hydrolox_engine_mk1_data.json`
 - `data/json-data/blueprints/units/propulsion/hydrolox_engine_mk1_bp.json`
 **Existing files found in Step 1**: [paste find output]

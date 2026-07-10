@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: bugfix
 system_domain: AI_MANAGER
@@ -23,7 +23,7 @@ STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
   cd /Users/tam0013/Documents/git/agent-tasks
   git mv projects/galaxy_game/tasks/backlog/phase5+/2026-03-27-HIGH-REFACTOR-ESCALATION-SERVICE-NO-MAGIC-ROBOT-DEPLOYMENT.md \
          projects/galaxy_game/tasks/active/2026-03-27-HIGH-REFACTOR-ESCALATION-SERVICE-NO-MAGIC-ROBOT-DEPLOYMENT.md
-  Then open the moved file and change: status: backlog → status: active
+  Then open the moved file and change: status: active → status: active
   Then verify with:
     find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks \
          -name "2026-03-27-HIGH-REFACTOR-ESCALATION-SERVICE-NO-MAGIC-ROBOT-DEPLOYMENT.md"
