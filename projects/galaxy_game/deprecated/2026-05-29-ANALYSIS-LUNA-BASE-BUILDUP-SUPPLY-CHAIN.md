@@ -3,13 +3,24 @@
 ---
 date: 2026-05-29
 task_id: ANALYSIS-LUNA-BASE-BUILDUP-SUPPLY-CHAIN
-status: READY FOR QWEN3.5-27B
+status: OBSOLETE
 priority: HIGH
 mvp_alignment: CRITICAL (Luna settlement autonomous testing)
-estimated_effort: 2-3 hours
-agent_routing: Qwen3.5-27B (local, high-complexity code analysis)
-deliverable_type: 12 Text-Based Answers (for Haiku to synthesize)
+estimated_effort: N/A — obsolete
+agent_routing: N/A
 ---
+
+## ⚠️ OBSOLETED: 2026-07-10
+
+All gap analysis questions (Q7-Q9) are now answered with **YES** — the services this task was designed to discover have been implemented between May and July 2026:
+
+- **Q7 (Manifest generation)**: ✅ `Logistics::ManifestGenerator`, `ExportManifestGenerator`, `CargoManifestLoader` all exist
+- **Q8 (Local production cost vs import cost)**: ✅ `ComponentProductionService` has `calculate_production_time`, `MaterialProcessingService`; NPC pricing via `NpcPriceCalculator` provides import cost baseline
+- **Q9 (Shortage detection → import request generation)**: ✅ `ShortageDetector` + `ImportRequestGenerator` both exist with specs
+
+This task was a May 2026 research exercise to discover what existed. By July 2026, the architecture is complete. No further action needed.
+
+**Disposition**: Archive to deprecated/ or delete. If you need supply chain analysis for Luna MVP, create a new task that works with the existing services rather than discovering them.
 
 # Analysis: Luna Base Buildup Supply Chain System
 

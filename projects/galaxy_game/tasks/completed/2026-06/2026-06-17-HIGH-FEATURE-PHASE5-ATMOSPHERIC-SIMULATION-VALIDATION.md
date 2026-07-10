@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: feature
 system_domain: TERRA_SIM
@@ -304,19 +304,31 @@ end
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**: [agent]
-**Completion date**: YYYY-MM-DD
-**Files read**: [count]
-**Summary saved to**: summaries/2026-07-05-[TYPE]-[SHORT-DESCRIPTION].md
+**Completed by**: Qwen (GitHub Copilot)
+**Completion date**: 2026-07-10
+**Files read**: 15+ (AtmosphereSimulationService, AtmosphericTransferService, AIManager::AtmosphericHarvesterService, SkimmerCyclerHandshakeService, Atmosphere model, skimmer_craft_intent.md, LUNA_ISRU_GAS_PROCESSING_AND_SKIMMER_OPERATIONS.md, modular_refinery_integration.md, seeds.rb)
+**Summary saved to**: summaries/2026-07-09-RESEARCH-ATMOSPHERIC-SKIMMER-AUDIT.md
 
 ### What was changed
-- `[file]` — [description of change]
+- Codebase audit of all atmospheric tracking services for skimmer operations
+- Architecture clarified with Tracy: docking priority (L1→Luna→LEO), corporate ownership (AstroLift owns skimmers, LDC owns infrastructure, Zenith Orbital does assembly), processing capacity model (docking window is constraint, not day/night cycle)
+- Corrected initial audit assumptions: AtmosphereSimulationService needs no skimmer integration (passive climate simulator), skimmers extract raw mixed gas (not targeted individual gases), L1 Depot is primary destination (not Luna surface)
 
 ### Issues discovered
-[Any problems found during implementation that weren't in the original task]
+- AIManager::AtmosphericHarvesterService returns hardcoded mock data (200 N2, 150 CH4) — must be replaced with real AtmosphericTransferService delegation
+- SkimmerCyclerHandshakeService processes ALL cargo at 90% efficiency — contradicts skimmer intent (limited onboard processing only)
+- No venting mechanism in AtmosphericTransferService — gases always delivered to target, never vented back to source
+- Initial audit had incorrect assumptions about Luna surface processing capacity and skimmer docking priority
 
 ### Follow-up tasks needed
-[Any new backlog items identified — do not create the files, just list them here]
+- 2026-07-10-HIGH-RESEARCH-ATMOSPHERIC-TRANSFER-VENTING-DESIGN.md — Design vent_to_source mode for AtmosphericTransferService (three-state routing: refined/stored, raw/overflow, processing byproducts)
+- 2026-07-10-HIGH-RESEARCH-SKIMMER-CYCLER-HANDSHAKE-REFACTOR.md — Design vessel role differentiation (Harvester vs Tanker variants), station-linked operations trigger, Depot-reserve refuel logic
+- 2026-07-10-HIGH-RESEARCH-ATMOSPHERIC-HARVESTER-MOCK-REPLACEMENT.md — Design replacement strategy for AIManager::AtmosphericHarvesterService with AstroLift asset authentication and AtmosphericTransferService routing
+
+---
+
+## Handoff Summary
+HANDOFF SUMMARY: 15+ files read | AtmosphereSimulationService (passive, no skimmer integration needed), AtmosphericTransferService (core extraction logic exists but needs venting mode), AIManager::AtmosphericHarvesterService (mock data placeholder), SkimmerCyclerHandshakeService (conflicts with skimmer intent) | summaries/2026-07-09-RESEARCH-ATMOSPHERIC-SKIMMER-AUDIT.md
 
 ### Lessons learned
 [What worked, what didn't, what future tasks in this area should know]
