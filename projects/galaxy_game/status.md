@@ -64,6 +64,24 @@
 
 ---
 
+## Today's Work (2026-07-09 — M4 Qwen)
+
+### EscalationService No-Magic Robot Deployment — COMPLETED
+- **Task**: Fix `create_automated_harvester` to use correct HRV-400 blueprint ID and load operational_data from JSON
+- **Refactored** `create_automated_harvester` in `escalation_service.rb` to use `Lookup::UnitLookupService`
+- **Unit type** changed from generic `"robot"` (ghost type) to `"hrv_400_resource_harvester_mk1"`
+- **Operational data** loaded from blueprint JSON, merged with task-specific overrides (O2/H2O/regolith)
+- **Added** `physical_properties` to HRV-400 blueprint (match active structure)
+- **Added** `operational_data` key to HRV-400 operational data file
+- **Updated** spec to mock `UnitLookupService.new.find_unit('hrv_400_resource_harvester_mk1')` and expect correct blueprint ID
+- **RSpec result**: 44 examples, 0 failures
+- **Ruby commit in galaxyGame**: `661bd2b2` (escalation_service.rb + spec)
+- **JSON data files** (HRV-400 blueprint + operational data): local only — gitignored (`data/` is gitignored)
+- **JSON force-add corrected**: untracked via `git rm --cached`, commit `068a6830` in galaxyGame
+- **Task file**: moved to `completed/2026-03/` in agent-tasks repo (commit `61d4338`)
+
+---
+
 ## Project History (background, rarely changes)
 - **~10+ years ago**: earliest concepts in Java.
 - **~2 years ago**: research and prototyping phase.
