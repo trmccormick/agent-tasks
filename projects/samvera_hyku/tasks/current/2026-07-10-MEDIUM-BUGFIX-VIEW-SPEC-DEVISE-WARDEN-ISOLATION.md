@@ -10,22 +10,20 @@ local_worker_safe: true
 ## ⚡ Minimal Handoff
 
 ```
-You are **Investigation Agent**.
-
 Project: Samvera Hyku
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/tasks/current/2026-07-10-MEDIUM-BUGFIX-VIEW-SPEC-DEVISE-WARDEN-ISOLATION.md
+Task: Verify fix for view spec failures by running specs locally
 
-GOAL: Determine if test failures are CI-specific or reproducible locally.
+ROOT CAUSE FOUND: Commit 472fb339 DELETED app/views/layouts/_head_tag_content.html.erb
+This caused all 10 view spec failures (not Devise/Warden isolation as initially thought).
 
-STEP 1: Run the failing spec locally
-STEP 2: Document results (passes vs fails)
-STEP 3: Compare to CI results
-STEP 4: Create synthesis report with findings
+FIX APPLIED: Commit 5b8ce8a3 restored the view with hyku_generator_meta_tag helper method.
+
+NEXT STEP: Run specs locally in /Users/tam0013/Documents/git/hyku to verify fix works.
 ```
 
 ---
 
-# TASK: Investigate View Spec Devise/Warden Test Isolation Failures
+# TASK: Verify View Spec Fix — _head_tag_content.html.erb Restoration
 
 **Status**: ACTIVE
 **Priority**: MEDIUM
@@ -42,30 +40,43 @@ STEP 4: Create synthesis report with findings
 
 ---
 
-## Context
+## ROOT CAUSE ANALYSIS
 
-CI pipeline reported 10 test failures in `spec/views/layouts/_head_tag_content.html.erb_spec.rb`. All failures show the same root cause: `Devise::MissingWarden` exception when view template calls `signed_in?` helper. The failures appear to be test setup/isolation issues unrelated to recent code changes.
+**What was happening**: CI reported 10 test failures in `spec/views/layouts/_head_tag_content.html.erb_spec.rb`
 
-**Goal**: Reproduce locally to determine if this is:
-- ✅ Pre-existing issue in Hyku main (CI environment artifact)
-- ✅ New regression introduced by recent changes
-- ✅ Environment-specific setup issue
+**Initial assumption**: Devise/Warden test isolation issue
+
+**Actual root cause**: Commit 472fb339 (refactor: minimal generator tag override) **DELETED** the view file:
+```
+- Remove full _head_tag_content.html.erb duplication (no longer needed)
+```
+
+This created a mismatch:
+- ❌ View file deleted from Hyku repo
+- ✅ View spec still tries to test it  
+- ❌ Fallback to Hyrax view which has "Samvera Hyrax" (not "Samvera Hyku")
+- ❌ All assertions about "Samvera Hyku" generator tag fail
+
+**Fix applied** (commit 5b8ce8a3):
+- Restored `app/views/layouts/_head_tag_content.html.erb` 
+- Updated generator tag to use `<%= hyku_generator_meta_tag %>` helper method
+- Removed unnecessary `_generator_meta_tag.html.erb` partial
+
+**Goal**: Run specs locally in Hyku repo to verify the fix works and all tests pass.
 
 ---
 
 ## Critical Information
 
-### Architecture Gotchas
+⚠️ **GOTCHA 1 — View Specs Test a Specific View File**
+- ❌ Wrong: Assume the view still exists when running spec
+- ✅ Right: Check if the view file exists at the path spec expects
+- Why: When view is deleted, spec tries to render fallback (Hyrax view), causing test failures
 
-⚠️ **GOTCHA 1 — View Specs Need Devise Test Helpers**
-- ❌ Wrong: `render` without setting up `request.env['warden']`
-- ✅ Right: Use `Devise::Test::ControllerHelpers` or manually inject warden in before block
-- Why: View tests don't automatically load Rails middleware stack where Devise registers Warden
-
-⚠️ **GOTCHA 2 — This is NOT Related to Logging Changes**
-- ❌ Wrong: Assume failures are caused by production.rb or docker-compose changes
-- ✅ Right: Recognize this is a pre-existing view spec setup issue
-- Why: No logging changes touch view rendering or Devise configuration
+⚠️ **GOTCHA 2 — NOT about Logging or Devise Configuration**
+- ❌ Wrong: Blame logging changes or production.rb
+- ✅ Right: Recognize this is a deleted view file issue
+- Why: A deleted ERB template won't render at all, regardless of logger config
 
 ---
 
@@ -121,16 +132,13 @@ Create a synthesis report before any work. Save as MD file to summaries folder, 
 
 ## Problem Statement
 
-**Current behavior**: CI pipeline shows 10 test failures in `_head_tag_content.html.erb_spec.rb`.
+**Initial CI failure**: 10 tests in `_head_tag_content.html.erb_spec.rb` all fail
 
-**Error message**: `Devise could not find the Warden::Proxy instance on your request environment`
+**Root cause**: View file was deleted in commit 472fb339, so tests couldn't find it
 
-**When it happens**: When view template renders and calls `signed_in?` helper on line 6
+**Fix applied**: Restored view file in commit 5b8ce8a3 with correct generator tag helper
 
-**Why it matters**: 
-- Unclear if this is pre-existing or new regression
-- CI failures block deployment
-- Need to distinguish between view spec setup issue vs actual code regression
+**What you need to verify**: Run the specs locally to confirm all 10 tests now PASS
 
 ---
 
@@ -182,72 +190,36 @@ ActionView::Template::Error:
 
 ## Implementation Steps
 
-### Step 0 — Move task file to active/ (MANDATORY FIRST STEP)
-
-**Do this before anything else:**
+### Step 1 — Navigate to Hyku repo
 
 ```bash
-cd /Users/tam0013/Documents/git/agent-tasks
-
-git mv projects/samvera_hyku/tasks/current/2026-07-10-MEDIUM-BUGFIX-VIEW-SPEC-DEVISE-WARDEN-ISOLATION.md \
-       projects/samvera_hyku/tasks/active/2026-07-10-MEDIUM-BUGFIX-VIEW-SPEC-DEVISE-WARDEN-ISOLATION.md
+cd /Users/tam0013/Documents/git/hyku
 ```
 
-Then open the moved file and change the YAML status:
-```yaml
-status: active  →  status: active
-```
+### Step 2 — Run the view specs locally
 
-(It's already active, so this confirms the move)
-
-Verify only one copy exists:
-```bash
-find /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/tasks \
-     -name "2026-07-10-MEDIUM-BUGFIX-VIEW-SPEC-DEVISE-WARDEN-ISOLATION.md"
-```
-
-**Expected**: Exactly one result at `tasks/active/2026-07-10-MEDIUM-BUGFIX-VIEW-SPEC-DEVISE-WARDEN-ISOLATION.md`
-
-Paste the find output in chat before proceeding to Step 1.
-
-### Step 1 — Create Synthesis Report
-
-Before running any code, create a synthesis report file:
-
-```bash
-cat > /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/summaries/2026-07-10-SYNTHESIS-VIEW-SPEC-DEVISE-INVESTIGATION.md << 'EOF'
-[Use the template from "REQUIRED: Status Synthesis Report" section above]
-EOF
-```
-
-Post link to this file in chat before proceeding to Step 2.
-
-### Step 2 — Run Failing Spec Locally
-
-Navigate to the Hyku submodule:
-```bash
-cd /Users/tam0013/Documents/git/wvu_knapsack/hyrax-webapp
-```
-
-Run the specific failing spec:
 ```bash
 bundle exec rspec spec/views/layouts/_head_tag_content.html.erb_spec.rb -v
 ```
 
-**Capture full output** (redirect to file for review):
+Capture output:
 ```bash
-bundle exec rspec spec/views/layouts/_head_tag_content.html.erb_spec.rb -v 2>&1 | tee /tmp/view_spec_results.txt
+bundle exec rspec spec/views/layouts/_head_tag_content.html.erb_spec.rb -v 2>&1 | tee /tmp/hyku_view_spec_results.txt
 ```
 
 ### Step 3 — Document Results
 
-After spec completes, note:
-- ✅ How many pass vs fail?
-- ✅ Are the failures identical to CI failures?
-- ✅ Do all 10 fail, or different subset?
-- ✅ Any new failures or warnings?
+**Expected result**: All 10 tests PASS ✅
 
-### Step 4 — Examine Test Setup
+Report back:
+- ✅ How many tests pass?
+- ✅ How many tests fail?
+- ✅ Any errors in output?
+- ✅ Does spec find the restored view file?
+
+### Step 4 — Compare to CI Results
+
+Once local tests pass, we can be confident the fix resolves the CI failures. The PR can then proceed to merge.
 
 Read the failing spec file:
 ```bash
