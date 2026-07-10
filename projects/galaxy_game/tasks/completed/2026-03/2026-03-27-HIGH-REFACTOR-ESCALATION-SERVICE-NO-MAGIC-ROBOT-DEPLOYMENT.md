@@ -258,21 +258,26 @@ git commit -m 'chore: move 2026-03-27-HIGH-REFACTOR-ESCALATION-SERVICE-NO-MAGIC-
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**: [agent name]
-**Completion date**: YYYY-MM-DD
-**Final test result**: X examples, Y failures
+**Completed by**: Qwen (GitHub Copilot)
+**Completion date**: 2026-07-09
+**Final test result**: 44 examples, 0 failures
 
 ### What was changed
-- `[file]` — [description of change]
+- `galaxy_game/app/services/ai_manager/escalation_service.rb` — Refactored `create_automated_harvester` to use `Lookup::UnitLookupService` for HRV-400 blueprint lookup; `unit_type` changed from generic `"robot"` to `"hrv_400_resource_harvester_mk1"`; operational_data loaded from blueprint JSON and merged with task-specific overrides
+- `galaxy_game/spec/services/ai_manager/escalation_service_spec.rb` — Updated spec to mock `UnitLookupService.new.find_unit('hrv_400_resource_harvester_mk1')` and expect correct blueprint ID in `create!` call
 
 ### Issues discovered
-[Any problems found during implementation that weren't in the original task]
+- HRV-400 blueprint (`hrv_400_resource_harvester_mk1_bp.json`) already existed at `data/json-data/blueprints/units/robots/resource/` — no creation needed
+- HRV-400 operational data file (`hrv_400_resource_harvester_mk1_data.json`) already existed but lacked top-level `operational_data` key — added it
+- Blueprint was missing `physical_properties` section (required by active structure) — added to match other unit blueprints
 
 ### Follow-up tasks needed
-[Any new backlog items identified — do not create the files, just list them here]
+- [ ] Verify HRV-400 operational data file has all required fields for MVP use cases (O2, H2O, regolith harvesting)
+- [ ] Consider whether O2-specific and H2O-specific harvester variants are needed or if HRV-400 with task overrides is sufficient
 
 ### Lessons learned
-[What worked, what didn't, what future tasks in this area should know]
+- `data/json-data/` is gitignored — JSON data files must be Time Machine backed only, never force-added to git
+- When blueprint already exists locally, no creation needed; focus on wiring code to use it correctly
 
 ---
 
