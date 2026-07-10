@@ -45,6 +45,25 @@
 
 ---
 
+## Today's Work (2026-07-09 — Ryzen Qwen)
+
+### Missions V2 Manifest + CAR-300 Fix — COMPLETED
+- Created `missions_v2/manifests/lunar_precursor_manifest_v2.json` (finalized from DRAFT)
+- Added `MISSIONS_V2_MANIFESTS_PATH` to `game_data_paths.rb`
+- Updated rake to pass manifest as Hash (bypasses MISSIONS_PATH join bug)
+- Fixed CAR-300 unit names in `task_car_300_charge_cycle_v2.json` (4 places)
+- Created `task_deploy_car_robots_v2.json` in v2.1 format
+- Result: 13/17 rake tasks passing
+- Commits: `2810fad9`, `94520095`
+
+### Hydrolox Engine Mk1 — CREATED (local only)
+- Created `hydrolox_engine_mk1_data.json` — LH2/LOX, ISP 450s vacuum, cryogenic handling
+- Created `hydrolox_engine_mk1_bp.json` — 350,000 GCC, advanced_manufacturing facility
+- Files are local + Time Machine only (`data/` is gitignored) — force-add commit reverted: `f911d1e0`
+- Task file moved to `completed/2026-07/` in agent-tasks repo
+
+---
+
 ## Project History (background, rarely changes)
 - **~10+ years ago**: earliest concepts in Java.
 - **~2 years ago**: research and prototyping phase.
