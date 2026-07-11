@@ -7,6 +7,30 @@ mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 ---
 
+## ⚡ Minimal Handoff (Copy this to send to agent)
+
+```
+You are **Research Agent**.
+
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-07-10-HIGH-RESEARCH-ATMOSPHERIC-TRANSFER-VENTING-DESIGN.md
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv to new folder
+  - New/untracked file: move with filesystem (mv), then git add the final path
+  - Never copy task files between folders
+READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
+
+---
+
 # RESEARCH: Design `vent_to_source` Mode for AtmosphericTransferService
 
 **Status**: BACKLOG

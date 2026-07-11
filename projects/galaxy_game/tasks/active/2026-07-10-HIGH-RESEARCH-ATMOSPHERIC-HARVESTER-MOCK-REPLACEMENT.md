@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: research
 system_domain: AI_MANAGER
@@ -7,7 +7,24 @@ mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 ---
 
-# RESEARCH: Design Replacement for `AIManager::AtmosphericHarvesterService` (Mock Data)
+## Research Complete
+
+**Synthesis report**: `docs/new_agent/projects/galaxy_game/summaries/2026-07-10-RESEARCH-ATMOSPHERIC-HARVESTER-MOCK-REPLACEMENT.md`
+
+### Key Findings
+- **No new Corporation entity needed** — any `Corporation` can own skimmers via existing polymorphic `BaseCraft#owner`
+- **`TerraSim::AtmosphericTransferService` already implements correct physics** — raw transfer mode with proportional extraction, Titan 5% limit, 98% transport efficiency
+- **MVP defers market integration** — gases flow to cycler → Luna settlement atmosphere; market listing is Phase 9+
+- **No blockers** — ownership model exists, docking infrastructure exists, NPC pricing exists
+
+### Design Decision
+Refactor `AIManager::AtmosphericHarvesterService` → new `AIManager::AtmosphericExtractionService` that delegates to `TerraSim::AtmosphericTransferService` with ownership validation. Skimmers use `:raw` transfer mode only (proportional extraction).
+
+### Next Steps
+1. Create `AIManager::AtmosphericExtractionService`
+2. Add skimmer → cycler cargo transfer method
+3. Update AI Manager decision logic to replace mock calls
+4. Write specs
 
 **Status**: BACKLOG
 **Priority**: HIGH
