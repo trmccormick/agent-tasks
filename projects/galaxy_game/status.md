@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-09 — Implementation Agent (GitHub Copilot) — HLT Harvester Variants V2.1 + Blueprint Refactor
+**Last Updated:** 2026-07-10 — Implementation Agent (GitHub Copilot) — Rake 17/17 Milestone
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -58,6 +58,22 @@
 - Commits: `2810fad9`, `94520095`
 
 ### Hydrolox Engine Mk1 — CREATED (local only)
+
+---
+
+## 🎯 Latest Completion (2026-07-10)
+✅ **V2 Task File Unit ID and Naming Mismatches — Round 2 + Rake 17/17 Milestone** — COMPLETED  
+- **task_execution_engine_v2.rb** — GATE 2 `unless` keyword restored, `set_unit_state_from_effect` unit_type fallback lookup added (commit `f8621212`)
+- **RSpec baseline**: 19 examples, 0 failures
+- **JSON fixes** (local only, gitignored):
+    - `task_inflatable_tank_deployment_v2.json` — display name → id fixes (`Inflatable Cryogenic Tank` → `inflatable_cryo_tank`, `Inflatable Pressure Tank` → `inflatable_pressure_tank`)
+    - `task_car_300_charge_cycle_v2.json` — space vs underscore fix, completion_criteria display name fix (`CAR-300 Robot 1` → `car_300_deployment_robot_mk1 1`)
+    - `task_isru_stockpile_initiation_v2.json` — display name fixes (PVE Mk1, Gas Separator, TEU Mk1)
+    - `task_deploy_volatiles_storage_v2.json` — display name → id fixes
+    - `lunar_precursor_manifest_v2.json` — `inflatable_pressure_tank` count 2→3
+    - `task_print_inflatable_tank_shells_v2.json` — removed `target_type: cryogenic_tank`, engine default `inflatable` catches all types
+- **Rake progression**: 12/17 → 15/17 → **17/17** on clean DB (all phases PASSED)
+- JSON data files remain local (gitignored)
 - Created `hydrolox_engine_mk1_data.json` — LH2/LOX, ISP 450s vacuum, cryogenic handling
 - Created `hydrolox_engine_mk1_bp.json` — 350,000 GCC, advanced_manufacturing facility
 - Files are local + Time Machine only (`data/` is gitignored) — force-add commit reverted: `f911d1e0`
