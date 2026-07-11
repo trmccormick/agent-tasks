@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: MEDIUM
 type: feature
 system_domain: AI_MANAGER
@@ -15,13 +15,31 @@ You are **Implementation Agent**.
 Project: galaxy_game
 Task: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/backlog/phase6+/2026-06-27-MEDIUM-FEATURE-INFLATABLE-TANK-SHELL-STATUS-TRACKING.md
 
-READ FIRST: Task file contains all prerequisites, gotchas, and verification steps.
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv docs/new_agent/projects/galaxy_game/tasks/backlog/phase6+/2026-06-27-MEDIUM-FEATURE-INFLATABLE-TANK-SHELL-STATUS-TRACKING.md \
+         docs/new_agent/projects/galaxy_game/tasks/active/2026-06-27-MEDIUM-FEATURE-INFLATABLE-TANK-SHELL-STATUS-TRACKING.md
+  Then open the moved file and change: status: active → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
-CRITICAL: Create STATUS SYNTHESIS REPORT in chat BEFORE starting any work (template in task file).
-This task touches task_execution_engine_v2.rb — a shared file edited by three separate
-sessions on 2026-06-26 alone. Per GUARDRAILS Rule 17, synthesis approval is mandatory,
-no exceptions.
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find docs/new_agent/projects/galaxy_game/tasks -name "2026-06-27-MEDIUM-FEATURE-INFLATABLE-TANK-SHELL-STATUS-TRACKING.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+
+CRITICAL: This task touches task_execution_engine_v2.rb — a shared file edited by multiple sessions. Per GUARDRAILS Rule 17, synthesis approval is mandatory before any code changes.
 ```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
 
 ---
 
