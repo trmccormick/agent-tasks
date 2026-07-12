@@ -1,10 +1,11 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: research
 system_domain: AI_MANAGER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
+completed_date: 2026-07-11
 ---
 
 ## Research Complete
@@ -25,9 +26,6 @@ Refactor `AIManager::AtmosphericHarvesterService` → new `AIManager::Atmospheri
 2. Add skimmer → cycler cargo transfer method
 3. Update AI Manager decision logic to replace mock calls
 4. Write specs
-
-**Status**: BACKLOG
-**Priority**: HIGH
 **Type**: research
 **Created**: 2026-07-10
 **Last Updated**: 2026-07-10 — Research Agent (Qwen3.6-35b)
