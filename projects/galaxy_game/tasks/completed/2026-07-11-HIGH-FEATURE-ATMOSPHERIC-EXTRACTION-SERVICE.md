@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 priority: HIGH
 type: feature
 system_domain: AI_MANAGER
@@ -473,24 +473,39 @@ git push
 
 *Filled in by the implementing agent after completion*
 
-**Completed by**: [agent name]
-**Completion date**: YYYY-MM-DD
-**Final test result**: X examples, Y failures
+**Completed by**: Implementation Agent
+**Completion date**: 2026-07-12
+**Final test result**: 14 examples, 0 failures
 
 ### What was changed
-- `[file]` — [description of change]
+- `galaxy_game/app/services/ai_manager/atmospheric_extraction_service.rb` — **NEW** replacement service that delegates to TerraSim::AtmosphericTransferService with :raw mode, includes ownership validation, cycler cargo transfer via definition_data['cargo'] hash
+- `galaxy_game/app/services/ai_manager/skimmer_cycler_handshake_service.rb` — Added `execute_atmospheric_extraction` method for real extraction (replaces mock calls)
+- `galaxy_game/spec/services/ai_manager/atmospheric_extraction_service_spec.rb` — **NEW** 14 RSpec specs covering initialization, ownership validation, raw transfer mode, cycler cargo integration
+- `galaxy_game/spec/factories/craft/transport/cyclers.rb` — Added base_craft transient flag with after(:create) callback to satisfy base_craft_id NOT NULL constraint
 
 ### Issues discovered
-[Any problems found during implementation that weren't in the original task]
+1. **Cycler factory missing base_craft**: The :cycler factory didn't include base_craft association, causing PG::NotNullViolation. Fixed by adding transient `with_base_craft` flag and after(:create) callback.
+2. **CelestialBody namespace**: Service used bare `CelestialBody` which failed in AIManager module scope. Fixed to use `CelestialBodies::CelestialBody`.
+3. **Corporation namespace**: Service used bare `Corporation` which failed. Fixed to check `organization_type` enum on BaseOrganization instead of `is_a?(Corporation)`.
+4. **Cycler method chain**: Cycler doesn't have `has_available_docking_port?` or `base_units` — these are on `base_craft`. Fixed service to use `cycler.base_craft&.has_available_docking_port?` and `cycler.base_craft.base_units`.
+5. **Skimmer atmosphere not created by factory**: The :craft_harvester factory doesn't create an atmosphere, so tests needed explicit `build_atmosphere` setup.
+6. **Gas removal bug**: `remove_gas('all', amount)` failed when skimmer's atmosphere had default gases (e.g., 'Al-Mg-Si (typical)'). Fixed by iterating through gases individually and removing each by name.
+7. **can_dock? returning nil**: Ruby's `&&` returns nil when first operand is nil. Fixed by using `== true` comparisons to ensure boolean return values.
+8. **Keyword argument mismatch**: Service method used positional param `max_capacity = nil` but specs passed keyword `max_capacity: 1000`. In Ruby 3+, this caused hash to be passed as second param. Fixed by changing to `max_capacity: nil`.
 
 ### Follow-up tasks needed
-[Any new backlog items identified — do not create the files, just list them here]
+- Run overnight full spec suite to verify no regressions in existing skimmer/cycler handshake specs (per task instructions)
+- Consider adding base_craft to :cycler factory permanently rather than transient flag
+- Update status.md with this feature completion entry
 
 ### Lessons learned
-[What worked, what didn't, what future tasks in this area should know]
+- Always check model namespace scope when creating new services in namespaced modules
+- Cycler is an ApplicationRecord (not BaseCraft subclass) — it has `belongs_to :base_craft` association, not its own methods
+- Factory callbacks matter: :craft_harvester doesn't create atmosphere by default, tests must set it up explicitly
+- Gas removal should iterate through gases individually rather than using 'all' wildcard which may match unexpected default gases
 
 ---
 
 ## Handoff Summary
 
-HANDOFF SUMMARY: [files updated] | [structural changes] | [next action needed]
+HANDOFF SUMMARY: 4 files changed (2 new, 2 existing) | Service delegates to TerraSim with :raw mode, cycler cargo via definition_data['cargo'], 14 specs pass | Task moved to completed/
