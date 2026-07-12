@@ -1,11 +1,28 @@
 ---
-status: backlog
+status: blocked
 priority: MEDIUM
 type: refactor
 system_domain: AI_MANAGER | MARKET
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
+blocked_reason: Design mismatch — `can_produce_locally?` hardcoded values don't match actual codebase unit types and resource naming. Requires research before implementation.
 ---
+
+## 🔴 BLOCKED: Design Issues Require Research
+
+**Issue**: The proposed "After" code in this task has fundamental errors:
+
+1. **Unit types don't exist**: `atmospheric_processor` (Luna has no atmosphere — uses `regolith_oxygen_extractor`), `isru_processor` (doesn't exist — uses `ice_processor`, `planetary_volatiles_extractor_mk1`), `cnt_fabricator` (doesn't exist)
+2. **Resource naming mixed**: Code uses display names (`:oxygen`, `:water`) but backend standard is chemical formulas (`O2`, `H2O`)
+3. **Function design unclear**: Why hardcode only 3 resources? Multiple units can produce oxygen (greenhouse, regolith extractor, atmospheric processor on Venus). Why is this function needed at all?
+
+**Before proceeding**: Need to answer:
+- [ ] What is the actual intent of `can_produce_locally?` — efficiency check? availability check? something else?
+- [ ] Should this be generic (any unit that produces resource X) or location/unit-type specific?
+- [ ] What's the canonical mapping of resources → unit types for each location (Luna/Mars/Venus/Titan)?
+- [ ] Should this function even exist or should procurement query units directly by `facility_required` JSON field?
+
+**Recommended next step**: Create a RESEARCH task to clarify the architecture before this refactor proceeds.
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
 
@@ -15,8 +32,29 @@ You are **Implementation Agent**.
 Project: galaxy_game
 Task: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/backlog/phase6+/2026-07-03-MEDIUM-REFACTOR-HAS-FACILITY-INTEGRATION.md
 
-READ FIRST: Task file contains all prerequisites, gotchas, and verification steps.
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv docs/new_agent/projects/galaxy_game/tasks/backlog/phase6+/2026-07-03-MEDIUM-REFACTOR-HAS-FACILITY-INTEGRATION.md \
+         docs/new_agent/projects/galaxy_game/tasks/active/2026-07-03-MEDIUM-REFACTOR-HAS-FACILITY-INTEGRATION.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find docs/new_agent/projects/galaxy_game/tasks -name "2026-07-03-MEDIUM-REFACTOR-HAS-FACILITY-INTEGRATION.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
 ```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
 
 ---
 
@@ -75,8 +113,8 @@ Both guard with `respond_to?` so they silently return `false`. This means:
 ### Primary Files — edit these
 | File | Purpose | Key Method/Section |
 |---|---|---|
-| `galaxy_game/app/services/market/npc_price_calculator.rb` | Lunar production pricing | `settlement_has_facility?` line ~213 |
-| `galaxy_game/app/services/ai_manager/procurement_service.rb` | Local resource procurement | `settlement_has_facility?` lines ~30-34 |
+| `galaxy_game/app/services/market/npc_price_calculator.rb` | Lunar production pricing | `settlement.respond_to?(:has_facility?)` line 213 |
+| `galaxy_game/app/services/ai_manager/procurement_service.rb` | Local resource procurement | `can_produce_locally?` line 27, `settlement_has_facility?` line 83 |
 
 ### Reference Files — read but do not edit
 | File | Why You Need It |
@@ -97,7 +135,7 @@ grep -n "has_many.*units" galaxy_game/app/models/settlement/base_settlement.rb
 
 Confirm the association exists. If it doesn't, stop and report — this is a prerequisite.
 
-### Step 2 — Fix NpcPriceCalculator (line ~213)
+### Step 2 — Fix NpcPriceCalculator (line 213)
 
 **Before:**
 ```ruby
@@ -109,7 +147,7 @@ settlement.respond_to?(:has_facility?) && settlement.has_facility?(facility)
 settlement.units.where(unit_type: facility).any?
 ```
 
-### Step 3 — Fix ProcurementService (lines ~30-34)
+### Step 3 — Fix ProcurementService (lines 27-35, 83)
 
 **Before:**
 ```ruby
@@ -126,8 +164,10 @@ def self.can_produce_locally?(settlement, resource, amount)
   end
 end
 
-def self.settlement_has_facility?(settlement, facility)
-  settlement.respond_to?(:has_facility?) && settlement.has_facility?(facility)
+def self.settlement_has_facility?(settlement, facility_type)
+  # Check if settlement has required facility
+  # Placeholder
+  true
 end
 ```
 
@@ -146,8 +186,8 @@ def self.can_produce_locally?(settlement, resource, amount)
   end
 end
 
-def self.settlement_has_facility?(settlement, facility)
-  settlement.units.where(unit_type: facility.to_s).any?
+def self.settlement_has_facility?(settlement, facility_type)
+  settlement.units.where(unit_type: facility_type.to_s).any?
 end
 ```
 
