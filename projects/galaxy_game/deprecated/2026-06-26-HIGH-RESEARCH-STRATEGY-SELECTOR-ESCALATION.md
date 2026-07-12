@@ -1,10 +1,26 @@
 ---
-status: BACKLOG
+status: OBSOLETE
 priority: HIGH
 type: architecture
 system_domain: AI_MANAGER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
-codebase_status: "Research Required — Resource allocation logic currently lacks integration with TaskExecutionEngineV2."
+estimated_effort: N/A — obsolete
+codebase_status: "Research Complete — StrategySelector already implements escalation"
+---
+
+## ⚠️ OBSOLETED: 2026-07-11 — Work Already Exists
+
+**This task was a June 26 research exercise to discover how resource allocation should integrate with the AI Manager.** By July 2026, the architecture is complete:
+
+- **StrategySelector**: Already exists and implements `:resource_acquisition` hooks
+- **EscalationHandler**: Already exists and accepts constraint resolution tasks
+- **StateAnalyzer**: Already provides sufficient data for resource allocation decisions
+- **TaskContract pattern**: Already established via TaskExecutionEngineV2 integration
+
+**Why obsolete**: The research questions (integration mapping, escalation trigger, data flow) are answered by the existing architecture. This was a June 26 planning artifact that never needed execution because the work it described has been implemented between May and July 2026.
+
+**Disposition**: Archive to deprecated/. If you need resource allocation work for Luna MVP, create a new task that works with the existing StrategySelector/EscalationHandler pattern rather than researching it.
+
 ---
 
 # TASK: Research & Integrate Resource Allocation with EscalationHandler

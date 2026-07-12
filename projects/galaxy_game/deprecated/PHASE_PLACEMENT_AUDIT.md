@@ -6,6 +6,20 @@
 
 ---
 
+## ⚠️ OBSOLETED: 2026-07-11 — Never Executed
+
+This was a June 30 audit task that was **never executed** — it was created to verify phase placement of 8 decomposed tasks, but those recommended tasks were never actually created. The audit itself became obsolete as the project evolved:
+
+- **Phase 5 (SystemOrchestrator)**: The calibration work described here has been superseded by the actual Luna Phase 1 implementation (CostAnalyzer, ManifestGenerator, ShortageDetector)
+- **Phase 8 (Orbital Construction)**: The shipyard/construction tasks were never created as a result of this audit
+- **The 8 decomposed tasks**: Never materialized into actionable work items
+
+**Why obsolete**: This was a June 30 planning artifact that identified where tasks *should* go but never created the actual tasks. By July 2026, the project has moved forward with different priorities (Luna MVP, blueprint system, mission profiles). The audit questions are answered by the current phase structure in `status.md`.
+
+**Disposition**: Archive to deprecated/. If you need SystemOrchestrator work for Luna MVP, create a new task that works with the current architecture rather than this June 30 planning exercise.
+
+---
+
 ## Phase Classification Review
 
 ### Original Task Metadata
