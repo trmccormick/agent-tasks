@@ -81,6 +81,31 @@
 
 ---
 
+## Today's Work (2026-07-11 — Research Agent)
+
+### Atmospheric Harvester Mock Replacement Research — COMPLETED
+- **Task**: `2026-07-10-HIGH-RESEARCH-ATMOSPHERIC-HARVESTER-MOCK-REPLACEMENT.md` (moved to completed/)
+- **Synthesis report**: `docs/new_agent/projects/galaxy_game/summaries/2026-07-10-RESEARCH-ATMOSPHERIC-HARVESTER-MOCK-REPLACEMENT.md`
+- **Key findings**:
+  - No new Corporation entity needed — any `Corporation` owns skimmers via polymorphic `BaseCraft#owner`
+  - `TerraSim::AtmosphericTransferService` already implements correct physics (raw transfer, Titan 5% limit, 98% efficiency)
+  - MVP defers market integration — gases flow to cycler → Luna settlement atmosphere
+  - No blockers found
+- **Design decision**: Refactor `AIManager::AtmosphericHarvesterService` → new `AIManager::AtmosphericExtractionService` delegating to `TerraSim::AtmosphericTransferService` with ownership validation; skimmers use `:raw` mode only
+- **Task file**: committed + pushed to agent-tasks repo
+
+### Atmospheric Extraction Service Task — CREATED (backlog)
+- **Task file**: `2026-07-11-HIGH-FEATURE-ATMOSPHERIC-EXTRACTION-SERVICE.md` in `backlog/current/`
+- **Scope**: Create new service, skimmer→cycler cargo transfer via `definition_data['cargo']`, update AI Manager logic, write RSpec specs
+- **Gotchas documented**: cycler cargo in `definition_data['cargo']` (NOT atmosphere), `:raw` mode only, no market integration in MVP
+- **Committed + pushed**: `d6a7396` to agent-tasks repo
+
+### Cycler Cargo Clarification
+- Confirmed cycler cargo storage is `cycler.definition_data['cargo']` hash (JSON-serialized), NOT `cycler.atmosphere`
+- Atmosphere association is for celestial body state, not craft cargo — documented in task file as GOTCHA 1
+
+---
+
 ## Today's Work (2026-07-09 — M4 Qwen)
 
 ### EscalationService No-Magic Robot Deployment — COMPLETED
