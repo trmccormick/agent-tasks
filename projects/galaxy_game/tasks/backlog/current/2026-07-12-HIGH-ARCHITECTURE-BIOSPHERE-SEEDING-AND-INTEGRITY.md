@@ -412,3 +412,24 @@ Expected: all specs pass.
 - Worldhouse biomes are independent from celestial_body.biosphere
 - Worldhouse rendering has its own data model and view layer
 - That system is handled separately (NOT part of this task)
+
+---
+
+## Future Work & Potential Overlap
+
+⚠️ **When terraforming is implemented** (future feature):
+- Terraformed worlds will eventually support natural biomes without enclosures
+- Mars/Venus will get biosphere records when terraformed
+- Those planets will have introduced biomes (not native, but now capable of supporting life)
+- **Potential Overlap**: Worldhouse biomes could coexist with introduced natural biomes on terraformed worlds
+
+**Design Question for Future**: How should worldhouse biomes and natural introduced biomes interact?
+- Do they share rendering space? (Layer system?)
+- Can both exist in same locations? Or are worldhouses always "on top"?
+- Should there be visual distinction between worldhouse-grown and naturally terraformed biomes?
+- Do biome progression trees affect introduced biomes differently than engineered ones?
+
+**Recommendation for This Task**: The current implementation doesn't need to address this. Just be aware that:
+- The gating logic (planet type check for biosphere creation) is where terraforming will hook in
+- The biosphere model will expand when new planets are terraformed
+- Rendering logic may need enhancement later to handle both natural and worldhouse biomes on same world
