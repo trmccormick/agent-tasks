@@ -39,6 +39,22 @@ Read task file for full context, gotchas, and implementation approach.
 
 ---
 
+## DESIGN CONSTRAINT ⚠️
+
+**Biospheres should ONLY be created for Earth (currently)**
+
+- ❌ Do NOT automatically create biospheres for Mars, Venus, or other planets yet
+- ✅ Only Earth should have a biosphere record (current game state)
+- ℹ️ Reason: Other worlds do not have life. Biospheres should only exist on habitable/terraformed worlds
+- ℹ️ Future: When terraforming mechanics are implemented, other worlds can have biospheres created
+
+**Implementation Impact:**
+- Migration should ONLY create biosphere for Earth if missing
+- Auto-creation hook should check planet type/habitability before creating biosphere
+- This prevents data model inconsistency while respecting game design
+
+---
+
 ## Context
 
 During today's debug session (2026-07-12), the planetary view biome rendering was not working because:
@@ -49,7 +65,7 @@ During today's debug session (2026-07-12), the planetary view biome rendering wa
 
 **Temporary Fix Applied**: Changed monitor.js to check actual grid data instead of the server flag (commit `3f6078b3`). This works but masks a deeper issue.
 
-**Root Cause**: Data integrity gap. Planets should not be allowed to have biome grids without a biosphere record. This is an architectural problem, not a rendering bug.
+**Root Cause**: Data integrity gap. Earth has biome grids and SHOULD have a biosphere record. This is an architectural problem, not a rendering bug.
 
 ---
 
@@ -57,20 +73,26 @@ During today's debug session (2026-07-12), the planetary view biome rendering wa
 
 ### Architecture Gotchas
 
-⚠️ **GOTCHA 1: Unclear biosphere creation trigger**
-- ❌ Wrong: Assuming biosphere records are created when terrain_map is generated
+⚠️ **GOTCHA 1: Earth is the ONLY planet that should get biosphere records**
+- ❌ Wrong: Creating biosphere records for Mars, Venus, Titan, etc.
+- ✅ Right: Only Earth gets automatic biosphere creation (it's the only habitable world)
+- Why: Game design states only Earth has life. Other planets get biospheres when terraforming is implemented.
+- Implementation: Add gating logic to check planet type/habitability before creating biosphere
+
+⚠️ **GOTCHA 2: Unclear biosphere creation trigger**
+- ❌ Wrong: Assuming biosphere records are created when terrain_map is generated (might be correct)
 - ✅ Right: Determine the actual intended lifecycle — when SHOULD biosphere records exist?
 - Why: Currently there's no automatic creation path defined
 
-⚠️ **GOTCHA 2: Seeding vs. Runtime Creation**
+⚠️ **GOTCHA 3: Seeding vs. Runtime Creation**
 - ❌ Wrong: Creating biosphere records via seed data alone (doesn't help planets created programmatically)
 - ✅ Right: Implement automatic creation in the code path that generates/assigns terrain_map data
 - Why: Need to cover both seeded and dynamically generated planets
 
-⚠️ **GOTCHA 3: Existing planets without biosphere**
-- ❌ Wrong: Ignoring Earth and other planets that already lack biosphere records
-- ✅ Right: Create a migration to backfill biosphere records for planets with terrain_map data
-- Why: Data must be consistent across the entire database
+⚠️ **GOTCHA 4: Existing planets without biosphere**
+- ❌ Wrong: Ignoring Earth and assuming all planets need biosphere records
+- ✅ Right: Create a migration to backfill biosphere record for EARTH ONLY if missing
+- Why: Data must be consistent for Earth (habitable), but other planets should remain empty
 
 ---
 
@@ -83,10 +105,12 @@ During today's debug session (2026-07-12), the planetary view biome rendering wa
 - Data model allows inconsistent state
 
 **Expected State:**
-- Any planet with biome grid data MUST have a biosphere record
-- Biosphere records should be created automatically alongside terrain_map data
-- Existing planets should be migrated to restore consistency
-- Views should be able to trust `has_biosphere` flag
+- Earth MUST have a biosphere record (it has biome grid data)
+- Other planets should NOT have biosphere records (no life in current game state)
+- Biosphere records should be created automatically for Earth when terrain_map is assigned
+- Migration should backfill Earth if missing biosphere record
+- Other planets should have their biosphere records skipped (gated by habitability check)
+- Views can trust that biospheres only exist where they should
 
 **Impact:**
 - Data integrity issue (misaligned records)
@@ -207,34 +231,45 @@ grep -r "create_biosphere\|Biosphere.create" galaxy_game/app --include="*.rb"
 ### Step 3 — Create migration to backfill biosphere records
 
 Create a migration that:
-1. Finds all planets with `geosphere.terrain_map` but no `biosphere`
-2. Creates biosphere records with sensible defaults:
-   - `habitable_ratio: 0.5`
-   - `biodiversity_index: 0.5`
-   - `vegetation_cover: 0.5`
-   - `biome_count: (count from terrain_map['biomes'])`
-   - `soil_health: 50`
-   - `soil_organic_content: 0.05`
-   - `soil_microbial_activity: 0.5`
+1. Finds Earth (ID 2493) ONLY — skip other planets
+2. If Earth has `geosphere.terrain_map` but no `biosphere`, create the record
+3. Sets sensible defaults:
+   - `habitable_ratio: 0.95` (Earth is fully habitable)
+   - `biodiversity_index: 0.95` (Earth has high biodiversity)
+   - `vegetation_cover: 0.75` (most of Earth is vegetated)
+   - `biome_count: 10` (Earth has 10 biome types)
+   - `soil_health: 80` (Earth has good soil)
+   - `soil_organic_content: 0.08` (Earth has organic matter)
+   - `soil_microbial_activity: 0.8` (Earth has active microbes)
 
 **File**: `db/migrate/20260712_create_missing_biosphere_records.rb`
 
+**Important**: Do NOT create biosphere records for Mars, Venus, or other planets. They should remain without biospheres until terraforming is implemented.
+
 ### Step 4 — Add automatic biosphere creation to terrain_map assignment
 
-Identify where `geosphere.terrain_map =` is called, and ensure a biosphere record is created if one doesn't exist:
+Identify where `geosphere.terrain_map =` is called, and add logic to create biosphere ONLY for Earth:
 
 ```ruby
 # In the service/method that assigns terrain_map:
-after_terrain_map_assignment do
+# After terrain_map is assigned, check if this is Earth
+if celestial_body.earth? || celestial_body.id == 2493  # Earth
   unless celestial_body.biosphere.present?
     celestial_body.create_biosphere(
-      habitable_ratio: 0.5,
-      biodiversity_index: 0.5,
-      # ... other defaults
+      habitable_ratio: 0.95,
+      biodiversity_index: 0.95,
+      vegetation_cover: 0.75,
+      biome_count: 10,
+      soil_health: 80,
+      soil_organic_content: 0.08,
+      soil_microbial_activity: 0.8
     )
   end
+# Other planets skip biosphere creation until terraforming is implemented
 end
 ```
+
+**CRITICAL**: Only Earth should get automatic biosphere creation. Other planets (Mars, Venus, etc.) should NOT have biospheres created.
 
 **Deliverable**: Paste the hook location and implementation.
 
@@ -272,20 +307,28 @@ Expected: all specs pass.
 
 ## Success Criteria
 
-✅ **Data Integrity Restored**
-- All planets with terrain_map now have biosphere records
+✅ **Data Integrity Restored (Earth Only)**
 - Earth (ID 2493) now has a biosphere record with appropriate attributes
-- Existing code that checks `has_biosphere` flag will now work correctly
+- Other planets (Mars, Venus, etc.) remain WITHOUT biosphere records
+- Migration backfills Earth if biosphere record was missing
 
-✅ **Automatic Creation Implemented**
-- New planets with terrain_map automatically get biosphere records
-- No manual workarounds needed
+✅ **Automatic Creation Implemented (Earth Only)**
+- When Earth's terrain_map is assigned/generated, biosphere record is automatically created
+- Other planets do NOT get automatic biosphere creation (gated by planet type check)
+- No manual workarounds needed for Earth
+
+✅ **Design Constraints Enforced**
+- Biosphere creation ONLY for Earth (habitable world)
+- Other planets must have biospheres created via terraforming feature (not yet implemented)
+- Code is structured to make it easy to add other worlds later
 
 ✅ **Specs Pass**
-- RSpec: biosphere auto-creation spec added and passing
+- RSpec: biosphere auto-creation spec added and passing (Earth scenario)
+- RSpec: verify Mars/Venus do NOT get biospheres (negative test)
 - No existing tests broken
 
 ✅ **Code Quality**
 - Follows existing model patterns
-- Sensible default values for new biosphere records
-- Comments explain the auto-creation logic
+- Sensible default values for Earth's biosphere
+- Comments explain why only Earth gets automatic creation
+- Gating logic clear and maintainable for future expansion
