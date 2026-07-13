@@ -48,10 +48,17 @@ Read task file for full context, gotchas, and implementation approach.
 - ℹ️ Reason: Other worlds do not have life. Biospheres should only exist on habitable/terraformed worlds
 - ℹ️ Future: When terraforming mechanics are implemented, other worlds can have biospheres created
 
+**The Gating Logic: "Can biomes exist on the surface without supporting tech?"**
+
+- ✅ **Earth**: YES → Biomes exist naturally on surface → Has biosphere record
+- ❌ **Mars, Venus, Titan, etc.**: NO → Biomes require worldhouse/tech structure → NO biosphere record
+- 🔄 **Terraformed Mars, Venus (future)**: YES (after terraforming) → Biomes can exist on surface → Gets biosphere record
+
 **Implementation Impact:**
-- Migration should ONLY create biosphere for Earth if missing
-- Auto-creation hook should check planet type/habitability before creating biosphere
+- Migration should ONLY create biosphere for planets where surface biomes are viable
+- Auto-creation hook should gate on surface_viability or similar flag (not just planet ID)
 - This prevents data model inconsistency while respecting game design
+- When terraforming completes, planet becomes surface-viable → gets biosphere record
 
 **UI Pattern: Biosphere = nil means no biomes**
 
@@ -92,11 +99,11 @@ During today's debug session (2026-07-12), the planetary view biome rendering wa
 
 ### Architecture Gotchas
 
-⚠️ **GOTCHA 1: Earth is the ONLY planet that should get biosphere records**
-- ❌ Wrong: Creating biosphere records for Mars, Venus, Titan, etc.
-- ✅ Right: Only Earth gets automatic biosphere creation (it's the only habitable world)
-- Why: Game design states only Earth has life. Other planets get biospheres when terraforming is implemented.
-- Implementation: Add gating logic to check planet type/habitability before creating biosphere
+⚠️ **GOTCHA 1: Biosphere records gate on surface viability, not planet type**
+- ❌ Wrong: Hard-coding logic for Earth specifically (planet ID or `.earth?` check)
+- ✅ Right: Gate on `surface_supports_biomes?` condition ("can biomes exist on surface without tech?")
+- Why: This allows future terraforming to expand to Mars/Venus by flipping this condition
+- Implementation: Find or implement the surface viability check in the model
 
 ⚠️ **GOTCHA 2: Unclear biosphere creation trigger**
 - ❌ Wrong: Assuming biosphere records are created when terrain_map is generated (might be correct)
@@ -109,9 +116,9 @@ During today's debug session (2026-07-12), the planetary view biome rendering wa
 - Why: Need to cover both seeded and dynamically generated planets
 
 ⚠️ **GOTCHA 4: Existing planets without biosphere**
-- ❌ Wrong: Ignoring Earth and assuming all planets need biosphere records
-- ✅ Right: Create a migration to backfill biosphere record for EARTH ONLY if missing
-- Why: Data must be consistent for Earth (habitable), but other planets should remain empty
+- ❌ Wrong: Ignoring all planets and assuming all need biosphere records
+- ✅ Right: Create a migration to backfill biosphere records only for planets where `surface_supports_biomes?` is true
+- Why: Data must be consistent for viable planets, but non-viable planets should remain empty
 
 ---
 
@@ -124,12 +131,12 @@ During today's debug session (2026-07-12), the planetary view biome rendering wa
 - Data model allows inconsistent state
 
 **Expected State:**
-- Earth MUST have a biosphere record (it has biome grid data)
-- Other planets should NOT have biosphere records (no life in current game state)
-- Biosphere records should be created automatically for Earth when terrain_map is assigned
-- Migration should backfill Earth if missing biosphere record
-- Other planets should have their biosphere records skipped (gated by habitability check)
-- Views can trust that biospheres only exist where they should
+- Planets where `surface_supports_biomes? = true` MUST have biosphere records
+- Planets where `surface_supports_biomes? = false` should NOT have biosphere records
+- Biosphere records should be created automatically when terrain_map is assigned AND surface_supports_biomes is true
+- Migration should backfill biosphere records for all planets where surface_supports_biomes is true
+- Views can trust that biospheres only exist where surface biomes are viable
+- Future: When terraforming is implemented, setting `surface_supports_biomes? = true` will trigger automatic biosphere creation
 
 **Impact:**
 - Data integrity issue (misaligned records)
@@ -250,9 +257,9 @@ grep -r "create_biosphere\|Biosphere.create" galaxy_game/app --include="*.rb"
 ### Step 3 — Create migration to backfill biosphere records
 
 Create a migration that:
-1. Finds Earth (ID 2493) ONLY — skip other planets
-2. If Earth has `geosphere.terrain_map` but no `biosphere`, create the record
-3. Sets sensible defaults:
+1. Finds planets where `surface_supports_biomes?` is true BUT no biosphere record exists
+2. Creates biosphere records with sensible defaults
+3. For Earth specifically:
    - `habitable_ratio: 0.95` (Earth is fully habitable)
    - `biodiversity_index: 0.95` (Earth has high biodiversity)
    - `vegetation_cover: 0.75` (most of Earth is vegetated)
@@ -263,16 +270,18 @@ Create a migration that:
 
 **File**: `db/migrate/20260712_create_missing_biosphere_records.rb`
 
-**Important**: Do NOT create biosphere records for Mars, Venus, or other planets. They should remain without biospheres until terraforming is implemented.
+**Important**: Only create biosphere records for planets where surface biomes are viable.
+- ✅ Create for: Earth, (future) terraformed Mars, (future) terraformed Venus
+- ❌ Skip: Mars, Venus, Titan (while not terraformed)
 
 ### Step 4 — Add automatic biosphere creation to terrain_map assignment
 
-Identify where `geosphere.terrain_map =` is called, and add logic to create biosphere ONLY for Earth:
+Identify where `geosphere.terrain_map =` is called, and add logic to create biosphere for planets where surface biomes are viable:
 
 ```ruby
 # In the service/method that assigns terrain_map:
-# After terrain_map is assigned, check if this is Earth
-if celestial_body.earth? || celestial_body.id == 2493  # Earth
+# After terrain_map is assigned, check if this planet can support surface biomes
+if celestial_body.surface_supports_biomes?  # or similar flag/method
   unless celestial_body.biosphere.present?
     celestial_body.create_biosphere(
       habitable_ratio: 0.95,
@@ -284,11 +293,17 @@ if celestial_body.earth? || celestial_body.id == 2493  # Earth
       soil_microbial_activity: 0.8
     )
   end
-# Other planets skip biosphere creation until terraforming is implemented
+# Planets that cannot support surface biomes (Mars, Venus) skip biosphere creation
+# They can have worldhouse biomes, but those are independent
 end
 ```
 
-**CRITICAL**: Only Earth should get automatic biosphere creation. Other planets (Mars, Venus, etc.) should NOT have biospheres created.
+**CRITICAL**: Gate the biosphere creation on whether surface biomes are viable (not just planet type).
+- Earth: `surface_supports_biomes? = true` → Creates biosphere
+- Mars, Venus: `surface_supports_biomes? = false` → Skips biosphere
+- Terraformed planets (future): `surface_supports_biomes? = true` (after terraforming) → Creates biosphere
+
+**Find or Implement**: Check if `surface_supports_biomes?` or similar method exists. If not, you may need to add it based on planet habitability/atmosphere/temperature data.
 
 **ALSO REQUIRED**: After biosphere records exist, update JavaScript views to use the canonical check:
 - **Old workaround** (temporary, in current code): `const hasBiosphere = layers.biomes && layers.biomes.grid`
@@ -296,7 +311,7 @@ end
 - **View behavior**: If `has_biosphere` is false, DISABLE biomes button and skip rendering
 - **Why**: Cleaner pattern—biosphere existence is the source of truth, not data presence
 
-**Deliverable**: Paste the hook location and implementation.
+**Deliverable**: Paste the hook location, implementation, and the condition check (surface_supports_biomes).
 
 ### Step 5 — Update views to use canonical biosphere check
 
@@ -427,23 +442,12 @@ Expected: all specs pass.
 - **Phase 1 (Current)**: Players build worldhouse structures with engineered biomes on bare planets
 - **Phase 2 (Future)**: Terraforming initiates from worldhouse biomes as seed source
 - **Phase 3 (Future)**: Biomes spread from worldhouse to planet surface as terraforming progresses
-- **Phase 4 (Future)**: Planet receives biosphere record, biomes become "natural introduced" (no longer need worldhouse)
-- **Result**: Worldhouse engineered biomes → Terraforming seed → Planet natural biomes
+- **Phase 4 (Future)**: Planet transitions: `surface_supports_biomes? = true` → Create biosphere record
+- **Result**: Planet graduates from tech-dependent to surface-viable biomes
 
 **Integration Point for This Task:**
-- The gating logic (planet type check) is where terraforming will hook in during Phase 3
-- When terraforming reaches completion, create biosphere record for the terraformed world
-- Biosphere record creation becomes the "graduation" from worldhouse-dependent to planet-native biomes
-- This task's biosphere seeding logic will be reused for terraformed worlds
-
-**Design Questions for Future**: 
-- Should worldhouse biomes and natural introduced biomes share rendering space? (Layer system?)
-- Can both exist in same locations? Or are worldhouses always "on top" during terraforming progress?
-- Should there be visual distinction between worldhouse-grown and naturally terraformed biomes?
-- Do biome progression trees affect introduced biomes differently than engineered ones?
-
-**Recommendation for This Task**: The current implementation doesn't need to address this. Just be aware that:
-- The gating logic (planet type check for biosphere creation) is where terraforming will hook in
-- The biosphere model will expand when new planets are terraformed
-- Rendering logic may need enhancement later to handle both natural and worldhouse biomes on same world
-- This task's migration/auto-creation pattern will be reused when terraforming completes
+- The gating condition (`surface_supports_biomes?`) is where terraforming will hook in
+- When terraforming reaches completion, `surface_supports_biomes?` flips from false → true
+- This triggers automatic biosphere record creation via the same pattern in this task
+- Biosphere record creation = "graduation" from worldhouse-dependent to planet-native biomes
+- The migration/auto-creation logic will be reused for terraformed worlds
