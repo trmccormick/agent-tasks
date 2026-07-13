@@ -119,16 +119,30 @@ During today's debug session (2026-07-12), the planetary view biome rendering wa
   - Silicon-based life on high-temperature worlds
   - Exotic biochemistry on other planets
 
-**Future Expansion:**
-- If alien biomes are introduced, they would need separate gating logic
-- Example: Titan biosphere would gate on "liquid methane on surface" instead of "liquid water"
-- The biosphere model could expand to support multiple biochemistry types
-- Each type would have its own habitability requirements
+**Compatibility Concerns:**
+- Alien life may not be compatible with current Earth-biome biosphere system
+- Different biochemistries may need:
+  - Different gating logic (not liquid water)
+  - Different biome types and colors
+  - Different rendering system
+  - Different spreading/terraforming mechanics
+  - Potentially conflict with Earth biomes on the same world?
+
+**Future Design Task:**
+- A separate RESEARCH task should be created to investigate alien biome systems
+- This task will explore:
+  - How do alien biomes coexist with Earth biomes? (If at all)
+  - What are the compatibility constraints?
+  - Should they use separate biosphere records? Separate model entirely?
+  - What would terraforming look like for alien-compatible worlds?
+- **Task Created**: `2026-07-13-RESEARCH-ALIEN-BIOME-SYSTEM-ARCHITECTURE.md` in backlog/phase15+/
+- This investigation task will be for a future agent (likely Gemini) to explore
+- This task should NOT block current Earth biosphere implementation
 
 **For This Task:**
 - Implement Earth-based biosphere system as designed (liquid water gate)
 - Be aware this is not universal for all possible life forms
-- Future alien biome systems will need separate implementation (not part of this task)
+- Future alien biome systems will need separate implementation and design (not part of this task)
 
 ### Architecture Gotchas
 
