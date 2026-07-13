@@ -105,6 +105,31 @@ During today's debug session (2026-07-12), the planetary view biome rendering wa
 - Worldhouse rendering is independent and not part of this task
 - This task focuses on: CelestialBody → Geosphere → BiomeGrid, and CelestialBody → Biosphere
 
+---
+
+## Important Limitation: Earth-Based Biosphere Design
+
+⚠️ **Current implementation assumes Earth-based life**
+
+- This task implements biosphere creation/gating based on **liquid water availability**
+- This works for Earth and Earth-like planets (Mars/Venus terraformed to have liquid water)
+- **This does NOT apply to alien life forms** that might not require liquid water
+- Examples of potential future alien biome systems:
+  - Methane-based life on Titan (liquid methane oceans)
+  - Silicon-based life on high-temperature worlds
+  - Exotic biochemistry on other planets
+
+**Future Expansion:**
+- If alien biomes are introduced, they would need separate gating logic
+- Example: Titan biosphere would gate on "liquid methane on surface" instead of "liquid water"
+- The biosphere model could expand to support multiple biochemistry types
+- Each type would have its own habitability requirements
+
+**For This Task:**
+- Implement Earth-based biosphere system as designed (liquid water gate)
+- Be aware this is not universal for all possible life forms
+- Future alien biome systems will need separate implementation (not part of this task)
+
 ### Architecture Gotchas
 
 ⚠️ **GOTCHA 1: Biosphere gating is based on liquid water availability, not planet type**
