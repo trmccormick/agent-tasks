@@ -35,9 +35,22 @@
 - Root cause: `visibleLayers = new Set(['terrain'])` reassignment inside init() wiped user toggles
 - Fix 1: savedLayers pattern preserves user toggle state across init() calls
 - Fix 2: initialized guard prevents turbo:load from double-calling init()
-- Fix 3: Sphere CRUD functions merged into AdminMonitor namespace
 - Cleanup: monitor_patched.js and .new*.js files removed (dead code)
 - Commit: `3916a8d8` galaxyGame
+
+### ✅ Dynamic Desert Biome Color — COMPLETED (2026-07-13)
+- getBiomeColor() now accepts latitude parameter for dynamic desert coloring
+- Polar deserts (>60°): ice cream #ffeedd
+- Temperate deserts (30-60°): golden tan #f4d89e
+- Tropical deserts (<30°): warm desert #DAA520
+- Render loop calculates latitude per tile and passes to getBiomeColor()
+- Commit: `6e388f68` galaxyGame
+
+### ✅ Monitor.js Cleanup — COMPLETED (2026-07-13)
+- Sphere CRUD evaluated as dead code (no routes/controller/UI wired up)
+- monitor_patched.js kept for review only; all .new*.js backups deleted
+- monitor.js.working deleted
+- Only monitor.js (active) remains in admin/
 
 ---
 
