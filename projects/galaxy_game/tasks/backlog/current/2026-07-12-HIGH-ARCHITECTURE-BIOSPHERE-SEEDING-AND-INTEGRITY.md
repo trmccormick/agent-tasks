@@ -50,15 +50,19 @@ Read task file for full context, gotchas, and implementation approach.
 
 **The Gating Logic: "Can biomes exist on the surface without supporting tech?"**
 
-- ✅ **Earth**: YES → Biomes exist naturally on surface → Has biosphere record
-- ❌ **Mars, Venus, Titan, etc.**: NO → Biomes require worldhouse/tech structure → NO biosphere record
-- 🔄 **Terraformed Mars, Venus (future)**: YES (after terraforming) → Biomes can exist on surface → Gets biosphere record
+The core question drives the biosphere creation:
+- **Can liquid water exist on the surface?** This is the primary trigger.
+- ✅ **Earth**: YES (liquid water oceans) → Biomes can exist naturally → Has biosphere record
+- ❌ **Mars**: NO (too cold, water frozen) → Biomes need worldhouse/tech → NO biosphere record
+- ❌ **Venus**: NO (too hot, water vaporized) → Biomes need worldhouse/tech → NO biosphere record
+- ❌ **Titan**: NO (too cold, liquid methane) → Biomes need worldhouse/tech → NO biosphere record
+- 🔄 **Terraformed Mars (future)**: YES (after terraforming) → Liquid water becomes viable → Gets biosphere record
 
 **Implementation Impact:**
-- Migration should ONLY create biosphere for planets where surface biomes are viable
-- Auto-creation hook should gate on surface_viability or similar flag (not just planet ID)
+- Gate on surface habitability: presence of liquid water on surface
+- Check planet's atmosphere, temperature, and pressure for water viability
+- When terraforming reaches target state (liquid water possible), biosphere creation auto-triggers
 - This prevents data model inconsistency while respecting game design
-- When terraforming completes, planet becomes surface-viable → gets biosphere record
 
 **UI Pattern: Biosphere = nil means no biomes**
 
@@ -67,9 +71,13 @@ Read task file for full context, gotchas, and implementation approach.
 - Apply this check in surface_view.js and monitor.js views
 - This is the clean, canonical check (not defensive data checks)
 
+**The underlying logic**: Biosphere exists ↔ Liquid water viable on surface
+- Surface with liquid water = biosphere possible = biomes can render
+- Surface without liquid water = no biosphere = biomes require worldhouse tech only
+
 **Exception: Worldhouse structures can have constructed biomes**
 - ℹ️ Worldhouse biomes are engineered/artificial, not natural (greenhouse, biolab, terrarium)
-- ✅ Worldhouses CAN have biomes even on planets with nil biosphere (Mars, Venus)
+- ✅ Worldhouses CAN have biomes even on planets with nil biosphere (Mars, Venus - no liquid water)
 - ✅ Worldhouse biomes are a separate rendering layer (not tied to celestial_body.biosphere)
 - 🎮 Game design: Players can build artificial environments before terraforming
 
@@ -99,11 +107,11 @@ During today's debug session (2026-07-12), the planetary view biome rendering wa
 
 ### Architecture Gotchas
 
-⚠️ **GOTCHA 1: Biosphere records gate on surface viability, not planet type**
+⚠️ **GOTCHA 1: Biosphere gating is based on liquid water availability, not planet type**
 - ❌ Wrong: Hard-coding logic for Earth specifically (planet ID or `.earth?` check)
-- ✅ Right: Gate on `surface_supports_biomes?` condition ("can biomes exist on surface without tech?")
-- Why: This allows future terraforming to expand to Mars/Venus by flipping this condition
-- Implementation: Find or implement the surface viability check in the model
+- ✅ Right: Gate on liquid water surface availability (`can_support_surface_life?` or similar)
+- Why: This allows future terraforming to expand to Mars/Venus by making liquid water viable
+- Implementation: Check planet's atmosphere, temperature, pressure for water surface viability
 
 ⚠️ **GOTCHA 2: Unclear biosphere creation trigger**
 - ❌ Wrong: Assuming biosphere records are created when terrain_map is generated (might be correct)
@@ -117,7 +125,7 @@ During today's debug session (2026-07-12), the planetary view biome rendering wa
 
 ⚠️ **GOTCHA 4: Existing planets without biosphere**
 - ❌ Wrong: Ignoring all planets and assuming all need biosphere records
-- ✅ Right: Create a migration to backfill biosphere records only for planets where `surface_supports_biomes?` is true
+- ✅ Right: Create a migration to backfill biosphere records only for planets where liquid water can exist on surface
 - Why: Data must be consistent for viable planets, but non-viable planets should remain empty
 
 ---
@@ -131,12 +139,12 @@ During today's debug session (2026-07-12), the planetary view biome rendering wa
 - Data model allows inconsistent state
 
 **Expected State:**
-- Planets where `surface_supports_biomes? = true` MUST have biosphere records
-- Planets where `surface_supports_biomes? = false` should NOT have biosphere records
-- Biosphere records should be created automatically when terrain_map is assigned AND surface_supports_biomes is true
-- Migration should backfill biosphere records for all planets where surface_supports_biomes is true
-- Views can trust that biospheres only exist where surface biomes are viable
-- Future: When terraforming is implemented, setting `surface_supports_biomes? = true` will trigger automatic biosphere creation
+- Planets where liquid water can exist on surface MUST have biosphere records
+- Planets where liquid water CANNOT exist on surface should NOT have biosphere records
+- Biosphere records should be created automatically when terrain_map is assigned AND liquid water is viable on surface
+- Migration should backfill biosphere records for all planets where liquid water can exist on surface
+- Views can trust that biospheres only exist where surface life is viable
+- Future: When terraforming is implemented, achieving liquid water viability on surface will trigger automatic biosphere creation
 
 **Impact:**
 - Data integrity issue (misaligned records)
@@ -257,7 +265,7 @@ grep -r "create_biosphere\|Biosphere.create" galaxy_game/app --include="*.rb"
 ### Step 3 — Create migration to backfill biosphere records
 
 Create a migration that:
-1. Finds planets where `surface_supports_biomes?` is true BUT no biosphere record exists
+1. Finds planets where `can_support_surface_life?` is true BUT no biosphere record exists
 2. Creates biosphere records with sensible defaults
 3. For Earth specifically:
    - `habitable_ratio: 0.95` (Earth is fully habitable)
@@ -270,9 +278,9 @@ Create a migration that:
 
 **File**: `db/migrate/20260712_create_missing_biosphere_records.rb`
 
-**Important**: Only create biosphere records for planets where surface biomes are viable.
-- ✅ Create for: Earth, (future) terraformed Mars, (future) terraformed Venus
-- ❌ Skip: Mars, Venus, Titan (while not terraformed)
+**Important**: Only create biosphere records for planets where surface life is viable (liquid water exists).
+- ✅ Create for: Earth (has liquid water), (future) terraformed Mars/Venus (after water becomes viable)
+- ❌ Skip: Mars (frozen water), Venus (vaporized water), Titan (liquid methane, not water)
 
 ### Step 4 — Add automatic biosphere creation to terrain_map assignment
 
@@ -281,7 +289,8 @@ Identify where `geosphere.terrain_map =` is called, and add logic to create bios
 ```ruby
 # In the service/method that assigns terrain_map:
 # After terrain_map is assigned, check if this planet can support surface biomes
-if celestial_body.surface_supports_biomes?  # or similar flag/method
+# (Primary check: Can liquid water exist on the surface?)
+if celestial_body.can_support_surface_life?  # or similar flag/method
   unless celestial_body.biosphere.present?
     celestial_body.create_biosphere(
       habitable_ratio: 0.95,
@@ -298,12 +307,17 @@ if celestial_body.surface_supports_biomes?  # or similar flag/method
 end
 ```
 
-**CRITICAL**: Gate the biosphere creation on whether surface biomes are viable (not just planet type).
-- Earth: `surface_supports_biomes? = true` → Creates biosphere
-- Mars, Venus: `surface_supports_biomes? = false` → Skips biosphere
-- Terraformed planets (future): `surface_supports_biomes? = true` (after terraforming) → Creates biosphere
+**CRITICAL**: Gate the biosphere creation on surface life support viability (especially liquid water availability).
+- **Earth**: Has liquid water oceans → `can_support_surface_life? = true` → Creates biosphere
+- **Mars**: No liquid water (frozen) → `can_support_surface_life? = false` → Skips biosphere
+- **Venus**: No liquid water (vaporized) → `can_support_surface_life? = false` → Skips biosphere
+- **Terraformed planets (future)**: Liquid water becomes available → `can_support_surface_life? = true` → Creates biosphere
 
-**Find or Implement**: Check if `surface_supports_biomes?` or similar method exists. If not, you may need to add it based on planet habitability/atmosphere/temperature data.
+**Find or Implement**: Check if `can_support_surface_life?` or similar method exists. If not, you will need to add it based on:
+- Planet atmosphere composition
+- Surface temperature range (can water remain liquid?)
+- Atmospheric pressure (can water remain liquid?)
+- These factors should already exist in the planet data model
 
 **ALSO REQUIRED**: After biosphere records exist, update JavaScript views to use the canonical check:
 - **Old workaround** (temporary, in current code): `const hasBiosphere = layers.biomes && layers.biomes.grid`
@@ -311,7 +325,7 @@ end
 - **View behavior**: If `has_biosphere` is false, DISABLE biomes button and skip rendering
 - **Why**: Cleaner pattern—biosphere existence is the source of truth, not data presence
 
-**Deliverable**: Paste the hook location, implementation, and the condition check (surface_supports_biomes).
+**Deliverable**: Paste the hook location, implementation, and the condition check (can_support_surface_life).
 
 ### Step 5 — Update views to use canonical biosphere check
 
@@ -439,15 +453,15 @@ Expected: all specs pass.
 - **Potential Overlap**: Worldhouse biomes could coexist with introduced natural biomes on terraformed worlds
 
 **Design Pattern: Worldhouses as Terraforming Seeds**
-- **Phase 1 (Current)**: Players build worldhouse structures with engineered biomes on bare planets
+- **Phase 1 (Current)**: Players build worldhouse structures with engineered biomes on bare planets (Mars, Venus — no liquid water on surface)
 - **Phase 2 (Future)**: Terraforming initiates from worldhouse biomes as seed source
 - **Phase 3 (Future)**: Biomes spread from worldhouse to planet surface as terraforming progresses
-- **Phase 4 (Future)**: Planet transitions: `surface_supports_biomes? = true` → Create biosphere record
-- **Result**: Planet graduates from tech-dependent to surface-viable biomes
+- **Phase 4 (Future)**: Terraforming achieves goal: liquid water becomes viable on surface → `can_support_surface_life? = true` → Create biosphere record
+- **Result**: Planet graduates from tech-dependent to surface-viable biomes (liquid water exists)
 
 **Integration Point for This Task:**
-- The gating condition (`surface_supports_biomes?`) is where terraforming will hook in
-- When terraforming reaches completion, `surface_supports_biomes?` flips from false → true
+- The gating condition (`can_support_surface_life?`) checks for liquid water viability on surface
+- When terraforming reaches completion, `can_support_surface_life?` becomes true (liquid water viable)
 - This triggers automatic biosphere record creation via the same pattern in this task
 - Biosphere record creation = "graduation" from worldhouse-dependent to planet-native biomes
 - The migration/auto-creation logic will be reused for terraformed worlds
