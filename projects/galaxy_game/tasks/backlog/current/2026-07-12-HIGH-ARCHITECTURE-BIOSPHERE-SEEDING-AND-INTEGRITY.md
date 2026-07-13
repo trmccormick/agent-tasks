@@ -60,6 +60,12 @@ Read task file for full context, gotchas, and implementation approach.
 - Apply this check in surface_view.js and monitor.js views
 - This is the clean, canonical check (not defensive data checks)
 
+**Exception: Worldhouse structures can have constructed biomes**
+- ℹ️ Worldhouse biomes are engineered/artificial, not natural (greenhouse, biolab, terrarium)
+- ✅ Worldhouses CAN have biomes even on planets with nil biosphere (Mars, Venus)
+- ✅ Worldhouse biomes are a separate rendering layer (not tied to celestial_body.biosphere)
+- 🎮 Game design: Players can build artificial environments before terraforming
+
 ---
 
 ## Context
@@ -76,7 +82,13 @@ During today's debug session (2026-07-12), the planetary view biome rendering wa
 
 ---
 
-## Critical Information
+## Scope Note
+
+**This task addresses PLANETARY biospheres only.** Worldhouse structures have their own biome system:
+- Worldhouses can have constructed biomes regardless of their planet's biosphere status
+- Worldhouse biomes are engineered/artificial, not natural planetary biospheres
+- Worldhouse rendering is independent and not part of this task
+- This task focuses on: CelestialBody → Geosphere → BiomeGrid, and CelestialBody → Biosphere
 
 ### Architecture Gotchas
 
@@ -390,3 +402,13 @@ Expected: all specs pass.
 - Sensible default values for Earth's biosphere
 - Comments explain why only Earth gets automatic creation
 - Gating logic clear and maintainable for future expansion
+
+---
+
+## Out of Scope
+
+❌ **Worldhouse biomes** — Do NOT touch worldhouse structure biome system
+- Worldhouses can have constructed/engineered biomes on any planet (Mars, Venus, etc.)
+- Worldhouse biomes are independent from celestial_body.biosphere
+- Worldhouse rendering has its own data model and view layer
+- That system is handled separately (NOT part of this task)
