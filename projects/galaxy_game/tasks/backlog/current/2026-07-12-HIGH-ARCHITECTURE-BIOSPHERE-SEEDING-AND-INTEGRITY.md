@@ -53,6 +53,13 @@ Read task file for full context, gotchas, and implementation approach.
 - Auto-creation hook should check planet type/habitability before creating biosphere
 - This prevents data model inconsistency while respecting game design
 
+**UI Pattern: Biosphere = nil means no biomes**
+
+- **If `celestial_body.biosphere` is nil** → Biomes button DISABLED, no biomes rendered
+- **If `celestial_body.biosphere` exists** → Biomes button ENABLED, biomes render when clicked
+- Apply this check in surface_view.js and monitor.js views
+- This is the clean, canonical check (not defensive data checks)
+
 ---
 
 ## Context
@@ -271,9 +278,54 @@ end
 
 **CRITICAL**: Only Earth should get automatic biosphere creation. Other planets (Mars, Venus, etc.) should NOT have biospheres created.
 
+**ALSO REQUIRED**: After biosphere records exist, update JavaScript views to use the canonical check:
+- **Old workaround** (temporary, in current code): `const hasBiosphere = layers.biomes && layers.biomes.grid`
+- **New canonical** (after this task): Pass `has_biosphere: @celestial_body.biosphere.present?` from ERB
+- **View behavior**: If `has_biosphere` is false, DISABLE biomes button and skip rendering
+- **Why**: Cleaner pattern—biosphere existence is the source of truth, not data presence
+
 **Deliverable**: Paste the hook location and implementation.
 
-### Step 5 — Add spec to verify auto-creation
+### Step 5 — Update views to use canonical biosphere check
+
+After biosphere records are created, update JavaScript views to check `has_biosphere` flag instead of defensive grid data check:
+
+**In ERB templates** (surface_view.html.erb, planetary.html.erb):
+```erb
+<% has_biosphere = @celestial_body.biosphere.present? %>
+terrain_data: terrain_map_data,
+has_biosphere: <%= has_biosphere %>,
+```
+
+**In monitor.js** (replace temporary workaround with canonical check):
+```javascript
+// OLD WORKAROUND (remove after this task):
+// const hasBiosphere = layers.biomes && layers.biomes.grid ? true : false;
+
+// NEW CANONICAL (add after this task):
+const hasBiosphere = planetData?.has_biosphere || false;
+
+// UI BEHAVIOR:
+if (!hasBiosphere) {
+  // Disable biomes button
+  document.querySelector('[data-layer="biomes"]').disabled = true;
+  // Skip rendering
+  return; // early exit from biome render
+}
+```
+
+**In surface_view.js** (verify it's using the canonical check):
+```javascript
+// Should already have this pattern:
+const hasBiosphere = planetData?.has_biosphere || false;
+if (!hasBiosphere) {
+  // Biomes button disabled, no rendering
+}
+```
+
+**Deliverable**: Screenshots showing biomes button is disabled for Mars (no biosphere), enabled for Earth (has biosphere).
+
+### Step 6 — Add spec to verify auto-creation
 
 Create a spec that:
 1. Creates a celestial body with terrain_map data
@@ -282,7 +334,7 @@ Create a spec that:
 
 **File**: `spec/models/celestial_bodies/spheres/biosphere_spec.rb` (add to existing or create new)
 
-### Step 6 — Run migration and verify
+### Step 7 — Run migration and verify
 
 ```bash
 docker-compose -f docker-compose.dev.yml exec -T web bundle exec rake db:migrate
@@ -294,7 +346,7 @@ puts "Earth biosphere ID: #{earth.biosphere.id}"
 EOF
 ```
 
-### Step 7 — Run RSpec to confirm no breakage
+### Step 8 — Run RSpec to confirm no breakage
 
 ```bash
 docker-compose -f docker-compose.dev.yml exec -T web bundle exec rspec \
@@ -316,6 +368,12 @@ Expected: all specs pass.
 - When Earth's terrain_map is assigned/generated, biosphere record is automatically created
 - Other planets do NOT get automatic biosphere creation (gated by planet type check)
 - No manual workarounds needed for Earth
+
+✅ **UI Pattern Enforced (Canonical Check)**
+- Views use `has_biosphere` flag (not defensive grid data check)
+- Biomes button DISABLED when `has_biosphere` is false (Mars, Venus, etc.)
+- Biomes button ENABLED when `has_biosphere` is true (Earth only)
+- No biomes render for planets with nil biosphere record
 
 ✅ **Design Constraints Enforced**
 - Biosphere creation ONLY for Earth (habitable world)
