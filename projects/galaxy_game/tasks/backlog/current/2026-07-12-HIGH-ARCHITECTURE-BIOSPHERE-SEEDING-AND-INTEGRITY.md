@@ -423,9 +423,22 @@ Expected: all specs pass.
 - Those planets will have introduced biomes (not native, but now capable of supporting life)
 - **Potential Overlap**: Worldhouse biomes could coexist with introduced natural biomes on terraformed worlds
 
-**Design Question for Future**: How should worldhouse biomes and natural introduced biomes interact?
-- Do they share rendering space? (Layer system?)
-- Can both exist in same locations? Or are worldhouses always "on top"?
+**Design Pattern: Worldhouses as Terraforming Seeds**
+- **Phase 1 (Current)**: Players build worldhouse structures with engineered biomes on bare planets
+- **Phase 2 (Future)**: Terraforming initiates from worldhouse biomes as seed source
+- **Phase 3 (Future)**: Biomes spread from worldhouse to planet surface as terraforming progresses
+- **Phase 4 (Future)**: Planet receives biosphere record, biomes become "natural introduced" (no longer need worldhouse)
+- **Result**: Worldhouse engineered biomes → Terraforming seed → Planet natural biomes
+
+**Integration Point for This Task:**
+- The gating logic (planet type check) is where terraforming will hook in during Phase 3
+- When terraforming reaches completion, create biosphere record for the terraformed world
+- Biosphere record creation becomes the "graduation" from worldhouse-dependent to planet-native biomes
+- This task's biosphere seeding logic will be reused for terraformed worlds
+
+**Design Questions for Future**: 
+- Should worldhouse biomes and natural introduced biomes share rendering space? (Layer system?)
+- Can both exist in same locations? Or are worldhouses always "on top" during terraforming progress?
 - Should there be visual distinction between worldhouse-grown and naturally terraformed biomes?
 - Do biome progression trees affect introduced biomes differently than engineered ones?
 
@@ -433,3 +446,4 @@ Expected: all specs pass.
 - The gating logic (planet type check for biosphere creation) is where terraforming will hook in
 - The biosphere model will expand when new planets are terraformed
 - Rendering logic may need enhancement later to handle both natural and worldhouse biomes on same world
+- This task's migration/auto-creation pattern will be reused when terraforming completes
