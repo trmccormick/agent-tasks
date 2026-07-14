@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-13 — Sprite Extraction & Surface View Architecture
+**Last Updated:** 2026-07-14 — Harvester Name Mismatch Bugfix
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -51,10 +51,17 @@
 - PUH/PPMU `_mk1` blueprint id fix verified in container (resolved port schema failures)
 - CAR-300 + ISRU manifest items confirmed working
 
-### ✅ RSpec Baseline Confirmed — 4142 examples, 5 failures
+### ✅ RSpec Baseline Confirmed — 4142 examples, 3 failures
 - **Confirmed flaky** (baseline): `game_data_generator_spec.rb:13`, `material_lookup_service_spec.rb:251`
-- **New regressions**: 2 escalation naming mismatches (`escalation_integration_spec.rb:216,228`) — 2-line fix each
 - **Template drift**: `procedural_generator_spec.rb:144` — template count range may need widening
+
+---
+
+## 🎯 Latest Completion (2026-07-14)
+✅ **Harvester Name Mismatch Bugfix** — COMPLETED
+- Root cause: `escalation_service.rb` used hardcoded "Harvester" suffix for all materials
+- Fix: Added material-specific suffix logic — O2→Harvester, H2O→Extractor, regolith→Miner
+- All 20 escalation_integration_spec examples pass, 0 failures
 
 ---
 
@@ -148,9 +155,7 @@
 
 ## Pending Cleanup — Action Required Next Session
 
-1. **Escalation spec names** — update expected strings in `escalation_integration_spec.rb:216,228` (5 min)
-2. **Biome renderer spec path** — update `BIOME_ASSETS_DIR` constant to new Docker volume mount path
-3. **Template drift** — widen range in `procedural_generator_spec.rb:144` if needed
+1. **Template drift** — widen range in `procedural_generator_spec.rb:144` if needed
 
 ---
 
