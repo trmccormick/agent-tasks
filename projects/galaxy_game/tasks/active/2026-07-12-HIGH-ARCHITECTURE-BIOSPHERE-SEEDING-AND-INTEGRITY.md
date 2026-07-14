@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 priority: HIGH
 type: architecture
 system_domain: CELESTIAL_BODIES | DATA_INTEGRITY
@@ -7,25 +7,37 @@ mvp_alignment: SPEC_HEALTH
 local_worker_safe: true
 ---
 
-## ⚡ Minimal Handoff
+## ⚡ Minimal Handoff (Copy this to send to agent)
 
 ```
-Task: 2026-07-12-HIGH-ARCHITECTURE-BIOSPHERE-SEEDING-AND-INTEGRITY.md
+You are **Implementation Agent**.
 
-BACKGROUND: Today's debug session found that Earth (ID 2493) had biome grid data 
-in terrain_map but NO biosphere database record. A temporary workaround was applied 
-to monitor.js to check for actual grid data instead of the has_biosphere flag, but 
-this masks a data integrity issue.
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-07-12-HIGH-ARCHITECTURE-BIOSPHERE-SEEDING-AND-INTEGRITY.md
 
-ROOT PROBLEM: Planets with biome terrain_map data should ALWAYS have a corresponding 
-biosphere record. The current setup allows misalignment.
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/current/2026-07-12-HIGH-ARCHITECTURE-BIOSPHERE-SEEDING-AND-INTEGRITY.md \
+         projects/galaxy_game/tasks/active/2026-07-12-HIGH-ARCHITECTURE-BIOSPHERE-SEEDING-AND-INTEGRITY.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
-THIS TASK: Determine where biosphere records should be created (during terrain_map 
-generation? during seeding? via migration?) and implement automatic creation to 
-prevent this from happening again.
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-07-12-HIGH-ARCHITECTURE-BIOSPHERE*"
+    Only ONE result should exist. Paste this output before committing.
 
-Read task file for full context, gotchas, and implementation approach.
+READ FIRST (after Step 0): Task file contains all prerequisites, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-ARCHITECTURE-BIOSPHERE-SEEDING.md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
 ```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
 
 ---
 
@@ -35,7 +47,7 @@ Read task file for full context, gotchas, and implementation approach.
 **Priority**: HIGH
 **Type**: ARCHITECTURE
 **Created**: 2026-07-12
-**Last Updated**: 2026-07-12
+**Last Updated**: 2026-07-14
 
 ---
 
