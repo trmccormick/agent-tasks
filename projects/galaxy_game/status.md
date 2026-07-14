@@ -1,8 +1,41 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-13 — Planning Agent
+**Last Updated:** 2026-07-13 — Sprite Extraction & Surface View Architecture
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Today's Work (2026-07-13) — Sprite Extraction & Surface View Roadmap
+
+### ✅ Terrain Sprite Extraction Complete
+- **45 terrain tiles extracted** (138×145 PNG each) from ChatGPT tileset
+- Organized by family: dust (9), frozen (9), regolith (9), temperate (9), volcanic (9)
+- Fixed white line artifacts (139×145 → 138×145 dimension adjustment)
+- All tiles verified consistent via ImageMagick identify
+- Batch workflow established: Preview.app fixed-selection extraction → immediate organization → cleanup
+- **Location**: `/data/images/terrain/{family}/{type}_{variant}.png`
+
+### ✅ Surface View Task Portfolio Created (7 tasks to backlog/current)
+1. **Architecture**: Three-Layer View System (Planetary/Surface/TerrainForge) — scope boundary enforcement
+2. **Foundation**: Terrain Sprite Integration — Layer 0 property-driven rendering
+3. **Rendering**: Unit Layer Rendering — structures on settlement tiles
+4. **Gameplay**: Civ4-Style Surface View Gameplay — city overlays, tile selection, yields
+5. **Design**: Generic Terrain Improvements — roads, farms, mines, power plants
+6. **Integration**: Settlement Tiles Entry Point — bridge between Surface View and TerrainForge
+7. **Clarification**: Architecture refined — TerrainForge is zoomed Surface View, not separate system
+
+### 🔑 Key Architectural Decision: Generic Assets
+- All sprites GENERIC (not planet-specific): "Regolith" works on Luna/Mercury/asteroids, not just Luna
+- Property-driven pipeline: (temp, pressure, geological_activity) → terrain family → sprite
+- Example: Valles Marineris settlement → Surface View shows marker → zoom in → see worldhouse structure and buildings
+
+### ⏳ Ready for Handoff
+- 7 HIGH-priority tasks committed to `backlog/current/`
+- Sequential dependency chain established (render foundation → gameplay layer → detail view)
+- ChatGPT tileset analyzed and mapped to generic asset categories
+- All tasks scoped for Qwen agent implementation
+- Premium API usage conserved (38% → delegating UI work to lower-cost agent)
 
 ---
 
