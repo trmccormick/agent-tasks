@@ -14,15 +14,11 @@ Define how settlement tiles function as navigation points between Surface View (
 
 ## Context
 The three-layer architecture works as follows:
-- **Surface View:** Tactical grid map showing entire settlement region (50×50 tiles typical)
-- **Settlement Tile:** A single Surface View tile that contains buildings/infrastructure (marked with special overlay)
-- **TerrainForge Detail View:** Interior view of ONE settlement tile's structures and layouts
+- **Planetary View:** Entire planet at macro level
+- **Surface View:** Tactical grid map showing entire settlement region (50×50 tiles, 32px per tile on screen)
+- **TerrainForge "Detail View":** Same Surface View rendering, but **zoomed in 10-100x on one settlement tile** to show buildings at full scale
 
-Currently, the design conflated "buildings in the game" with "buildings visible across entire planet" — but actually:
-- Structures are localized to **specific settlement tiles**
-- Each settlement tile can contain multiple buildings (habitat domes, mining stations, power plants)
-- Surface View shows settlement tiles with small sprite/icon indicating "settlement present here"
-- Double-click settlement tile → enter TerrainForge to see and manage buildings on THAT tile
+TerrainForge is NOT a separate rendering system — it's the same surface_view.js, just with the camera focused on a single tile and zoomed way in. Buildings that appear as tiny sprites on a settlement tile in Surface View become full-scale buildings when zoomed in to TerrainForge.
 
 ## Scope
 
@@ -77,24 +73,24 @@ Currently, the design conflated "buildings in the game" with "buildings visible 
    - Optional: Population indicator (small number badge)
 
 ### Phase 2: Navigation Flow
-1. **Surface View → TerrainForge Entry**
+1. **Surface View → TerrainForge Zoom**
    - User clicks or double-clicks settlement tile in Surface View
    - Highlight settlement tile with glow/border to show selection
    - Display tooltip: "Habitat + Mining Station (2 buildings)"
-   - Double-click → Transition to TerrainForge detail view
+   - Double-click or "zoom" button → Smoothly zoom camera in on that tile (10-100x)
+   - Same surface_view.js rendering, just different camera position/zoom level
 
-2. **TerrainForge Detail View**
-   - Show interior layout of settlement tile
-   - Display all buildings on this tile in 3D or detailed 2D view
-   - Show power/material connections between buildings
-   - User can click building to configure (set production rate, staffing, etc.)
-   - Show building inventory/queue status
-   - Bottom panel: "← Back to Surface View" button
+2. **TerrainForge Detail View (Zoomed In)**
+   - Show buildings on this tile at full scale (what was tiny sprite is now large)
+   - All layers (terrain, improvements, buildings) scale with zoom
+   - Click building to configure operational parameters (production rate, staffing, etc.)
+   - Drag-place new structures on the tile or rearrange existing ones
+   - Same improvement system (roads, pipelines) just zoomed in
 
 3. **Return to Surface View**
-   - Close TerrainForge or press ESC
+   - Zoom out / press ESC → Camera smoothly zooms back out
    - Return to Surface View with same camera position
-   - Reflect any parameter changes made to buildings
+   - Reflect any parameter changes made to buildings (production rate, staffing, inventory)
 
 ### Phase 3: Settlement Tile Markers & Overlays
 1. **Visual Distinction**
@@ -131,6 +127,8 @@ Currently, the design conflated "buildings in the game" with "buildings visible 
    - Keyboard navigation: Tab to cycle through nearby settlements
 
 ### Phase 5: Data Export for TerrainForge
+TerrainForge uses **the same terrain_data JSON as Surface View** — no separate export needed. Both views render the same data, just at different zoom levels.
+
 1. **Settlement Tile Data in terrain_data JSON**
    ```json
    {
@@ -146,11 +144,10 @@ Currently, the design conflated "buildings in the game" with "buildings visible 
      ]
    }
    ```
-   Alternative: `settlement_grid` array parallel to `elevation_grid`
 
 2. **Building Definition Schema**
    - Each building has: type, status, power_input/output, material (if applicable), capacity, queue
-   - Store all needed state for TerrainForge to display and configure
+   - Store all needed state that surface_view.js needs whether zoomed in or out
 
 ## Acceptance Criteria
 - [ ] Settlement tile concept clearly defined (single grid cell, contains array of buildings)
@@ -177,11 +174,12 @@ Currently, the design conflated "buildings in the game" with "buildings visible 
 
 ## Notes
 - Settlement tiles are localized containers; prevents sprawling mega-bases across 10+ tiles
-- Buildings within a settlement tile are connected internally (power/materials flow within same tile)
+- Buildings within a settlement tile can be connected (roads, pipelines) to each other
 - Cross-tile connections (roads, pipelines between settlements) handled by Surface View improvements layer
 - One settlement per tile or multiple buildings per tile? → Multiple buildings per tile (more interesting gameplay)
-- TerrainForge responsibility: show building internals, configuration, connections between buildings on THIS tile only
-- Surface View responsibility: show settlement tiles, show cross-tile connections (roads/pipelines)
+- **TerrainForge is NOT a separate layer** — it's surface_view.js zoomed in on one settlement tile
+- Same rendering pipeline handles both Surface View and TerrainForge; just different camera position/zoom
+- Implementation note: Can use same canvas + camera system, just change viewport and scale when user zooms in
 
 ## Next Steps
 1. Finalize settlement tile data structure with Ruby developer
