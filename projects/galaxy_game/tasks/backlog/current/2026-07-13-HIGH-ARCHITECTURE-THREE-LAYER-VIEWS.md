@@ -42,13 +42,15 @@ Current work focuses exclusively on **Surface View**. This task defines how all 
    - **IN SCOPE** — Current tasks define this layer
 
 3. **TerrainForge Detail View Specification**
-   - Zoomed-in view of single building or tile cluster
+   - Zoomed-in view of ONE settlement tile's interior
+   - Shows all buildings/structures contained on that settlement tile
    - Interior building visualization (power flow, material queues)
-   - Connection topology display (pipelines, roads, power lines)
-   - Configuration UI for operational parameters
-   - Double-click building in Surface View → enter TerrainForge
+   - Connection topology display (pipes, power lines between buildings on this tile)
+   - Configuration UI for operational parameters (production rate, staffing, inventory)
+   - Double-click settlement tile in Surface View → enter TerrainForge
    - Close/back button → return to Surface View
    - **Future layer, not Surface View responsibility**
+   - **Important:** TerrainForge is NOT a planet-wide detail view; it's specific to one settlement tile
 
 ### Phase 2: Data Flow & Zoom Hierarchy
 1. **Zoom Navigation**
@@ -59,11 +61,12 @@ Current work focuses exclusively on **Surface View**. This task defines how all 
           ↓
      Surface View (settlement region)
         ├─ Pan/zoom within region
-        ├─ Layer toggles (terrain, improvements, units)
-        └─ Double-click building / "edit" button
+        ├─ Layer toggles (terrain, improvements, units, settlements)
+        └─ Double-click SETTLEMENT TILE / "enter settlement" button
              ↓
-          TerrainForge View (single structure)
-             ├─ Configure parameters
+          TerrainForge View (detail of that settlement tile)
+             ├─ View all buildings on this tile
+             ├─ Click building to configure
              └─ Close / "back to map" button
                   ↑
              Surface View (return)
@@ -78,18 +81,18 @@ Current work focuses exclusively on **Surface View**. This task defines how all 
 ### Phase 3: Layer Separation Rules
 1. **What Each Layer IS Responsible For**
    - **Planetary:** Global atmospheric effects, biome heatmap, weather visualization, macro events
-   - **Surface:** Terrain rendering, improvements, units, settlement mechanics, Civ4 gameplay
-   - **TerrainForge:** Building internals, power/material flow, configuration UI
+   - **Surface:** Terrain rendering, improvements (roads/farms/mines), units/vehicles, settlement tiles, Civ4 gameplay
+   - **TerrainForge:** Interior buildings/structures on ONE settlement tile, power/material flow connections on that tile, building configuration UI
 
 2. **What Each Layer IS NOT Responsible For**
-   - **Planetary:** Do NOT include settlement-level detail (tiles, improvements, units)
-   - **Surface:** Do NOT include planetary atmosphere rendering, Do NOT include building configuration UI
-   - **TerrainForge:** Do NOT include global map rendering, Do NOT include unit movement
+   - **Planetary:** Do NOT include settlement-level detail (tiles, improvements, units, settlement tiles)
+   - **Surface:** Do NOT include planetary atmosphere, Do NOT include building configuration UI, Do NOT show inter-tile building connections
+   - **TerrainForge:** Do NOT include global map rendering, Do NOT include unit movement, Do NOT show buildings on other tiles
 
 3. **Data Ownership**
    - Planetary: planet_data, atmosphere_layers, weather_grid, biome_distribution
-   - Surface: terrain_data (elevation, biomes, resources, improvements, city_overlays, unit_grid)
-   - TerrainForge: building_config, operational_state, connection_graph
+   - Surface: terrain_data (elevation, biomes, resources, improvements, units, **SETTLEMENT TILES** with building array)
+   - TerrainForge: buildings_on_this_settlement_tile, operational_state, connection_graph (power/materials within this tile only)
 
 ### Phase 4: Integration Points
 1. **Planetary → Surface Zoom**
@@ -98,16 +101,18 @@ Current work focuses exclusively on **Surface View**. This task defines how all 
    - Initialize Surface View with camera centered on region
    - Smoothly transition (fade or zoom animation)
 
-2. **Surface → TerrainForge Interaction**
-   - User double-clicks building on Surface grid
-   - Fetch building definition and operational state
-   - Initialize TerrainForge view for that building
+2. **Surface → TerrainForge (Enter Settlement Tile)**
+   - User double-clicks settlement tile on Surface grid
+   - Settlement tile is marked with special overlay (icon, glow, color)
+   - Fetch buildings on this settlement tile from terrain_data
+   - Initialize TerrainForge view showing all buildings on THIS tile
    - Pause Surface View time (optional: continue or freeze)
 
-3. **TerrainForge → Surface Return**
+3. **TerrainForge → Surface Return (Exit Settlement Tile)**
    - User closes TerrainForge (back button or ESC)
    - Resume Surface View at same camera position
-   - Reflect any parameter changes made in TerrainForge (production rate, etc.)
+   - Reflect any parameter changes made to buildings (production rate, staffing, etc.)
+   - Settlement tile still shows same overlay/marker
 
 ### Phase 5: Rendering Technology Considerations
 1. **Planetary View Rendering**
