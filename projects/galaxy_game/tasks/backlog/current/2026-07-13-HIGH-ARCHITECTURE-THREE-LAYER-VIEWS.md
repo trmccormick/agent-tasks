@@ -17,9 +17,12 @@ Galaxy Game UI needs **three distinct operational levels** rather than monolithi
 
 1. **Planetary View** — See entire world, macro weather, biome distribution
 2. **Surface View** — Tactical settlement management (Civ4-style map)
-3. **TerrainForge Layer** — Detailed structure/infrastructure configuration
+   - Example: See Valles Marineris has a settlement tile (marker icon)
+3. **TerrainForge Layer** — Same Surface View rendering, zoomed in on one settlement tile
+   - Example: Click settlement on Valles Marineris → zoom in → see worldhouse structure, buildings inside/around it, roads, power infrastructure at readable scale
+   - **NOT a separate rendering system** — same surface_view.js, just camera zoomed in
 
-Current work focuses exclusively on **Surface View**. This task defines how all three layers fit together and avoid scope creep into planetary/terrain-forge concerns.
+Current work focuses exclusively on **Surface View foundation**. This task defines how all three layers fit together and avoid scope creep into planetary concerns.
 
 ## Scope
 
@@ -149,9 +152,13 @@ Current work focuses exclusively on **Surface View**. This task defines how all 
 
 ## Notes
 - Planetary View is out of scope for current surface_view.js improvements
-- TerrainForge is future work, not needed for Phase 5 Luna simulation
+- **TerrainForge IS NOT separate work** — it's surface_view.js with camera zoomed on one tile
+- Example: Valles Marineris worldhouse
+  - Surface View: See settlement marker on Valles Marineris tile
+  - Click/zoom into tile: TerrainForge shows worldhouse structure, buildings, roads, power infrastructure at readable scale
+  - Manage: Place structures, assign units, configure production
+  - Zoom out: Return to Surface View
 - This document serves as scope boundary enforcement
-- Prevents teams from accidentally merging concerns (e.g., adding Civ4 gameplay to TerrainForge)
 - Should be referenced in all UI-related task discussions
 
 ## Next Steps
