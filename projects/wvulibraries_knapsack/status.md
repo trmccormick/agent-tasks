@@ -14,15 +14,29 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 ---
 
 ## Current Status
-- **Status:** ✅ **LOCAL SMOKE TESTING COMPLETE** — Logging + Tenant Creation both working
+- **Status:** ⏳ **VM DEPLOYMENT IN PROGRESS** — initialize_app exit code fixed
 - **Active Branches:**
   - `main` — Stable; pagination + featured collections features deployed
-  - `fix/facet-links-and-hide-type-facet` — ✅ COMPLETED (logging + Solr multi-tenant fixes); ready for VM deployment
+  - `fix/facet-links-and-hide-type-facet` — ✅ LOGGING + SOLR + EXIT CODE FIXES COMPLETE
   - `clover-test` — Clover IIIF viewer integration (completed testing, committed 2026-07-07)
   - `ollama_testing` — Ollama vision model for alt-text generation (backlog, experimental)
   - `alt-text-views-only` — (TBD)
-- **Last Session:** 2026-07-14
-- **Last Update:** 2026-07-14 — PRODUCTION SMOKE TEST: All fixes verified working (logging + multi-tenant Solr)
+- **Last Session:** 2026-07-15 (current)
+- **Last Update:** 2026-07-15 — FIX: Added explicit exit 0 to db-migrate-seed.sh (initialize_app container failure)
+
+---
+
+## ⏳ ACTIVE — VM Deployment (initialize_app exit code)
+
+**Issue**: initialize_app container exiting with code 1 on VM, blocking web/worker startup
+- **Root Cause**: `bin/db-migrate-seed.sh` script was missing explicit `exit 0` at end
+  - Script prints "all migrations have been run" but no explicit exit
+  - Ruby leaves exit code undefined → Docker sees exit 1
+  - Blocks web and worker from starting (they depend on initialize_app completing successfully)
+- **Fix**: Add `exit 0` at end of `db-migrate-seed.sh`
+  - Commit: `b3c1351`
+  - Pushed to: `fix/facet-links-and-hide-type-facet` branch
+- **Testing**: Ready for VM redeployment
 
 ---
 
@@ -90,7 +104,14 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 
 ## Completed This Session
 
-### Session 2026-07-14 (Current - Production Smoke Test)
+### Session 2026-07-15 (Current - VM Deployment Issue)
+- 🔍 Investigated initialize_app container failure on VM
+- ✅ Root cause identified: Missing `exit 0` in db-migrate-seed.sh script
+- ✅ Created fix: Added explicit `exit 0` to script
+- ✅ Committed and pushed fix to `fix/facet-links-and-hide-type-facet` branch (commit: b3c1351)
+- ⏳ Next: Redeploy to VM and verify initialize_app completes successfully
+
+### Session 2026-07-14 (Previous - Production Smoke Test)
 - ✅ Identified secondary issue: SOLR_URL including collection name breaks multi-tenant creation
 - ✅ Fixed SOLR_URL in `.env.production`: Changed to `/solr/` (root only)
 - ✅ Restarted production stack with fix
