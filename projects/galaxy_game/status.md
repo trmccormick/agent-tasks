@@ -173,10 +173,10 @@
 - Scope: Create `AIManager::AtmosphericExtractionService` delegating to `TerraSim::AtmosphericTransferService`; skimmer→cycler cargo via `definition_data['cargo']`; replace mock calls; write RSpec
 - Status: ✅ READY — both research tasks complete, design locked, task file committed
 
-### 📌 Biosphere Seeding & Integrity — BACKLOG
-- Task file: `tasks/backlog/current/2026-07-12-HIGH-ARCHITECTURE-BIOSPHERE-SEEDING-AND-INTEGRITY.md`
-- Scope: Implement automatic biosphere record creation when terrain_map is assigned; backfill existing planets
-- Status: ✅ READY — root cause identified, migration needed
+### 📌 Biosphere Seeding & Integrity — ✅ COMPLETED (2026-07-14)
+- Task file: `tasks/completed/2026-07/2026-07-12-HIGH-ARCHITECTURE-BIOSPHERE-SEEDING-AND-INTEGRITY.md`
+- Scope: Automatic biosphere record creation when terrain_map assigned; backfill existing planets
+- Status: ✅ DONE — Migration executed, BiosphereGeneratorService 35/35 tests passing, ProceduralGenerator 51/51 tests passing
 
 ### 📌 Skimmer Cycler Handshake Implementation — NEEDS TASK FILE
 - Research complete; implementation task not yet drafted — draft after Atmospheric Extraction Service dispatched
