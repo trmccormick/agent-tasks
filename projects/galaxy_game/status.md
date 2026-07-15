@@ -58,6 +58,13 @@
 ---
 
 ## 🎯 Latest Completion (2026-07-14)
+✅ **Biosphere Migration + Test Suite Validation** — COMPLETED
+- Fixed migration `20260714120000_create_missing_biosphere_records.rb` — Rails version 7.2→7.0, query logic corrected
+- BiosphereGeneratorService: 35/35 RSpec tests passing (all complexity levels, auto-detection, era adjustments)
+- ProceduralGenerator: 51/51 RSpec tests passing (integration test validates biosphere key structure)
+- Fixes applied: CelestialBody method visibility, SystemBuilderService attribute filtering, test data key types
+- Full end-to-end biosphere system validated (migration → generation → placement)
+
 ✅ **Harvester Name Mismatch Bugfix** — COMPLETED
 - Root cause: `escalation_service.rb` used hardcoded "Harvester" suffix for all materials
 - Fix: Added material-specific suffix logic — O2→Harvester, H2O→Extractor, regolith→Miner
