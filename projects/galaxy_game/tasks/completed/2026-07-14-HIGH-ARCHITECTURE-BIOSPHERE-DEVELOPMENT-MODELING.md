@@ -3,7 +3,7 @@
 # Delete these instruction comments before saving.
 
 ---
-status: backlog
+status: completed
 priority: HIGH
 type: architecture
 system_domain: TERRA_SIM
