@@ -80,7 +80,33 @@
 - Layer 0 (terrain) rendering foundation specified
 - All integration points documented
 
-**Result**: Complete framework + Gemini spec + implementation details = **ZERO REMAINING ARCHITECTURAL GAPS**. Ready for implementation.
+**Result**: Complete framework + Gemini spec + implementation details = **PHASE 1 FULLY SPECIFIED**. Architecture remains evolutionary; new abstractions expected during implementation. Ready for implementation.
+
+---
+
+## 💬 ChatGPT Design Review (2026-07-16 Evening)
+
+**Feedback**: Reviewed consolidated framework with ChatGPT. Excellent validation + one major architectural recommendation.
+
+**Key Validations**:
+- ✅ Separation of design from implementation (canonical biomes → JSON, alias handling → service)
+- ✅ Normalization layer pattern (CanonicalMapService eliminates ambiguity)
+- ✅ Port system with defined connection types (enables validation, snapping, assembly)
+- ✅ Market vs Build economic model (richer gameplay than hardcoded imports)
+
+**Important Caution**:
+- ⚠️ Avoid "zero architectural gaps" framing (too strong)
+- Better: "Phase 1 fully specified, architecture remains evolutionary"
+- Large sims discover new abstractions during implementation (expected & healthy)
+- Should not make team feel planning was wrong if architecture evolves
+
+**Major Recommendation**: Asset Registry (First-Class System)
+- Problem: Asset pipeline exists (Blueprint → Prompt → Image → Renderer) but lacks unified ownership
+- Solution: Asset Registry becomes authoritative source for all visual assets
+- Benefits: Regeneration strategy (update style guide, batch-regenerate all assets), versioning/traceability, faction-specific operations, scale management
+- Recommendation: Phase 2 Early implementation (2-3 days after Phase 1)
+- **Status**: Added to consolidated framework as LAYER 6, post-Phase 1 enhancement
+- **Key Quote**: "Large simulation games almost always discover new abstractions as implementation progresses. That's normal."
 
 ---
 

@@ -1,5 +1,6 @@
 ---
-status: active
+status: completed
+completed_date: 2026-07-15
 priority: HIGH
 type: data
 system_domain: BIOME_RENDERING | SPRITESHEET_ARCHITECTURE | LAYER_SEPARATION

@@ -394,6 +394,125 @@ Surface shows [TEXTURE_DETAILS]. [COLOR_VARIATION]. Technical, industrial, groun
 
 ---
 
+## LAYER 6: ASSET REGISTRY (Post-Phase 1 Enhancement)
+
+**Recommended Addition**: First-class system for asset versioning and regeneration  
+**Feedback Source**: ChatGPT design review
+
+### Problem Statement
+Current asset pipeline is linear but lacks unified ownership:
+- Blueprint → Metadata → Prompt → Image → Renderer
+- Risk: No single source of truth for asset state, versioning, style history
+- Gap: Style updates (months later) require manual asset remapping
+- Issue: Cannot batch-regenerate assets with new style guide
+
+### Proposed Solution: Asset Registry
+
+Asset Registry becomes **authoritative source for all visual assets**:
+
+**Data Structure**:
+```json
+{
+  "registry_id": "panel_regolith_mk1_v1",
+  "blueprint_id": "panel_regolith_mk1",
+  "blueprint_version": 1,
+  
+  "metadata": {
+    "fabrication_cost_index": 0.85,
+    "utility_weight": 0.6,
+    "import_feasibility": true
+  },
+  
+  "canonical_tags": {
+    "faction": "multicolonial",
+    "material_class": "regolith_sintered",
+    "tech_level": 1,
+    "category": "structural_panel"
+  },
+  
+  "image_prompt": {
+    "base": "[ITEM_NAME] constructed from [MATERIAL_DESCRIPTION]...",
+    "variables": { ... },
+    "brand_suffix": "raw industrial finish, modular ports visible...",
+    "style_guide_version": "2026-07-15-v1.0"
+  },
+  
+  "rendered_assets": {
+    "image": "/images/components/panel_regolith_mk1_v1.png",
+    "thumbnail": "/images/components/panel_regolith_mk1_v1_thumb.png",
+    "sprite_sheet": "/images/components/panel_regolith_mk1_v1_sheet.png",
+    "blueprint_render": "/images/components/panel_regolith_mk1_v1_schematic.png"
+  },
+  
+  "version_history": [
+    {
+      "version": 1,
+      "created_date": "2026-07-16",
+      "style_guide": "2026-07-15-v1.0",
+      "generator_model": "gemini-1.5",
+      "files_generated": ["image", "thumbnail", "sprite_sheet"]
+    }
+  ]
+}
+```
+
+### Key Benefits
+
+**1. Regeneration Strategy**
+- Six months later: Update style guide to v2.0
+- Registry knows which assets were created with v1.0
+- Batch regenerate: all assets where style_guide_version == "2026-07-15-v1.0"
+- Replace files, append new entry to version_history
+- **Result**: Complete art style update without manual remapping
+
+**2. Versioning & Traceability**
+- Each asset remembers its generation parameters
+- Which style guide, AI model, and prompt created it
+- Enables rollback, comparison, audit trail
+- Captures "why this asset looks like this"
+
+**3. Faction-Specific Operations**
+- Canonical tags enable filtering by faction/tech_level
+- Batch operations: "all Luna tech_level=1 assets" → apply Luna aesthetic
+- Consistent style across hundreds of components
+
+**4. Scale Management**
+- 10 components → 100+ components (manageable)
+- Style updates don't require manual asset discovery
+- Registry is data structure, automation-friendly
+- AI Manager can query registry for asset properties
+
+### Integration Points
+
+1. **Blueprint System** (Phase 1)
+   - Blueprint.asset_registry_id → links to registry entry
+   - Registry.blueprint_id → links back to blueprint source
+
+2. **Asset Generation Pipeline** (Phase 2)
+   - Prompt Template Engine → populates registry.image_prompt
+   - Image API Integration → populates registry.rendered_assets
+   - Auto-populate version_history entry on generation
+
+3. **Rendering System**
+   - Renderer queries registry for sprite/thumbnail
+   - TerrainForge pulls blueprint_render from registry
+   - UI Layer displays thumbnail
+
+4. **Regeneration Service** (Phase 2 or Phase 3)
+   - Scan version_history for outdated style_guide versions
+   - Regenerate with new style guide
+   - Replace files, version_history captures update
+
+### Recommended Implementation Timeline
+- **Phase 2 Early** (2-3 days after Phase 1 complete)
+- Becomes foundation for faction-wide restyling
+- Critical for projects with 100+ AI-generated assets
+
+### Architectural Principle
+This addition reflects ChatGPT feedback: **large simulation games discover new abstractions during implementation**. Asset Registry emerged during design review as a missing first-class concept. It should be integrated once Phase 1 rendering is operational.
+
+---
+
 ## IMPLEMENTATION ROADMAP
 
 **Port Schema & JSON Structure** (Ready for Phase 1 coding)

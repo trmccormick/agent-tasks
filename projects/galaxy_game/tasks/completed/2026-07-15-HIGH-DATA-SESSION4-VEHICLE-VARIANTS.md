@@ -1,5 +1,6 @@
 ---
-status: active
+status: completed
+completed_date: 2026-07-15
 priority: HIGH
 type: data
 system_domain: VEHICLE_DESIGN | COMPONENT_VARIANTS | JSON_SCHEMA
