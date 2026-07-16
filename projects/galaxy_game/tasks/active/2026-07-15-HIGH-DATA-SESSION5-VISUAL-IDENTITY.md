@@ -7,6 +7,25 @@ mvp_alignment: GAME_BRANDING | UI_ICON_LIBRARY
 local_worker_safe: true
 ---
 
+## ⚡ Minimal Handoff
+
+**You are**: Research Agent / Analyzer
+**Project**: Galaxy Game
+**Task**: Analyze ChatGPT Session 5 (Visual Identity + UI Assets)
+**Source File**: `/Users/tam0013/Documents/git/galaxyGame/docs/agent/chat-logs/chatgpt-07-15-2026_5.md`
+**Output**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/2026-07-15-ANALYSIS-SESSION5-visual-identity.md`
+
+**Instructions**:
+1. Read the full 9 analysis categories below
+2. Mine the source chat log for matching insights (2-3 per category)
+3. Flag cross-session overlaps (especially S1 organizations, S2 catalog, S3 asset organization)
+4. Extract branding strategy, logo concepts, faction symbols, UI icon scope
+5. Document image generation workflow issues (corruption, regeneration process)
+6. Format: Markdown, 12-18 total insights, verbatim quotes where relevant
+7. Commit summary to git when complete
+
+---
+
 # TASK: Extract & Categorize Visual Identity + UI Assets from ChatGPT Session 5
 
 **Status**: ACTIVE
