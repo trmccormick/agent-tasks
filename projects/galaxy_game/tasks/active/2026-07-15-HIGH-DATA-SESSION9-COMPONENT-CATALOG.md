@@ -7,27 +7,26 @@ mvp_alignment: ITEM_CATALOG_PIPELINE | BLUEPRINT_INTEGRATION | BATCH_GENERATION
 local_worker_safe: true
 ---
 
-# TASK: Extract & Categorize Component Catalog Prompts from ChatGPT Session 9
+## ⚡ Minimal Handoff
 
-**Status**: ACTIVE
-**Priority**: HIGH
-**Type**: Data Mining / Comparative Analysis
-**Created**: 2026-07-15
-**Last Updated**: 2026-07-15
-**Assigned to**: Qwen (research/analysis agent)
+**You are**: Research Agent / Analyzer
+**Project**: Galaxy Game
+**Task**: Analyze ChatGPT Session 9 (Component Catalog Prompts)
+**Source File**: `/Users/tam0013/Documents/git/galaxyGame/docs/agent/chat-logs/chatgpt-07-15-2026_9.md`
+**Output**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/2026-07-15-ANALYSIS-SESSION9-component-catalog.md`
+
+**Instructions**:
+1. Read the full 11 analysis categories in the task file
+2. Mine the source chat log for matching insights (2-3 per category)
+3. Flag cross-session overlaps (S2 catalog standards, S6 tech levels, S8 components)
+4. Extract 10-component batch prompts, base template, Mk1/Mk2 variants, system design philosophy
+5. Document file naming conventions, material consistency, blueprint integration
+6. Format: Markdown, 20-25 total insights, prompt templates ready to use
+7. Commit summary to git when complete
 
 ---
 
-## ⚡ Minimal Handoff (Copy this to send to agent)
-
-```
-You are Research Agent / Analyzer.
-
-Project: Galaxy Game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/active/2026-07-15-HIGH-DATA-SESSION9-COMPONENT-CATALOG.md
-
-STEP 0 — Verify task file location:
-  cd /Users/tam0013/Documents/git/agent-tasks
+# TASK: Extract & Categorize Component Catalog Prompts from ChatGPT Session 9
   ls -la projects/galaxy_game/tasks/active/2026-07-15-HIGH-DATA-SESSION9-COMPONENT-CATALOG.md
 
 READ ENTIRE TASK FILE FIRST — it contains analysis framework and critical template extraction requirements.

@@ -7,6 +7,24 @@ mvp_alignment: GAME_FACTION_IDENTITY | BRANDING_CONSISTENCY | LOGO_GENERATION
 local_worker_safe: true
 ---
 
+## ⚡ Minimal Handoff
+
+**You are**: Research Agent / Analyzer
+**Project**: Galaxy Game
+**Task**: Analyze ChatGPT Session 7 (Corporate Branding Ecosystem)
+**Source File**: `/Users/tam0013/Documents/git/galaxyGame/docs/agent/chat-logs/chatgpt-07-15-2026_7.md`
+**Output**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/2026-07-15-ANALYSIS-SESSION7-corporate-branding.md`
+
+**Instructions**:
+1. Read the full analysis categories in the task file
+2. Mine the source chat log for matching insights (2-3 per category)
+3. Flag cross-session overlaps (S5 factions, S6 manufacturing)
+4. Extract corporation ecosystem, prompt templates, master logo approach
+5. Format: Markdown, 20-25 total insights, verbatim quotes where relevant
+6. Commit summary to git when complete
+
+---
+
 # TASK: Extract & Categorize Corporate Branding from ChatGPT Session 7
 
 **Status**: ACTIVE

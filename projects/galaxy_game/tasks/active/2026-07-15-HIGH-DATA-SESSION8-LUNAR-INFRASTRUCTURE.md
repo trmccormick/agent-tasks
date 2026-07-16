@@ -7,6 +7,24 @@ mvp_alignment: CATALOG_GENERATION | ASSET_TEMPLATES | LUNAR_ASSETS
 local_worker_safe: true
 ---
 
+## ⚡ Minimal Handoff
+
+**You are**: Research Agent / Analyzer
+**Project**: Galaxy Game
+**Task**: Analyze ChatGPT Session 8 (Lunar Infrastructure Components)
+**Source File**: `/Users/tam0013/Documents/git/galaxyGame/docs/agent/chat-logs/chatgpt-07-15-2026_8.md`
+**Output**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/2026-07-15-ANALYSIS-SESSION8-lunar-infrastructure.md`
+
+**Instructions**:
+1. Read the full analysis categories in the task file
+2. Mine the source chat log for matching insights (2-3 per category)
+3. Flag cross-session overlaps (S2 modular components, S3 material types, S6 tech levels)
+4. Extract component prompts, multi-angle renders, material specifications, modular interfaces
+5. Format: Markdown, 15-20 total insights, verbatim quotes where relevant, prompt templates
+6. Commit summary to git when complete
+
+---
+
 # TASK: Extract & Categorize Lunar Infrastructure Component Prompts from ChatGPT Session 8
 
 **Status**: ACTIVE
