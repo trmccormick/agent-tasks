@@ -521,6 +521,7 @@ This addition reflects ChatGPT feedback: **large simulation games discover new a
 ```json
 {
   "blueprint_id": "panel_regolith_mk1",
+  "asset_registry_id": "panel_regolith_mk1_v1",
   "name": "Regolith Sintered Panel",
   "category": "structural_panel",
   "mk_version": 1,
