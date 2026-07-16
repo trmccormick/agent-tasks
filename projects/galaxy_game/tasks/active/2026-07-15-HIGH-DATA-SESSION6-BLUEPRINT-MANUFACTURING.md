@@ -7,6 +7,26 @@ mvp_alignment: ASSET_GENERATION_PIPELINE | TECH_TREE_INTEGRATION | VISUAL_PROGRE
 local_worker_safe: true
 ---
 
+## ⚡ Minimal Handoff
+
+**You are**: Research Agent / Analyzer
+**Project**: Galaxy Game
+**Task**: Analyze ChatGPT Session 6 (Blueprint + Manufacturing Architecture)
+**Source File**: `/Users/tam0013/Documents/git/galaxyGame/docs/agent/chat-logs/chatgpt-07-15-2026_6.md`
+**Output**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/2026-07-15-ANALYSIS-SESSION6-blueprint-manufacturing.md`
+
+**Instructions**:
+1. Read the full 11 analysis categories below
+2. Mine the source chat log for matching insights (2-3 per category)
+3. Flag cross-session overlaps (especially S2 components, S3 asset organization, S4 variants)
+4. Extract tech level framework, manufacturing methods, blueprint schema evolution
+5. Document the two-axis progression model (manufacturing capability vs. blueprint generation)
+6. Capture Three-Bible model (Engineering, Art, Manufacturing)
+7. Format: Markdown, 20-25 total insights, verbatim quotes where relevant, prompt-ready tech descriptions
+8. Commit summary to git when complete
+
+---
+
 # TASK: Extract & Categorize Blueprint + Manufacturing Architecture from ChatGPT Session 6
 
 **Status**: ACTIVE
