@@ -7,6 +7,24 @@ mvp_alignment: SPACECRAFT_ARCHITECTURE | MODULAR_DESIGN
 local_worker_safe: true
 ---
 
+## ⚡ Minimal Handoff
+
+**You are**: Research Agent / Analyzer
+**Project**: Galaxy Game
+**Task**: Analyze ChatGPT Session 4 (Vehicle Variant Design)
+**Source File**: `/Users/tam0013/Documents/git/galaxyGame/docs/agent/chat-logs/chatgpt-07-15-2026_4.md`
+**Output**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/2026-07-15-ANALYSIS-SESSION4-vehicle-variants.md`
+
+**Instructions**:
+1. Read the full 9 analysis categories below
+2. Mine the source chat log for matching insights (2-3 per category)
+3. Flag cross-session overlaps (S1, S2, S3 patterns you find echoed)
+4. Extract any contradictions or new patterns
+5. Format: Markdown, 20-25 total insights, verbatim quotes where relevant
+6. Commit summary to git when complete
+
+---
+
 # TASK: Extract & Categorize Vehicle Variant Design from ChatGPT Session 4
 
 **Status**: ACTIVE
