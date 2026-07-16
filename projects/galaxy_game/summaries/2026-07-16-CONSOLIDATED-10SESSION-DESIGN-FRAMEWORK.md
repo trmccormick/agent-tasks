@@ -347,43 +347,199 @@ Surface shows [TEXTURE_DETAILS]. [COLOR_VARIATION]. Technical, industrial, groun
 
 ---
 
+## GEMINI v2.0 SPEC INTEGRATION (Critical Implementation Details)
+
+**From Gemini's Integration Spec & Implementation v2.0, these gaps are NOW CLOSED:**
+
+### 1. **Asset Generation Automation** ✅ OPERATIONALIZED
+- **Prompt Template Engine**: Inject variables [ITEM_NAME], [MATERIAL_DESCRIPTION], [TL_LEVEL] into hardened templates
+- **Image API Integration**: Async wrapper with error handling, rate limiting, filesystem storage (naming: `asset_id_v{version}.png`)
+- **Brand Enforcement**: Hard sci-fi constraint suffix required: "raw industrial finish, modular ports visible, no non-functional aesthetics, orthographic, high-resolution industrial photography"
+
+### 2. **Component Assembly Logic** ✅ OPERATIONALIZED
+- **Structural Integrity Checks**: TerrainForge validates placement; rejects if no valid i-beam_socket or power_bus_link
+- **Port Definition**: JSON blueprint must include `port_coordinates` (array of [x, y] positions) and `port_types` (connection type per port)
+- **Detail Rendering**: Zoom Level 8+ shows high-fidelity module interfaces, modular seams, port details
+
+### 3. **Manufacturing & Economics Integration** ✅ OPERATIONALIZED
+- **Tech Level Visuals**: Panels update texture/geometry based on TL_LEVEL (TL1="Rough Sintered" → TL4="Advanced Composite")
+- **Economic Hooks**: UI queries `fabrication_cost_index`; if import cheaper than local fabrication, shows "Import" vs "Manufacture" buttons
+- **Market Coupling**: Initial GCC=USD hardcoded but modular for future decoupling
+
+### 4. **Operational Mandates** ✅ FORMALIZED
+- **Documentation Mandate**: Any change to asset pipeline, structural logic, manufacturing progression updates `docs/architecture/` files
+- **Normalization Layer**: ALL alias resolution through CanonicalMapService; NO substring fallbacks
+- **Service Architecture**: Components are simulation objects with validated constraints, not just visual assets
+
+---
+
 ## OPEN DESIGN DECISIONS
 
-**Pending (Not blocking, can be resolved during implementation)**
+**Minor (Can be resolved during Phase 1 coding)**
 
 1. **Desert/Tundra Ownership** (S10)
-   - Question: Should desert/tundra live in Layer 0 (terrain) or Layer 1 (biome)?
-   - Currently: Ambiguous (both in biome color map)
-   - Impact: Determines spritesheet structure, folder organization
-   - Ocean/Mountains: Clearly terrain (not biome)
-   - Recommendation: Treat as biome (vegetation overlay pattern), use climate classification not terrain type
+   - Recommendation: Treat as biome (vegetation overlay), climate classification not terrain type
+   - Not blocking: Alias resolution layer handles both interpretations
 
-2. **Renderer Zoom Capability** (S10)
-   - Question: Does renderer support zoom-based layer transitions?
-   - Current: Flat color only (_getBiomeColor)
-   - Goal: Color → tile transition when zooming in
-   - Impact: Implementation of rendering strategy depends on renderer capability
-   - Recommendation: Implement abstraction layer for layer switching, defer zoom logic to renderer
+2. **Mk3 Full Prompts** (S9)
+   - Can be derived from Mk1 base + Mk3 material language (embedded ribs, hybrid materials)
+   - Phase 2 task (non-critical for Phase 1 rendering foundation)
 
-3. **Mk3 Full Prompts** (S9)
-   - Status: Mk3 definition exists (embedded ribs, layering, hybrid materials)
-   - Pending: Capture full verbatim prompts for all Mk3 components
-   - Can be derived from Mk1 base + Mk3 material language
+3. **Non-Structural Components** (S9)
+   - Solar panels, radiators, engines, sensors follow same template pattern
+   - Phase 2+ task (Phase 1 focuses on structural framework)
 
-4. **Non-Structural Components** (S9)
-   - Status: 10 structural components complete
-   - Pending: Prompts for solar panels, radiators, engines, sensors, etc.
-   - Can follow same template pattern once function requirements defined
-
-5. **Origin-Specific Variants** (S9)
-   - Question: Do Martian I-beams look different from Lunar I-beams?
-   - Current: World-specific visual dialects exist (material language)
-   - Pending: Decide if dialect applies to ALL components or only some
-   - Recommendation: Apply selectively (components touching regolith show dust, others generic)
+4. **Port Coordinate JSON Structure** (Gemini v2.0)
+   - **NOW DEFINED** (see Port Schema section below)
 
 ---
 
 ## IMPLEMENTATION ROADMAP
+
+**Port Schema & JSON Structure** (Ready for Phase 1 coding)
+
+### Port Blueprint Schema (Example: Regolith Panel Mk1)
+```json
+{
+  "blueprint_id": "panel_regolith_mk1",
+  "name": "Regolith Sintered Panel",
+  "category": "structural_panel",
+  "mk_version": 1,
+  "technology_level": 1,
+  
+  "material_class": "regolith_sintered",
+  "dimensions": {
+    "width_m": 2.0,
+    "height_m": 1.0,
+    "depth_m": 0.15
+  },
+  
+  "connection_types": ["i-beam_socket", "data_bus_node"],
+  "ports": [
+    {
+      "port_id": "socket_north",
+      "type": "i-beam_socket",
+      "coordinates": [1.0, 0.0],
+      "direction": "north",
+      "functional_purpose": "structural_support"
+    },
+    {
+      "port_id": "socket_south",
+      "type": "i-beam_socket",
+      "coordinates": [1.0, 1.0],
+      "direction": "south",
+      "functional_purpose": "structural_support"
+    },
+    {
+      "port_id": "data_node_center",
+      "type": "data_bus_node",
+      "coordinates": [1.0, 0.5],
+      "direction": "perpendicular",
+      "functional_purpose": "sensor_telemetry"
+    }
+  ],
+  
+  "fabrication_cost_index": 0.85,
+  "utility_weight": 0.6,
+  "import_feasibility": true,
+  
+  "prompt_template": {
+    "base": "[ITEM_NAME] constructed from [MATERIAL_DESCRIPTION], using [CONSTRUCTION_METHOD]. Surface shows [TEXTURE_DETAILS]. [COLOR_VARIATION]. Industrial, modular, grounded sci-fi. raw industrial finish, modular ports visible, no non-functional aesthetics, orthographic, high-resolution industrial photography.",
+    "variables": {
+      "ITEM_NAME": "Regolith Sintered Panel Mk1",
+      "MATERIAL_DESCRIPTION": "rough gray regolith-sintered composite, porous surface texture, visible dust accumulation",
+      "CONSTRUCTION_METHOD": "sintered additive fabrication from regolith substrate",
+      "TEXTURE_DETAILS": "dusty, grainy, chipped edges, fabrication imperfections visible",
+      "COLOR_VARIATION": "muted gray-brown with rust undertones from iron oxide content"
+    }
+  },
+  
+  "assets": {
+    "image": "/images/components/panel_regolith_mk1_v1.png",
+    "image_multi_angle": {
+      "perspective": "/images/components/panel_regolith_mk1_v1_perspective.png",
+      "detail": "/images/components/panel_regolith_mk1_v1_detail.png",
+      "profile": "/images/components/panel_regolith_mk1_v1_profile.png"
+    }
+  }
+}
+```
+
+### Canonical Biome Map (16-Tile Canonical)
+```json
+{
+  "canonical_biomes": {
+    "ice": {
+      "tile_file": "ice.png",
+      "aliases": ["arctic", "polar_desert", "tundra", "cracked_ice", "glacier"],
+      "color_fallback": "#e8f4f8"
+    },
+    "forest": {
+      "tile_file": "forest.png",
+      "aliases": ["boreal_forest", "temperate_forest", "temperate_rainforest"],
+      "color_fallback": "#2d5016"
+    },
+    "jungle": {
+      "tile_file": "jungle.png",
+      "aliases": ["tropical_rainforest", "tropical_jungle"],
+      "color_fallback": "#1a3a1a"
+    },
+    "grassland": {
+      "tile_file": "grassland.png",
+      "aliases": ["plains", "prairie", "temperate_grassland"],
+      "color_fallback": "#6b8e23"
+    },
+    "savanna": {
+      "tile_file": "savanna.png",
+      "aliases": ["tropical_grassland", "savannah"],
+      "color_fallback": "#d4a574"
+    },
+    "desert": {
+      "tile_file": "desert.png",
+      "aliases": ["hot_desert", "cold_desert", "arid"],
+      "color_fallback": "#daa520"
+    },
+    "swamp": {
+      "tile_file": "swamp.png",
+      "aliases": ["marsh", "bog", "mangrove", "wetlands"],
+      "color_fallback": "#556b2f"
+    },
+    "ocean": {
+      "tile_file": "ocean.png",
+      "aliases": ["water", "sea", "deep_sea"],
+      "color_fallback": "#1e90ff"
+    },
+    "mountain": {
+      "tile_file": "mountain.png",
+      "aliases": ["mountains", "alpine", "montane"],
+      "color_fallback": "#8b7355"
+    },
+    "regolith": {
+      "tile_file": "regolith.png",
+      "aliases": ["barren", "rock", "lunar_surface"],
+      "color_fallback": "#a9a9a9"
+    }
+  }
+}
+```
+
+### CanonicalMapService Implementation Pattern
+```ruby
+# app/services/canonical_map_service.rb
+class CanonicalMapService
+  CANONICAL_MAP = JSON.parse(File.read(Rails.root.join('config/canonical_biomes.json')))
+  
+  def self.normalize_biome(input_name)
+    normalized = input_name&.downcase&.gsub(/\s+/, '_')
+    CANONICAL_MAP['canonical_biomes'].each do |canonical, config|
+      return canonical if config['aliases'].include?(normalized)
+    end
+    normalized
+  end
+end
+```
+
+---
 
 **Phase 1: Foundation** (Weeks 1-2)
 - [ ] Implement Layer 0 (terrain) rendering with 6 families + 20 variants
