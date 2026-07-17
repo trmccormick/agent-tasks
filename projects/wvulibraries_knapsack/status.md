@@ -187,6 +187,14 @@ All task management lives in `/Documents/git/agent-tasks/projects/wvulibraries_k
 
 ## Session Notes
 
+### 2026-07-17 Session — Architecture Correction
+- ✅ Identified hyrax-webapp submodule was incorrectly modified with logging config
+- ✅ Reverted hyrax-webapp to original state (9fbe830d tag: v7.1.0)
+- ✅ Verified logging config is properly in main repo: `config/environments/production.rb`
+- ✅ Applied legitimate environment fixes: Solr M1/arm64 platform support, permission improvements
+- ✅ Final branch state: Facet fixes + Logging fixes + Exit code fixes + Environment improvements
+- Key lesson: hyrax-webapp is vendored gem (via submodule); customizations belong ONLY in main repo
+
 ### 2026-07-08 Session
 - Verified both facet fixes on real data (testing tenant with 35 works indexed)
 - All search catalog bugs resolved (Hyku #3072)
