@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-16 — Design Framework Consolidation (10 ChatGPT Sessions, 292 Insights)
+**Last Updated:** 2026-07-16 — Planetary Monitor Dead Code Audit + Cleanup Complete
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -212,6 +212,28 @@
 - 5 worked examples verified (Earth, Mars, Venus, Eden Prime, young planet)
 - Min planet age column clarified in stage definitions (≥0.5 Ga for microbial_anaerobic, ≥4.5 Ga for complex_ecosystems)
 - Task file moved to `completed/` and committed to agent-tasks repo (`08ab430`)
+
+---
+
+## 🎯 Latest Completion (2026-07-16)
+✅ **Planetary Monitor Dead Code Audit + Cleanup** — RESEARCH + IMPLEMENTATION COMPLETE
+- Task file: `2026-07-13-MEDIUM-RESEARCH-PLANETARY-MONITOR-DEAD-CODE-AUDIT.md`
+- Research Phase (completed 2026-07-16 morning):
+  - Audited all monitor.js backup files: only `monitor_patched.js` remained (1591 lines)
+  - `.new*.js` files already cleaned up previously
+  - Verified sphere CRUD infrastructure exists but unused (controller + models present, no UI wiring)
+  - Found zero dead code in active `monitor.js` (all 26 functions actively used)
+- Implementation Phase (completed 2026-07-16 afternoon):
+  - ✅ Deleted `monitor_patched.js` (dead code backup with unused sphere CRUD functions)
+  - ✅ Deleted `SpheresController` (broken — called non-existent `@celestial_body.spheres` method)
+  - ✅ Removed `simulation/spheres` route from routes.rb
+  - ✅ Removed `#spheres` action from SimulationController
+  - ✅ Verified: sphere models (Atmosphere, Hydrosphere, Cryosphere, Geosphere, Biosphere) retained — used by StarSim/data loading
+- Verification Results:
+  - Zero broken references to deleted controller/route/action (grep verified)
+  - `rails routes` confirms all remaining simulation routes intact
+  - App boots without errors
+- Commits: `b786a0cf` (galaxyGame cleanup), `a882257` (agent-tasks task completion)
 
 ---
 
