@@ -1,8 +1,86 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-16 — Planetary Monitor Dead Code Audit + Cleanup Complete
+**Last Updated:** 2026-07-17 — Phase 4 Wiki Complete + Layer Ownership Resolved
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 PHASE 4 WIKI REORGANIZATION — COMPLETE (2026-07-17)
+
+**Status**: ✅ **COMPLETE** — All 9 deliverables verified with canonical 14-section structure
+
+### Verification Results:
+- Every file contains Sections 1–14 where applicable ✓
+- No file skips Section 5 or Section 6 ✓
+- No file references "12 sections" ✓
+- No file uses old section names ✓
+- Formatting consistent (spaces before parens/arrows/pipes) ✓
+
+### Deliverables:
+| File | Status |
+|------|--------|
+| WIKI_SITE_MAP.md | ✅ Complete — Section 6 inserted with full page table |
+| DOCUMENT_CLASSIFICATION.md | ✅ Complete — all section refs shifted, formatting fixed |
+| DOCUMENT_RELOCATION_PLAN.md | ✅ Complete — sections 5 and 6 added |
+| CANONICAL_DOCUMENT_INDEX.md | ✅ Complete — sections 5 and 6 added |
+| CROSS_REFERENCE_PLAN.md | ✅ Complete — sections 5 and 6 cross-links added |
+| MISSING_WIKI_PAGES.md | ✅ No changes needed |
+| ARCHIVE_PLAN.md | ✅ Updated to "14 sections" |
+| CONTRIBUTOR_GUIDE.md | ✅ Updated to "14 sections", formatting fixed |
+| README.md | ✅ Tree updated, reading order canonicalized |
+
+---
+
+## 🎯 LAYER OWNERSHIP DECISIONS — RESOLVED (2026-07-17)
+
+**Status**: ✅ **RESOLVED** — Gemini provided domain expert resolution for all 3 open design decisions
+
+### Decision: Desert → Layer 0 (Terrain)
+- Reasoning: Desert is geomorphology (sand/dunes/arid rock), not absence of vegetation
+- Implication: `desert.png` moves to terrain folder; CanonicalMapService queries as terrain type
+- Edge case: Barren desert = null/empty Layer 1 overlay on Layer 0 desert terrain
+
+### Decision: Tundra → Layer 0 (Terrain)
+- Reasoning: Tundra is climate-driven geology (permafrost/frozen ground), not lack of growth
+- Implication: Layer 1 can overlay moss/lichen textures; simulation strips vegetation when tundra substrate dictates freezing
+- Edge case: Polar regions = dormant/barren Layer 1 on tundra terrain
+
+### Decision: Ocean → Layer 0 (Terrain)
+- Reasoning: Ocean is physical water body, not ecological state — opaque base layer
+- Implication: `ocean.png` moves to terrain folder; flagged as impassable/liquid in CanonicalMapService
+- Edge case: Reef/kelp forest = Layer 1 overlay ON ocean substrate
+
+### Canonical Layer Assignment Table
+| Asset | Layer 0 (Terrain) | Layer 1 (Biome) | Notes |
+|-------|-------------------|-----------------|-------|
+| desert | ✅ | ❌ | Base geological substrate |
+| tundra | ✅ | ❌ | Climate-controlled substrate |
+| ocean | ✅ | ❌ | Opaque fluid base |
+| mountains | ✅ | ❌ | Opaque geological base |
+
+**Impact**: Layer 1 can now overlay sparse vegetation on desert/tundra when climate variables allow. CanonicalMapService implementation proceeds with clear layer ownership.
+
+---
+
+## 🎯 HYDROSPHERE LAYER BEHAVIOR (2026-07-17)
+
+**Status**: ⚠️ **ARCHITECTURAL NOTE** — Important detail for Phase 4 wiki docs and CanonicalMapService
+
+### Current Monitor View Behavior
+The hydrosphere (liquid layer) in the current monitor view uses **bathtub fill logic**:
+- Water fills low-elevation areas based on terrain elevation data
+- Liquid layer tiles are **variable/computed**, not fixed per-tile assignments
+- The surface UI abstracts this away — it's about gameplay (settlements near water, trade routes), not raw simulation data
+
+### Implications for Layer Model
+- Hydrosphere is a **computed overlay**, not a static terrain/biome assignment
+- It sits between Layer 0 and Layer 1: derived from elevation + climate state, then rendered as liquid tiles
+- Asset organization: liquid tiles can't be pre-assigned to folders the way desert/tundra can — they're compositional (water depth, flow state, frozen vs liquid)
+- CanonicalMapService needs a special case for hydrosphere: it's not a lookup, it's a computation
+
+### Note for Wiki Documentation
+Section 6 (Simulation Engine) should document hydrosphere as a computed layer, not a static terrain type. The simulation pipeline produces hydrosphere state from elevation + climate variables; the renderer then maps that state to liquid tiles at render time.
 
 ---
 
@@ -263,6 +341,16 @@
 - monitor_patched.js kept for review only; all .new*.js backups deleted
 - monitor.js.working deleted
 - Only monitor.js (active) remains in admin/
+
+---
+
+## 🎯 Latest Completion (2026-07-19)
+✅ **ProcurementService.can_produce_locally? Research — COMPLETED**
+- Task: `2026-07-11-HIGH-RESEARCH-PROCUREMENT-SERVICE-DESIGN` moved backlog → active
+- Research report: `summaries/2026-07-11-RESEARCH-PROCUREMENT-SERVICE-DESIGN.md`
+- Key finding: Three separate `can_produce_locally?` implementations exist; only PrecursorCapabilityService is correct
+- **CORRECTION**: Prior draft recommended NpcPriceCalculator pattern — superseded. Correct fix is delegation to PrecursorCapabilityService (already wired into MissionPlannerService, uses chemical formulas)
+- Proposed implementation: `ProcurementService.can_produce_locally?` → delegate via `settlement.location.celestial_body` → `PrecursorCapabilityService.new(celestial_body).can_produce_locally?(resource)`
 
 ---
 
