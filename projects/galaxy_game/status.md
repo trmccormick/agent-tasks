@@ -348,6 +348,35 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 ✅ **Precursor Mission Manifest — Variance-Based Yield Correction** — COMPLETED
 - Fixed `precursor_mission_manifest_v1.json`: replaced hardcoded delivery quantities with formula-based yield data shape
 - `titan_delivery`: `n2_kg: 50000, ch4_kg: 25000` → `source_gases: ["N2","CH4"], harvester_count: 2, yield_formula, variance_range: [0.85, 1.15]`
+
+✅ **ProcurementService.can_produce_locally? Research — COMPLETED**
+- Task: `2026-07-11-HIGH-RESEARCH-PROCUREMENT-SERVICE-DESIGN.md` (moved backlog → active → completed)
+- Gemini-generated summary had 5 gaps; filled by local codebase investigation:
+
+**Gap 1 — Caller Analysis**: Found 3 callers with exact file:line
+| Caller | File:Line | Purpose |
+|--------|-----------|---------|
+| `ProcurementService.procure_resource` | procurement_service.rb:7 | Gate before market lookup |
+| `NpcPriceCalculator.can_produce_locally?` | npc_price_calculator.rb:92 | Gate local pricing eligibility |
+| `MissionPlannerService` | mission_planner_service.rb:488,639 | Precursor capability validation |
+
+**Gap 2 — Complete Unit Type Mapping**: Added Luna resources missing from Gemini summary
+- Aluminum/Iron/Titanium → `metal_processor` (resource/acquisition.rb:63,428)
+- Silicon → `silicon_processor` (resource/acquisition.rb:66)
+- Steel → `metal_processor` + Iron+Carbon inputs (resource/acquisition.rb:69-72)
+
+**Gap 3 — Line Numbers in All References**: Every evidence column now has specific file:line citations
+
+**Gap 4 — facility_required Usage**: Confirmed correct pattern in NpcPriceCalculator.can_produce_locally? (npc_price_calculator.rb:201-214): query material JSON → get facility_required → check settlement units
+
+**Gap 5 — Resource Naming Convention**: Codebase uses both strings and symbols contextually
+- `Resource::Acquisition`: display name strings (`'Oxygen'`, `'Lunar Regolith'`)
+- `PrecursorCapabilityService`: symbols (`:oxygen`, `:water`, `:fuel`)
+- `ProcurementService`: symbols (`:oxygen`, `:water`, `:structural_carbon`)
+
+**Key Finding**: The `NpcPriceCalculator` already implements the correct pattern. Recommended refactor is to copy that pattern into `ProcurementService` (query material JSON for facility_required, then check settlement units) rather than inventing a new blueprint-based approach.
+
+**Updated Summary**: `summaries/summaries_2026-07-11-RESEARCH-PROCUREMENT-SERVICE-DESIGN.md` — replaced Gemini-only report with verified codebase evidence
 - `venus_delivery`: `co2_kg: 75000, n2_kg: 30000` → `source_gases: ["CO2","N2"], harvester_count: 2, yield_formula, variance_range: [0.85, 1.15]`
 - JSON validated locally and in Docker container (OK)
 - Not committed to git (gitignored data file — edit only)
@@ -361,15 +390,6 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 - Transit timing cross-validated against profile (730d Titan ✓, 400d Venus ✓)
 - All data-driven from JSON — no world-name hardcoding
 - galaxyGame commit: `97607782`
-
-✅ **ProcurementService.can_produce_locally? Research** — COMPLETED
-- Task: `2026-07-11-HIGH-RESEARCH-PROCUREMENT-SERVICE-DESIGN` moved backlog → active
-- Research report: `summaries/2026-07-11-RESEARCH-PROCUREMENT-SERVICE-DESIGN.md`
-- `titan_delivery`: `n2_kg: 50000, ch4_kg: 25000` → `source_gases: ["N2","CH4"], harvester_count: 2, yield_formula, variance_range: [0.85, 1.15]`
-- `venus_delivery`: `co2_kg: 75000, n2_kg: 30000` → `source_gases: ["CO2","N2"], harvester_count: 2, yield_formula, variance_range: [0.85, 1.15]`
-- JSON validated locally and in Docker container (OK)
-- Not committed to git (gitignored data file — edit only)
-- Downstream note: Phase 2 rake validation must check computed yield within variance_range bounds, not match exact values
 
 ✅ **ProcurementService.can_produce_locally? Research — COMPLETED**
 - Task: `2026-07-11-HIGH-RESEARCH-PROCUREMENT-SERVICE-DESIGN` moved backlog → active
@@ -446,11 +466,6 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 ---
 
 ## Active Tasks
-
-### 📌 Atmospheric Extraction Service — READY (2026-07-11)
-- Task file: `backlog/current/2026-07-11-HIGH-FEATURE-ATMOSPHERIC-EXTRACTION-SERVICE.md`
-- Scope: Create `AIManager::AtmosphericExtractionService` delegating to `TerraSim::AtmosphericTransferService`; skimmer→cycler cargo via `definition_data['cargo']`; replace mock calls; write RSpec
-- Status: ✅ READY — both research tasks complete, design locked, task file committed
 
 ### 📌 Biosphere Seeding & Integrity — ✅ COMPLETED (2026-07-14)
 - Task file: `tasks/completed/2026-07/2026-07-12-HIGH-ARCHITECTURE-BIOSPHERE-SEEDING-AND-INTEGRITY.md`
