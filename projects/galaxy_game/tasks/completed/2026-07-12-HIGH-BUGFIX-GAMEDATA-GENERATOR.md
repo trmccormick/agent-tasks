@@ -25,7 +25,7 @@ READ FIRST: Task file contains all details.
 ---
 
 # TASK: GameDataGenerator fails to create output file
-**Status**: BACKLOG
+**Status**: ACTIVE
 **Priority**: HIGH
 **Type**: bug-fix
 **Created**: 2026-07-12
