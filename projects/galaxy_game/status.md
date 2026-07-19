@@ -346,8 +346,25 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 
 ## 🎯 Latest Completion (2026-07-19)
 ✅ **Precursor Mission Manifest — Variance-Based Yield Correction** — COMPLETED
-- Task: `2026-07-17-HIGH-FEATURE-PRECURSOR-MISSION-RAKE-PHASE2.md` moved backlog → active (pending Phase 2 rake implementation)
 - Fixed `precursor_mission_manifest_v1.json`: replaced hardcoded delivery quantities with formula-based yield data shape
+- `titan_delivery`: `n2_kg: 50000, ch4_kg: 25000` → `source_gases: ["N2","CH4"], harvester_count: 2, yield_formula, variance_range: [0.85, 1.15]`
+- `venus_delivery`: `co2_kg: 75000, n2_kg: 30000` → `source_gases: ["CO2","N2"], harvester_count: 2, yield_formula, variance_range: [0.85, 1.15]`
+- JSON validated locally and in Docker container (OK)
+- Not committed to git (gitignored data file — edit only)
+
+✅ **Precursor Mission Rake — Phase 2 Interplanetary Logistics** — COMPLETED
+- Task: `2026-07-17-HIGH-FEATURE-PRECURSOR-MISSION-RAKE-PHASE2.md` moved backlog → active → completed
+- Extended `lunar_precursor_mission_validation.rake` with `phase2_interplanetary` rake task
+- 5 validation methods implemented: validate_titan_delivery, validate_venus_delivery, validate_luna_isru_production, validate_l1_leo_supply, validate_venus_refueling
+- All 4 phases + Venus refueling dependency pass successfully in Docker container
+- Variance-based yield data shape validated (source_gases, harvester_count, transit_days, variance_range)
+- Transit timing cross-validated against profile (730d Titan ✓, 400d Venus ✓)
+- All data-driven from JSON — no world-name hardcoding
+- galaxyGame commit: `97607782`
+
+✅ **ProcurementService.can_produce_locally? Research** — COMPLETED
+- Task: `2026-07-11-HIGH-RESEARCH-PROCUREMENT-SERVICE-DESIGN` moved backlog → active
+- Research report: `summaries/2026-07-11-RESEARCH-PROCUREMENT-SERVICE-DESIGN.md`
 - `titan_delivery`: `n2_kg: 50000, ch4_kg: 25000` → `source_gases: ["N2","CH4"], harvester_count: 2, yield_formula, variance_range: [0.85, 1.15]`
 - `venus_delivery`: `co2_kg: 75000, n2_kg: 30000` → `source_gases: ["CO2","N2"], harvester_count: 2, yield_formula, variance_range: [0.85, 1.15]`
 - JSON validated locally and in Docker container (OK)
