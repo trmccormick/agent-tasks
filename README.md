@@ -625,7 +625,27 @@ Task files are the source of truth. Executors read full context there.
 
 ---
 
-## Planning Agent / Session Strategist Role Convergence (June 2026)
+## Persistent Coordination Role (Qwen)
+
+In addition to per-session Planner/Implementer/Reviewer roles, one Qwen
+instance may run as a persistent coordinator across sessions to reduce
+how much raw output needs relaying to Claude/Tracy.
+
+Responsibilities:
+- Maintain status.md as the full historical log (unchanged from before)
+- Maintain NEEDS_REVIEW.md as a short, active list of items needing a
+  second opinion — see that file's own escalation-trigger list
+- Do NOT mark a task complete without independently re-verifying the fix
+  in the same session (re-run the test/rake/grep after the change, don't
+  just infer success from reading code)
+- Escalate to NEEDS_REVIEW.md rather than resolving unilaterally when:
+  touching gitignored/data paths, cross-task architecture dependencies,
+  conflicting docs, or catching yourself repeating the same failed action
+  3+ times
+
+---
+
+## Planning Agent / Session Strategist Role Convergence (July 2026)
 
 **Status: LIVING DOCUMENT — Update as workflow evolves.**
 
