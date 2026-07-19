@@ -345,6 +345,15 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 ---
 
 ## 🎯 Latest Completion (2026-07-19)
+✅ **Precursor Mission Manifest — Variance-Based Yield Correction** — COMPLETED
+- Task: `2026-07-17-HIGH-FEATURE-PRECURSOR-MISSION-RAKE-PHASE2.md` moved backlog → active (pending Phase 2 rake implementation)
+- Fixed `precursor_mission_manifest_v1.json`: replaced hardcoded delivery quantities with formula-based yield data shape
+- `titan_delivery`: `n2_kg: 50000, ch4_kg: 25000` → `source_gases: ["N2","CH4"], harvester_count: 2, yield_formula, variance_range: [0.85, 1.15]`
+- `venus_delivery`: `co2_kg: 75000, n2_kg: 30000` → `source_gases: ["CO2","N2"], harvester_count: 2, yield_formula, variance_range: [0.85, 1.15]`
+- JSON validated locally and in Docker container (OK)
+- Not committed to git (gitignored data file — edit only)
+- Downstream note: Phase 2 rake validation must check computed yield within variance_range bounds, not match exact values
+
 ✅ **ProcurementService.can_produce_locally? Research — COMPLETED**
 - Task: `2026-07-11-HIGH-RESEARCH-PROCUREMENT-SERVICE-DESIGN` moved backlog → active
 - Research report: `summaries/2026-07-11-RESEARCH-PROCUREMENT-SERVICE-DESIGN.md`
