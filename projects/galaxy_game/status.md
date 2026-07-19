@@ -451,12 +451,12 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 ---
 
 ## Baseline & Test Status
-- **RSpec Baseline (2026-07-19):** 4343 examples, 11 failures, 56 pending
+- **RSpec Baseline (2026-07-19):** 4343 examples, 4 failures, 56 pending
   - Grown by 201 examples since 2026-07-13 (4142 → 4343)
-  - 6 new failures introduced (5 → 11 failures)
-  - 2 confirmed flaky baseline: `game_data_generator_spec.rb:13`, `material_lookup_service_spec.rb:251`
-  - 1 known regression: `planetary_monitor_spec.rb:171` — surface view rendering
-  - 8 additional failures flagged in NEEDS_REVIEW.md (needs investigation)
+  - **2 confirmed flaky baseline**: `game_data_generator_spec.rb:13`, `material_lookup_service_spec.rb:251`
+  - **2 regressions** (need investigation):
+    - `planetary_monitor_spec.rb:171` — surface view rendering regression
+    - `orbital_shipyard_service_spec.rb:129` — distributes materials across projects (NEW)
 - **Rake Baseline (2026-07-13):** 17/17 ✅ all phases PASSED — verified in container
 
 ---

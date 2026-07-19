@@ -54,17 +54,18 @@ this file should stay small. Full history stays in status.md.
 ---
 
 ### 2026-07-19 — RSpec Baseline Growth Unexplained
-**What happened**: Full RSpec suite shows 4343 examples (201 new since 2026-07-13), 11 failures (6 new). Only 3 failures identified (2 flaky baseline + 1 surface view regression). 8 remaining failures not yet triaged.
+**What happened**: Full RSpec suite shows 4343 examples (201 new since 2026-07-13), 4 failures. Only 2 confirmed flaky baseline + 2 regressions identified.
 
 **What I already checked**: 
-- Confirmed latest run: 4343 examples, 11 failures, 56 pending
-- Identified 3 failures: game_data_generator_spec.rb:13 (flaky), material_lookup_service_spec.rb:251 (flaky), planetary_monitor_spec.rb:171 (regression)
-- Did not enumerate remaining 8 failures (full rspec output too large to parse inline)
+- Confirmed latest run: 4343 examples, 4 failures, 56 pending
+- Identified 2 flaky baseline: game_data_generator_spec.rb:13, material_lookup_service_spec.rb:251
+- Identified 2 regressions: planetary_monitor_spec.rb:171 (surface view), orbital_shipyard_service_spec.rb:129 (NEW — distributes materials across projects)
+- Did not investigate root cause of either regression
 
 **What needs a second opinion**: 
-- Are 8 remaining failures flaky baseline (acceptable) or new regressions (need fixes)?
-- Which failures are related to recent changes vs pre-existing?
-- Should baseline be updated to 4343/11 with details on what caused growth?
+- Are the 2 regressions related to recent changes or pre-existing?
+- Should baseline be updated to 4343/4 with details on what caused growth?
+- orbital_shipyard_service_spec.rb:129 is NEW — did something change in that service recently?
 
 **Status**: OPEN — needs triage before updating status.md baseline further
 
