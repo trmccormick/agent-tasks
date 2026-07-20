@@ -8,7 +8,8 @@ component: Asset Generation
 phase: Phase 2 - Asset Registry
 relates_to:
   - 2026-07-13-HIGH-FEATURE-UNIT-LAYER-RENDERING (parent task, blocks visual deployment)
-  - 2026-07-19-HIGH-DESIGN-GALAXY_GAME_ICON_BIBLE (PREREQUISITE — sprites must follow design system)
+  - 2026-07-19-HIGH-DESIGN-GALAXYGAME_ICON_BIBLE (PREREQUISITE — sprites must follow design system)
+  - 2026-07-19-HIGH-DESIGN-ASSET_REGISTRY_SPECIFICATION (companion registry)
   - NEEDS_REVIEW.md entry (sprite visual validation gap)
 ---
 
