@@ -1,8 +1,36 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-19 — Design System Architecture Complete (Icon Bible v2 + Philosophy + Pipeline)
+**Last Updated:** 2026-07-20 — Equipment Check Implementation + Production Model Validation
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Completion (2026-07-20)
+
+✅ **NPC Price Calculator & Procurement Service Equipment Verification** — COMPLETED
+- Task: `2026-07-03-MEDIUM-REFACTOR-HAS-FACILITY-INTEGRATION` (moved backlog → active → completed)
+- Issue: Qwen agent looped on solution using nonexistent hardcoded facility types
+- Root Cause: `has_facility?` pattern assumed facilities were separate from units; wrong architecture
+- **Correct Architecture**: Facilities ARE units with `output_resources` field
+- Implementation:
+  - Both `NpcPriceCalculator` and `ProcurementService` now verify **dual conditions** for local production:
+    1. Location has resource (via `PrecursorCapabilityService`)
+    2. Settlement has equipment unit with resource in `output_resources`
+  - Added `settlement_has_extraction_equipment?` helper method to both services
+  - Method handles both Array and Hash formats for `output_resources`
+  - Case-insensitive resource name matching
+- Tests: 
+  - Updated `npc_price_calculator_spec.rb` test mocks to provide settlement units with output_resources
+  - All 19 tests passing (was 2 failures due to missing equipment mock)
+- Commits: `7f9a02ac` (galaxyGame)
+- **Architectural Validation**: Three production strategies, all unified by dual-check logic:
+  1. **Generic in-situ** (O₂ from regolith everywhere): Location has resource + settlement has equipment
+  2. **Hybrid synthesis** (H₂O from imported H₂ + local O₂): Location has resource + settlement has synthesis unit
+  3. **Deposit mining** (Titanium from crater deposit): Location has deposit + settlement has harvester equipment
+  - All three use identical dual-check: `PrecursorCapabilityService` (location capability) + equipment verification (settlement capability)
+  - Pricing layer determines strategy: direct import vs. equipment import vs. component import + synthesis (all comparisons in `NpcPriceCalculator`)
+  - No additional code needed for all three—architecture is elegant and unified
 
 ---
 
