@@ -8,6 +8,7 @@ component: Asset Generation
 phase: Phase 2 - Asset Registry
 relates_to:
   - 2026-07-13-HIGH-FEATURE-UNIT-LAYER-RENDERING (parent task, blocks visual deployment)
+  - 2026-07-19-HIGH-DESIGN-GALAXY_GAME_ICON_BIBLE (PREREQUISITE — sprites must follow design system)
   - NEEDS_REVIEW.md entry (sprite visual validation gap)
 ---
 
@@ -145,9 +146,20 @@ Replace misaligned placeholder sprites from imprecise source image with properly
 ## Related Work
 
 - **Task 2026-07-13-HIGH-FEATURE-UNIT-LAYER-RENDERING**: Parent task, Layer 5 rendering complete pending sprite replacement
+- **Task 2026-07-19-HIGH-DESIGN-GALAXY_GAME_ICON_BIBLE** (PREREQUISITE): Design system for all Phase 2 assets. Unit sprites should be generated using Icon Bible design rules to ensure consistency with future resource icons, buildings, UI, etc.
 - **NEEDS_REVIEW.md**: Escalation entry documenting sprite visual validation gap and RSpec insufficient coverage
 - **Design**: Phase 2 Asset Registry planning (sprites are first asset type needing formal generation pipeline)
 - **Future**: Layer 5 rendering gate behind FEATURE_FLAG_UNITS_ENABLED until task complete (recommended by review)
+
+### Important: Design System Dependency
+
+Unit sprites must follow the Icon Bible design system (2026-07-19-HIGH-DESIGN-GALAXY_GAME_ICON_BIBLE). This ensures:
+- Visual consistency with future resource icons (250+ planned)
+- All assets "feel" like they came from the same game
+- Prevents style drift between generations (which happened with hydrogen icon)
+- Establishes reusable template system for rapid future asset production
+
+**Recommendation**: Complete Icon Bible design first, then generate these 16 unit sprites using it as the template.
 
 ---
 
