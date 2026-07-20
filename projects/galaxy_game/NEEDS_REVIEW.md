@@ -71,4 +71,28 @@ this file should stay small. Full history stays in status.md.
 
 ---
 
+### 2026-07-19 — Unit Sprite Extraction Visual Validation Gap (Task 2026-07-13-HIGH-FEATURE-UNIT-LAYER-RENDERING)
+**What happened**: Unit sprite extraction completed with 18/18 RSpec tests passing, sprites committed to git (galaxyGame `9ee37c6b`). Post-completion visual review revealed sprites are **misaligned and malformed**: sprite_00.png (row 0, col 0) properly framed ✓, but sprite_15.png (row 3, col 3) badly misaligned — rover shoved into corner with large blank margin, partially cut off ✗
+
+**What I already checked**: 
+- Confirmed extraction math correct (`x = col*256, y = row*256` for 4×4 grid on 1024×1024 image)
+- Confirmed RSpec suite validates only structure (sprite_index_for(), UNIT_SPRITE_MAP entries, JSON export shape)
+- Confirmed RSpec does NOT validate PNG visual content, framing, or completeness
+- Confirmed source image is AI-generated collage (`test-images/ChatGPT Image Mar 4 2026...`), not precision-gridded sprite sheet
+- Confirmed cumulative grid drift: cells near origin (0,0) look fine, cells far from origin show worst misalignment — signature of non-uniform source image
+
+**What needs a second opinion**: 
+- **Are sprites production-ready or placeholder?** Current status: committed as game assets, not flagged as temporary/mock
+- **Should Layer 5 rendering be gated behind feature flag** until proper sprite assets exist?
+- **Re-crop same source with adjusted math (bad idea) vs. pause production use and plan proper asset generation?**
+
+**Recommendation (from async review)**:
+- Option 1 (Recommended): Mark sprites as placeholder, gate Layer 5 rendering
+- Option 2 (Better long-term): Plan proper asset generation as Phase 2 Asset Registry work
+- Option 3 (Not recommended): Re-crop with adjusted offsets — treats symptom, not cause
+
+**Status**: OPEN — needs handoff decision on whether to: (a) keep as placeholder/gate, (b) commit to proper asset regen, or (c) investigate alternative source material
+
+---
+
 (more entries go here as needed)
