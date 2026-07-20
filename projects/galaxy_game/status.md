@@ -25,9 +25,63 @@
   - Tests: build(), sprite_index_for(), extract_unit_grid(), UNIT_SPRITE_MAP validation
   - Factory validation: terrestrial_planet, base_craft, habitat_unit, spatial_location
   - Edge cases: nil input handling, out-of-bounds positions
-- galaxyGame commit: `9ee37c6b`
+- **⚠️ QUALITY ISSUE — POST-REVIEW ESCALATION**: Visual inspection revealed sprite misalignment (sprite_00 OK, sprite_15 severely degraded)
+  - Root cause: Source image is AI-generated collage, not precision-gridded
+  - RSpec insufficient: validates structure only, never inspects PNG visual content
+  - **Flagged in NEEDS_REVIEW.md**: Sprites marked as placeholder pending proper asset generation
+  - **Decision pending**: Gate Layer 5 rendering OR implement design system + regenerate sprites
+- galaxyGame commits: `9ee37c6b` (main work), `0886581c` (placeholder marking)
 
 ---
+
+## 🎯 Phase 2 Foundation: Design System Architecture (2026-07-19)
+
+### Strategic Pivot — ChatGPT Feedback on Sprite Generation
+
+**Problem Identified**: Image model drift during generation
+- First batch (O₂, N₂, CO₂, O₃, CH₄) established consistent style: cream badge, gray text, flat muted colors
+- Hydrogen generation suddenly changed style: blue outline, gradients, modern logo styling instead of game asset styling
+- Root cause: Image models drift after multiple generations without unified design constraints
+
+**Strategic Recommendation**: Build **GalaxyGame Icon Bible** BEFORE generating assets at scale
+- Define master design language (colors, lighting, borders, shadows, materials)
+- Create category shape system (circles for gases, droplets for liquids, hexagons for metals, etc.)
+- Systematize ~250-400 planned resource icons + unit sprites + UI + building icons
+- Prevent style drift; ensure all future assets feel like same game
+
+### New Phase 2 Tasks Created
+
+**2026-07-19-HIGH-DESIGN-GALAXY_GAME_ICON_BIBLE** (NEW — Backlog, HIGH priority):
+- Design foundational visual language for all Phase 2+ assets
+- Deliverables: Icon Bible document (11 sections), color palette, shape templates, lighting rules, material library, naming convention, size standards, category mapping (all ~250 resources assigned)
+- Acceptance: Any asset generated using this bible should be instantly recognizable as "from GalaxyGame"
+- Timeline: 4-6 hours (foundational work before asset production)
+- Blocks: All Phase 2 asset generation (sprites, resource icons, buildings, UI)
+
+**2026-07-19-MEDIUM-FEATURE-UNIT-SPRITE-ASSET-GENERATION** (NEW — Backlog, depends on Icon Bible):
+- Replace misaligned placeholder sprites with properly generated unit/structure sprites
+- Recommended approach: ChatGPT direct generation of 16 individual sprites (256×256px, using Icon Bible design rules)
+- Fallback: Commission proper sprite sheet if ChatGPT generation produces inconsistent results
+- Now depends on Icon Bible being completed first
+- Blocks: Production deployment of Layer 5 rendering
+
+### Rationale
+
+**Without Design System**:
+- Each sprite generation drifts independently (as seen with hydrogen icon)
+- Players see inconsistency and perceive game as unfinished
+- Future asset work requires redoing old assets for consistency
+- Massive backlog as 250+ icons generated without unified blueprint
+
+**With Design System**:
+- All future assets automatically cohere (same colors, lighting, style language)
+- Clear spec for agents/artists/image models to follow
+- Systematic, repeatable production pipeline
+- Feels professional; scales to 300+ asset library
+
+---
+
+
 
 ## 🎯 PHASE 4 WIKI REORGANIZATION — COMPLETE (2026-07-17)
 
