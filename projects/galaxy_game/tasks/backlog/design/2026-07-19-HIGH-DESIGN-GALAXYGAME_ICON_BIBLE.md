@@ -645,9 +645,21 @@ For now, the Material Library in Section 3 is sufficient. As the asset catalog g
 
 ## Related Documentation
 
+- **DESIGN_RESEARCH_INDEX.md**: Maps all 10 ChatGPT research sessions to specific asset generation tasks (read this before generating assets)
 - **UNIFIED_ASSET_CATALOG_ARCHITECTURE.md**: Architectural principle (location-agnostic, canonical naming)
 - **2026-07-19-HIGH-DESIGN-ASSET_REGISTRY_SPECIFICATION.md**: Catalog of what exists (uses this Bible as template)
 - **2026-07-19-MEDIUM-FEATURE-UNIT-SPRITE-ASSET-GENERATION.md**: First sprites follow this Bible's design rules
+
+## Using This Document
+
+**For Asset Generation**: Read Icon Bible first for high-level philosophy, then reference DESIGN_RESEARCH_INDEX.md for detailed session-specific specifications.
+
+**Example Workflow**:
+1. Icon Bible Section 7 (Tech Level Progression) describes Mk1→Mk5 visual evolution
+2. DESIGN_RESEARCH_INDEX.md Session 6 provides exact visual language for each tech level
+3. Reference Session 6 research file for manufacturing method visual characteristics
+4. Use Session 9 prompt template to generate asset
+5. Follow Icon Bible Section 11 (Acceptance Criteria) for validation
 
 ---
 
