@@ -9,9 +9,46 @@ ACDA Portal — WVU Libraries institutional repository and content management sy
 ---
 
 ## Current Status
-- **Status:** ✅ Application Running Locally — Dependency Cleanup Phase
-- **Last Session:** 2026-07-15 (gem fixes + docker-compose optimization)
-- **Next Phase:** Branch alignment + Modernization execution (PostgreSQL migration)
+- **Status:** ⏳ Waiting for DevOps Approval — Dev VM Maintenance Window
+- **Last Session:** 2026-07-17 (branch cleanup complete, good_job planning)
+- **Blocker:** Waiting on DevOps to approve dev VM downtime for updates
+- **Next Phase:** Once approved, sync dev VM to main, then sidekiq → good_job testing
+
+---
+
+## Immediate Work (This Week/Next)
+
+### Phase 1a: Sidekiq → good_job Migration
+**Goal:** Align with Samvera community standards (good_job is faster, simpler)
+
+**Tasks:**
+1. Update Gemfile:
+   - Remove: `sidekiq`, `sidekiq-cron`, `sidekiq-failures`, `sidekiq-unique-jobs`, `redis`
+   - Add: `good_job ~> 3.0`
+
+2. Configure good_job:
+   - Create `config/good_job.yml`
+   - Update `config/application.rb` (`config.active_job.queue_adapter = :good_job`)
+   - Update `config/sidekiq.yml` → remove or replace with good_job config
+
+3. Update docker-compose:
+   - Remove `redis` service (good_job doesn't need it)
+   - Remove `workers` service (good_job runs in-process or separate pod, not separate container)
+   - Simplify job configuration
+
+4. Test:
+   - Verify jobs execute
+   - Check scheduler still works (cron tasks)
+   - Monitor performance
+
+5. Documentation:
+   - Update README with good_job setup instructions
+   - Document any behavior changes from sidekiq
+
+**Timeline:** 2-3 days (straightforward gem swap)
+
+### Phase 1b: PostgreSQL Migration (Deferred)
+Will proceed after good_job is stable in production/staging.
 
 ---
 
@@ -53,50 +90,34 @@ ACDA Portal — WVU Libraries institutional repository and content management sy
 
 ## Critical Issue: Branch Misalignment
 
-### Problem
-- **Local branch** (`main` or current working branch): Has today's fixes (Gemfile updated, docker-compose optimized)
-- **Dev VM branch**: Different branch, cannot auto-merge
-- **Blocker**: Cannot proceed with modernization Phase 1 setup until branches are aligned
-
-### Action Required
-1. **Audit branches**: Determine what's on dev VM vs. local
-2. **Reconcile differences**: 
-   - Pull all fixes into unified branch
-   - OR rebase dev VM branch onto main with today's fixes
-3. **Test unified branch**: Verify application runs on dev VM with aligned code
-4. **Then proceed**: With modernization Phase 1 tasks
-
-### Risks if Not Fixed
-- Dev VM tests use old Gemfile (might fail or give false results)
-- Modernization work bifurcates (different code paths)
-- Merge conflicts later (expensive to resolve)
+### ✅ RESOLVED (2026-07-17)
+- **Branch `fix/bundler-git-gem-caching` deleted** — was stale, had regressions
+- Contained outdated code:
+  - Removed blacklight gem version pins (undoing our recent fixes)
+  - Added back deprecated `speedy-af` gem
+  - Downgraded Fedora from 7 back to 6
+  - Had no production value
+- **Resolution**: Deleted both locally and from GitHub
+- **Result**: `main` is now the unified, clean branch for all development
 
 ---
 
 ## Active Tasks
+
 ### Immediate (This Week)
-1. **Branch Alignment** — Reconcile dev VM branch with main
-2. **Fedora 7 Staging Validation** — Drop-in replacement done locally, needs staging environment testing (before production)
-3. **Remove speedyAF gem** — Unsupported, tested locally, safe to remove
+1. **Verify dev VM works on main** — Pull latest, test application startup
+2. **good_job Migration (Phase 1a)** — Replace sidekiq with good_job
+   - Update Gemfile (remove sidekiq, redis; add good_job)
+   - Configure good_job in Rails
+   - Update docker-compose (remove redis, simplify workers)
+   - Test and verify jobs work
+3. **Clean up Sidekiq references** — Remove from config, docs, environment files
 
-### Phase 1: Modernization Setup (1-2 weeks, starts after branch alignment)
+### Phase 1b: PostgreSQL Migration (Deferred)
 - [ ] Create PostgreSQL schema (congressional_records table)
-- [ ] Set up good_job configuration
-- [ ] Prepare data export/import Rake tasks
-- [ ] Update docker-compose for PG (remove Fedora, redis)
-
-### Phase 2: Data Migration (2-3 weeks)
-- [ ] Export records from Fedora
-- [ ] Import files to ActiveStorage
-- [ ] Reindex Solr
-- [ ] Verify data integrity
-
-### Phase 3: Model Refactoring (2-3 weeks)
-- [ ] Create CongressionalRecord AR model
-- [ ] Simplify indexing
-- [ ] Update controllers/views/jobs
-
-### Phases 4-6: Jobs → Testing → Cutover (1-2 weeks each)
+- [ ] Set up data export/import Rake tasks
+- [ ] Prepare migration from Fedora
+- Starts after good_job is proven stable
 
 ---
 
