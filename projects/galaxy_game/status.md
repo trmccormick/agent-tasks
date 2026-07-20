@@ -1,8 +1,31 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-17 — Phase 4 Wiki Complete + Layer Ownership Resolved
+**Last Updated:** 2026-07-19 — Unit Layer Rendering Complete + Sprites Extracted
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Completion (2026-07-19)
+✅ **Unit/Structure Layer Rendering & Sprite Integration** — COMPLETED
+- Task: `2026-07-13-HIGH-FEATURE-UNIT-LAYER-RENDERING.md` completed
+- **TerrainDataBuilder Service**: New service exports terrain_data with unit_grid field (16-sprite UNIT_SPRITE_MAP)
+  - Handles SpatialLocation grid position lookup with fallback to CelestialLocation lat/lng conversion
+  - Grid extraction: 100x100 2D array of [sprite_index, unit_class, owner_id]
+- **SurfaceView.js Layer 5 Rendering**: Unit render pass added to drawUnits() method
+  - Executes after terrain/biome/resource layers (top-most layer before debug overlay)
+  - Viewport culling applied; sprite images cached in memory
+  - Show Units toggle button added to layer controls (surface.html.erb)
+- **Sprite Extraction**: All 16 unit sprites extracted (256x256px PNG each)
+  - Source: 4x4 grid (1024x1024) from ChatGPT tileset
+  - Method: ImageMagick -crop with +repage
+  - Location: `/app/assets/images/unit_sprites/sprite_00.png` through `sprite_15.png`
+  - Verified: 16 files created, sizes 99KB-144KB each (content-dependent)
+- **RSpec Validation**: TerrainDataBuilder spec suite — 18 examples, 0 failures
+  - Tests: build(), sprite_index_for(), extract_unit_grid(), UNIT_SPRITE_MAP validation
+  - Factory validation: terrestrial_planet, base_craft, habitat_unit, spatial_location
+  - Edge cases: nil input handling, out-of-bounds positions
+- galaxyGame commit: `9ee37c6b`
 
 ---
 
