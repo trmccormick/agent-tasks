@@ -67,7 +67,9 @@ this file should stay small. Full history stays in status.md.
 - Should baseline be updated to 4343/4 with details on what caused growth?
 - orbital_shipyard_service_spec.rb:129 is NEW — did something change in that service recently?
 
-**Status**: OPEN — needs triage before updating status.md baseline further
+**Status**: RESOLVED (2026-07-19) — Root cause investigation complete.
+- **planetary_monitor_spec.rb:171**: Test data bug. Line 165 creates `'elevation' => [1.0]` (1D array with single Float). `extract_width` in TerrainDataBuilder line 88 falls through to elevation, calls `.first` → gets Float `1.0`, then `.length` on Float → NoMethodError. **Fix:** Change line 165 to `'elevation' => [[1.0]]` (2D grid) to match code's expectation that elevation is always a grid of rows.
+- **orbital_shipyard_service_spec.rb:129**: NOT a current failure. Ran spec individually — 25 examples, 0 failures. Was never a regression or has already been fixed by a prior commit. The "4 failures" baseline in this entry is outdated.
 
 ---
 
