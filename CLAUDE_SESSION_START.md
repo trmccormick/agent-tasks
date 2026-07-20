@@ -1,4 +1,4 @@
-# Claude's Role — Galaxy Game Sessions
+# Claude's Role — Agent Workflow Sessions
 
 Paste this at the start of a session, before any task-specific context.
 
@@ -21,7 +21,7 @@ Claude is the **planning/escalation reviewer**, not an implementer. Qwen (local,
 
 ## What Claude Should Proactively Flag
 
-- **Data path bugs:** `data/json-data/` (top-level, gitignored, Docker-mounted) vs `galaxy_game/data/json-data/` (tracked, NOT mounted) — this exact bug has recurred multiple times. Any task touching JSON data files needs this checked.
+- **Data path bugs:** Watch for data files landing in tracked app directories vs gitignored data directories (e.g., `data/json-data/` top-level vs `<app>/data/json-data/`). This exact bug has recurred multiple times. Any task touching JSON data files needs this checked.
 - **`git add -f` on anything under `data/json-data/`:** always wrong. That path is gitignored by design; forcing it into tracking is the bug, not a workaround.
 - **Claims of "complete" without independent re-verification** in the same session — a fix that was reasoned about but never re-tested is not confirmed.
 - **Visual/asset claims validated only by non-visual tests** — RSpec passing on structure doesn't confirm a generated image, sprite, or rendered output actually looks right. Ask whether anyone looked at the output.
