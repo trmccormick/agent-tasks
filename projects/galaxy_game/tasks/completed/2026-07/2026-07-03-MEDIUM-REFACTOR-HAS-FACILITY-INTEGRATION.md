@@ -1,11 +1,11 @@
 ---
-status: active
+status: completed
 priority: MEDIUM
 type: refactor
 system_domain: AI_MANAGER | MARKET
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
-blocked_reason: Design mismatch — `can_produce_locally?` hardcoded values don't match actual codebase unit types and resource naming. Requires research before implementation.
+completed_date: 2026-07-20
 ---
 
 ## 🔴 BLOCKED: Design Issues Require Research
