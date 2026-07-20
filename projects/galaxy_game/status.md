@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-19 — Unit Layer Rendering Complete + Sprites Extracted
+**Last Updated:** 2026-07-19 — Design System Architecture Complete (Icon Bible v2 + Philosophy + Pipeline)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -7,7 +7,87 @@
 ---
 
 ## 🎯 Latest Completion (2026-07-19)
+✅ **Design System Architecture + Icon Bible v2** — COMPLETED
+- **Icon Bible v2**: Comprehensive visual language foundation complete (9.5/10 quality per ChatGPT review)
+  - Asset hierarchy reorganization: Equipment/Robots separated from Structures/Vehicles
+  - Added Animation Language (category-specific rules for pulse, ripple, flicker, blink, etc.)
+  - Added Damage States (physical degradation progression: pristine → destroyed)
+  - Added Visual Complexity Levels (L0-L5 from map symbols to promotional art)
+  - Added Prompt Templates (parametric generation with 5-10 variables)
+  - Expanded production pipeline: 10→11 stages (added animation testing, damage validation)
+  - All 14 acceptance criteria documented and complete
+  - Location on git: `/agent-tasks/projects/galaxy_game/tasks/backlog/design/2026-07-19-HIGH-DESIGN-GALAXYGAME_ICON_BIBLE.md`
+  - Commits: `7a8f1a2`, `300f62e`, `6eb5203`
+
+- **Design Research Index**: Maps 10 ChatGPT sessions to asset generation tasks (NEW)
+  - Session-by-session breakdown of which research applies to which asset types
+  - Priority-ordered 16-task generation workflow
+  - Cross-session themes (consistency constraints, parametric generation, functional design, composition)
+  - Reference table with priority levels (HIGH/MEDIUM)
+  - **Purpose**: Bridge between Icon Bible philosophy and research specifications
+  - Location: `/agent-tasks/projects/galaxy_game/tasks/backlog/design/DESIGN_RESEARCH_INDEX.md`
+  - Commit: `b5f60d7`
+
+- **Visual Philosophy**: Foundational design principles (NEW)
+  - 9 core pillars: Grounded, Functional, Progressive, Modular, Industrial, Human, Simulation-First, Location-Agnostic, Consistency
+  - Answers "What should this game feel like?" at philosophical level (not technical specs)
+  - Drives all downstream Icon Bible + research specifications
+  - Location: `/agent-tasks/projects/galaxy_game/tasks/backlog/design/VISUAL_PHILOSOPHY.md`
+  - Commit: `9f2ca76`
+
+- **Design System Architecture**: Complete system overview (NEW)
+  - 4-level hierarchy: Philosophy → Framework (Icon Bible) → Specifications (Research Index) → Implementation (Sessions)
+  - 7-step asset generation pipeline: JSON → Prompt → Generation → Validation → Asset Library
+  - Shows shift from "art pipeline" to "asset generation system"
+  - Establishes reproducible, automated asset creation process
+  - Location: `/agent-tasks/projects/galaxy_game/tasks/backlog/design/DESIGN_SYSTEM_ARCHITECTURE.md`
+  - Commit: `8fb76d1`
+
+- **Research Sources Documentation**: All 10 ChatGPT sessions formally attributed (NEW)
+  - Added `source_materials` field to Icon Bible YAML header
+  - Added "Research Sources" section mapping 10 design principles to their ChatGPT session origins
+  - Establishes clear lineage between ChatGPT feedback and Icon Bible structure
+  - Commits: `7a8f1a2`, `300f62e`
+
+- **Key Insight** (ChatGPT feedback): Shifted from "design individual assets" to "design the system that generates assets"
+  - Result: Philosophy-driven architecture enables parametric generation of 300+ consistent assets
+  - Scales infinitely: add new planet = JSON metadata only, zero asset regeneration
+  - All future assets inherit consistency through specifications, not manual enforcement
+
+---
+
+## 🎯 Previous Completion (2026-07-19)
 ✅ **Unit/Structure Layer Rendering & Sprite Integration** — COMPLETED
+- Task: `2026-07-13-HIGH-FEATURE-UNIT-LAYER-RENDERING.md` completed
+- **TerrainDataBuilder Service**: New service exports terrain_data with unit_grid field (16-sprite UNIT_SPRITE_MAP)
+  - Handles SpatialLocation grid position lookup with fallback to CelestialLocation lat/lng conversion
+  - Grid extraction: 100x100 2D array of [sprite_index, unit_class, owner_id]
+- **SurfaceView.js Layer 5 Rendering**: Unit render pass added to drawUnits() method
+  - Executes after terrain/biome/resource layers (top-most layer before debug overlay)
+  - Viewport culling applied; sprite images cached in memory
+  - Show Units toggle button added to layer controls (surface.html.erb)
+- **Sprite Extraction**: All 16 unit sprites extracted (256x256px PNG each)
+  - Source: 4x4 grid (1024x1024) from ChatGPT tileset
+  - Method: ImageMagick -crop with +repage
+  - Location: `/app/assets/images/unit_sprites/sprite_00.png` through `sprite_15.png`
+  - Verified: 16 files created, sizes 99KB-144KB each (content-dependent)
+- **RSpec Validation**: TerrainDataBuilder spec suite — 18 examples, 0 failures
+  - Tests: build(), sprite_index_for(), extract_unit_grid(), UNIT_SPRITE_MAP validation
+  - Factory validation: terrestrial_planet, base_craft, habitat_unit, spatial_location
+  - Edge cases: nil input handling, out-of-bounds positions
+- **⚠️ QUALITY ISSUE — POST-REVIEW ESCALATION**: Visual inspection revealed sprite misalignment (sprite_00 OK, sprite_15 severely degraded)
+  - Root cause: Source image is AI-generated collage, not precision-gridded
+  - RSpec insufficient: validates structure only, never inspects PNG visual content
+  - **Flagged in NEEDS_REVIEW.md**: Sprites marked as placeholder pending proper asset generation
+  - **Decision pending**: Gate Layer 5 rendering OR implement design system + regenerate sprites
+- galaxyGame commits: `9ee37c6b` (main work), `0886581c` (placeholder marking)
+
+---
+
+---
+
+## 🎯 Earlier Work This Session (2026-07-19)
+✅ **Unit/Structure Layer Rendering & Sprite Integration** — COMPLETED (Earlier in this date)
 - Task: `2026-07-13-HIGH-FEATURE-UNIT-LAYER-RENDERING.md` completed
 - **TerrainDataBuilder Service**: New service exports terrain_data with unit_grid field (16-sprite UNIT_SPRITE_MAP)
   - Handles SpatialLocation grid position lookup with fallback to CelestialLocation lat/lng conversion
