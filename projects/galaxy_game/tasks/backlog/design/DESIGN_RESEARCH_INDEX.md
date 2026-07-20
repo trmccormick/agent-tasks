@@ -3,11 +3,21 @@ date_created: 2026-07-19
 type: DESIGN_REFERENCE
 status: active
 purpose: Map ChatGPT research sessions to asset generation specifications
+hierarchy_level: 2 (sits below VISUAL_PHILOSOPHY.md, above Icon Bible)
 ---
 
 # Design Research Index — Asset Generation Guidance
 
-This document maps the 10 ChatGPT research sessions to **specific asset generation work**. When creating assets, reference the corresponding session(s) for detailed specifications.
+**Foundation**: [VISUAL_PHILOSOPHY.md](VISUAL_PHILOSOPHY.md) (the "why")
+
+This document is the bridge between philosophy and implementation. It maps the 10 ChatGPT research sessions to **specific asset generation work**.
+
+When creating assets:
+1. Read VISUAL_PHILOSOPHY.md (foundation)
+2. Reference this index for session mappings
+3. Read detailed research session file for specifications
+4. Use Icon Bible for framework
+5. Generate following research specifications
 
 ---
 
