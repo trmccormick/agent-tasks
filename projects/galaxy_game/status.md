@@ -36,6 +36,33 @@
 
 ## 🎯 Phase 2 Foundation: Design System Architecture (2026-07-19)
 
+### CRITICAL ARCHITECTURAL PRINCIPLE — Location-Agnostic Assets
+
+**ChatGPT Insight**: Resources should be named by TYPE, not by planet of origin.
+
+**Rule**:
+- ❌ NEVER: "Lunar Regolith", "Mars Habitat", "Venus Solar Panel"
+- ✅ ALWAYS: "Regolith", "Habitat", "Solar Panel Mk1/Mk2/Mk3"
+- **Location effects** (where resource appears, extraction difficulty) come from game data and simulation
+- **Asset effects** (how it looks, its icon) are UNIVERSAL across all locations
+
+**Example**:
+- Same "Regolith" icon everywhere (Luna, Mars, Mercury, Venus, future planets)
+- Luna: regolith = abundant, easy extraction
+- Mars: regolith = abundant, moderate extraction
+- Mercury: regolith = common, hard extraction (simulation parameters vary, NOT asset)
+- Venus: regolith = rare, very hard extraction
+
+**Benefits**:
+- ~250 canonical assets instead of 1000+ location-specific duplicates
+- Add new planet = just add location metadata, reuse existing icons
+- Player learns unified visual language (not "each planet looks different")
+- Scales infinitely to multi-system expansion
+
+**Reference**: `design/UNIFIED_ASSET_CATALOG_ARCHITECTURE.md` (new design guide)
+
+---
+
 ### Strategic Pivot — ChatGPT Feedback on Sprite Generation
 
 **Problem Identified**: Image model drift during generation
@@ -46,15 +73,17 @@
 **Strategic Recommendation**: Build **GalaxyGame Icon Bible** BEFORE generating assets at scale
 - Define master design language (colors, lighting, borders, shadows, materials)
 - Create category shape system (circles for gases, droplets for liquids, hexagons for metals, etc.)
-- Systematize ~250-400 planned resource icons + unit sprites + UI + building icons
+- Organize ~250-300 resource catalog using location-agnostic canonical naming
 - Prevent style drift; ensure all future assets feel like same game
 
 ### New Phase 2 Tasks Created
 
 **2026-07-19-HIGH-DESIGN-GALAXY_GAME_ICON_BIBLE** (NEW — Backlog, HIGH priority):
 - Design foundational visual language for all Phase 2+ assets
-- Deliverables: Icon Bible document (11 sections), color palette, shape templates, lighting rules, material library, naming convention, size standards, category mapping (all ~250 resources assigned)
+- **CRITICAL DELIVERABLE**: Complete unified asset catalog (all ~250-300 resources categorized with canonical names, zero location-specific duplicates)
+- Additional deliverables: Icon Bible document (10 sections), color palette, shape templates, lighting rules, material samples, naming convention, size standards
 - Acceptance: Any asset generated using this bible should be instantly recognizable as "from GalaxyGame"
+- Quality bar: No "Lunar/Martian/Venusian" naming in asset library; location effects documented in simulation table, not asset duplication
 - Timeline: 4-6 hours (foundational work before asset production)
 - Blocks: All Phase 2 asset generation (sprites, resource icons, buildings, UI)
 
@@ -62,6 +91,7 @@
 - Replace misaligned placeholder sprites with properly generated unit/structure sprites
 - Recommended approach: ChatGPT direct generation of 16 individual sprites (256×256px, using Icon Bible design rules)
 - Fallback: Commission proper sprite sheet if ChatGPT generation produces inconsistent results
+- Sprites must follow location-agnostic naming: "Extractor", "Habitat", "Rover" (NOT "Lunar Extractor", "Mars Habitat")
 - Now depends on Icon Bible being completed first
 - Blocks: Production deployment of Layer 5 rendering
 
@@ -71,13 +101,15 @@
 - Each sprite generation drifts independently (as seen with hydrogen icon)
 - Players see inconsistency and perceive game as unfinished
 - Future asset work requires redoing old assets for consistency
+- Accidentally create location-specific duplicates ("Mars version", "Venus version")
 - Massive backlog as 250+ icons generated without unified blueprint
 
-**With Design System**:
+**With Design System + Unified Catalog**:
 - All future assets automatically cohere (same colors, lighting, style language)
+- No location-specific duplication (canonical names enforce single asset per resource type)
 - Clear spec for agents/artists/image models to follow
 - Systematic, repeatable production pipeline
-- Feels professional; scales to 300+ asset library
+- Scales infinitely: add Proxima Centauri → zero asset regeneration needed (only metadata)
 
 ---
 
