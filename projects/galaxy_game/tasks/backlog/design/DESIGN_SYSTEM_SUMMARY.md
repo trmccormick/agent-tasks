@@ -113,6 +113,11 @@ Level 3: REFERENCE (Organization)
 - [x] UNIFIED_ASSET_CATALOG_ARCHITECTURE.md — naming principle
 - [x] EXISTING_ASSET_AUDIT.md — ~250+ pre-Icon Bible assets inventoried
 
+### ✅ Complete (Asset Generation Pipeline)
+- [x] VISUAL_DEFINITION_TEMPLATE.md — canonical template for appearance (separate from Blueprint/Operational)
+- [x] ASSET_GENERATION_ARCHITECTURE.md — 7-stage pipeline specification
+- [x] BLUEPRINT_SCHEMA_V2_REVIEW.md — task spec for schema evolution review
+
 ### 🔴 Pending (Implementation)
 - [ ] Unit sprites regeneration (16 files) — first implementation of design system
 - [ ] Corporate logos regeneration (~30 files) — Session 5 + Session 7 specs
@@ -120,6 +125,7 @@ Level 3: REFERENCE (Organization)
 - [ ] Biome tiles alignment (14 → ~16 canonical) — Session 10 compression
 - [ ] Catalog components regeneration (~200+ files) — Icon Bible hierarchy
 - [ ] Tech tree icons — Session 6 tech level progression
+- [ ] Blueprint Schema v2 review (Qwen task) — add visualization section to all blueprints
 
 ---
 
