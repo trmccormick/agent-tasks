@@ -5,7 +5,7 @@ status: backlog
 priority: MEDIUM
 type: FEATURE
 component: Asset Generation
-phase: Phase 2 - Asset Registry
+phase: Phase 2 - Sprite Generation
 relates_to:
   - 2026-07-13-HIGH-FEATURE-UNIT-LAYER-RENDERING (parent task, blocks visual deployment)
   - 2026-07-19-HIGH-DESIGN-GALAXYGAME_ICON_BIBLE (PREREQUISITE — sprites must follow design system)

@@ -5,7 +5,7 @@ status: backlog
 priority: HIGH
 type: DESIGN
 component: Asset System Architecture
-phase: Phase 2 - Asset Foundation
+phase: Design System Infrastructure
 relates_to:
   - 2026-07-19-MEDIUM-FEATURE-UNIT-SPRITE-ASSET-GENERATION (blocks this task)
   - 2026-07-19-HIGH-DESIGN-ASSET_REGISTRY_SPECIFICATION (companion document)
