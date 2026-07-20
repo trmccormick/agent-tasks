@@ -344,6 +344,28 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 
 ---
 
+## 🎯 Latest Completion (2026-07-17)
+✅ **CanonicalMapService — Biome Alias Resolution & Canonical Tile Mapping** — COMPLETE
+- Task: `2026-07-17-HIGH-PHASE1-CANONICALMAPSERVICE.md` moved backlog → active → completed
+- Service file: `app/services/canonical_map_service.rb` (218 lines)
+- Config file: `config/canonical_biomes.json` (63 lines, documentation)
+- Test file: `spec/services/canonical_map_service_spec.rb` (554 lines, 123 examples)
+- All 4 fixes applied:
+  - **Fix 1**: Added `'ocean'` and `'mountains'` to CANONICAL_TILE_MAP with `layer: :terrain`; fixed `'montane'` from `:biome` → `:terrain`
+  - **Fix 2**: Fixed `'jungle'` alias from `'tropical_jungle'` (invalid key) → `'tropical_rainforest'` (valid key)
+  - **Fix 3**: Changed all canonical values from filenames (`'forest.png'`) to biome keys (`'forest'`) — name resolution only, not asset selection
+  - **Fix 4**: Fixed `des_class` typo to `described_class`; added `is_terrain?('ocean')` and `is_terrain?('mountains')` tests
+- Deliverables:
+  - 32 aliases → 17 canonical keys (after adding ocean/mountains)
+  - CANONICAL_TILE_MAP, TERRAIN_ASSETS, HYDROSPHERE_TILES, ALIAS_MAP (all frozen)
+  - normalize(), resolve_alias(), get_layer(), is_terrain?(), valid?(), tiles_for_layer() methods
+  - RSpec test suite: **123 examples, 0 failures**
+- No substring fallbacks in service code — all lookups explicit
+- Acceptance criteria: ✅ All met
+- galaxyGame commit: `01f5641d` (892 insertions across 3 files)
+
+---
+
 ## 🎯 Latest Completion (2026-07-19)
 ✅ **Precursor Mission Manifest — Variance-Based Yield Correction** — COMPLETED
 - Fixed `precursor_mission_manifest_v1.json`: replaced hardcoded delivery quantities with formula-based yield data shape
