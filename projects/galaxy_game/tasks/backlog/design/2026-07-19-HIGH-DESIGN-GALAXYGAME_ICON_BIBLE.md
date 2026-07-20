@@ -10,6 +10,9 @@ relates_to:
   - 2026-07-19-MEDIUM-FEATURE-UNIT-SPRITE-ASSET-GENERATION (blocks this task)
   - 2026-07-19-HIGH-DESIGN-ASSET_REGISTRY_SPECIFICATION (companion document)
   - UNIFIED_ASSET_CATALOG_ARCHITECTURE.md (architectural principle)
+source_materials:
+  - 10 ChatGPT design review sessions (July 2026)
+  - Analysis: Asset categorization, visual consistency, AI generation standards
 ---
 
 # GalaxyGame Icon Bible — Visual Language Definition
@@ -21,6 +24,25 @@ The Icon Bible defines **HOW everything should look** — a stable, professional
 **Companion Document**: Asset Registry Specification (`2026-07-19-HIGH-DESIGN-ASSET_REGISTRY_SPECIFICATION.md`) defines **WHAT assets exist** and serves as the single source of truth for all game content.
 
 **Broader Context**: This Icon Bible is the foundational visual philosophy. As the project matures, it will become Section 2 of a complete Art Bible that includes Material Standards, Typography, Animation Rules, Corporate Branding, and AI Prompt Templates.
+
+---
+
+## Research Sources: 10 ChatGPT Design Review Sessions (July 2026)
+
+This Icon Bible synthesizes insights from **10 ChatGPT design review sessions** focusing on:
+
+1. **Asset Categorization** — Distinction between Resources → Items → Equipment → Structures → Vehicles (not monolithic "units")
+2. **Location-Agnostic Naming** — Resources named by TYPE, manufacturing origin for visual variation (not planet-specific asset duplication)
+3. **Visual Language Stability** — Shape language (circle→gas, droplet→liquid, hex→metal) that survives player ignorance of labels
+4. **Material Consistency** — Defined material library with lighting/finish standards applied uniformly
+5. **Tech Level Progression** — Clear Mk1→Mk5 visual evolution showing capability without separate asset creation
+6. **Animation Standardization** — Prevent drift by defining animation rules per category (pulse, ripple, flicker, blink, etc.)
+7. **Damage State Model** — Physical degradation progression instead of separate damage assets
+8. **Complexity Levels** — L0-L5 framework for different use cases (map symbol vs. promotional art) from single master asset
+9. **Prompt Template Standardization** — Reduce AI generation drift through structured prompt structure
+10. **Production Pipeline Formalization** — 11-stage repeatable workflow ensuring consistency across 300+ planned assets
+
+All 10 principles inform this document's structure, acceptance criteria, and implementation guidance.
 
 ---
 
