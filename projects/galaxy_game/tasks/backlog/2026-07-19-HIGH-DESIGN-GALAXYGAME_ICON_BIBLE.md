@@ -38,7 +38,7 @@ Iron (resource)
 ├─ Earth Manufactured → cast/rolled appearance
 ├─ Lunar Printed → additive layer lines
 ├─ Asteroid Refined → rough, unpolished
-└─ All reference same canonical "METAL_IRON" asset ID
+└─ All reference same canonical "RES_METAL_IRON" asset ID
     Performance varies by planet (simulation), appearance varies by origin (visual)
 ```
 
@@ -403,7 +403,7 @@ Every asset follows this pipeline. Artists/AI systems follow it in order:
 
 Status indicators are OVERLAYS, not separate assets:
 
-- **Damaged**: Red X (20°angle) overlaid with 60% opacity
+- **Damaged**: Red X (20° angle) overlaid with 60% opacity
 - **Locked**: Lock icon in top-right, 40% opacity
 - **Low Stock**: Yellow warning triangle, top-left corner
 - **Research Incomplete**: Question mark, center, 50% opacity
@@ -422,7 +422,7 @@ Status indicators are OVERLAYS, not separate assets:
 **Icon Bible Acceptance** (this document):
 - [ ] All 8 sections complete and documented
 - [ ] Color families defined with semantic meaning
-- [ ] Shape language established (circle→gas, droplet→liquid, etc.)
+- [ ] Shape language established (circle→gas, droplet→liquid, hex→metal, etc.)
 - [ ] 12+ material definitions documented with visual examples
 - [ ] Lighting standard documented (45° top-left, consistent shadows)
 - [ ] Tech level progression (Mk1-Mk5) defined visually

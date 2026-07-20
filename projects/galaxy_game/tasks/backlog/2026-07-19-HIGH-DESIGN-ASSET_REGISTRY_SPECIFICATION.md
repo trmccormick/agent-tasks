@@ -7,7 +7,7 @@ type: DESIGN
 component: Asset System Architecture
 phase: Phase 2 - Asset Foundation
 relates_to:
-  - 2026-07-19-HIGH-DESIGN-GALAXYGAME_ICON_BIBLE.md (companion document - HOW assets look)
+  - 2026-07-19-HIGH-DESIGN-GALAXYGAME_ICON_BIBLE (companion document - HOW assets look)
   - UNIFIED_ASSET_CATALOG_ARCHITECTURE.md (architectural principle)
 ---
 
