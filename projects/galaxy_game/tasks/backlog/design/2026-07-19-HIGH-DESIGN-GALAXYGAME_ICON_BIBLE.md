@@ -16,9 +16,11 @@ relates_to:
 
 ## Executive Summary
 
-The Icon Bible defines **HOW everything should look** — a stable, professional visual language that applies across all GalaxyGame assets. This document NEVER changes once approved (barring major redesigns). Asset cataloging and growth happens in companion documents (Resource Catalog, Unit Catalog, etc.).
+The Icon Bible defines **HOW everything should look** — a stable, professional visual language that applies across all GalaxyGame assets. This document is foundational to a broader **GalaxyGame Art Bible** (which will eventually include Material Bible, Color Bible, Typography, Animation Language, and Prompt Standards). This Icon Bible NEVER changes once approved (barring major redesigns). Asset cataloging and growth happens in companion documents (Resource Catalog, Unit Catalog, etc.).
 
 **Companion Document**: Asset Registry Specification (`2026-07-19-HIGH-DESIGN-ASSET_REGISTRY_SPECIFICATION.md`) defines **WHAT assets exist** and serves as the single source of truth for all game content.
+
+**Broader Context**: This Icon Bible is the foundational visual philosophy. As the project matures, it will become Section 2 of a complete Art Bible that includes Material Standards, Typography, Animation Rules, Corporate Branding, and AI Prompt Templates.
 
 ---
 
@@ -63,35 +65,40 @@ All GalaxyGame assets organize into these categories (NEVER mixed):
 
 ### Manufactured Items
 - Materials (Polymer, Plastic, Kevlar, Carbon Fiber, Composite, Glass, Ceramic, Steel, Alloys)
-- Components (Pipes, Cables, Frames, Vessels, Airlocks, Tanks, Batteries, etc.)
+- Components (Pipes, Cables, Frames, Vessels, Airlocks, Tanks, Battery Modules, etc.)
 - Electronics (Boards, CPUs, Memory, Sensors, Capacitors, Diodes, LEDs, etc.)
 
-### Units (Mobile Equipment)
-- Extractor (mining)
-- Habitat (living quarters)
-- Fabricator (manufacturing)
-- Computer (data center)
-- Battery (energy storage)
-- Propulsion (thruster/engine)
-- Storage Depot (cargo)
-- Robot (autonomous worker)
+### Equipment (Mobile Production/Support)
+- Extractor (mining equipment)
+- Fabricator (manufacturing equipment)
+- Life Support (atmospheric/pressure management)
+- Battery Module (energy storage unit)
+- Processing Equipment (refinement/conversion)
 
 ### Structures (Stationary Installations)
-- Power Plants (solar, thermal, nuclear)
-- Labs/Research Facilities
-- Habitats/Hubs (Inflatable, Umbilical, etc.)
-- Mining Operations
-- Processing Facilities
-- Storage Depots
-- Docks/Landing Pads
-- Greenhouses/Agricultural
+- Power Systems (solar, thermal, nuclear, reactors)
+- Habitats (living quarters, hubs, umbilical stations)
+- Labs/Research Facilities (science, engineering, medical)
+- Mining Operations (surface extraction sites)
+- Processing Plants (refinement, conversion)
+- Storage Facilities (cargo, resources, inventory)
+- Docks/Landing Pads (spacecraft operations)
+- Greenhouses/Agricultural (food production)
+- Factories/Manufacturing Plants
 
 ### Vehicles (Craftable Mobiles)
-- Rovers (wheeled)
-- Harvesters (extraction)
-- Ships/Shuttles (spacecraft)
-- Satellites (orbital)
-- Tugs/Tenders (specialized)
+- Rovers (wheeled, surface exploration)
+- Shuttles (spacecraft, atmospheric/orbital)
+- Tugs (specialty transport, orbital mechanics)
+- Satellites (automated orbital operations)
+- Construction Vehicles (automated building equipment)
+
+### Robots (Autonomous Equipment)
+- Construction Robots
+- Mining Robots
+- Survey Robots
+- Maintenance Robots
+- Agricultural Robots
 
 ### Organizations
 - Faction Logos
@@ -214,6 +221,8 @@ Every rendered asset uses one of these material definitions:
 
 **Rule**: Every asset references ONE of these materials. Consistency enforced by asset generation system.
 
+**Future**: This material library will eventually become its own **Material Bible** document as the project expands. For now, use these definitions as reference.
+
 ### Lighting Rules (Standard, Unchanging)
 
 - **Light Direction**: 45° from top-left (consistent across all assets)
@@ -255,7 +264,7 @@ Every rendered asset uses one of these material definitions:
 
 ---
 
-## 4. Tech Level Progression (Mk1 → Mk5)
+## 7. Tech Level Progression (Mk1 → Mk5)
 
 Every item/unit/structure has tech level variants. Visual progression must be clear:
 
@@ -298,7 +307,7 @@ Every item/unit/structure has tech level variants. Visual progression must be cl
 
 ---
 
-## 5. Manufacturing Origin Variation (Instead of Location)
+## 8. Manufacturing Origin Variation (Instead of Location)
 
 Instead of planet-specific assets, show manufacturing method:
 
@@ -324,7 +333,7 @@ Steel Beam
 
 ---
 
-## 6. Asset ID System (Canonical, Stable)
+## 9. Asset ID System (Canonical, Stable)
 
 All assets identified by ID, never by filename. Filenames can change; IDs do not.
 
@@ -361,41 +370,44 @@ ORG_CORPORATION_ICC     (organization: corporation, ICC)
 
 ---
 
-## 7. Production Pipeline (Repeatable Workflow)
+## 6. Production Pipeline (Repeatable Workflow)
 
 Every asset follows this pipeline. Artists/AI systems follow it in order:
 
 ```
-1. Icon Bible
+1. Icon Bible (define visual language)
    ↓
-2. Asset Registry (defines what exists)
+2. Asset Registry (define what exists)
    ↓
-3. Concept Sketch
-   (Quick pencil/digital sketch proving concept)
+3. Prompt Generation (using Prompt Template from Section 12)
+   (AI system receives structured prompt with all rules)
    ↓
-4. Flat Icon
-   (SVG vector, all sizes generated from single source)
+4. Concept Sketch
+   (Quick pencil/digital sketch or AI draft proving concept)
    ↓
-5. Detailed Icon
-   (Enhanced version with material/shadow detail)
+5. Flat Icon (L0-L3 versions)
+   (SVG vector or base raster, all sizes generated from single source)
    ↓
-6. Blueprint View
-   (Technical drawing for crafting/research screens)
+6. Master Asset (L4 - Full Detail)
+   (256px high-quality version with full material/lighting/animation definition)
    ↓
-7. 3D Render
-   (Isometric or 3D view for manufacturing/construction)
+7. Complexity Scaling (L5 if needed)
+   (Promotional/high-detail version if project requires it)
    ↓
-8. Animation
-   (Idle animation, interaction animations if needed)
+8. Animation Integration
+   (Apply animation rules from Section 9, test timing)
    ↓
-9. Game Integration
-   (Sprite sheet, canvas export, in-game testing)
+9. Damage State Testing
+   (Verify degradation levels apply correctly, visual progression clear)
    ↓
-10. Deployed
+10. Game Integration
+    (Sprite sheet, canvas export, in-game testing with actual geometry/lighting)
+    ↓
+11. Deployed
     (Committed to asset library, referenced by ID in all systems)
 ```
 
-**Rule**: Every asset goes through all 10 stages. No shortcuts. Consistency enforced by process.
+**Rule**: Every asset goes through all 11 stages. No shortcuts. Consistency enforced by process. Prompt Template (Section 12) guides AI generation automatically.
 
 ---
 
@@ -417,10 +429,157 @@ Status indicators are OVERLAYS, not separate assets:
 
 ---
 
+## 8.5. Animation Language (Consistency Across Assets)
+
+Every asset category has a consistent animation style. This prevents stylistic drift and creates visual coherence:
+
+| Category | Animation | Speed | Effect |
+|----------|-----------|-------|--------|
+| **Gases** | Slow pulse | 2-3s cycle | Breathing motion, ±10% scale |
+| **Liquids** | Gentle ripple | 1-2s cycle | Wave motion across surface, vertical shimmer |
+| **Solids/Minerals** | Slight rotation | 4-5s cycle | Slow 360° rotation or gentle rocking |
+| **Energy/Electricity** | Quick flicker | 0.3-0.5s cycle | Brightness variation, ±30% opacity |
+| **Electronics** | LED blink | 0.8-1.2s cycle | Single point-source brightens, fades (like indicator light) |
+| **Biological** | Breathing/sway | 2-4s cycle | Organic expansion/contraction or gentle side-to-side |
+| **Waste/Hazard** | Particle emission | 1-2s cycle | Subtle particles float upward, fade (smoke/steam effect) |
+| **Vehicles** | Status lights | 0.5-1s cycle | Tiny running lights cycle (indicates operation) |
+| **Structures** | Operational glow | 1-2s cycle | Faint halo intensifies/dims (life sign indicator) |
+| **Manufacturing** | Assembly animation | 2-3s cycle | Components appear/disappear or rotate assembly (shows activity) |
+
+**Rule**: Every asset plays ONE animation when visible in UI or game world. No random variations — consistency is key to visual language. Animations pause when asset is not in viewport.
+
+---
+
+## 8.6. Damage States (Physical Progression)
+
+Instead of creating separate assets for each damage level, apply progressive visual degradation:
+
+### Resources
+- **No damage** (100% integrity) — pristine appearance
+- Damage not applicable; resources don't degrade in inventory
+
+### Items
+- **Pristine** (100% integrity) — clean, manufacturer finish
+- **Scratched** (75% integrity) — surface marks visible, minor wear
+- **Dented** (50% integrity) — visible deformation, serious wear marks
+- **Broken** (25% integrity) — cracked, severely degraded, barely functional appearance
+- **Destroyed** (0% integrity) — crumbled, shattered, unusable scrap appearance
+
+### Structures
+- **Operational** (100% integrity) — full lighting, clean appearance, all features visible
+- **Damaged** (75% integrity) — some panel damage, minor burn marks, lights flicker slightly
+- **Critical** (50% integrity) — large structural damage, heavy scorch/rust marks, lights dim
+- **Destroyed** (0% integrity) — collapsed/ruined, looks like burned-out husk, all lights dark
+
+### Vehicles
+- **Operational** (100% integrity) — clean, all lights active, sharp details
+- **Smoke** (75% integrity) — light smoke particle emission from engine/damage area
+- **Fire** (50% integrity) — visible flames/heavy smoke, critical damage appearance
+- **Destroyed** (0% integrity) — wreckage, fire extinguished, hull integrity compromised, dark
+
+**Implementation**: Damage states are achieved through:
+- Opacity reduction (darkens asset)
+- Desaturation (colors fade toward gray)
+- Overlay application (burn marks, rust, corrosion patterns)
+- Particle effects (smoke, fire, sparks)
+- Animation speed reduction (slows or stops as damage increases)
+
+**Rule**: Base asset never changes. Damage states layer effects on top. Smooth visual progression from pristine → destroyed creates intuitive "health" communication without complex asset management.
+
+---
+
+## 8.7. Visual Complexity Levels
+
+Every asset can exist at multiple complexity levels depending on use case. Define each level upfront to guide AI generation and asset reuse:
+
+| Level | Purpose | Size Range | Detail | Animation | Examples |
+|-------|---------|------------|--------|-----------|----------|
+| **L0** | Map symbols, terrain overlays | 16-24px | Silhouette only | None | Resource deposit marker, settlement dot |
+| **L1** | Inventory slots, toolbar icons | 24-32px | Minimal detail, silhouette clear | Optional (pulse only) | Tool icons, resource stacks |
+| **L2** | UI inspection panels | 64px | Basic material/color definition | Optional (gentle animation) | Item inspect view, character portrait |
+| **L3** | Encyclopedia/wiki artwork | 128px | Full material detail, clear lighting | Optional (narrative animation) | Research encyclopedia entries |
+| **L4** | Construction/manufacturing renders | 256px | Complete detail, shows assembly/operation | Yes (operational animation) | Surface unit rendering, crafting view |
+| **L5** | Promotional artwork | 512px+ | Hyper-detailed, cinematic quality | Yes (cinematic animation) | Marketing materials, game trailers |
+
+**Workflow**: 
+1. Create L4 (256px) as master asset
+2. Generate L0-L3 by downsampling/simplifying L4
+3. Enhance L5 separately for promotional use
+4. All levels reference same Material/Color/Shape language
+
+**Rule**: Do not create separate assets per level. Scale and simplify the master asset. Consistency maintained automatically.
+
+---
+
+## 8.8. Prompt Templates for AI Generation
+
+When generating assets with AI, use standardized prompt structure to minimize stylistic drift:
+
+### Master Prompt Template
+
+```
+Subject: [ASSET_ID or asset name]
+Category: [Resource|Item|Equipment|Structure|Vehicle|Robot|UI]
+Material: [Material from Material Library]
+Color Family: [Color from Color Families table]
+Shape Language: [Circle|Droplet|Hex|Diamond|Square|Leaf|Triangle|Microchip|Cube]
+Tech Level: [Mk1|Mk2|Mk3|Mk4|Mk5|N/A]
+Manufacturing Origin: [Earth|Luna|Orbital|Asteroid|Factory|Nanofab]
+Lighting: 45° top-left, key light strong, rim light subtle, fill light 30%, ambient occlusion present, 2-3px drop shadow
+Background: [Transparent with checkerboard|Solid gradient bottom-darkened]
+Animation: [None|Pulse|Ripple|Flicker|Blink|Breathe|Particles|Glow|Assembly]
+Animation Speed: [Seconds per cycle or None]
+Complexity Level: [L0|L1|L2|L3|L4|L5]
+Output Size: [Pixels: 24px|32px|64px|128px|256px|512px]
+Style Reference: [Factorio|Dyson Sphere Program|Satisfactory] (indicates professional sci-fi game quality)
+Acceptance: Must match Icon Bible rules exactly. No deviations.
+```
+
+### Example Usage
+
+```
+Subject: RES_METAL_IRON
+Category: Resource
+Material: Cast Steel
+Color Family: Silver
+Shape Language: Perfect Hexagon
+Tech Level: N/A
+Manufacturing Origin: N/A (raw resource)
+Lighting: 45° top-left, key light strong, rim light subtle, fill light 30%, no ambient occlusion (raw material)
+Background: Transparent checkerboard
+Animation: None
+Complexity Level: L4 (then downscale to L0-L3)
+Output Size: 256px
+Style Reference: Factorio
+Acceptance: Match Icon Bible rules exactly.
+```
+
+```
+Subject: UNIT_ROVER_MK3
+Category: Vehicle
+Material: Polished Titanium + Inflatable Polymer
+Color Family: Silver (metal) + White (fabric)
+Shape Language: Rounded square overall, wheel details
+Tech Level: Mk3
+Manufacturing Origin: Earth Manufactured
+Lighting: 45° top-left, strong specular highlight on metal, subtle on fabric, prominent ambient occlusion in wheel wells and joints
+Background: Solid gradient, darker at bottom
+Animation: Status lights (cycle, 0.8-1.2s)
+Animation Speed: 1.0s per cycle
+Complexity Level: L4 (in-game rendering quality)
+Output Size: 256px
+Style Reference: Satisfactory
+Acceptance: Match Icon Bible and Mk3 progression rules exactly. No Mk2 or Mk4 characteristics.
+```
+
+**Rule**: Every AI generation request uses this template. Copy-paste, fill fields, submit. This standardization prevents prompt engineering drift and ensures outputs consistently follow Icon Bible rules.
+
+---
+
 ## Acceptance Criteria
 
 **Icon Bible Acceptance** (this document):
-- [ ] All 8 sections complete and documented
+- [ ] All 8+ sections complete and documented
 - [ ] Color families defined with semantic meaning
 - [ ] Shape language established (circle→gas, droplet→liquid, hex→metal, etc.)
 - [ ] 12+ material definitions documented with visual examples
@@ -428,8 +587,13 @@ Status indicators are OVERLAYS, not separate assets:
 - [ ] Tech level progression (Mk1-Mk5) defined visually
 - [ ] Manufacturing origin variations documented (not location-based)
 - [ ] Asset ID format established and examples provided
-- [ ] 10-step production pipeline defined
+- [ ] 11-step production pipeline defined
 - [ ] Status overlay system documented
+- [ ] Animation language defined (pulse, ripple, flicker, blink, breathe, particles, glow, etc.)
+- [ ] Damage state progression documented (pristine → destroyed)
+- [ ] Visual complexity levels (L0-L5) defined with examples
+- [ ] Prompt template provided for standardized AI generation
+- [ ] Material Library noted as future expansion document
 
 **Related Task**: Asset Registry Specification (`2026-07-19-HIGH-DESIGN-ASSET_REGISTRY_SPECIFICATION.md`) catalogs WHAT assets exist using this Bible as template.
 
@@ -439,6 +603,21 @@ Status indicators are OVERLAYS, not separate assets:
 - New artist/AI system can follow pipeline and produce consistent output
 - No location-specific duplicates; all variations by manufacturing origin or tech level
 - Players recognize visual language without reading labels (after 20 hours)
+
+---
+
+## Material Bible (Future Expansion)
+
+**Note**: The Material Library section will eventually expand into its own **Material Bible** document as the project matures. It will include:
+
+- Surface finish standards (brushed vs. polished vs. matte)
+- Material-specific lighting rules (how metals shine vs. how plastics diffuse)
+- Weathering/aging patterns (patina, corrosion, UV damage)
+- Manufacturing-specific surface characteristics (3D printing layer lines, casting sand marks, etc.)
+- Microscopic detail levels (when/how to show texture)
+- Color value ranges for each material type (RGB/HSL/Hex standards)
+
+For now, the Material Library in Section 3 is sufficient. As the asset catalog grows, this document will be split out for separate management.
 
 ---
 
