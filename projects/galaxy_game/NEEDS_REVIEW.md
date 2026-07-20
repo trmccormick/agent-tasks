@@ -49,7 +49,7 @@ this file should stay small. Full history stays in status.md.
 - Should direct entry be added to CANONICAL_TILE_MAP for 'tropical_jungle', or should all tropical_* aliases be consolidated to 'forest'?
 - Impact: normalize_biome('jungle') returns valid canonical name but subsequent lookup fails
 
-**Status**: OPEN — needs Claude/Tracy decision on fix approach
+**Status**: RESOLVED (2026-07-19) — Not a bug. The canonical value in CANONICAL_TILE_MAP is a terminal filename (e.g., 'tropical_jungle.png'), not a further lookup key. Alias resolution stops at the first mapping; no recursive lookup occurs. Added clarifying comment above CANONICAL_TILE_MAP to prevent future re-flagging.
 
 ---
 
