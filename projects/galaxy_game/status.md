@@ -398,6 +398,14 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 - **CORRECTION**: Prior draft recommended NpcPriceCalculator pattern — superseded. Correct fix is delegation to PrecursorCapabilityService (already wired into MissionPlannerService, uses chemical formulas)
 - Proposed implementation: `ProcurementService.can_produce_locally?` → delegate via `settlement.location.celestial_body` → `PrecursorCapabilityService.new(celestial_body).can_produce_locally?(resource)`
 
+✅ **Sphere CRUD Evaluation — DISCARD** — RESEARCH COMPLETE
+- Task: `2026-07-13-MEDIUM-RESEARCH-SPHERE-CRUD-EVALUATION.md` moved backlog → completed/2026-07
+- Verdict: DISCARD — Sphere CRUD not needed for MVP
+- Three sphere management functions were prototype code never wired to UI or controller endpoints
+- Dead code cleanup completed (Jul 16): `monitor_patched.js`, `SpheresController`, orphaned routes removed
+- Sphere models retained (used by StarSim/data loading) — zero broken references
+- galaxyGame commit: b786a0cf
+
 ---
 
 ## 🎯 Latest Completion (2026-07-11)
