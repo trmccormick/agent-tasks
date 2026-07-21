@@ -1,7 +1,7 @@
 ---
 title: "Refactor — Wire ProcurementService.can_produce_locally? to PrecursorCapabilityService"
 priority: HIGH
-status: backlog
+status: superseded
 phase: phase1
 owner: Implementation Agent (Qwen)
 type: refactor
@@ -10,6 +10,8 @@ mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 created: 2026-07-17
 ---
+
+Superseded by 2026-07-19-HIGH-BUGFIX-PROCUREMENT-CAN-PRODUCE-LOCALLY (completed/), commits f93a5d47 + 1a60fce8.
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
 
