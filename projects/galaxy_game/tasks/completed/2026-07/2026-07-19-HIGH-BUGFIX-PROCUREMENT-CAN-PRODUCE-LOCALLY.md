@@ -1,7 +1,7 @@
 ---
 title: "ProcurementService.can_produce_locally? — Delegate to PrecursorCapabilityService"
 priority: HIGH
-status: backlog
+status: completed
 phase: AI_MANAGER
 owner: Implementation Agent (Qwen)
 type: bug-fix
