@@ -160,7 +160,14 @@ Per tick, per tracked resource, decide: **import or local only?**
    - If `days_until_exhaustion < transit_time`: trigger import (log decision, don't execute cargo scheduling for MVP)
    - Else: continue on current stockpile
 
-**Import cost data**: Use `Logistics::TransportCostService.calculate_cost_per_kg(from: 'earth', to: 'luna', resource: material_id)` where available. If data doesn't exist for a resource, **log as a gap** rather than inventing placeholder numbers.
+**Import cost data**: `Logistics::TransportCostService.calculate_cost_per_kg(from:, to:, resource:)` **exists and is callable**. It returns a single float (GCC/kg) for Earth→Luna routes. For MVP, use it directly — no stubbing needed.
+
+**Current limitations** (documented in the service itself):
+- `in_situ_refueling_available?` is currently a **stub returning false** — this means all costs are baseline (no refueling discounts). This is intentional; infrastructure state will be wired later.
+- Route modifiers come from `EconomicConfig.route_modifier(route_key)` — if a route isn't configured, it falls back to physics-based calculation via `RouteCostCalculator`.
+- Resource category detection (`determine_category`) classifies resources as `bulk_material`, `manufactured`, or `high_tech` for rate selection.
+
+**If data doesn't exist for a resource**: The service always returns *something* (either configured cost or physics-based fallback). If the result seems wrong, log it with `[Decision: COST_UNVERIFIED]` rather than treating it as a gap — the method exists, just may need EconomicConfig tuning later.
 
 **Decision logging format**: Match existing patterns (e.g., emission logging in atmosphere feedback). Examples:
 ```
@@ -190,7 +197,7 @@ bundle exec rake luna:simulate_operations[60]
 Do NOT proceed without flagging if:
 
 1. **PrecursorCapabilityService gap**: `can_produce_locally?` doesn't cover a resource this loop needs → stop, escalate
-2. **Import cost/transit data missing**: A resource has no cost or transit time in TransportCostService → log gap, don't invent numbers
+2. **Import cost data**: `TransportCostService.calculate_cost_per_kg` **always returns a value** (configured cost or physics-based fallback). If the result seems inaccurate, log with `[Decision: COST_UNVERIFIED]` — do NOT stop. The service exists and is callable; EconomicConfig tuning is post-MVP work.
 3. **Settlement schema issue**: Settlement or inventory models require **breaking changes** to support tick fields → stop, escalate
 4. **Scope creep**: Implementation starts requiring economic modeling, AI learning, multi-resource optimization, or anything beyond the 3 components listed above → stop, escalate
 
