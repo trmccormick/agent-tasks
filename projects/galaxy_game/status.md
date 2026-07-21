@@ -8,6 +8,14 @@
 
 ## 🎯 Latest Completion (2026-07-21)
 
+✅ **ProcurementService.can_produce_locally? Spec** — COMPLETED
+- Fix was already implemented in prior commits (f93a5d47 + 1a60fce8)
+- Created spec covering nil-location, no-units, matching-equipment, wrong-resource cases
+- All 4 examples pass via Docker RSpec execution
+- galaxyGame commit: `c93889ba`
+
+---
+
 ✅ **Terrain Quality Assessor Task File Review + Template Fixes** — COMPLETED
 - Task: `2026-05-18-MEDIUM-REFACTOR-TERRAIN-QUALITY-ASSESSOR-MIGRATE-AND-TEST.md` (renamed LOW→MEDIUM)
 - Reviewed against current codebase — task is **not obsolete**, work still needed
