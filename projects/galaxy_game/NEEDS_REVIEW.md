@@ -93,8 +93,26 @@ this file should stay small. Full history stays in status.md.
 - Option 2 (Better long-term): Plan proper asset generation as Phase 2 Asset Registry work
 - Option 3 (Not recommended): Re-crop with adjusted offsets — treats symptom, not cause
 
-**Status**: OPEN — needs handoff decision on whether to: (a) keep as placeholder/gate, (b) commit to proper asset regen, or (c) investigate alternative source material
+**Status**: RESOLVED (2026-07-20) — Layer 5 rendering gated behind feature flag. `showUnits` set to `false` in surface_view.js with quality note comment linking back to this entry. Sprites NOT re-cropped. Asset regeneration remains separate, unscoped work.
 
 ---
 
 (more entries go here as needed)
+
+---
+
+### 2026-07-21 — InfrastructureCostCalculator calls non-existent method
+**What happened**: infrastructure_cost_calculator.rb:152 calls `AIManager::PrecursorCapabilityService.can_produce?(destination, material.chemical_formula)` — a two-arg method that does not exist on PrecursorCapabilityService. Only `can_produce_locally?(resource)` (one-arg) exists.
+
+**What I already checked**:
+- Confirmed via grep: only `can_produce_locally?(resource)` exists in precursor_capability_service.rb
+- Confirmed the one call site at infrastructure_cost_calculator.rb:152
+- Confirmed `can_produce_locally?` resolves celestial_body internally via settlement.location.celestial_body — doesn't accept a destination param even if renamed
+- No specs exist for InfrastructureCostCalculator (grep spec/ returned zero matches)
+- One caller in test script only: galaxy_game/test_realistic_costs.rb (not in spec/)
+
+**What needs a second opinion**:
+- Is this code path ever actually exercised? (calculate_local_production_discount is called from calculate_cost, need to confirm whether calculate_cost has any live callers/specs, or if this is dead/untested code)
+- If live: fix is to change the call to `can_produce_locally?(material.chemical_formula)` and remove the destination arg — but confirm InfrastructureCostCalculator has access to the right settlement context for that method to resolve celestial_body correctly, since it currently operates on a destination CelestialBody directly, not a settlement
+
+**Status**: OPEN
