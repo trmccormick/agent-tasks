@@ -1,8 +1,25 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-20 — Equipment Check Implementation + Production Model Validation
+**Last Updated:** 2026-07-21 — Terrain Quality Assessor Task Review + Template Fixes
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Completion (2026-07-21)
+
+✅ **Terrain Quality Assessor Task File Review + Template Fixes** — COMPLETED
+- Task: `2026-05-18-MEDIUM-REFACTOR-TERRAIN-QUALITY-ASSESSOR-MIGRATE-AND-TEST.md` (renamed LOW→MEDIUM)
+- Reviewed against current codebase — task is **not obsolete**, work still needed
+- Verified: source file still in `galaxy_game/app/services/terrain_analysis/`, no spec exists, service actively used by `AutomaticTerrainGenerator`
+- Fixes applied:
+  - Priority bumped LOW → MEDIUM (production dependency + Phase 6 proximity)
+  - Added missing ⚡ Minimal Handoff section per TASK_TEMPLATE.md
+  - Fixed all paths to include `galaxy_game/` prefix
+  - Added production dependency note about `AutomaticTerrainGenerator` at line 48
+  - Converted Related Files/Paths to table format with status columns
+  - Renamed file on disk from `LOW-...` to `MEDIUM-...` (all handoff refs updated)
+- Phase placement verified: `phase6+/` correct (Luna Surface & Infrastructure prerequisite)
 
 ---
 

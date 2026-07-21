@@ -13,18 +13,18 @@
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/backlog/phase6+/2026-05-18-LOW-REFACTOR-TERRAIN-QUALITY-ASSESSOR-MIGRATE-AND-TEST.md
+Task: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/backlog/phase6+/2026-05-18-MEDIUM-REFACTOR-TERRAIN-QUALITY-ASSESSOR-MIGRATE-AND-TEST.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv docs/new_agent/projects/galaxy_game/tasks/backlog/phase6+/2026-05-18-LOW-REFACTOR-TERRAIN-QUALITY-ASSESSOR-MIGRATE-AND-TEST.md \
-         docs/new_agent/projects/galaxy_game/tasks/active/2026-05-18-LOW-REFACTOR-TERRAIN-QUALITY-ASSESSOR-MIGRATE-AND-TEST.md
+  git mv docs/new_agent/projects/galaxy_game/tasks/backlog/phase6+/2026-05-18-MEDIUM-REFACTOR-TERRAIN-QUALITY-ASSESSOR-MIGRATE-AND-TEST.md \
+         docs/new_agent/projects/galaxy_game/tasks/active/2026-05-18-MEDIUM-REFACTOR-TERRAIN-QUALITY-ASSESSOR-MIGRATE-AND-TEST.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
 LIFECYCLE: backlog → active → completed
   - Tracked file: use git mv (never cp or plain mv)
-  - Verify with: find docs/new_agent/projects/galaxy_game/tasks -name "2026-05-18-LOW-REFACTOR-TERRAIN-QUALITY-ASSESSOR-MIGRATE-AND-TEST.md"
+  - Verify with: find docs/new_agent/projects/galaxy_game/tasks -name "2026-05-18-MEDIUM-REFACTOR-TERRAIN-QUALITY-ASSESSOR-MIGRATE-AND-TEST.md"
     Only ONE result should exist. Paste this output before committing.
 
 READ FIRST (after Step 0): Task file contains all prerequisites, gotchas, and verification steps.
