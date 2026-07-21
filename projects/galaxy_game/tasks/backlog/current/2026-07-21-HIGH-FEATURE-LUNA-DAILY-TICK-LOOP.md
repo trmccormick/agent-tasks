@@ -169,6 +169,8 @@ Per tick, per tracked resource, decide: **import or local only?**
 
 **If data doesn't exist for a resource**: The service always returns *something* (either configured cost or physics-based fallback). If the result seems wrong, log it with `[Decision: COST_UNVERIFIED]` rather than treating it as a gap — the method exists, just may need EconomicConfig tuning later.
 
+**Shipping method scope**: Earth→Luna transport for this task is **HLT-only**. Cyclers require the L1 shipyard, which doesn't exist until after this task and the depot-staging task (phase6+) land. `calculate_cost_per_kg` calls in this task implicitly assume HLT; no shipping-method parameter or selection logic is needed here. This assumption does NOT generalize to other routes (Venus/Titan) — those are out of scope per this task's MVP boundary anyway.
+
 **Decision logging format**: Match existing patterns (e.g., emission logging in atmosphere feedback). Examples:
 ```
 [Decision: IMPORT_O2] — projected exhaustion before Earth→Luna transit (3d)
