@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-21 — Terrain Quality Assessor Task Review + Template Fixes
+**Last Updated:** 2026-07-21 — TerrainQualityAssessor Migration Complete
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -16,18 +16,14 @@
 
 ---
 
-✅ **Terrain Quality Assessor Task File Review + Template Fixes** — COMPLETED
-- Task: `2026-05-18-MEDIUM-REFACTOR-TERRAIN-QUALITY-ASSESSOR-MIGRATE-AND-TEST.md` (renamed LOW→MEDIUM)
-- Reviewed against current codebase — task is **not obsolete**, work still needed
-- Verified: source file still in `galaxy_game/app/services/terrain_analysis/`, no spec exists, service actively used by `AutomaticTerrainGenerator`
-- Fixes applied:
-  - Priority bumped LOW → MEDIUM (production dependency + Phase 6 proximity)
-  - Added missing ⚡ Minimal Handoff section per TASK_TEMPLATE.md
-  - Fixed all paths to include `galaxy_game/` prefix
-  - Added production dependency note about `AutomaticTerrainGenerator` at line 48
-  - Converted Related Files/Paths to table format with status columns
-  - Renamed file on disk from `LOW-...` to `MEDIUM-...` (all handoff refs updated)
-- Phase placement verified: `phase6+/` correct (Luna Surface & Infrastructure prerequisite)
+✅ **TerrainQualityAssessor Migration + Full RSpec Suite** — COMPLETED
+- Migrated `terrain_quality_assessor.rb` from `app/services/terrain_analysis/` → `app/services/terrain/` (via git mv)
+- Updated require paths in 3 files: test_terrain_integration_minimal.rb, test_automatic_terrain_generation.rb, AUTOMATIC_TERRAIN_GENERATION_README.md
+- Created full RSpec suite at `spec/services/terrain/terrain_quality_assessor_spec.rb` — **39 examples, 0 failures**
+- Test coverage: all scoring modes (realism/playability/diversity/balance), edge cases (nil input, empty data, boundary conditions), biome type variations (strings/symbols), resource distribution scenarios, temperature checks, elevation scale validation
+- No scoring logic changes — behavior preserved exactly
+- Updated DOCUMENT_INVENTORY.md reference
+- galaxyGame commit: `8a75e1e9`
 
 ---
 
