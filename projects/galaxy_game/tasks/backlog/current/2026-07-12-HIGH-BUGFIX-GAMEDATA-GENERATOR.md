@@ -108,3 +108,20 @@ Expected result: 1 example, 0 failures
 **Blocked by**: none
 **Blocks**: none
 **Related tasks**: MaterialLookupService JSON error handling spec failure
+
+---
+
+## 2026-07-21 Investigation Note (moved from completed/)
+
+This file was sitting in completed/ but its YAML header said `status: backlog` with no completion report. Moved back to backlog/current per protocol.
+
+**Investigation findings:**
+- Spec passes in isolation: 1 example, 0 failures
+- Spec passes in generators directory: 14 examples, 0 failures
+- Spec passes combined with planetary_monitor spec: 10 examples, 0 failures
+- Spec passes in all feature specs: 12 examples, 0 failures
+- No global tmp cleanup hooks found — only `FileUtils.rm_rf(Rails.root.join('tmp'))` is in this spec's own `after` hook (line 10)
+- `save_content` calls `FileUtils.mkdir_p(dir)` before writing — robust against missing directories
+- The mock (`allow_any_instance_of`) returns a JSON string, which `save_content` parses correctly
+
+**Conclusion:** Could not reproduce the failure. Either a one-time flake, resolved by another change, or the original completion was fabricated (task closed without verification). No fix should be applied based on a guess — needs actual reproduction first.
