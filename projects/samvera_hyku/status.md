@@ -10,41 +10,63 @@ Main repo: https://github.com/samvera/hyku (278 open issues)
 ---
 
 ## Current Status
-- **Status:** Multi-tenant GA implementation task created and ready for executor dispatch. Feature branch created.
-- **Last Session:** 2026-07-22 — Planning session completed, implementation task formalized, branch: `fix/ga-tenant-property-scoping`
+- **Status:** Multi-tenant GA fix split into two-phase parallel approach. Phase 1 (urgent override) ready for executor. Phase 2 (upstream PR) ready after Phase 1 completion.
+- **Last Session:** 2026-07-22 — Qwen identified critical architecture issue, created synthesis, planning adjusted approach
 - **Agent Notes**: See `notes.md` for technical discoveries and contextual findings from work sessions
-- **Active Task**: [2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-PROPERTY-SCOPING.md](tasks/active/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-PROPERTY-SCOPING.md) — Ready for executor dispatch
-- **Research**: [2026-07-07_GA-MULTITENANT-IMPLEMENTATION-READY.md](handoffs/session_handoff_2026-07-07_GA-MULTITENANT-IMPLEMENTATION-READY.md) — Reviewer-approved implementation plan
+- **Synthesis Complete**: [2026-07-22-SYNTHESIS-GA-MULTITENANT-IMPLEMENTATION-OPTIONS.md](summaries/2026-07-22-SYNTHESIS-GA-MULTITENANT-IMPLEMENTATION-OPTIONS.md) — Documents both approaches
+- **Phase 1 Task**: [2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYKU-OVERRIDE.md](tasks/active/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYKU-OVERRIDE.md) — ACTIVE, ready for executor
+- **Phase 2 Task**: [2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYRAX-PR.md](tasks/backlog/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYRAX-PR.md) — BACKLOG, after Phase 1
 
 ---
 
 ## Active Tasks
+ — Two-Phase Parallel Implementation
 
-### 🔥 PRIMARY FOCUS TODAY
-- **[2026-07-22] HIGH — GA Multi-Tenant Property Scoping** (IMPLEMENTATION READY)
-  - **Task File**: [2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-PROPERTY-SCOPING.md](tasks/active/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-PROPERTY-SCOPING.md)
-  - **GitHub Issues**: [#2985](https://github.com/samvera/hyku/issues/2985) | [#2995](https://github.com/samvera/hyku/issues/2995)
-  - **Production Validation**: [PALNI/PALCI #611](https://github.com/notch8/palni_palci_knapsack/issues/611) — 248+ phantom entries, 46 cross-tenant ID overlap
-  - **Status**: ✅ Reviewer-approved (Rob, 2026-07-07), formal implementation task created (2026-07-22)
-  - **Branch Created**: `fix/ga-tenant-property-scoping` (hyku repo)
-  - **Estimated Work**: ~3-4 hours
-  - **Files to Modify**: 4 files (~40-50 lines total)
-    1. `app/services/hyrax/analytics/ga4.rb` — Add property_id parameter
-    2. `app/controllers/hyrax/admin/analytics/collection_reports_controller.rb` — Pass tenant property_id
-    3. `app/controllers/hyrax/admin/analytics/work_reports_controller.rb` — Pass tenant property_id
-    4. `spec/services/hyrax/analytics/ga4_spec.rb` — Multi-tenant tests
-  - **Acceptance Criteria**:
-    - ✓ Each tenant's GA queries only their own GA property
-    - ✓ Cross-tenant data commingling eliminated
-    - ✓ RSpec tests verify tenant isolation
-    - ✓ Backward compatible (single-tenant deployments unaffected)
+#### PHASE 1: Hyku Override (URGENT FIX — ACTIVE) ✅ Ready for Dispatch
+- **Task File**: [2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYKU-OVERRIDE.md](tasks/active/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYKU-OVERRIDE.md)
+- **Approach**: Create monkey-patch overrides in Hyku to fix multi-tenant analytics immediately
+- **Timeline**: Ready NOW (this Hyku instance only)
+- **Deliverables**: 
+  - Override modules for Ga4 service
+  - Override code for analytics controllers
+  - RSpec tests for tenant isolation
+  - Multi-tenant manual testing
+- **Estimated Work**: ~3-4 hours
+- **Status**: ✅ Ready for Qwen executor agent dispatch
 
-### Research & Validation (Completed, Reference Only)
-- **[2026-06-26] HIGH-RESEARCH** [#2985 & #2995 Root Cause Analysis](tasks/active/2026-06-26-HIGH-RESEARCH-MULTITENANT-GA-ISSUES-2985-2995.md)
-  - Root cause: All tenants share same GA property ID instead of using tenant-specific IDs
-  - Detailed technical analysis and proposed fixes documented
-- **[2026-06-26] VALIDATION** [PALNI/PALCI Issue #611 Confirmation](tasks/active/2026-06-26-VALIDATION-PALNI-PALCI-ISSUE-611-CONFIRMS-GA-ROOT-CAUSE.md)
-  - Real-world production case confirming root cause analysis
+#### PHASE 2: Hyrax Upstream PR (PERMANENT FIX — BACKLOG) ⏳ Depends on Phase 1
+- **Task File**: [2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYRAX-PR.md](tasks/backlog/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYRAX-PR.md)
+- **Approach**: Push same fixes upstream to samvera/hyrax for permanent community solution
+- **Timeline**: After Phase 1 complete + reviewed (Samvera maintainers: weeks to months)
+- **Deliverables**:
+  - Modified Hyrax source files (ga4.rb, controllers)
+  - RSpec tests in hyrax/spec/
+  - PR to samvera/hyrax with full documentation
+- **Estimated Work**: ~2.5-3 hours (code identical to Phase 1)
+- **Status**: 📋 BACKLOG — Moves to ACTIVE after Phase 1 approval
+
+### Why Both Phases?
+
+| Phase | Purpose | Scope | Timeline | Benefit |
+|-------|---------|-------|----------|---------|
+| **Phase 1** | Fix NOW, this instance | Hyku-only override | Immediate | PALNI/PALCI gets fix, analytics work today |
+| **Phase 2** | Fix FOREVER, everywhere | Hyrax upstream | Weeks+ | All Hyku instances benefit after Hyrax release |
+
+---
+
+#### Critical Discovery (2026-07-22)
+**Qwen identified** that target code files (Hyrax::Analytics::Ga4, analytics controllers) live in the **Hyrax gem** (external dependency), not in Hyku workspace. This triggered architecture analysis leading to two-phase parallel strategy.
+
+**Synthesis**: [2026-07-22-SYNTHESIS-GA-MULTITENANT-IMPLEMENTATION-OPTIONS.md](summaries/2026-07-22-SYNTHESIS-GA-MULTITENANT-IMPLEMENTATION-OPTIONS.md)
+- Documents both Option A (upstream) and Option B (override)
+- Comparison table of approaches
+- Recommendation for parallel strategy
+
+### Previous Research (Completed, Reference)
+- **[2026-06-26] Root Cause Analysis** [#2985 & #2995](tasks/active/2026-06-26-HIGH-RESEARCH-MULTITENANT-GA-ISSUES-2985-2995.md)
+  - All tenants share same GA property ID from ENV
+- **[2026-06-26] Validation** [PALNI/PALCI Issue #611](tasks/active/2026-06-26-VALIDATION-PALNI-PALCI-ISSUE-611-CONFIRMS-GA-ROOT-CAUSE.md)
+  - Production case: 248+ phantom entries, 46 cross-tenant ID overlap
   - 248+ phantom entries per tenant, 100% data loss for one tenant
 
 ---
