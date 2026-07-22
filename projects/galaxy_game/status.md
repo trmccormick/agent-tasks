@@ -1,8 +1,21 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-21 — TerrainQualityAssessor Migration Complete
+**Last Updated:** 2026-07-22 — Luna Daily Tick Loop Simulation + Duplicate Task Cleanup
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Completion (2026-07-22)
+
+✅ **Luna Daily Tick Loop Simulation** — COMPLETED
+- New service: `LunaOperationsSimulationService` (daily state advancement, inventory delta calc, binary import gate)
+- New rake: `luna:simulate_operations[N]` (default 30 days, configurable) at `lib/tasks/luna_operations_simulation.rake`
+- Three-tier consumption model: life support (hard), blueprint production (blocked if materials missing), base maintenance (periodic)
+- Import decision gate via `PrecursorCapabilityService.can_produce_locally?` + `TransportCostService.calculate_cost_per_kg`
+- Inventory deltas persisted per tick; tick_count + last_simulated_at in settlement.operational_data (additive, no migration)
+- RSpec: 23 examples, 0 failures
+- galaxyGame commit: `9aa78afd`
 
 ---
 
