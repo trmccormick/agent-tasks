@@ -29,6 +29,12 @@
 - **Failure 1 (planetary_monitor_spec.rb:171)**: Fixed elevation test data shape — two contexts had `'elevation' => [1.0]` (1D array with Float) instead of `[[1.0]]` (2D grid). Root cause: stale diagnosis from NEEDS_REVIEW.md was never implemented as a fix. Full spec: 9 examples, 0 failures. Commit: `789b0921`
 - **Failure 2 (game_data_generator_spec.rb:13)**: Could not reproduce in any of 4 tested contexts (isolation, generators dir, combined with planetary_monitor, all feature specs). No global tmp pollution found — only the spec's own `after` hook touches `tmp/`. Task file closed as `cannot-reproduce`, moved from completed back to backlog/current with investigation note.
 
+✅ **GameDataGenerator Output File Bug — Cannot Reproduce** — COMPLETED
+- Task: `2026-07-12-HIGH-BUGFIX-GAMEDATA-GENERATOR.md` (formal task file)
+- Verified in Docker: `1 example, 0 failures` — spec passes in current state
+- Code review: generator writes to exactly the path passed as argument; `save_content` creates directories via `FileUtils.mkdir_p`; no path mismatch possible
+- Disposition: Close as `cannot-reproduce`. No code changes required.
+
 ✅ **Luna Daily Tick Loop Simulation** — COMPLETED
 - New service: `LunaOperationsSimulationService` (daily state advancement, inventory delta calc, binary import gate)
 - New rake: `luna:simulate_operations[N]` (default 30 days, configurable) at `lib/tasks/luna_operations_simulation.rake`
