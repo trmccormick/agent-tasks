@@ -45,24 +45,25 @@ STEP 2 — READ PREREQUISITES IN THIS ORDER
 
   DO NOT SKIP. All contain critical context.
 
-STEP 3 — UNDERSTAND THE OVERRIDE APPROACH
+STEP 3 — UNDERSTAND THE CORRECTED ARCHITECTURE
 
-  This task is PHASE 1 (monkey-patch in Hyku for immediate fix).
-  After this completes, PHASE 2 will create a separate PR to samvera/hyrax upstream.
+  CRITICAL FINDING: Ga4 is a MODULE with class methods, not a class.
+  Controllers call Hyrax::Analytics.daily_events() (class methods).
+  There's no .new() instantiation happening.
+  
+  Read corrected synthesis: summaries/2026-07-22-CORRECTED-SYNTHESIS-ACTUAL-GA4-ARCHITECTURE.md
+  
+  This changes implementation from instance method override to controller override.
+  Much simpler approach: set config.property_id before calling analytics methods.
   
   Your job: Make multi-tenant analytics work TODAY in this Hyku instance.
 
-STEP 4 — CREATE SYNTHESIS ADDENDUM (Quick Gate)
+STEP 4 — CONFIRM CORRECTED APPROACH
 
-  This is an ADDENDUM to the synthesis report already completed. You don't need
-  to create a full synthesis — just confirm in chat that you understand:
+  Post to chat:
+  "Reviewed corrected synthesis. Understand that Ga4 is module-based with class
+   methods. Controller override approach (Option A) is cleaner. Ready to implement."
   
-  ✓ Files we're modifying live in Hyrax gem (not directly editable here)
-  ✓ We're creating Hyku-specific overrides using monkey-patching
-  ✓ These overrides inject tenant-aware GA4 behavior into Hyrax
-  ✓ After this phase, Phase 2 will upstream the fix to samvera/hyrax
-  
-  Post: "SYNTHESIS ADDENDUM — Phase 1 override approach understood. Ready to implement."
   WAIT for approval before proceeding.
 
 STEP 5 — IMPLEMENT HYKU OVERRIDES
@@ -165,102 +166,67 @@ Create **Hyku-specific overrides** that patch Hyrax's behavior:
 
 ---
 
-## Implementation Plan
+## Implementation Plan (CORRECTED FOR ACTUAL GA4 ARCHITECTURE)
+
+### Key Discovery: Ga4 Is Module-Based (Not Instance-Based)
+
+**What We Found**:
+- `Hyrax::Analytics::Ga4` is a **module** with **class methods**, not a class
+- Controllers call `Hyrax::Analytics.daily_events()` (class methods)
+- Config is accessed via `Hyrax::Analytics.config.property_id`
+- No `.new()` instantiation happens in controllers
+
+**Simpler Implementation**: Override controllers to temporarily set tenant property_id before calling analytics methods.
 
 ### File Structure (New Files)
 
 ```
 lib/hyku/
-  ├── analytics/
-  │   ├── ga4_tenant_override.rb          # Patches Hyrax::Analytics::Ga4
-  │   └── controllers_tenant_override.rb  # Patches analytics controllers
-  └── initializers/
-      └── ga4_tenant_patch.rb             # Loads overrides on startup
+  └── analytics/
+      └── tenant_aware_analytics.rb              # Helper module for tenant-aware config
+
+app/controllers/hyku/admin/analytics/
+  ├── collection_reports_controller.rb           # Override collection reports
+  └── work_reports_controller.rb                 # Override work reports
 
 spec/lib/hyku/analytics/
-  ├── ga4_tenant_override_spec.rb
-  └── controllers_tenant_override_spec.rb
+  └── tenant_aware_analytics_spec.rb             # Unit tests
+
+spec/controllers/hyku/admin/analytics/
+  └── collection_reports_controller_spec.rb      # Integration tests
 ```
 
-### 1. Create Override for Ga4 Service
+### 1. Create Tenant-Aware Analytics Helper
 
-**File**: `lib/hyku/analytics/ga4_tenant_override.rb`
+**File**: `lib/hyku/analytics/tenant_aware_analytics.rb`
 
 ```ruby
 # frozen_string_literal: true
 
 module Hyku
   module Analytics
-    # Patches Hyrax::Analytics::Ga4 to support tenant-specific property IDs
-    # This allows multi-tenant Hyku to isolate analytics by tenant.
-    # Phase 2: These changes will be contributed upstream to samvera/hyrax
-    module Ga4TenantOverride
-      def initialize(property_id: nil, property_name: nil)
-        @custom_property_id = property_id
-        @property_name = property_name
-      end
+    # Provides tenant-aware analytics for multi-tenant Hyku
+    # Sets tenant-specific GA property_id before calling Hyrax analytics methods
+    # Restores original property_id after the block completes
+    module TenantAwareAnalytics
+      private
 
-      def property
-        property_id = @custom_property_id || config.property_id
-        "properties/#{property_id}"
-      end
-    end
-  end
-end
-
-# Apply override: prepend this module to Hyrax::Analytics::Ga4
-Hyrax::Analytics::Ga4.prepend(Hyku::Analytics::Ga4TenantOverride)
-```
-
-**Why `prepend`**: Prepend adds this module to the lookup chain BEFORE the original Ga4 methods, so our initialize and property methods override Hyrax's.
-
-### 2. Create Override for Collection Reports Controller
-
-**File**: `lib/hyku/analytics/controllers_tenant_override.rb`
-
-```ruby
-# frozen_string_literal: true
-
-module Hyku
-  module Analytics
-    # Patches Hyrax analytics controllers to use tenant-specific GA property IDs
-    # Ensures each tenant's analytics report only includes their own GA data
-    module ControllersTenantOverride
-      def initialize_analytics(property_id: nil)
-        property_id = property_id || 
-                      current_account.google_analytics_property_id || 
-                      ENV.fetch('GOOGLE_ANALYTICS_PROPERTY_ID', '')
-        Hyrax::Analytics::Ga4.new(property_id: property_id)
-      end
-
-      private :initialize_analytics
-    end
-  end
-end
-
-# Apply override to both analytics controllers
-Hyrax::Admin::Analytics::CollectionReportsController.include(Hyku::Analytics::ControllersTenantOverride)
-Hyrax::Admin::Analytics::WorkReportsController.include(Hyku::Analytics::ControllersTenantOverride)
-```
-
-Then modify controllers to use the helper (see below).
-
-### 3. Update Controllers to Use Helper
-
-**File**: `app/controllers/hyku/admin/analytics/collection_reports_controller_override.rb`
-
-```ruby
-# frozen_string_literal: true
-
-module Hyku
-  module Admin
-    module Analytics
-      class CollectionReportsControllerOverride < Hyrax::Admin::Analytics::CollectionReportsController
-        def index
-          tenant_property_id = current_account.google_analytics_property_id || ENV.fetch('GOOGLE_ANALYTICS_PROPERTY_ID', '')
-          @analytics = Hyrax::Analytics::Ga4.new(property_id: tenant_property_id)
-          @all_top_collections = @analytics.top_collections_for_deposit
-          # ... rest of original method
+      def with_tenant_analytics
+        # Get tenant-specific property ID (fallback to ENV)
+        tenant_property_id = current_account.google_analytics_property_id || 
+                             ENV.fetch('GOOGLE_ANALYTICS_PROPERTY_ID', '')
+        
+        # Save original config property_id
+        original_property_id = Hyrax::Analytics.config.property_id
+        
+        # Set tenant-aware property_id
+        Hyrax::Analytics.config.property_id = tenant_property_id
+        
+        begin
+          yield
+        ensure
+          # Always restore original (important for tests and request isolation)
+          Hyrax::Analytics.config.property_id = original_property_id
         end
       end
     end
@@ -268,97 +234,223 @@ module Hyku
 end
 ```
 
-**Alternative**: Use monkey-patch prepend instead (see initializer below).
+**How it works**:
+1. Save the original GA property_id
+2. Set Hyrax::Analytics.config.property_id to tenant's property_id
+3. Execute the block (which calls analytics methods)
+4. Restore the original property_id
 
-### 4. Initializer to Load Overrides
+### 2. Override Collection Reports Controller
 
-**File**: `config/initializers/ga4_tenant_patch.rb`
+**File**: `app/controllers/hyku/admin/analytics/collection_reports_controller.rb`
 
 ```ruby
 # frozen_string_literal: true
 
-# Load Hyku GA4 tenant-aware overrides
+module Hyku
+  module Admin
+    module Analytics
+      class CollectionReportsController < Hyrax::Admin::Analytics::CollectionReportsController
+        include Hyku::Analytics::TenantAwareAnalytics
+
+        # Override index to use tenant-aware analytics
+        def index
+          return unless Hyrax.config.analytics_reporting?
+          
+          with_tenant_analytics do
+            super
+          end
+        end
+
+        # Override show to use tenant-aware analytics
+        def show
+          return unless Hyrax.config.analytics_reporting?
+          
+          with_tenant_analytics do
+            super
+          end
+        end
+      end
+    end
+  end
+end
+```
+
+### 3. Override Work Reports Controller
+
+**File**: `app/controllers/hyku/admin/analytics/work_reports_controller.rb`
+
+```ruby
+# frozen_string_literal: true
+
+module Hyku
+  module Admin
+    module Analytics
+      class WorkReportsController < Hyrax::Admin::Analytics::WorkReportsController
+        include Hyku::Analytics::TenantAwareAnalytics
+
+        # Override index to use tenant-aware analytics
+        def index
+          return unless Hyrax.config.analytics_reporting?
+          
+          with_tenant_analytics do
+            super
+          end
+        end
+
+        # Override show to use tenant-aware analytics
+        def show
+          with_tenant_analytics do
+            super
+          end
+        end
+      end
+    end
+  end
+end
+```
+
+### 4. Load Overrides in Routes (if needed)
+
+If Hyku doesn't automatically load controllers from `app/controllers/hyku/`, add to `config/routes.rb`:
+
+```ruby
+namespace :hyku do
+  namespace :admin do
+    namespace :analytics do
+      # Override Hyrax analytics controllers
+      resources :collection_reports, only: [:index, :show]
+      resources :work_reports, only: [:index, :show]
+    end
+  end
+end
+```
+
+Or mount them in `config/initializers/`:  
+**File**: `config/initializers/99_hyku_analytics_overrides.rb`
+
+```ruby
+# frozen_string_literal: true
+
+# Load Hyku analytics controller overrides
 # These patches enable multi-tenant analytics isolation by allowing
 # each tenant to use their own Google Analytics property ID.
 #
 # Phase 2: These changes will be contributed upstream to samvera/hyrax
 # After upstream merge, this initializer can be removed.
 
-require 'hyku/analytics/ga4_tenant_override'
-require 'hyku/analytics/controllers_tenant_override'
-
-# Note: Overrides are applied at load time when modules are required.
-# See the respective override files for prepend/include statements.
+# The controller overrides are in app/controllers/hyku/admin/analytics/
+# They automatically inherit from Hyrax controllers and override index/show methods
 ```
 
 ---
 
 ## Testing Strategy
 
-### 1. Unit Tests for Ga4 Override
+### 1. Unit Tests for Tenant-Aware Analytics Helper
 
-**File**: `spec/lib/hyku/analytics/ga4_tenant_override_spec.rb`
+**File**: `spec/lib/hyku/analytics/tenant_aware_analytics_spec.rb`
 
 ```ruby
 require 'rails_helper'
 
-RSpec.describe 'Ga4 Tenant Override', type: :lib do
-  describe 'Hyrax::Analytics::Ga4 with tenant property_id' do
-    it 'accepts custom property_id parameter' do
-      ga4 = Hyrax::Analytics::Ga4.new(property_id: 'tenant-123')
-      expect(ga4.property).to eq('properties/tenant-123')
+RSpec.describe Hyku::Analytics::TenantAwareAnalytics do
+  describe '#with_tenant_analytics' do
+    let(:dummy_class) { Class.new { include Hyku::Analytics::TenantAwareAnalytics } }
+    let(:controller) { dummy_class.new }
+
+    before do
+      # Mock current_account
+      allow(controller).to receive(:current_account).and_return(account)
+      # Mock Hyrax::Analytics.config
+      allow(Hyrax::Analytics).to receive(:config).and_return(config)
     end
 
-    it 'falls back to ENV property_id when not provided' do
-      allow(ENV).to receive(:fetch).with('GOOGLE_ANALYTICS_PROPERTY_ID', '').and_return('env-456')
-      ga4 = Hyrax::Analytics::Ga4.new
-      # Verify fallback (depends on Ga4 config)
+    context 'when account has property_id' do
+      let(:account) { double(google_analytics_property_id: 'tenant-property-111') }
+      let(:config) { double(property_id: 'original-env-id') }
+
+      it 'sets tenant property_id during execution' do
+        allow(config).to receive(:property_id=)
+        allow(config).to receive(:property_id).and_return('tenant-property-111', 'original-env-id')
+
+        controller.send(:with_tenant_analytics) do
+          expect(config).to have_received(:property_id=).with('tenant-property-111')
+        end
+      end
+
+      it 'restores original property_id after execution' do
+        expect(config).to receive(:property_id=).with('tenant-property-111')
+        expect(config).to receive(:property_id=).with('original-env-id')
+
+        controller.send(:with_tenant_analytics) { nil }
+      end
     end
 
-    it 'prioritizes custom property_id over ENV' do
-      allow(ENV).to receive(:fetch).with('GOOGLE_ANALYTICS_PROPERTY_ID', '').and_return('env-456')
-      ga4 = Hyrax::Analytics::Ga4.new(property_id: 'custom-789')
-      expect(ga4.property).to eq('properties/custom-789')
+    context 'when account has no property_id' do
+      let(:account) { double(google_analytics_property_id: nil) }
+      let(:config) { double(property_id: 'original-env-id') }
+
+      it 'falls back to ENV value' do
+        allow(ENV).to receive(:fetch).with('GOOGLE_ANALYTICS_PROPERTY_ID', '').and_return('env-fallback')
+        allow(config).to receive(:property_id=)
+
+        controller.send(:with_tenant_analytics) do
+          expect(config).to have_received(:property_id=).with('env-fallback')
+        end
+      end
+    end
+
+    context 'when exception occurs in block' do
+      let(:account) { double(google_analytics_property_id: 'tenant-id') }
+      let(:config) { double(property_id: 'original-id') }
+
+      it 'still restores original property_id' do
+        expect(config).to receive(:property_id=).with('original-id')
+
+        expect {
+          controller.send(:with_tenant_analytics) { raise 'error' }
+        }.to raise_error('error')
+      end
     end
   end
 end
 ```
 
-### 2. Integration Tests for Multi-Tenant Analytics
+### 2. Integration Tests for Collection Reports Controller
 
-**File**: `spec/lib/hyku/analytics/controllers_tenant_override_spec.rb`
+**File**: `spec/controllers/hyku/admin/analytics/collection_reports_controller_spec.rb`
 
 ```ruby
 require 'rails_helper'
 
-RSpec.describe 'Multi-Tenant Analytics Override', type: :request do
-  describe 'Collection Reports with tenant GA property' do
-    it 'uses tenant property_id from Account' do
-      account_a = create(:account, 
-        cname: 'tenant-a',
-        google_analytics_property_id: 'property-a-111'
-      )
-      account_b = create(:account,
-        cname: 'tenant-b',
-        google_analytics_property_id: 'property-b-222'
-      )
+RSpec.describe Hyku::Admin::Analytics::CollectionReportsController do
+  let(:tenant_a) { create(:account, cname: 'tenant-a', google_analytics_property_id: '111111111') }
+  let(:tenant_b) { create(:account, cname: 'tenant-b', google_analytics_property_id: '222222222') }
+  
+  describe '#index with multi-tenant analytics' do
+    it 'uses tenant property_id for tenant A' do
+      allow(controller).to receive(:current_account).and_return(tenant_a)
+      allow(controller).to receive(:current_user).and_return(build_stubbed(:user, admin: true))
+      allow(Hyrax.config).to receive(:analytics_reporting?).and_return(true)
 
-      # Login as tenant-a, verify it uses property-a-111
-      allow_any_instance_of(Hyrax::Admin::Analytics::CollectionReportsController)
-        .to receive(:current_account).and_return(account_a)
+      get :index
       
-      get analytics_admin_collection_reports_path, host: 'tenant-a.localhost'
-      
-      # Verify GA4 was initialized with correct property_id
-      # (implementation depends on how GA4 is mocked)
+      # Verify the controller called with_tenant_analytics (property_id should be tenant_a's)
+      expect(response).to be_successful
+      # Additional verification: Check that Hyrax::Analytics.config.property_id was set correctly
+      # (Would require additional mocking/instrumentation)
     end
 
-    it 'falls back to ENV when Account property_id not set' do
-      account = create(:account, cname: 'tenant-c', google_analytics_property_id: nil)
-      allow(ENV).to receive(:fetch).with('GOOGLE_ANALYTICS_PROPERTY_ID', '').and_return('env-default')
+    it 'uses different property_id for tenant B' do
+      allow(controller).to receive(:current_account).and_return(tenant_b)
+      allow(controller).to receive(:current_user).and_return(build_stubbed(:user, admin: true))
+      allow(Hyrax.config).to receive(:analytics_reporting?).and_return(true)
 
-      get analytics_admin_collection_reports_path
-      # Verify GA4 was initialized with ENV value
+      get :index
+      
+      expect(response).to be_successful
+      # Verify tenant_b's property_id was used (different from tenant_a)
     end
   end
 end
@@ -367,18 +459,27 @@ end
 ### 3. Manual Multi-Tenant Testing
 
 **Setup**:
-1. Create 2+ tenants locally with distinct GA properties:
-   - Tenant A: `google_analytics_property_id = '111111111'`
-   - Tenant B: `google_analytics_property_id = '222222222'`
+1. Create 2 test tenants in local environment with distinct GA properties:
+   ```bash
+   # In Rails console
+   account_a = Account.create!(name: 'Test Tenant A', cname: 'tenant-a.localhost')
+   account_a.update!(google_analytics_property_id: '111111111')
+   
+   account_b = Account.create!(name: 'Test Tenant B', cname: 'tenant-b.localhost')
+   account_b.update!(google_analytics_property_id: '222222222')
+   ```
 
-2. Generate test analytics data in each tenant
+2. Enable analytics in both accounts (if required)
 
-3. **Verify**:
-   - Login to Tenant A, check Collections Report
-   - Record: Top collections, counts, entries
-   - Login to Tenant B, check Collections Report
-   - Verify: Different data than Tenant A (or same collections with different counts)
-   - No overlap of collection IDs between tenants
+3. **Verify Isolation**:
+   - Login as admin in Tenant A
+   - Navigate to Analytics → Collections Report
+   - Record visible collections and counts
+   - Logout, login as admin in Tenant B
+   - Navigate to Analytics → Collections Report
+   - Verify: Different collection data than Tenant A
+   - Verify: No cross-tenant collection IDs visible
+   - Test repeated: Switch back to Tenant A, verify data is consistent
 
 ---
 
@@ -402,56 +503,102 @@ end
 ✓ **Code Ready for Phase 2**: Override code is clean and extractable  
 
 ---
-issue in `samvera/hyrax` repo proposing optional `property_id` parameter
-2. **Hyrax Discussion**: Samvera maintainers consider if this is a useful feature
-3. **Possible Outcomes**:
-   - ✅ If accepted: Hyrax adds optional parameter, Hyku simplifies override to pass-through
-   - ✅ If rejected: Override stays in Hyku (perfectly fine — multi-tenancy is Hyku-specific)
-4. **Hyku Keeps Override**: This is now the permanent solution for multi-tenant GA support
-5. **Documentation**: Document this pattern for other multi-tenant Hyku instances
-1. **Phase 2 Task**: Create upstream PR to `samvera/hyrax` with these changes
-2. **Hyrax Review**: Samvera maintainers review and merge
-3. **Hyrax Release**: Hyrax releases new version with fix
-4. **Hyku Bump**: Hyku updates Gemfile to use new Hyrax version
-5. **Remove Overrides**: Delete these override files (Phase 1 temporary code) once Hyrax is updated
+
+## What Happens After Phase 1
+
+### Phase 1 Is The Permanent Solution
+
+This code is **NOT temporary**. It is the correct, permanent solution for multi-tenant GA support in Hyku because:
+- Multi-tenancy is a **Hyku feature**, not a Hyrax feature
+- This override belongs at the multi-tenant layer
+- Single-tenant Hyrax deployments don't need this
+- Multi-tenant Hyku instances can use this pattern
+
+### Phase 2: Optional Proposal (Discussion, Not Implementation)
+
+After Phase 1 is working, we'll create a GitHub discussion in `samvera/hyrax` proposing:
+
+> "Would Hyrax consider an optional `property_id` parameter in the Ga4 service?"
+
+**Possible Outcomes**:
+- ✅ If Hyrax says YES: Future Hyrax versions could support this natively, simplifying Hyku's override
+- ✅ If Hyrax says NO: No problem — Hyku keeps this override (architecturally correct for multi-tenancy)
+- ✅ Either way: This Phase 1 code remains valid and working
+
+**The Key Point**: Phase 1 is **done and permanent**. Phase 2 is a **background discussion** with no urgency.
 
 ---
 
-## Gotchas & Architecture Notes
+## Gotchas & Mitigation (Corrected for Module-Based Ga4)
 
-### 1. Prepend vs Include
-- **`prepend`**: For overriding instance methods in Ga4 (initialize, property)
-- **`include`**: For adding helper methods to controllers
+### 1. Ga4 Is Module-Based (Not Instance-Based)
+**Gotcha**: Task file originally assumed instance methods, but Ga4 uses class methods  
+**Mitigation**: ✅ Now using controller overrides that set/restore `config.property_id`  
+**Impact**: Simpler implementation, cleaner code, easier to test
 
-### 2. Account Model Column
-Verify `google_analytics_property_id` column exists:
+### 2. Config Is Mutable and Shared
+**Gotcha**: `Hyrax::Analytics.config.property_id` is shared globally; setting it affects all analytics calls  
+**Mitigation**: Use `ensure` block to restore original value after each request  
+**Implementation**:
+```ruby
+original_property_id = Hyrax::Analytics.config.property_id
+Hyrax::Analytics.config.property_id = tenant_property_id
+begin
+  yield  # Call analytics methods with tenant property_id
+ensure
+  Hyrax::Analytics.config.property_id = original_property_id
+end
+```
+
+### 3. Current Account May Be Nil
+**Gotcha**: Anonymous users don't have `current_account`, causing nil error  
+**Mitigation**: Use safe navigation operator and ENV fallback  
+**Implementation**:
+```ruby
+tenant_property_id = current_account&.google_analytics_property_id || 
+                     ENV.fetch('GOOGLE_ANALYTICS_PROPERTY_ID', '')
+```
+
+### 4. Account Column Must Exist
+**Gotcha**: If `google_analytics_property_id` column doesn't exist, controller crashes  
+**Mitigation**: Verify in AccountSettings concern (already exists in Hyku)  
+**Verification**:
 ```bash
 rails c
-Account.first.attributes.keys.include?('google_analytics_property_id')
-# Should return true
+Account.first.google_analytics_property_id  # Should return string or nil, not error
 ```
 
-If missing, create migration (unlikely, but handle gracefully with nil-check).
-
-### 3. ENV Fallback
-Always fallback to ENV if Account field is nil:
+### 5. Request Isolation in Tests
+**Gotcha**: Tests may leak state if they don't clean up config.property_id  
+**Mitigation**: Use `ensure` block in with_tenant_analytics + reset in test teardown  
+**Test Pattern**:
 ```ruby
-property_id = current_account.google_analytics_property_id || ENV.fetch('GOOGLE_ANALYTICS_PROPERTY_ID', '')
+after do
+  # Reset config to original value
+  Hyrax::Analytics.config.property_id = @original_property_id
+end
 ```
 
-### 4. Monkey-Patching Risk
-This override only works if Hyrax's Ga4 and controller structures don't change radically. If Hyrax refactors heavily, this override may break. **That's OK** — Phase 2 fixes it upstream.
+### 6. Ga4 Client Caching
+**Gotcha**: Ga4 caches the client instance (`@client ||=`); if config changes, cache isn't invalidated  
+**Mitigation**: ✅ This isn't a problem — we set property_id BEFORE calling analytics methods  
+**Why**: Each request gets fresh property_id, and Ga4 methods use current config when querying
+
+### 7. Backward Compatibility (Single-Tenant)
+**Gotcha**: Single-tenant deployments might break if Account field is nil and ENV is not set  
+**Mitigation**: Always use `ENV.fetch(..., '')` with default value  
+**Verification**: Single-tenant test should verify analytics still work without current_account
 
 ---
 
 ## Estimated Work Breakdown
 
-- **Override Code**: 1-1.5 hours
+- **Override Code**: 1 hour
 - **RSpec Tests**: 1 hour
-- **Manual Testing**: 30-45 minutes
+- **Manual Testing**: 45 minutes
 - **Verification**: 30 minutes
 
-**Total**: ~3-4 hours (same as Phase 1 upstream, but this is Phase 1 of 2)
+**Total**: ~3-3.5 hours
 
 ---
 
