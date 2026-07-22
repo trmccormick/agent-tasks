@@ -9,30 +9,86 @@ date_created: 2026-07-22
 date_assigned: 2026-07-22
 ---
 
-## ⚡ Minimal Handoff (Copy this to send to agent)
+## ⚡ Minimal Handoff — Copy This Entire Block to Dispatch to Qwen Agent
 
 ```
-You are **Implementation Agent**.
+You are **Implementation Agent** for Samvera Hyku GA Multi-Tenant Fix.
 
-Project: Samvera Hyku
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/tasks/active/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-PROPERTY-SCOPING.md
+PROJECT: Samvera Hyku  
+TASK FILE: /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/tasks/active/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-PROPERTY-SCOPING.md  
+GITHUB ISSUES: #2985 | #2995 | PALNI/PALCI #611 (production validation)  
+REVIEWER: Rob (Samvera maintainer) — ✅ APPROVED 2026-07-07
 
-PREREQUISITE RESEARCH (already completed, saved for your reference):
-1. /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/tasks/active/2026-06-26-HIGH-RESEARCH-MULTITENANT-GA-ISSUES-2985-2995.md
-2. /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/tasks/active/2026-06-26-VALIDATION-PALNI-PALCI-ISSUE-611-CONFIRMS-GA-ROOT-CAUSE.md
-3. /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/handoffs/session_handoff_2026-07-07_GA-MULTITENANT-IMPLEMENTATION-READY.md
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-BRANCH INFO:
-- Base branch: main
-- Branch name: fix/ga-tenant-property-scoping
-- Work directory: /Users/tam0013/Documents/git/hyku
+STEP 1 — VERIFY BRANCH IS READY (no exceptions)
 
-READ FIRST: Task file contains all prerequisites, implementation plan, acceptance criteria, and verification steps.
+  cd /Users/tam0013/Documents/git/hyku
+  git status  # MUST show: On branch fix/ga-tenant-property-scoping
+  git log --oneline -1  # MUST show current commit
+  
+  Copy both outputs to chat. Stop if branch is wrong.
 
-CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
-  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/summaries/
-  Filename pattern: YYYY-MM-DD-SYNTHESIS-GA-MULTITENANT-IMPLEMENTATION.md
-  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+STEP 2 — READ PREREQUISITES IN THIS ORDER
+
+  1. /Users/tam0013/Documents/git/agent-tasks/README.md (EXECUTOR Role section only)
+  2. /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/README.md
+  3. /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/tasks/active/2026-06-26-HIGH-RESEARCH-MULTITENANT-GA-ISSUES-2985-2995.md
+  4. /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/tasks/active/2026-06-26-VALIDATION-PALNI-PALCI-ISSUE-611-CONFIRMS-GA-ROOT-CAUSE.md
+  5. /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/handoffs/session_handoff_2026-07-07_GA-MULTITENANT-IMPLEMENTATION-READY.md
+  6. This task file (all sections)
+
+  DO NOT SKIP. DO NOT REORDER. All contain critical context.
+
+STEP 3 — CREATE SYNTHESIS REPORT (MANDATORY GATE)
+
+  ✓ Create file: /Users/tam0013/Documents/git/agent-tasks/projects/samvera_hyku/summaries/YYYY-MM-DD-SYNTHESIS-GA-MULTITENANT-IMPLEMENTATION.md
+  ✓ Content: Overview of approach, gotchas you identified, implementation plan, risks
+  ✓ Post synthesis to chat
+  ✓ WAIT for approval — DO NOT CODE until approved
+  
+  Synthesis is your gate to implementation. Skipping or rushing this step means bad code.
+
+STEP 4 — IMPLEMENT FIX #1 (After Synthesis Approval)
+
+  ✓ Modify 4 files (~40-50 lines total) — see "Implementation Plan" section
+  ✓ Add inline comments explaining tenant property_id scoping
+  ✓ Test compilation: bundle exec rails runner "puts 'OK'"
+  ✓ Write 3 RSpec test files (see "Testing Strategy" section)
+  ✓ Manual multi-tenant testing (see "Verification Checklist")
+
+STEP 5 — VERIFY & COMMIT
+
+  ✓ RSpec tests pass: bundle exec rspec spec/services/hyrax/analytics/ga4_spec.rb
+  ✓ All changes compile: bundle exec rails runner "puts 'OK'"
+  ✓ git diff to review changes
+  ✓ Commit with atomic, descriptive messages (one per file/test)
+
+STEP 6 — CREATE PR & FINISH TASK
+
+  ✓ Create PR on GitHub (branch: fix/ga-tenant-property-scoping, base: main)
+  ✓ Link issues: #2985, #2995, PALNI/PALCI #611 (use PR template in task file)
+  ✓ After PR created, move task file: git mv tasks/active/2026-07-22-... tasks/completed/2026-07-22-...
+  ✓ Change YAML header: status: active → status: completed
+  ✓ Commit task move
+  ✓ Post PR link to chat with task completion summary
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CRITICAL CHECKPOINTS (stop if any fail):
+  ✓ Branch verification passes (Step 1)
+  ✓ All prerequisites read (Step 2)
+  ✓ Synthesis report created and approved (Step 3)
+  ✓ All tests pass (Step 5)
+  ✓ Backward compatibility confirmed (Step 5)
+
+GOTCHAS TO WATCH (see "Gotchas & Architecture Notes" section):
+  • Search codebase for all Ga4.new() calls before modifying
+  • Verify Account.google_analytics_property_id column exists
+  • Single-tenant deployments MUST work with ENV fallback
+  • Multi-tenant tests MUST use distinct property_ids per tenant
+
+QUESTIONS? Post in chat. Blockers? Document and escalate. DO NOT GUESS.
 ```
 
 ---
