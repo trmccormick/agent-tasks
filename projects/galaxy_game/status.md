@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-22 — Luna Daily Tick Loop Simulation + Duplicate Task Cleanup
+**Last Updated:** 2026-07-22 — Luna Daily Tick Loop Simulation + RSpec Failure Investigation
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -7,6 +7,10 @@
 ---
 
 ## 🎯 Latest Completion (2026-07-22)
+
+✅ **Two RSpec Failure Investigation** — COMPLETED
+- **Failure 1 (planetary_monitor_spec.rb:171)**: Fixed elevation test data shape — two contexts had `'elevation' => [1.0]` (1D array with Float) instead of `[[1.0]]` (2D grid). Root cause: stale diagnosis from NEEDS_REVIEW.md was never implemented as a fix. Full spec: 9 examples, 0 failures. Commit: `789b0921`
+- **Failure 2 (game_data_generator_spec.rb:13)**: Could not reproduce in any of 4 tested contexts (isolation, generators dir, combined with planetary_monitor, all feature specs). No global tmp pollution found — only the spec's own `after` hook touches `tmp/`. Task file closed as `cannot-reproduce`, moved from completed back to backlog/current with investigation note.
 
 ✅ **Luna Daily Tick Loop Simulation** — COMPLETED
 - New service: `LunaOperationsSimulationService` (daily state advancement, inventory delta calc, binary import gate)
