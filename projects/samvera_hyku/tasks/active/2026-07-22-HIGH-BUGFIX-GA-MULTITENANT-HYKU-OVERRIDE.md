@@ -123,15 +123,15 @@ QUESTIONS? Post in chat. Blockers? Document and escalate. DO NOT GUESS.
 
 **Production Impact**: PALNI/PALCI has 248+ phantom entries per tenant, 100% data loss for one tenant.
 
-**Solution (Phase 1 — This Task)**: 
-Create Hyku-specific **override code** that patches the Hyrax GA4 service to accept tenant-specific property IDs. This provides an immediate fix in this Hyku instance.
+**Why Only Hyku?**: Hyrax is single-tenant, so this issue only affects **multi-tenant Hyku deployments**. The fix belongs in Hyku, not in Hyrax.
+
+**Solution (This Task — Permanent Fix)**: 
+Create Hyku-specific **override code** that patches the Hyrax GA4 service to accept tenant-specific property IDs. This is the **permanent solution** for multi-tenant Hyku instances.
 
 **Phase 2 (Separate Task)**: 
-Extract these overrides and create upstream PR to `samvera/hyrax` so all Hyku instances benefit.
+After Phase 1 is working, create an **issue in samvera/hyrax** proposing an optional `property_id` parameter (for flexibility). This is a discussion with maintainers, not an implementation.
 
----
-
-## Architecture: Why Monkey-Patching
+---This Is the Right Place for the Fix
 
 ### The Challenge
 The code we need to modify lives in the **Hyrax gem** (external dependency):
@@ -139,20 +139,27 @@ The code we need to modify lives in the **Hyrax gem** (external dependency):
 - `Hyrax::Admin::Analytics::*` controllers
 - These files are NOT in the hyku workspace; they're in vendor/bundle at runtime
 
-### The Solution
+### Why Hyrax Can't Solve This
+- Hyrax is **single-tenant** — it doesn't have the concept of `current_account` or tenant-specific properties
+- Multi-tenancy is a **Hyku feature**, not a Hyrax feature
+- The fix is **Hyku-specific**, not a Hyrax improvement
+
+### The Solution (Permanent Fix in Hyku)
 Create **Hyku-specific overrides** that patch Hyrax's behavior:
 1. Monkey-patch `Hyrax::Analytics::Ga4` to accept `property_id` parameter
 2. Override analytics controllers to get tenant property_id and pass it to Ga4
 3. Load overrides in `config/initializers/`
 
 ### Why This Approach
-- ✅ Immediate fix (no waiting for Hyrax maintainers)
-- ✅ Self-contained in Hyku repo
-- ✅ Easy to remove after Hyrax is updated (Phase 2)
+- ✅ **Permanent solution** for multi-tenant Hyku
+- ✅ Self-contained in Hyku repo (correct architectural location)
 - ✅ No code duplication (uses module prepend, not full copy-paste)
+- ✅ Solves the problem at the multi-tenant layer where it belongs
+- ✅ Easy to maintain (clearly marked as Hyku extensions to Hyrax)
 
-### Limitation
-- ❌ Only fixes this Hyku instance
+### Note
+- Other multi-tenant Hyku instances (like PALNI/PALCI) can use the same pattern
+- Phase 2 will document this pattern + propose optional flexibility to Hyrax maintainers
 - ❌ Other multi-tenant Hyku deployments still affected
 - ❌ That's why Phase 2 exists: upstream PR to fix it for everyone
 
@@ -395,11 +402,13 @@ end
 ✓ **Code Ready for Phase 2**: Override code is clean and extractable  
 
 ---
-
-## What Happens After Phase 1
-
-After this implementation is approved and tested:
-
+issue in `samvera/hyrax` repo proposing optional `property_id` parameter
+2. **Hyrax Discussion**: Samvera maintainers consider if this is a useful feature
+3. **Possible Outcomes**:
+   - ✅ If accepted: Hyrax adds optional parameter, Hyku simplifies override to pass-through
+   - ✅ If rejected: Override stays in Hyku (perfectly fine — multi-tenancy is Hyku-specific)
+4. **Hyku Keeps Override**: This is now the permanent solution for multi-tenant GA support
+5. **Documentation**: Document this pattern for other multi-tenant Hyku instances
 1. **Phase 2 Task**: Create upstream PR to `samvera/hyrax` with these changes
 2. **Hyrax Review**: Samvera maintainers review and merge
 3. **Hyrax Release**: Hyrax releases new version with fix
