@@ -1,5 +1,5 @@
 # Samvera Hyku — Project Status & Task Tracking
-**Last Updated:** 2026-07-07
+**Last Updated:** 2026-07-22
 
 ---
 
@@ -10,24 +10,42 @@ Main repo: https://github.com/samvera/hyku (278 open issues)
 ---
 
 ## Current Status
-- **Status:** Multi-tenant GA issues reviewed, approved, and handed off for implementation.
-- **Last Session:** 2026-07-07 — Reviewer (Rob) approved Fix #1, created implementation handoff
+- **Status:** Multi-tenant GA implementation task created and ready for executor dispatch. Feature branch created.
+- **Last Session:** 2026-07-22 — Planning session completed, implementation task formalized, branch: `fix/ga-tenant-property-scoping`
 - **Agent Notes**: See `notes.md` for technical discoveries and contextual findings from work sessions
-- **Handoff**: [2026-07-07_GA-MULTITENANT-IMPLEMENTATION-READY.md](handoffs/session_handoff_2026-07-07_GA-MULTITENANT-IMPLEMENTATION-READY.md) — Ready for next session
+- **Active Task**: [2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-PROPERTY-SCOPING.md](tasks/active/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-PROPERTY-SCOPING.md) — Ready for executor dispatch
+- **Research**: [2026-07-07_GA-MULTITENANT-IMPLEMENTATION-READY.md](handoffs/session_handoff_2026-07-07_GA-MULTITENANT-IMPLEMENTATION-READY.md) — Reviewer-approved implementation plan
 
 ---
 
 ## Active Tasks
-- **[APPROVED FOR IMPLEMENTATION]** [#2985 & #2995 — Multi-Tenant GA Issues](tasks/active/2026-06-26-HIGH-RESEARCH-MULTITENANT-GA-ISSUES-2985-2995.md)
-  - Root cause identified: All tenants share same GA property ID instead of using tenant-specific IDs
-  - **Reviewer Feedback** (Rob, 2026-07-07):
-    - ✅ **Fix #1 APPROVED**: Use tenant-specific GA property IDs in Ga4 client and report controllers
-    - ❌ **Fix #2 REJECTED**: Keep "Collection deleted" behavior (preserves visibility into genuine deletions)
-  - **REAL-WORLD VALIDATION**: [PALNI/PALCI Issue #611](tasks/active/2026-06-26-VALIDATION-PALNI-PALCI-ISSUE-611-CONFIRMS-GA-ROOT-CAUSE.md) — Production case with 248+ phantom entries, 46 cross-tenant ID overlap
-  - **WVU KNAPSACK TESTING** (2026-06-29 to 2026-06-30): Demo deletion test showed no cross-tenant event bleed, confirming issue is architectural at GA query level
-  - **Status**: Phase 1 implementation ready (~3-4 hours estimated work)
-  - **Priority**: HIGH — Blocks multi-tenant Hyku installations from using analytics reliably
-  - **Handoff**: Complete implementation plan in [2026-07-07 handoff document](handoffs/session_handoff_2026-07-07_GA-MULTITENANT-IMPLEMENTATION-READY.md)
+
+### 🔥 PRIMARY FOCUS TODAY
+- **[2026-07-22] HIGH — GA Multi-Tenant Property Scoping** (IMPLEMENTATION READY)
+  - **Task File**: [2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-PROPERTY-SCOPING.md](tasks/active/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-PROPERTY-SCOPING.md)
+  - **GitHub Issues**: [#2985](https://github.com/samvera/hyku/issues/2985) | [#2995](https://github.com/samvera/hyku/issues/2995)
+  - **Production Validation**: [PALNI/PALCI #611](https://github.com/notch8/palni_palci_knapsack/issues/611) — 248+ phantom entries, 46 cross-tenant ID overlap
+  - **Status**: ✅ Reviewer-approved (Rob, 2026-07-07), formal implementation task created (2026-07-22)
+  - **Branch Created**: `fix/ga-tenant-property-scoping` (hyku repo)
+  - **Estimated Work**: ~3-4 hours
+  - **Files to Modify**: 4 files (~40-50 lines total)
+    1. `app/services/hyrax/analytics/ga4.rb` — Add property_id parameter
+    2. `app/controllers/hyrax/admin/analytics/collection_reports_controller.rb` — Pass tenant property_id
+    3. `app/controllers/hyrax/admin/analytics/work_reports_controller.rb` — Pass tenant property_id
+    4. `spec/services/hyrax/analytics/ga4_spec.rb` — Multi-tenant tests
+  - **Acceptance Criteria**:
+    - ✓ Each tenant's GA queries only their own GA property
+    - ✓ Cross-tenant data commingling eliminated
+    - ✓ RSpec tests verify tenant isolation
+    - ✓ Backward compatible (single-tenant deployments unaffected)
+
+### Research & Validation (Completed, Reference Only)
+- **[2026-06-26] HIGH-RESEARCH** [#2985 & #2995 Root Cause Analysis](tasks/active/2026-06-26-HIGH-RESEARCH-MULTITENANT-GA-ISSUES-2985-2995.md)
+  - Root cause: All tenants share same GA property ID instead of using tenant-specific IDs
+  - Detailed technical analysis and proposed fixes documented
+- **[2026-06-26] VALIDATION** [PALNI/PALCI Issue #611 Confirmation](tasks/active/2026-06-26-VALIDATION-PALNI-PALCI-ISSUE-611-CONFIRMS-GA-ROOT-CAUSE.md)
+  - Real-world production case confirming root cause analysis
+  - 248+ phantom entries per tenant, 100% data loss for one tenant
 
 ---
 
