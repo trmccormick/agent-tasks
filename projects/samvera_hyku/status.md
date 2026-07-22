@@ -22,10 +22,12 @@ Main repo: https://github.com/samvera/hyku (278 open issues)
 ## Active Tasks
  — Two-Phase Parallel Implementation
 
-#### PHASE 1: Hyku Override (URGENT FIX — ACTIVE) ✅ Ready for Dispatch
+#### PHASE 1: Hyku Override (PERMANENT FIX — ACTIVE) ✅ Ready for Dispatch
 - **Task File**: [2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYKU-OVERRIDE.md](tasks/active/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYKU-OVERRIDE.md)
-- **Approach**: Create monkey-patch overrides in Hyku to fix multi-tenant analytics immediately
-- **Timeline**: Ready NOW (this Hyku instance only)
+- **Approach**: Create monkey-patch overrides in Hyku to fix multi-tenant analytics
+- **Timeline**: Ready NOW (this Hyku instance)
+- **Scope**: This is the **PERMANENT solution** for multi-tenant GA support in Hyku
+- **Why Hyku?**: Multi-tenancy is a Hyku feature, not a Hyrax feature (Hyrax is single-tenant)
 - **Deliverables**: 
   - Override modules for Ga4 service
   - Override code for analytics controllers
@@ -34,30 +36,30 @@ Main repo: https://github.com/samvera/hyku (278 open issues)
 - **Estimated Work**: ~3-4 hours
 - **Status**: ✅ Ready for Qwen executor agent dispatch
 
-#### PHASE 2: Hyrax Upstream PR (PERMANENT FIX — BACKLOG) ⏳ Depends on Phase 1
-- **Task File**: [2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYRAX-PR.md](tasks/backlog/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYRAX-PR.md)
-- **Approach**: Push same fixes upstream to samvera/hyrax for permanent community solution
-- **Timeline**: After Phase 1 complete + reviewed (Samvera maintainers: weeks to months)
-- **Deliverables**:
-  - Modified Hyrax source files (ga4.rb, controllers)
-  - RSpec tests in hyrax/spec/
-  - PR to samvera/hyrax with full documentation
-- **Estimated Work**: ~2.5-3 hours (code identical to Phase 1)
-- **Status**: 📋 BACKLOG — Moves to ACTIVE after Phase 1 approval
+#### PHASE 2: Hyrax Proposal (DISCUSSION/PROPOSAL — BACKLOG) ⏳ After Phase 1
+- **Task File**: [2026-07-22-MEDIUM-DOC-GA-HYRAX-FLEXIBILITY-PROPOSAL.md](tasks/backlog/2026-07-22-MEDIUM-DOC-GA-HYRAX-FLEXIBILITY-PROPOSAL.md)
+- **Approach**: Create GitHub issue in samvera/hyrax proposing optional `property_id` parameter
+- **Timeline**: No rush — this is a background discussion
+- **Scope**: Community proposal, not a blocker
+- **Purpose**: Suggest that Hyrax consider optional `property_id` parameter for flexibility
+- **Possible Outcomes**:
+  - ✅ If Hyrax accepts: Future versions could skip override
+  - ✅ If Hyrax declines: Hyku keeps override (correct approach for multi-tenancy)
+- **Estimated Work**: ~30-45 minutes (create issue, not implementation)
+- **Status**: 📋 BACKLOG — After Phase 1 completion + approval
 
-### Why Both Phases?
+### Why This Architecture Is Better
 
-| Phase | Purpose | Scope | Timeline | Benefit |
-|-------|---------|-------|----------|---------|
-| **Phase 1** | Fix NOW, this instance | Hyku-only override | Immediate | PALNI/PALCI gets fix, analytics work today |
-| **Phase 2** | Fix FOREVER, everywhere | Hyrax upstream | Weeks+ | All Hyku instances benefit after Hyrax release |
+| Phase | Purpose | Location | Timeline | Urgency |
+|-------|---------|----------|----------|---------|
+#### Critical Architecture Correction (2026-07-22)
+**Finding**: Hyrax is single-tenant, so GA fix belongs **permanently in Hyku**, not upstream.
 
----
+**Corrected Approach**:
+- **Phase 1**: Permanent Hyku override for multi-tenant GA (correct architectural location)
+- **Phase 2**: Optional proposal to Hyrax (would simplify Phase 1, but not required)
 
-#### Critical Discovery (2026-07-22)
-**Qwen identified** that target code files (Hyrax::Analytics::Ga4, analytics controllers) live in the **Hyrax gem** (external dependency), not in Hyku workspace. This triggered architecture analysis leading to two-phase parallel strategy.
-
-**Synthesis**: [2026-07-22-SYNTHESIS-GA-MULTITENANT-IMPLEMENTATION-OPTIONS.md](summaries/2026-07-22-SYNTHESIS-GA-MULTITENANT-IMPLEMENTATION-OPTIONS.md)
+**Impact**: Phase 1 is the PERMANENT solution. No need to remove it later.A-MULTITENANT-IMPLEMENTATION-OPTIONS.md](summaries/2026-07-22-SYNTHESIS-GA-MULTITENANT-IMPLEMENTATION-OPTIONS.md)
 - Documents both Option A (upstream) and Option B (override)
 - Comparison table of approaches
 - Recommendation for parallel strategy
