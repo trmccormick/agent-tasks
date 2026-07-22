@@ -1,15 +1,52 @@
 ---
-status: not-started
+status: backlog
 priority: HIGH
 type: feature
+system_domain: ADMIN_UI | ASSET_MANAGEMENT
 mvp_alignment: POST_SNAP (admin catalog needed for asset management pre-launch)
 local_worker_safe: true
-created: 2026-07-12
-last-updated: 2026-07-12
-phase: 15+
 ---
 
-# Admin Catalog View — Blueprint + Operational Data + Images
+# TASK: Admin Catalog View — Blueprint + Operational Data + Images
+**Status**: BACKLOG
+**Priority**: HIGH
+**Type**: feature
+**Created**: 2026-07-12
+**Last Updated**: 2026-07-21
+
+---
+
+## ⚡ Minimal Handoff (Copy this to send to agent)
+
+```
+You are **Implementation Agent**.
+
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-07-12-HIGH-FEATURE-ADMIN-CATALOG-VIEW.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/current/2026-07-12-HIGH-FEATURE-ADMIN-CATALOG-VIEW.md \
+         projects/galaxy_game/tasks/active/2026-07-12-HIGH-FEATURE-ADMIN-CATALOG-VIEW.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-07-12-HIGH-FEATURE-ADMIN-CATALOG-VIEW.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
 
 ## Context
 The admin interface needs a unified catalog view that displays all blueprints and operational data entries with their associated images. Currently there is no single view that lets admins browse, filter, and inspect the full asset pipeline (JSON data → generated images).
@@ -79,23 +116,47 @@ Without a unified catalog, admins cannot:
 
 ---
 
-## Handoff
+## Architecture Gotchas (Critical to understand BEFORE starting)
 
-### STEP 0 — Lifecycle Rules (MANDATORY)
-1. **Move task from backlog/phase15+/ → backlog/current/ BEFORE starting work**
-2. Update YAML header: `status: not-started` → `status: active`
-3. Commit the move to agent-tasks repo before writing any code
-4. Do not skip this step — it signals work has begun
+⚠️ **GOTCHA 1: Data paths are gitignored**
+- ❌ Wrong: Try to load data from `galaxy_game/data/json-data/` inside the Rails app — this path is gitignored and may not exist in Docker
+- ✅ Right: Use `Rails.root.join('..', '..', 'data', 'json-data')` or configure a config path via environment variable
+- Why: The `data/json-data/` directory lives at the top-level project root, outside the Rails app directory. It's gitignored intentionally.
 
-### Output Destination
-- Synthesis report → `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/summaries/2026-07-12-ADMIN-CATALOG-VIEW.md`
-- Save synthesis report to agent-tasks repo after implementation
+⚠️ **GOTCHA 2: Image paths are virtual — no real files yet**
+- ❌ Wrong: Assume images exist on disk and try to serve them via `image_tag`
+- ✅ Right: Use placeholder icons (e.g., Font Awesome or SVG) for missing images; only render actual images when the file exists
+- Why: The `images/` directory mirrors the blueprint/operational_data structure but is not yet populated with real generated assets. The catalog should handle both states gracefully.
 
-### Files to Review (context only — not for editing)
-- `galaxy_game/app/views/admin/organizations/index.html.erb` — existing admin view pattern reference
-- `galaxy_game/app/views/admin/ai_manager/index.html.erb` — existing admin layout reference
-- `data/json-data/blueprints/units/life_support/co2_oxygen_production_bp.json` — sample blueprint data
-- `data/json-data/operational_data/units/life_support/co2_oxygen_production_data.json` — sample operational data
+⚠️ **GOTCHA 3: Admin routing already exists**
+- ❌ Wrong: Create new routes or authentication — admin auth is already in place
+- ✅ Right: Add controller under existing `admin/` namespace; use existing admin layout (`app/views/layouts/admin.html.erb`)
+- Why: The admin interface already has authentication and layout. This task only adds a new controller + views.
 
-### Scope Clarification
-This task creates an **admin-only catalog view** for browsing and inspecting all game assets (blueprints + operational data + images). It does NOT modify the JSON data files themselves, nor does it handle image generation. The public deployment mapping of `images/` to `public/` is a separate concern handled in deployment configuration.
+---
+
+## Stop Conditions — escalate to user immediately if:
+- Data paths cannot be resolved (gitignored `data/json-data/` not accessible in Docker)
+- Existing admin auth/layout is broken or incompatible with new controller
+- Blueprint JSON schema has changed significantly since this task was written (2026-07-12)
+- Image generation pipeline has been removed or relocated
+
+---
+
+## Completion Report
+*Filled in by the implementing agent after completion*
+
+**Completed by**: [agent name]
+**Completion date**: YYYY-MM-DD
+
+### What was changed
+- `[file]` — [description of change]
+
+### Issues discovered
+[Any problems found during implementation that weren't in the original task]
+
+### Follow-up tasks needed
+[Any new backlog items identified — do not create the files, just list them here]
+
+### Lessons learned
+[What worked, what didn't, what future tasks in this area should know]
