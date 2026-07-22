@@ -1,5 +1,5 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-07-14
+**Last Updated:** 2026-07-21
 
 ---
 
@@ -14,15 +14,43 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 ---
 
 ## Current Status
-- **Status:** ⏳ **VM DEPLOYMENT IN PROGRESS** — initialize_app exit code fixed
+- **Status:** ✅ **VM DEPLOYMENT READY** — All fixes verified and tested
 - **Active Branches:**
-  - `main` — Stable; pagination + featured collections features deployed
-  - `fix/facet-links-and-hide-type-facet` — ✅ LOGGING + SOLR + EXIT CODE FIXES COMPLETE
-  - `clover-test` — Clover IIIF viewer integration (completed testing, committed 2026-07-07)
+  - `main` — Stable; production-ready with full volume mount structure
+  - `fix/facet-links-and-hide-type-facet` — ✅ ALL FIXES COMPLETE (logging, Solr, exit code, symlink)
+  - `clover-test` — Clover IIIF viewer integration (backlog)
   - `ollama_testing` — Ollama vision model for alt-text generation (backlog, experimental)
-  - `alt-text-views-only` — (TBD)
-- **Last Session:** 2026-07-15 (current)
-- **Last Update:** 2026-07-15 — FIX: Added explicit exit 0 to db-migrate-seed.sh (initialize_app container failure)
+- **Last Session:** 2026-07-21
+- **Last Update:** 2026-07-21 — ✅ SYMLINK FIX VERIFIED + DOCKER-COMPOSE ALIGNMENT COMPLETE
+
+---
+
+## ✅ RESOLVED — Symlink Deletion on Dev VM (2026-07-21)
+
+**Issue**: Every `./up.sh` run on dev VM deleted `./data` symlink to mounted volume
+- **Root Cause**: Recent commits consolidated volume mounts in `docker-compose.production.yml`, removing `./data/tmp`, `./data/storage/*`, and `./google-analytics.json`
+- **Why It Broke**: Without full volume structure defined, Docker doesn't properly handle symlinks pointing to mounted volumes
+- **Fix Applied**: 
+  - Restored `docker-compose.production.yml` from main branch (full volume mount list)
+  - Preserved logging configuration (100MB max, 3-file rotation for worker/web)
+  - Updated `docker-compose.local.yml` to match production config exactly
+- **Testing**: ✅ **VERIFIED** — Created symlink `data -> data_volume`, ran full `sh up.prod.local.sh`, symlink persisted through entire initialization
+- **Status**: Production and local configs now synchronized; ready for hykudev deployment
+- **Details**: See [VM_BUILD_OPTIMIZATION_ANALYSIS_2026-07-21.md](./VM_BUILD_OPTIMIZATION_ANALYSIS_2026-07-21.md)
+
+---
+
+## ⏳ ACTIVE — VM Build Time Optimization Analysis (2026-07-21)
+
+**Objective**: Reduce ~20 minute build time on production VM
+- **Analysis Complete**: Build context is 1.3GB; primary bottleneck is `COPY . /app/samvera`
+- **Optimization Opportunities**:
+  - `.dockerignore` creation: **8-10 min savings** (40-50% reduction) — Low risk
+  - BuildKit re-enablement: **3-5 min savings** (15-25% reduction) — Medium risk
+  - Dockerfile layer reordering: **2-3 min savings** (10% reduction) — Low risk
+- **Recommended Next**: Implement `.dockerignore` to exclude `data/`, `node_modules/`, `.git/`, `public/uploads/` (~10x context reduction)
+- **Status**: Analysis complete, recommendations documented, awaiting approval for implementation
+- **Details**: See [VM_BUILD_OPTIMIZATION_ANALYSIS_2026-07-21.md](./VM_BUILD_OPTIMIZATION_ANALYSIS_2026-07-21.md)
 
 ---
 
