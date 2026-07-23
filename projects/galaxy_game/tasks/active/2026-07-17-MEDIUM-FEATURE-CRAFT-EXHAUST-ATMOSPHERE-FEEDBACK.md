@@ -1,7 +1,7 @@
 ---
 title: "Feature — Craft exhaust → atmosphere feedback"
 priority: MEDIUM
-status: backlog
+status: active
 phase: phase5+
 owner: Implementation Agent (Qwen)
 type: feature
