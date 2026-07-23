@@ -8,18 +8,27 @@
 
 ## 🎯 Latest Completion (2026-07-22 Evening)
 
-✅ **Admin Catalog View — Complete RSpec Coverage** — COMPLETED
+✅ **Admin Catalog View — Complete RSpec Coverage + Edge Case Verification** — COMPLETED
 - **Continuation task**: Takeover from local Qwen agent, fixed incomplete implementation, wrote comprehensive test suites
 - Service layer (`CatalogService`): 18 test examples, all passing
-  - Tests: base_path resolution, entries loading + caching, find_entry lookup, entries_for filtering by category/subcategory/search, paginated_result manual pagination
-  - Multi-path fallback tested; graceful skip when data unavailable (expected behavior)
+  - Tests: base_path resolution (uses `GalaxyGame::Paths::JSON_DATA`), entries loading + caching, find_entry lookup, entries_for filtering by category/subcategory/search, paginated_result manual pagination
   - All 3 pending skips are intentional (no data in test environment)
 - Controller layer (`Admin::CatalogController`): 10 test examples, all passing
   - Tests: index action (status, template, category assignments, filtering, search), show action (status, template, entry assignment, redirect on not-found)
-  - Mock service used for deterministic behavior
+  - Categories/subcategories derived dynamically from actual data (not hardcoded)
 - **Combined Suite**: 28 examples, 0 failures, 3 pending
 - Feature fully tested and verified working end-to-end
-- galaxyGame commit: `4fc3d56b` (spec files) — adds 246 lines of test coverage
+- galaxyGame commits:
+  - `4fc3d56b` — spec files (246 lines of test coverage)
+  - `a2377f2d` — cross-reference lookup fix + spec comparison operator fix
+  - `44183dab` — fused line fix in controller
+- **Edge case verification** (real entries, not mocks):
+  - Blueprint WITHOUT op data: `components/structural/3d_printed_ibeam_mk1` → placeholder icon, "No related operational_data found." — no errors
+  - Op data WITHOUT blueprint: `crafts/atmospheric/mars_helicopter_data` → placeholder icon, "No related blueprint found." — no errors
+  - Cross-ref pair (bp→op): `modules/life_support/co2_scrubber` → link resolves to `modules/life_support/co2_scrubber` (op data)
+  - Cross-ref pair (op→bp): `crafts/ground/harvesting_rover_data` → link resolves to `crafts/ground/harvesting_rover` (blueprint)
+  - No images directory exists — all 444 entries show Font Awesome placeholder icons (not broken `<img>` tags)
+- Task file moved to completed: `823fe30` (agent-tasks repo)
 
 ---
 
