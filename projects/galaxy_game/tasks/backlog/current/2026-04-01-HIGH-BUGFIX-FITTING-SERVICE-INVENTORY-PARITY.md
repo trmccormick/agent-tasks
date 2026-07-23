@@ -7,6 +7,38 @@ mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 ---
 
+## ⚡ Minimal Handoff (Copy this to send to agent)
+
+```
+You are **Implementation Agent**.
+
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-04-01-HIGH-BUGFIX-FITTING-SERVICE-INVENTORY-PARITY.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/current/2026-04-01-HIGH-BUGFIX-FITTING-SERVICE-INVENTORY-PARITY.md \
+         projects/galaxy_game/tasks/active/2026-04-01-HIGH-BUGFIX-FITTING-SERVICE-INVENTORY-PARITY.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-04-01-HIGH-BUGFIX-FITTING-SERVICE-INVENTORY-PARITY.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+  Filename pattern: 2026-04-01-BUGFIX-FITTING-SERVICE-INVENTORY-PARITY.md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
+
 ---
 
 ## 🎯 Objective
@@ -39,11 +71,11 @@ Fix inventory validation inconsistency in `FittingService`. Currently `install_u
 
 ## Prerequisites — READ FIRST (Sequential Order)
 
-1. **Workflow**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/README.md` (EXECUTOR Role section)
+1. **Workflow**: `/Users/tam0013/Documents/git/agent-tasks/README.md` (EXECUTOR Role section)
 2. **Project Guide**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/README.md`
 3. **This Task File**: Everything below
 
-> Agent MUST read in this order. Do not skip. Synthesis report goes in chat BEFORE starting work.
+> Agent MUST read in this order. Do not skip. Synthesis report goes to MD file BEFORE starting work.
 
 ---
 
@@ -215,12 +247,12 @@ Add test cases to `fitting_service_spec.rb` that verify modules and rigs are che
 
 ### Step 4 — Verify
 
-> CRITICAL EXECUTION MANDATE: All RSpec commands must use the Docker wrapper below.
-> The container working directory is already /home/galaxy_game — do NOT add cd /home/galaxy_game.
-> Never run bare local test commands. Never fabricate test results. Actually run the specs.
+> CRITICAL EXECUTION MANDATE: All RSpec commands must use the Docker wrapper.
+> The container working directory is already `/home/galaxy_game` — do NOT add `cd /home/galaxy_game`.
+> Never fabricate results. Actually run the command.
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/fitting_service_spec.rb --format documentation 2>&1 | tail -40'
+docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/fitting_service_spec.rb --format documentation 2>&1 | tail -40'
 ```
 
 Expected result: 7 examples (4 existing + 3 new), 0 failures

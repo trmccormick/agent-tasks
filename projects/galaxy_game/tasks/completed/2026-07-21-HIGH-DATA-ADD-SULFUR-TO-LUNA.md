@@ -1,5 +1,5 @@
 markdown---
-status: backlog
+status: active
 priority: HIGH
 type: data
 system_domain: AI_MANAGER
@@ -59,13 +59,23 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting a
 
 ---
 
+## Local Worker Triage Report (Optional — for backlog review only)
+
+- **Template Conformance**: PASS — all sections present, paths corrected
+- **Docker Wrapper Check**: FIXED — removed `-it` flag from docker exec commands
+- **MVP Alignment**: VALID — sulfur is a real Luna resource needed for ISRU production chain
+- **MVP Impact Note**: Enables `PrecursorCapabilityService.can_produce_locally?('S')` to return true for Luna, required for future sulfur-economics work
+- **Action Line**: READY FOR LOCAL DISPATCH
+
+---
+
 ## Prerequisites — READ FIRST (Sequential Order)
 
-1. **Workflow**: `agent-tasks/README.md` (EXECUTOR Role section)
-2. **Project Guide**: `agent-tasks/projects/galaxy_game/README.md`
+1. **Workflow**: `/Users/tam0013/Documents/git/agent-tasks/README.md` (EXECUTOR Role section)
+2. **Project Guide**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/README.md`
 3. **This Task File**: Everything below
 
-> Agent MUST read in this order. Do not skip. Synthesis report goes in chat BEFORE starting work.
+> Agent MUST read in this order. Do not skip. Synthesis report goes to MD file BEFORE starting work.
 
 ---
 
@@ -101,7 +111,46 @@ This task adds sulfur to Luna's existing data profile so `AIManager::PrecursorCa
 
 ## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
 
-Post the standard synthesis report (see TASK_TEMPLATE.md format) to chat before starting. Must confirm: which file(s) hold Luna's data, which field you'll edit, and what chemical formula key you'll use — before making any edit.
+Before navigating to any URLs, running any commands, or modifying any files, you MUST create and post a **synthesis report** in chat. This report demonstrates you understand the task before executing.
+
+**Synthesis Report Template** (save as MD file, do NOT paste in chat):
+```markdown
+## STATUS SYNTHESIS REPORT
+
+**Task**: Add Sulfur to Luna's Data
+**Status**: backlog → active
+**Date**: YYYY-MM-DD
+
+### What I'm About to Do
+[2-3 sentences: the goal, the verification method, the success criteria]
+
+### Files I'll Reference
+| File | Purpose | Status |
+|---|---|---|
+| `app/services/ai_manager/precursor_capability_service.rb` | Confirm which field feeds local_resources | not started |
+| Luna's celestial body JSON data (TBD via research) | Add sulfur entry | pending |
+
+### Prerequisites Completed
+- ✅ Step 0: Task file moved to active/ with git mv (find output pasted in chat)
+- ✅ Step 0: YAML status updated from backlog → active
+- ✅ Read README.md EXECUTOR section
+- ✅ Read project guide
+- ✅ Read this task file
+- ✅ Understand architecture gotchas above
+
+### Expected Outcomes
+[Exact description of what "done" looks like: sulfur added to Luna's crust_composition, can_produce_locally?('S') returns true, no test regressions]
+
+### Critical Gotchas I Will Avoid
+- ❌ Touching resource-spawning/deposit system — instead ✅ add sulfur to Luna's existing JSON data only
+- ❌ Assuming which field stores resources — instead ✅ read PrecursorCapabilityService source first
+
+---
+
+**SYNTHESIS COMPLETE.** Ready to proceed with Step 1.
+```
+
+**POST THIS TO CHAT BEFORE PROCEEDING.** Do not start actual work until synthesis is approved.
 
 ---
 
@@ -133,16 +182,45 @@ Post the standard synthesis report (see TASK_TEMPLATE.md format) to chat before 
 
 ## Implementation Steps
 
+> ⚠️ **BEFORE YOU START**: Complete Step 0 first. Then complete and post your STATUS SYNTHESIS REPORT.
+> Do not proceed to Step 1 until both are done and approved.
+
+All agents: follow these steps exactly in order.
+
 ### Step 0 — Move task file to active/ and update status (MANDATORY FIRST STEP)
-(see Minimal Handoff block above — same steps)
+
+This must be done before reading the task content, before synthesis, before any other action.
+
+```bash
+# From inside agent-tasks repo root:
+git mv projects/galaxy_game/tasks/backlog/current/2026-07-21-HIGH-DATA-ADD-SULFUR-TO-LUNA.md \
+       projects/galaxy_game/tasks/active/2026-07-21-HIGH-DATA-ADD-SULFUR-TO-LUNA.md
+```
+
+Then open the moved file and change the YAML status field:
+```
+status: backlog  →  status: active
+```
+
+Then verify only one copy exists:
+```bash
+find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks \
+     -name "2026-07-21-HIGH-DATA-ADD-SULFUR-TO-LUNA.md"
+```
+
+**Paste the output of the find command in chat before proceeding.**
+Expected: exactly one result, at the `active/` path.
 
 ### Step 1 — Locate Luna's data source
+
 Find the JSON/data file(s) that back the `'LUNA-01'` CelestialBody identifier. Confirm this is where `materials`/`crust_composition` are defined.
 
 ### Step 2 — Confirm PrecursorCapabilityService's read path
-Read `precursor_capability_service.rb` in full. Confirm exactly which CelestialBody field(s) populate `local_resources`. Do not proceed to Step 3 until this is confirmed — do not assume `materials` is correct without checking.
+
+Read `app/services/ai_manager/precursor_capability_service.rb` in full. Confirm exactly which CelestialBody field(s) populate `local_resources`. Do not proceed to Step 3 until this is confirmed — do not assume `materials` is correct without checking.
 
 ### Step 3 — Add sulfur to the correct field
+
 Add sulfur using the real geological basis: sourced from troilite (FeS) in mare basalts, roughly 0.15–0.27% by weight in high-titanium mare regions. Use chemical formula key `'S'` unless the existing convention in Luna's data file uses a different format for single-element entries — match whatever convention already exists there.
 
 ### Step 4 — Verify
@@ -152,7 +230,7 @@ Add sulfur using the real geological basis: sourced from troilite (FeS) in mare 
 > Never fabricate results. Actually run the command.
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rails runner "
+docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rails runner "
 body = CelestialBodies::CelestialBody.find_by(identifier: %q(LUNA-01))
 service = AIManager::PrecursorCapabilityService.new(body)
 puts service.can_produce_locally?(%q(S))
@@ -162,12 +240,9 @@ Expected result: `true`
 
 Then run existing specs touching `PrecursorCapabilityService` and Luna's celestial body data:
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/precursor_capability_service_spec.rb 2>&1 | tail -20'
+docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/precursor_capability_service_spec.rb 2>&1 | tail -20'
 ```
 Expected result: no new failures.
-
-### Step 5 — Synthesis Report (before committing anything)
-Standard format — root cause N/A (data addition, not a bug fix), proposed change, risk assessment (should be near-zero — additive data only).
 
 ---
 
