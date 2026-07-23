@@ -1,12 +1,37 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-22 — Admin Catalog View RSpec Coverage Complete
+**Last Updated:** 2026-07-23 — Luna Sulfur Production Complete
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🎯 Latest Completion (2026-07-22 Evening)
+## 🎯 Latest Completion (2026-07-23)
+
+✅ **Add Sulfur (S) as Producible Resource on Luna** — COMPLETED
+- **Task file**: `2026-07-21-HIGH-DATA-ADD-SULFUR-TO-LUNA.md` (moved to completed/)
+- **Problem**: Luna couldn't produce sulfur despite troilite (FeS) being in crust_composition at 2.0%
+- **Root cause**: Two issues—
+  1. `surface_resources` method returned mineral names ("troilite") instead of chemical elements ("S", "Fe")
+  2. Convention violation: English element names ("Iron", "Sulfur") were added alongside symbols, breaking project formula-only convention
+- **Solution**: 
+  - Added MaterialLookupService bridging in `precursor_capability_service.rb` to convert mineral names → chemical formulas + symbols
+  - Created `troilite.json` material definition with composition array containing chemical_symbol field
+  - Removed English element name line from surface_resources method
+  - Fixed pre-existing data bug: Luna crust_composition summed to 102% (80+10+5+2+5); corrected "other" from 5.0 → 3.0 (now 100%)
+- **Verification (all passing)**:
+  - ✓ Test 1: S in local_resources
+  - ✓ Test 2: can_produce_locally?('S') returns true
+  - ✓ Test 3: No English element names in local_resources
+  - ✓ Test 4: Crust composition sum = 100%
+- **Commits**: 
+  - galaxyGame: `f4002de0` — Crust sum fix + convention violation removal
+  - agent-tasks: `b11d884` — Task moved to completed
+- **Learned**: Material definitions must include both chemical_symbol (for backend) and element (for UI/docs), but backend code must use ONLY chemical_symbol to comply with formula-only convention
+
+---
+
+## 🎯 Previous Completion (2026-07-22 Evening)
 
 ✅ **Admin Catalog View — Complete RSpec Coverage + Edge Case Verification** — COMPLETED
 - **Continuation task**: Takeover from local Qwen agent, fixed incomplete implementation, wrote comprehensive test suites
