@@ -9,17 +9,17 @@
 ## 🎯 Latest Completion (2026-07-24)
 
 ### ✅ Fix HasBlueprintPorts — Remove Fallback and Hardcoded Blueprint ID
-- **Task**: `2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md` (moved to completed/)
+- **Task**: `2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md`
 - **Problem**: Two critical bugs violated blueprint-driven design:
   1. Hardcoded `generic_satellite` fallback applied to all craft types
   2. Silent fallback returning 5 ports of each type when no blueprint found
   3. Consequence: Misconfigured/missing blueprints silently granted arbitrary port counts, breaking game balance
 - **Solution**: 
-  - Removed hardcoded satellite lookup block
-  - Removed silent 5-port fallback
+  - Removed hardcoded satellite lookup block (lines 13-18)
+  - Removed silent 5-port fallback (lines 30-35)
   - Replaced with clear error logging and nil return
   - Each craft now uses its own `default_blueprint_id` and `blueprint_category`
-- **Implementation**: Modified `has_blueprint_ports.rb` `get_ports_data` method (11-line reduction, cleaner flow)
+- **Implementation**: Modified `has_blueprint_ports.rb` `get_ports_data` method (reduced 35 lines → 25 lines, cleaner flow)
 - **Verification**: 
   - ✓ Ruby syntax valid
   - ✓ fitting_service_spec: 7 examples, 0 failures (stubs unaffected)
