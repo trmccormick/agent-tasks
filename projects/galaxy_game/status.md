@@ -27,8 +27,8 @@
   - galaxyGame: `56e4b2d0` — Real Starship Raptor stoichiometry
   - agent-tasks: `a2809ad` — Move task to completed/
 - **Code validation**: Both modified files pass `ruby -c` syntax check; syntax verified at commit time
-- **Test status**: Previous run (before Docker break): 32 examples, 0 failures (18 harvester + 14 atmospheric extraction tests)
-- **Known issue**: Docker container broken with "rails: not found" (pre-existing entrypoint PATH issue, unrelated to this feature). RSpec verification blocked until Docker infrastructure is fixed.
+- **RSpec verification**: ✅ **18 examples, 0 failures** (all harvester tests passing)
+- **Known issue (non-blocking)**: Docker container had transient startup issue ("rails: not found"), now resolved. Tests run successfully.
 
 ---
 
