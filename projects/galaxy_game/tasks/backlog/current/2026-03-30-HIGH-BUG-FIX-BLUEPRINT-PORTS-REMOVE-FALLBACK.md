@@ -1,4 +1,38 @@
 ---
+
+## ⚡ Minimal Handoff (Copy this to send to agent)
+
+```
+You are **Implementation Agent**.
+
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/current/2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md \
+         projects/galaxy_game/tasks/active/2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+  Filename pattern: 2026-03-30-BUGFIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
+
+---
 status: backlog
 priority: HIGH
 type: bug-fix
@@ -6,7 +40,74 @@ system_domain: UNITS
 mvp_alignment: SPEC_HEALTH
 local_worker_safe: true
 ---
+---
 
+
+## ⚡ Minimal Handoff (Copy this to send to agent)
+
+```
+You are **Implementation Agent**.
+
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/current/2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md \
+         projects/galaxy_game/tasks/active/2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+  Filename pattern: 2026-03-30-BUGFIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
+
+---
+## ⚡ Minimal Handoff (Copy this to send to agent)
+
+```
+You are **Implementation Agent**.
+
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/current/2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md          projects/galaxy_game/tasks/active/2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+  Filename pattern: 2026-03-30-BUGFIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
+
+---
 # TASK: Fix HasBlueprintPorts — Remove Hardcoded Fallback and Silent Default
 **Status**: BACKLOG
 **Priority**: HIGH
@@ -38,10 +139,11 @@ local_worker_safe: true
 
 ## Prerequisites — READ FIRST (Sequential Order)
 
-1. **Workflow**: `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/TASK_TEMPLATE.md` (EXECUTOR Role section)
-2. **This Task File**: Everything below
+1. **Workflow**: `/Users/tam0013/Documents/git/agent-tasks/README.md` (EXECUTOR Role section)
+2. **Project Guide**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/README.md`
+3. **This Task File**: Everything below
 
-> Agent MUST read in this order. Do not skip. Synthesis report goes in chat BEFORE starting work.
+> Agent MUST read in this order. Do not skip. Synthesis report goes to MD file BEFORE starting work.
 
 ---
 
@@ -173,14 +275,14 @@ All agents: follow these steps exactly in order.
 - Do not proceed to the next step if the current step has not produced a clean result.
 - Debug prints OK for complex callbacks — add temporary `puts` statements, remove after verification.
 
-### Step 0 — Move task file to current/ and update status (MANDATORY FIRST STEP)
+### Step 0 — Move task file to active/ and update status (MANDATORY FIRST STEP)
 
 This must be done before reading the task content, before synthesis, before any other action.
 
 ```bash
-# From inside galaxy_game repo root:
-git mv docs/new_agent/projects/galaxy_game/tasks/active/2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md \
-       docs/new_agent/projects/galaxy_game/tasks/current/2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md
+# From inside agent-tasks repo root:
+git mv projects/galaxy_game/tasks/backlog/current/2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md \
+       projects/galaxy_game/tasks/active/2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md
 ```
 
 Then open the moved file and change the YAML status field:
@@ -190,12 +292,12 @@ status: backlog  →  status: active
 
 Then verify only one copy exists:
 ```bash
-find /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks \
+find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks \
      -name "2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md"
 ```
 
 **Paste the output of the find command in chat before proceeding.**
-Expected: exactly one result, at the `current/` path.
+Expected: exactly one result, at the `active/` path.
 
 > ❌ Do NOT proceed if two results appear — a stale copy exists and must be removed first.
 > ❌ Do NOT use cp or plain mv — always git mv for tracked files.
@@ -268,7 +370,7 @@ end
 Run the existing spec to establish baseline:
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/models/concerns/has_blueprint_ports_spec.rb 2>&1 | tail -20'
+docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/models/concerns/has_blueprint_ports_spec.rb 2>&1 | tail -20'
 ```
 
 Expected result: All examples pass, 0 failures (or document pre-existing failures)
@@ -294,7 +396,7 @@ end
 Run the concern spec again:
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/models/concerns/has_blueprint_ports_spec.rb 2>&1 | tail -20'
+docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/models/concerns/has_blueprint_ports_spec.rb 2>&1 | tail -20'
 ```
 
 Expected result: All examples pass, 0 failures
