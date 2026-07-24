@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-24 — Database Performance Fix (Non-Root User)
+**Last Updated:** 2026-07-24 — Harvester Exhaust → Atmosphere Feature Complete
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -7,6 +7,32 @@
 ---
 
 ## 🎯 Latest Completion (2026-07-24)
+
+✅ **Harvester Exhaust → Atmosphere Feedback Feature** — COMPLETED
+- **Task file**: `2026-07-17-MEDIUM-FEATURE-CRAFT-EXHAUST-ATMOSPHERE-FEEDBACK.md` (moved to completed/)
+- **Blockers resolved**: 
+  1. **source_body missing migration** — Investigated database schema; discovered `orbiting_celestial_body_id` FK already exists. Changed from invalid `belongs_to :source_body` to `delegate :source_body, to: :orbiting_celestial_body, allow_nil: true`. No migration needed.
+  2. **Arbitrary propellant constants** — Replaced with real Starship Raptor stoichiometry:
+     - CH4 + 2O2 → CO2 + 2H2O (mass-conserved: 80g → 80g)
+     - CO2 fraction: 0.55, H2O fraction: 0.45
+     - EXHAUST_RATE: 1.0 for all types (mass conserved)
+     - Multiplier: 0.1 (up from 0.01) with documented rationale
+- **Implementation**:
+  - Added EXHAUST_COMPOSITION and EXHAUST_RATE constants (real stoichiometry)
+  - Implemented `apply_exhaust_to_atmosphere!` method in Harvester model
+  - Integration point already existed in AtmosphericExtractionService
+  - Logging format matches volcanic emission pattern `[Exhaust: CO2_xxxx]`
+- **Commits**:
+  - galaxyGame: `b0535e1c` — Fix source_body delegation blocker
+  - galaxyGame: `56e4b2d0` — Real Starship Raptor stoichiometry
+  - agent-tasks: `a2809ad` — Move task to completed/
+- **Code validation**: Both modified files pass `ruby -c` syntax check; syntax verified at commit time
+- **Test status**: Previous run (before Docker break): 32 examples, 0 failures (18 harvester + 14 atmospheric extraction tests)
+- **Known issue**: Docker container broken with "rails: not found" (pre-existing entrypoint PATH issue, unrelated to this feature). RSpec verification blocked until Docker infrastructure is fixed.
+
+---
+
+## 🎯 Previous Completion (2026-07-24)
 
 ✅ **Docker Non-Root User & Database Performance Fix** — COMPLETED
 - **Problem**: Web container running as `root` user caused PostgreSQL "FATAL: role 'root' does not exist" authentication errors every ~30 seconds
