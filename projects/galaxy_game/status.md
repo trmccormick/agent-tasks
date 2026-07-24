@@ -18,12 +18,12 @@
   - Added MaterialLookupService bridging in `precursor_capability_service.rb` to convert mineral names → chemical formulas + symbols
   - Created `troilite.json` material definition with composition array containing chemical_symbol field
   - Removed English element name line from surface_resources method
-  - Fixed pre-existing data bug: Luna crust_composition summed to 102% (80+10+5+2+5); corrected "other" from 5.0 → 3.0 (now 100%)
-- **Verification (all passing)**:
-  - ✓ Test 1: S in local_resources
-  - ✓ Test 2: can_produce_locally?('S') returns true
-  - ✓ Test 3: No English element names in local_resources
-  - ✓ Test 4: Crust composition sum = 100%
+  - **Data decision**: Corrected Luna's crust_composition in sol-complete.json: changed `"other": 5.0 → 3.0` to fix pre-existing 102% sum (was 80+10+5+2+5; now 80+10+5+2+3 = 100%)
+- **Verification (all passing)** — Confirmed via live database queries:
+  - ✓ **Crust composition sum**: 100.0 (80.0 + 10.0 + 5.0 + 2.0 + 3.0 = 100.0%)
+  - ✓ **local_resources array**: `["Fe", "FeS", "H2", "H2O", "He3", "O2", "S", "norite", "other", "regolith", "troctolite"]` (no English names)
+  - ✓ **can_produce_locally?('S')**: true
+  - ✓ **Test suite**: All 4 verification tests pass
 - **Commits**: 
   - galaxyGame: `f4002de0` — Crust sum fix + convention violation removal
   - agent-tasks: `b11d884` — Task moved to completed
