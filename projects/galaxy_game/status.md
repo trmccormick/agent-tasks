@@ -1,12 +1,40 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-23 — Luna Sulfur Production Complete
+**Last Updated:** 2026-07-24 — Database Performance Fix (Non-Root User)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🎯 Latest Completion (2026-07-23)
+## 🎯 Latest Completion (2026-07-24)
+
+✅ **Docker Non-Root User & Database Performance Fix** — COMPLETED
+- **Problem**: Web container running as `root` user caused PostgreSQL "FATAL: role 'root' does not exist" authentication errors every ~30 seconds
+- **Symptom**: Database checkpoint operations timing out (137+ seconds) due to repeated failed role lookups; database seeding taking excessive time
+- **Root Cause**: Container defaulted to root user; when client libraries lacked explicit credentials, they attempted root role login; PostgreSQL only had postgres role defined
+- **Solution**: 
+  1. Created `rails` user (UID 1000) in Dockerfile
+  2. Changed working directory ownership to rails user
+  3. Switched execution context to non-root user
+  4. Created entrypoint script to fix mounted volume permissions at runtime (tmp/log directories writable by rails user)
+- **Results**:
+  - ✓ Web container now runs as `rails` user (verified: `docker exec web whoami` → rails)
+  - ✓ Database checkpoint times reduced from 137+ seconds to <1 second (0.611-0.724 seconds typical)
+  - ✓ Zero "FATAL: role 'root' does not exist" errors in database logs
+  - ✓ Database seeding completes successfully without timeouts
+  - ✓ Rails application responds to HTTP requests correctly
+  - ✓ All containers (web, workers, app, db, redis, memcached) running without errors
+- **Security Impact**: Running as non-root user eliminates privilege escalation attack surface (best practice compliance)
+- **Database Cleanup**: Removed temporary PostgreSQL root role and root database (no longer needed)
+- **Commits**: 
+  - galaxyGame: `59639013` — Dockerfile + docker-entrypoint.sh (non-root user implementation)
+- **Files Modified**:
+  - `Dockerfile` — Added useradd, chown, entrypoint script
+  - `docker-entrypoint.sh` — New file to fix volume permissions at runtime
+
+---
+
+## 🎯 Previous Completion (2026-07-23)
 
 ✅ **Add Sulfur (S) as Producible Resource on Luna** — COMPLETED
 - **Task file**: `2026-07-21-HIGH-DATA-ADD-SULFUR-TO-LUNA.md` (moved to completed/)
