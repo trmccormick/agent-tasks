@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-24 — Harvester Exhaust → Atmosphere Feature Complete
+**Last Updated:** 2026-07-24 — Fitting Service Inventory Parity Fix
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -7,6 +7,21 @@
 ---
 
 ## 🎯 Latest Completion (2026-07-24)
+
+✅ **Fitting Service Inventory Parity Fix** — COMPLETED
+- **Task**: `2026-04-01-HIGH-BUGFIX-FITTING-SERVICE-INVENTORY-PARITY.md` (moved to completed/2026-07)
+- **Problem**: `install_modules` and `install_rigs` bypassed inventory validation that `install_units` correctly enforced, allowing fitting components not in inventory
+- **Root Cause**: `check_inventory` lambda was only passed to `install_units`; `install_modules`/`install_rigs` signatures lacked the parameter
+- **Solution**: 
+  - Added `check_inventory` parameter to both `install_modules` and `install_rigs` methods
+  - Added inventory guard before `target.add_module`/`add_rig` calls (same pattern as `install_units`)
+  - Added 3 new test cases: "rejects modules not in inventory", "rejects rigs not in inventory", "fits all components from inventory (modules and rigs)"
+- **Verification**: RSpec — 7 examples, 0 failures (4 existing + 3 new)
+- **Commits**: `7ab60e67` galaxyGame
+
+---
+
+## 🎯 Previous Completion (2026-07-24)
 
 ✅ **Harvester Exhaust → Atmosphere Feedback Feature** — COMPLETED
 - **Task file**: `2026-07-17-MEDIUM-FEATURE-CRAFT-EXHAUST-ATMOSPHERE-FEEDBACK.md` (moved to completed/)
