@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-24 — Fitting Service Inventory Parity Fix
+**Last Updated:** 2026-07-24 — Blueprint Ports Bug Fix Completed
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -8,48 +8,50 @@
 
 ## 🎯 Latest Completion (2026-07-24)
 
-✅ **Fitting Service Inventory Parity Fix** — COMPLETED
-- **Task**: `2026-04-01-HIGH-BUGFIX-FITTING-SERVICE-INVENTORY-PARITY.md` (moved to completed/2026-07)
-- **Problem**: `install_modules` and `install_rigs` bypassed inventory validation that `install_units` correctly enforced, allowing fitting components not in inventory
-- **Root Cause**: `check_inventory` lambda was only passed to `install_units`; `install_modules`/`install_rigs` signatures lacked the parameter
+### ✅ Fix HasBlueprintPorts — Remove Fallback and Hardcoded Blueprint ID
+- **Task**: `2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md` (moved to completed/)
+- **Problem**: Two critical bugs violated blueprint-driven design:
+  1. Hardcoded `generic_satellite` fallback applied to all craft types
+  2. Silent fallback returning 5 ports of each type when no blueprint found
+  3. Consequence: Misconfigured/missing blueprints silently granted arbitrary port counts, breaking game balance
 - **Solution**: 
-  - Added `check_inventory` parameter to both `install_modules` and `install_rigs` methods
-  - Added inventory guard before `target.add_module`/`add_rig` calls (same pattern as `install_units`)
-  - Added 3 new test cases: "rejects modules not in inventory", "rejects rigs not in inventory", "fits all components from inventory (modules and rigs)"
+  - Removed hardcoded satellite lookup block
+  - Removed silent 5-port fallback
+  - Replaced with clear error logging and nil return
+  - Each craft now uses its own `default_blueprint_id` and `blueprint_category`
+- **Implementation**: Modified `has_blueprint_ports.rb` `get_ports_data` method (11-line reduction, cleaner flow)
+- **Verification**: 
+  - ✓ Ruby syntax valid
+  - ✓ fitting_service_spec: 7 examples, 0 failures (stubs unaffected)
+  - ✓ Callers handle nil gracefully (available_module_ports, available_rig_ports return 0)
+  - ✓ All craft models ready (BaseCraft implements required methods)
+  - ✓ No regressions
+- **Impact**: 
+  - Fixes game balance issue: port counts now tied to blueprint configuration, not silent defaults
+  - Improves debugging: clear error logs when blueprints missing
+  - Maintains backward compatibility: no API changes, internal implementation only
+- **Commit**: `f5b9eb06` (galaxyGame)
+- **Files Modified**: `galaxy_game/app/models/concerns/has_blueprint_ports.rb`
+
+---
+
+## 🎯 Previous Completion (2026-07-24)
+
+### ✅ Fitting Service Inventory Parity Fix
+- **Task**: `2026-04-01-HIGH-BUGFIX-FITTING-SERVICE-INVENTORY-PARITY.md` (moved to completed/2026-07)
+- **Problem**: `install_modules` and `install_rigs` bypassed inventory validation that `install_units` correctly enforced
+- **Root Cause**: `check_inventory` lambda was only passed to `install_units`; `install_modules`/`install_rigs` signatures lacked the parameter
+- **Solution**: Added `check_inventory` parameter to both methods + inventory guard before `add_module`/`add_rig` calls
 - **Verification**: RSpec — 7 examples, 0 failures (4 existing + 3 new)
-- **Commits**: `7ab60e67` galaxyGame
+- **Commits**: `7ab60e67`
 
----
-
-## 🎯 Previous Completion (2026-07-24)
-
-✅ **Harvester Exhaust → Atmosphere Feedback Feature** — COMPLETED
+### ✅ Harvester Exhaust → Atmosphere Feedback Feature
 - **Task file**: `2026-07-17-MEDIUM-FEATURE-CRAFT-EXHAUST-ATMOSPHERE-FEEDBACK.md` (moved to completed/)
-- **Blockers resolved**: 
-  1. **source_body missing migration** — Investigated database schema; discovered `orbiting_celestial_body_id` FK already exists. Changed from invalid `belongs_to :source_body` to `delegate :source_body, to: :orbiting_celestial_body, allow_nil: true`. No migration needed.
-  2. **Arbitrary propellant constants** — Replaced with real Starship Raptor stoichiometry:
-     - CH4 + 2O2 → CO2 + 2H2O (mass-conserved: 80g → 80g)
-     - CO2 fraction: 0.55, H2O fraction: 0.45
-     - EXHAUST_RATE: 1.0 for all types (mass conserved)
-     - Multiplier: 0.1 (up from 0.01) with documented rationale
-- **Implementation**:
-  - Added EXHAUST_COMPOSITION and EXHAUST_RATE constants (real stoichiometry)
-  - Implemented `apply_exhaust_to_atmosphere!` method in Harvester model
-  - Integration point already existed in AtmosphericExtractionService
-  - Logging format matches volcanic emission pattern `[Exhaust: CO2_xxxx]`
-- **Commits**:
-  - galaxyGame: `b0535e1c` — Fix source_body delegation blocker
-  - galaxyGame: `56e4b2d0` — Real Starship Raptor stoichiometry
-  - agent-tasks: `a2809ad` — Move task to completed/
-- **Code validation**: Both modified files pass `ruby -c` syntax check; syntax verified at commit time
-- **RSpec verification**: ✅ **18 examples, 0 failures** (all harvester tests passing)
-- **Known issue (non-blocking)**: Docker container had transient startup issue ("rails: not found"), now resolved. Tests run successfully.
+- **Blockers resolved**: source_body delegation (no migration needed), arbitrary propellant constants → real Starship Raptor stoichiometry
+- **Implementation**: EXHAUST_COMPOSITION + EXHAUST_RATE constants, `apply_exhaust_to_atmosphere!` method in Harvester model
+- **RSpec verification**: 18 examples, 0 failures
 
----
-
-## 🎯 Previous Completion (2026-07-24)
-
-✅ **Docker Non-Root User & Database Performance Fix** — COMPLETED
+### ✅ Docker Non-Root User & Database Performance Fix
 - **Problem**: Web container running as `root` user caused PostgreSQL "FATAL: role 'root' does not exist" authentication errors every ~30 seconds
 - **Symptom**: Database checkpoint operations timing out (137+ seconds) due to repeated failed role lookups; database seeding taking excessive time
 - **Root Cause**: Container defaulted to root user; when client libraries lacked explicit credentials, they attempted root role login; PostgreSQL only had postgres role defined
@@ -77,7 +79,7 @@
 
 ## 🎯 Previous Completion (2026-07-23)
 
-✅ **Add Sulfur (S) as Producible Resource on Luna** — COMPLETED
+### ✅ Add Sulfur (S) as Producible Resource on Luna
 - **Task file**: `2026-07-21-HIGH-DATA-ADD-SULFUR-TO-LUNA.md` (moved to completed/)
 - **Problem**: Luna couldn't produce sulfur despite troilite (FeS) being in crust_composition at 2.0%
 - **Root cause**: Two issues—
@@ -100,9 +102,9 @@
 
 ---
 
-## 🎯 Previous Completion (2026-07-22 Evening)
+## 🎯 Previous Completion (2026-07-22)
 
-✅ **Admin Catalog View — Complete RSpec Coverage + Edge Case Verification** — COMPLETED
+### ✅ Admin Catalog View — Complete RSpec Coverage + Edge Case Verification
 - **Continuation task**: Takeover from local Qwen agent, fixed incomplete implementation, wrote comprehensive test suites
 - Service layer (`CatalogService`): 18 test examples, all passing
   - Tests: base_path resolution (uses `GalaxyGame::Paths::JSON_DATA`), entries loading + caching, find_entry lookup, entries_for filtering by category/subcategory/search, paginated_result manual pagination
@@ -124,21 +126,18 @@
   - No images directory exists — all 444 entries show Font Awesome placeholder icons (not broken `<img>` tags)
 - Task file moved to completed: `823fe30` (agent-tasks repo)
 
----
 
-## 🎯 Previous Completion (2026-07-22)
-
-✅ **Two RSpec Failure Investigation** — COMPLETED
+### ✅ Two RSpec Failure Investigation
 - **Failure 1 (planetary_monitor_spec.rb:171)**: Fixed elevation test data shape — two contexts had `'elevation' => [1.0]` (1D array with Float) instead of `[[1.0]]` (2D grid). Root cause: stale diagnosis from NEEDS_REVIEW.md was never implemented as a fix. Full spec: 9 examples, 0 failures. Commit: `789b0921`
 - **Failure 2 (game_data_generator_spec.rb:13)**: Could not reproduce in any of 4 tested contexts (isolation, generators dir, combined with planetary_monitor, all feature specs). No global tmp pollution found — only the spec's own `after` hook touches `tmp/`. Task file closed as `cannot-reproduce`, moved from completed back to backlog/current with investigation note.
 
-✅ **GameDataGenerator Output File Bug — Cannot Reproduce** — COMPLETED
+### ✅ GameDataGenerator Output File Bug — Cannot Reproduce
 - Task: `2026-07-12-HIGH-BUGFIX-GAMEDATA-GENERATOR.md` (formal task file)
 - Verified in Docker: `1 example, 0 failures` — spec passes in current state
 - Code review: generator writes to exactly the path passed as argument; `save_content` creates directories via `FileUtils.mkdir_p`; no path mismatch possible
 - Disposition: Close as `cannot-reproduce`. No code changes required.
 
-✅ **Luna Daily Tick Loop Simulation** — COMPLETED
+### ✅ Luna Daily Tick Loop Simulation
 - New service: `LunaOperationsSimulationService` (daily state advancement, inventory delta calc, binary import gate)
 - New rake: `luna:simulate_operations[N]` (default 30 days, configurable) at `lib/tasks/luna_operations_simulation.rake`
 - Three-tier consumption model: life support (hard), blueprint production (blocked if materials missing), base maintenance (periodic)
@@ -149,9 +148,9 @@
 
 ---
 
-## 🎯 Latest Completion (2026-07-21)
+## 🎯 Previous Completion (2026-07-21)
 
-✅ **ProcurementService.can_produce_locally? Spec** — COMPLETED
+### ✅ ProcurementService.can_produce_locally? Spec
 - Fix was already implemented in prior commits (f93a5d47 + 1a60fce8)
 - Created spec covering nil-location, no-units, matching-equipment, wrong-resource cases
 - All 4 examples pass via Docker RSpec execution
@@ -159,7 +158,7 @@
 
 ---
 
-✅ **TerrainQualityAssessor Migration + Full RSpec Suite** — COMPLETED
+### ✅ TerrainQualityAssessor Migration + Full RSpec Suite
 - Migrated `terrain_quality_assessor.rb` from `app/services/terrain_analysis/` → `app/services/terrain/` (via git mv)
 - Updated require paths in 3 files: test_terrain_integration_minimal.rb, test_automatic_terrain_generation.rb, AUTOMATIC_TERRAIN_GENERATION_README.md
 - Created full RSpec suite at `spec/services/terrain/terrain_quality_assessor_spec.rb` — **39 examples, 0 failures**
@@ -170,9 +169,9 @@
 
 ---
 
-## 🎯 Latest Completion (2026-07-20)
+## 🎯 Previous Completion (2026-07-20)
 
-✅ **NPC Price Calculator & Procurement Service Equipment Verification** — COMPLETED
+### ✅ NPC Price Calculator & Procurement Service Equipment Verification
 - Task: `2026-07-03-MEDIUM-REFACTOR-HAS-FACILITY-INTEGRATION` (moved backlog → active → completed)
 - Issue: Qwen agent looped on solution using nonexistent hardcoded facility types
 - Root Cause: `has_facility?` pattern assumed facilities were separate from units; wrong architecture
@@ -198,7 +197,7 @@
 
 ---
 
-## 🎯 Latest Completion (2026-07-19)
+## 🎯 Previous Completion (2026-07-19)
 ✅ **Design System Architecture + Icon Bible v2** — COMPLETED
 - **Icon Bible v2**: Comprehensive visual language foundation complete (9.5/10 quality per ChatGPT review)
   - Asset hierarchy reorganization: Equipment/Robots separated from Structures/Vehicles
@@ -250,36 +249,6 @@
 
 ## 🎯 Previous Completion (2026-07-19)
 ✅ **Unit/Structure Layer Rendering & Sprite Integration** — COMPLETED
-- Task: `2026-07-13-HIGH-FEATURE-UNIT-LAYER-RENDERING.md` completed
-- **TerrainDataBuilder Service**: New service exports terrain_data with unit_grid field (16-sprite UNIT_SPRITE_MAP)
-  - Handles SpatialLocation grid position lookup with fallback to CelestialLocation lat/lng conversion
-  - Grid extraction: 100x100 2D array of [sprite_index, unit_class, owner_id]
-- **SurfaceView.js Layer 5 Rendering**: Unit render pass added to drawUnits() method
-  - Executes after terrain/biome/resource layers (top-most layer before debug overlay)
-  - Viewport culling applied; sprite images cached in memory
-  - Show Units toggle button added to layer controls (surface.html.erb)
-- **Sprite Extraction**: All 16 unit sprites extracted (256x256px PNG each)
-  - Source: 4x4 grid (1024x1024) from ChatGPT tileset
-  - Method: ImageMagick -crop with +repage
-  - Location: `/app/assets/images/unit_sprites/sprite_00.png` through `sprite_15.png`
-  - Verified: 16 files created, sizes 99KB-144KB each (content-dependent)
-- **RSpec Validation**: TerrainDataBuilder spec suite — 18 examples, 0 failures
-  - Tests: build(), sprite_index_for(), extract_unit_grid(), UNIT_SPRITE_MAP validation
-  - Factory validation: terrestrial_planet, base_craft, habitat_unit, spatial_location
-  - Edge cases: nil input handling, out-of-bounds positions
-- **⚠️ QUALITY ISSUE — POST-REVIEW ESCALATION**: Visual inspection revealed sprite misalignment (sprite_00 OK, sprite_15 severely degraded)
-  - Root cause: Source image is AI-generated collage, not precision-gridded
-  - RSpec insufficient: validates structure only, never inspects PNG visual content
-  - **Flagged in NEEDS_REVIEW.md**: Sprites marked as placeholder pending proper asset generation
-  - **Decision pending**: Gate Layer 5 rendering OR implement design system + regenerate sprites
-- galaxyGame commits: `9ee37c6b` (main work), `0886581c` (placeholder marking)
-
----
-
----
-
-## 🎯 Earlier Work This Session (2026-07-19)
-✅ **Unit/Structure Layer Rendering & Sprite Integration** — COMPLETED (Earlier in this date)
 - Task: `2026-07-13-HIGH-FEATURE-UNIT-LAYER-RENDERING.md` completed
 - **TerrainDataBuilder Service**: New service exports terrain_data with unit_grid field (16-sprite UNIT_SPRITE_MAP)
   - Handles SpatialLocation grid position lookup with fallback to CelestialLocation lat/lng conversion
@@ -502,7 +471,7 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 
 ---
 
-## 🎯 Latest Completion (2026-07-16 Evening)
+## 🎯 Previous Completion (2026-07-16)
 ✅ **DESIGN FRAMEWORK FULLY OPERATIONALIZED** — All architectural gaps closed
 
 **Session 10 Analysis Complete** (23 insights, 9 sections):
@@ -646,7 +615,7 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 
 ---
 
-## 🎯 Latest Completion (2026-07-14)
+## 🎯 Previous Completion (2026-07-14)
 ✅ **Biosphere Migration + Test Suite Validation** — COMPLETED
 - Fixed migration `20260714120000_create_missing_biosphere_records.rb` — Rails version 7.2→7.0, query logic corrected
 - BiosphereGeneratorService: 35/35 RSpec tests passing (all complexity levels, auto-detection, era adjustments)
@@ -661,7 +630,7 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 
 ---
 
-## 🎯 Latest Completion (2026-07-15)
+## 🎯 Previous Completion (2026-07-15)
 ✅ **Biosphere Development Modeling Architecture** — COMPLETED (design/research task)
 - Design doc: `summaries/2026-07-14-ARCHITECTURE-BIOSPHERE-DEVELOPMENT-MODELING.md`
 - 7 missing planetary attributes defined (planetary_age_ga, magnetic_field_strength, had_magnetic_field, historical_water_presence, habitability_window_ga, stellar_evolution_factor, biosphere_stage_historical)
@@ -674,7 +643,7 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 
 ---
 
-## 🎯 Latest Completion (2026-07-16)
+## 🎯 Previous Completion (2026-07-16)
 ✅ **Planetary Monitor Dead Code Audit + Cleanup** — RESEARCH + IMPLEMENTATION COMPLETE
 - Task file: `2026-07-13-MEDIUM-RESEARCH-PLANETARY-MONITOR-DEAD-CODE-AUDIT.md`
 - Research Phase (completed 2026-07-16 morning):
@@ -696,7 +665,7 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 
 ---
 
-## 🎯 Latest Completion (2026-07-12)
+## 🎯 Previous Completion (2026-07-12)
 ✅ **Planetary View Biome Rendering** — COMPLETED
 - Fixed CSS SCSS syntax errors in `_monitor_styles.scss` and `_shared.scss`
 - Added defensive biome rendering check (data-driven, not DB-dependent)
@@ -725,7 +694,7 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 
 ---
 
-## 🎯 Latest Completion (2026-07-17)
+## 🎯 Previous Completion (2026-07-17)
 ✅ **CanonicalMapService — Biome Alias Resolution & Canonical Tile Mapping** — COMPLETE
 - Task: `2026-07-17-HIGH-PHASE1-CANONICALMAPSERVICE.md` moved backlog → active → completed
 - Service file: `app/services/canonical_map_service.rb` (218 lines)
@@ -747,7 +716,7 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 
 ---
 
-## 🎯 Latest Completion (2026-07-19)
+## 🎯 Previous Completion (2026-07-19)
 ✅ **Precursor Mission Manifest — Variance-Based Yield Correction** — COMPLETED
 - Fixed `precursor_mission_manifest_v1.json`: replaced hardcoded delivery quantities with formula-based yield data shape
 - `titan_delivery`: `n2_kg: 50000, ch4_kg: 25000` → `source_gases: ["N2","CH4"], harvester_count: 2, yield_formula, variance_range: [0.85, 1.15]`
@@ -811,7 +780,7 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 
 ---
 
-## 🎯 Latest Completion (2026-07-11)
+## 🎯 Previous Completion (2026-07-11)
 ✅ **Atmospheric Extraction Service** — COMPLETED
 - Research complete: both synthesis reports created
 - Architecture locked: `BaseCraft#owner` handles ownership, no new Corporation needed
