@@ -2,7 +2,6 @@
 title: "Manufacturing chain overview — raw materials to assembly jobs"
 priority: HIGH
 status: backlog
-phase: phase1
 owner: Implementation Agent (Qwen)
 type: documentation
 system_domain: MANUFACTURING

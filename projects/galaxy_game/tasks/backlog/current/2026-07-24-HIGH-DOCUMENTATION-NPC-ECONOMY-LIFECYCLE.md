@@ -2,7 +2,6 @@
 title: "NPC economy lifecycle documentation — AI Manager → player opportunity flow"
 priority: HIGH
 status: backlog
-phase: phase1
 owner: Implementation Agent (Qwen)
 type: documentation
 system_domain: AI_MANAGER / ECONOMY

@@ -1,8 +1,7 @@
 ---
 title: "AI Manager service inventory — architecture doc + contributor guide"
 priority: CRITICAL
-status: backlog
-phase: phase1
+status: active
 owner: Implementation Agent (Qwen)
 type: documentation
 system_domain: AI_MANAGER

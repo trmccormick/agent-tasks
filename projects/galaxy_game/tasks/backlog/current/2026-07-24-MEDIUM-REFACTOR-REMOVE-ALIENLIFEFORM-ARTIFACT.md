@@ -2,7 +2,6 @@
 title: "Remove AlienLifeForm artifact — consolidate into Biology::LifeForm"
 priority: MEDIUM
 status: backlog
-phase: phase1
 owner: Implementation Agent (Qwen)
 type: refactor
 system_domain: OTHER

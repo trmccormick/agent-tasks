@@ -2,7 +2,6 @@
 title: "Terraforming manager cleanup — remove duplication, clarify orchestration"
 priority: MEDIUM
 status: backlog
-phase: phase1
 owner: Implementation Agent (Qwen)
 type: refactor
 system_domain: TERRA_SIM / AI_MANAGER

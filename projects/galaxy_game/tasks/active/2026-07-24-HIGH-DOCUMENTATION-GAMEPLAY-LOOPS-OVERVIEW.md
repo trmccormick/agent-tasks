@@ -1,8 +1,7 @@
 ---
 title: "Gameplay loops overview — exploration, terraforming, settlement, logistics, trading, combat"
 priority: HIGH
-status: backlog
-phase: phase1
+status: active
 owner: Implementation Agent (Qwen)
 type: documentation
 system_domain: OTHER

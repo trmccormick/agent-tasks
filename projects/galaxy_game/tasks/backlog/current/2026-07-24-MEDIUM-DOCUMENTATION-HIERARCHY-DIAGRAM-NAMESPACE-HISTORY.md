@@ -2,7 +2,6 @@
 title: "Hierarchy diagram and namespace history — Colony → Settlement → Structure"
 priority: MEDIUM
 status: backlog
-phase: phase1
 owner: Implementation Agent (Qwen)
 type: documentation
 system_domain: CONTROLLERS / OTHER
