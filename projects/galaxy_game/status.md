@@ -49,7 +49,13 @@
 - **Task file**: `2026-07-17-MEDIUM-FEATURE-CRAFT-EXHAUST-ATMOSPHERE-FEEDBACK.md` (moved to completed/)
 - **Blockers resolved**: source_body delegation (no migration needed), arbitrary propellant constants → real Starship Raptor stoichiometry
 - **Implementation**: EXHAUST_COMPOSITION + EXHAUST_RATE constants, `apply_exhaust_to_atmosphere!` method in Harvester model
-- **RSpec verification**: 18 examples, 0 failures
+- **RSpec verification**: 32 examples, 0 failures (post-fix run after commit d482dee5)
+- **Commits**: 
+  - `b0535e1c` — source_body delegation setup
+  - `56e4b2d0` — real Starship Raptor stoichiometry
+  - `d482dee5` — **fix: correct source_body method** (found delegation bug during gap verification)
+- **Gap verification findings**: Original delegation `delegate :source_body, to: :orbiting_celestial_body` silently defined a method that called `.source_body` on the celestial body (which doesn't have it). Specs passed because they stubbed `source_body` directly. Fixed by replacing with `def source_body; orbiting_celestial_body; end`. Live verification confirmed: `respond_to?(:source_body): true`, `source_body == orbiting body?: true` on real instance (owner: Organizations::Corporation, target: Mercury/TerrestrialPlanet).
+- **Propellant research task**: `2026-07-24-LOW-RESEARCH-PROPELLANT-CONSUMPTION-DATA-FOR-RAPTOR.md` exists in backlog/current/ — not a dropped commitment.
 
 ### ✅ Docker Non-Root User & Database Performance Fix
 - **Problem**: Web container running as `root` user caused PostgreSQL "FATAL: role 'root' does not exist" authentication errors every ~30 seconds
