@@ -34,6 +34,7 @@ This is it.
 │  Icon Bible (visual language rules)                         │
 │  Visual Philosophy (9 principles)                           │
 │  Design Research Index (session specifications)             │
+│  Shared Components Registry (reusable visual primitives)    │
 └──────────────────────────┬──────────────────────────────────┘
                            │
                            ▼
@@ -72,15 +73,13 @@ This is it.
 ┌─────────────────────────────────────────────────────────────┐
 │                PROMPT BUILDER                               │
 │                                                             │
-│  Converts enriched blueprints into structured prompts:      │
+│  Converts four canonical sources into structured prompts:   │
 │                                                             │
 │  Inputs:                                                    │
-│  - Blueprint (validated + enriched)                         │
-│  - Material Library                                         │
-│  - Icon Bible                                               │
-│  - Visual Philosophy                                        │
-│  - Manufacturing Rules                                      │
-│  - Design Research Index                                    │
+│  - Blueprint (validated + enriched)           [manufacturing spec] │
+│  - Operational Data                         [runtime behavior] │
+│  - Visual Definition                        [appearance spec] │
+│  - Design System                            [Icon Bible + Material Library + Philosophy] │
 │                                                             │
 │  Outputs (one per render profile):                          │
 │  - Inventory Prompt (L0-L1, silhouette only)               │
@@ -145,7 +144,21 @@ This is it.
                            │
                            ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                  QA REVIEW                                  │
+│           AUTOMATED PRE-FILTER              │  (new)        │
+│                                                             │
+│  Runs before human review:                                  │
+│  - Background transparency check                            │
+│  - Sprite pivot alignment                                   │
+│  - Tile edge continuity                                     │
+│  - Resolution/compliance                                    │
+│  - Color family validation                                  │
+│                                                             │
+│  Output: Pre-filtered assets (passed → Human QA)            │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│              HUMAN QA REVIEW                                │
 │                                                             │
 │  Validates against:                                         │
 │  - Visual Philosophy (9 principles)                         │
@@ -198,6 +211,59 @@ This is it.
 │  Result: Consistent, scalable, location-agnostic assets     │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Design Principle: Location Independence
+
+Assets are **location-agnostic**. The same asset library is used across all planets (Luna, Mars, Venus, etc.).
+
+Planetary appearance is achieved through:
+- Terrain layer composition (surface tiles)
+- Environmental effects (atmosphere, weather)
+- Lighting and color grading
+- Simulation parameters (gravity, temperature, pressure)
+
+**Not through duplicate asset libraries.** A `UNIT_INFLATABLE_HAB_MK3` on Luna is the same visual asset as one on Mars — only the terrain beneath it and the atmospheric lighting differ.
+
+This principle is enforced by:
+- Asset IDs that contain no location prefix
+- Visual Definitions that specify appearance, not environment
+- Prompt templates that exclude planetary context from subject description
+
+---
+
+## Asset Classes
+
+Assets fall into two classes with different rendering requirements. The distinction affects
+which render profiles are generated, which prompt templates are used, and which QA criteria apply.
+
+### Inspection Assets
+Purpose: Human-readable reference documentation.
+
+| Render Type | Background | Detail Level | Use Case |
+|-------------|-----------|--------------|----------|
+| inventory_icon | Opaque (solid) | L0-L1 silhouette | UI slots, menus |
+| catalog_render | White | Two isometric views | Encyclopedia, reference |
+| engineering_render | White/light | Callouts + dimensions | Technical documentation |
+| blueprint | White | Section cuts, internal routing | Design review |
+| exploded_view | White | Disassembled components | Assembly instructions |
+
+### Gameplay Assets
+Purpose: Runtime rendering in the game world.
+
+| Render Type | Background | Detail Level | Use Case |
+|-------------|-----------|--------------|----------|
+| sprite_sheet | Transparent | L0-L5 complexity | Surface tiles, inventory |
+| animation_keyframes | Transparent | Per-frame detail | In-world animation |
+| damage_states | Transparent | Progressive degradation | Combat/decay visuals |
+| construction_states | Transparent | Progressive assembly | Building sequence |
+
+### Cross-Class Rules
+- Both classes share the same Visual Definition (appearance spec)
+- Both classes use the same canonical asset ID
+- Inspection assets validate against documentation standards
+- Gameplay assets validate against runtime suitability (pivot, transparency, tile alignment)
 
 ---
 
@@ -286,7 +352,8 @@ Acceptance: Must match Icon Bible rules exactly. No deviations.
 {
   "prompt_id": "PROMPT_20260720_001",
   "blueprint_version": "14",
-  "visual_definition_version": "5",
+  "operational_data_version": "3",
+  "visual_definition_revision": "5",
   "template_version": "3",
   "generated_at": "2026-07-20T12:00:00Z",
   "generator_id": "prompt_builder_v2.0",
@@ -315,27 +382,31 @@ Acceptance: Must match Icon Bible rules exactly. No deviations.
 - When switching models, only the generator layer changes
 - Blueprints, Visual Definitions, and Prompts remain unchanged
 
-### 6. QA Review
+### 6. Human QA Review
 
-**Purpose**: Validate generated assets against design system standards.
+**Purpose**: Human review of assets that passed automated pre-filtering.
 
-**Validation Checklist**:
-| Check | Source | Pass Criteria |
+**Automated Pre-Filter** (runs before human review):
+| Check | Method | Pass Criteria |
 |-------|--------|---------------|
-| Grounded | Visual Philosophy | Looks buildable? |
-| Functional | Visual Philosophy | Every part has reason? |
-| Progressive | Icon Bible Section 4 | Tech level clear? |
-| Modular | Visual Philosophy | Visibly connectable? |
-| Industrial | Visual Philosophy | Manufactured, not magical? |
-| Human | Visual Philosophy | Evidence of human work? |
-| Simulation-First | Visual Philosophy | Communicates gameplay? |
-| Location-Agnostic | Icon Bible Core Principle | No location prefix in ID? |
-| Consistency | Icon Bible Section 3 | Matches color/shape/material rules? |
-| Animation | Icon Bible Section 9 | Correct animation for category? |
-| Damage States | Icon Bible Section 10 | Degradation progression clear? |
-| Complexity Levels | Icon Bible Section 11 | All levels consistent? |
+| Background transparency | Pixel analysis | No opaque pixels outside asset bounds |
+| Sprite pivot alignment | Bounding box analysis | Pivot at expected position |
+| Tile edge continuity | Edge comparison | Adjacent tiles connect visually |
+| Resolution compliance | Dimension check | Matches spec dimensions |
+| Color family validation | Histogram analysis | Colors within Icon Bible families |
 
-**Output**: Approved or rejected with specific feedback per check
+**Human Review Checklist**:
+| Check | Why Automated Can't Do It |
+|-------|--------------------------|
+| Grounded in reality | Requires domain knowledge (NASA/ESA reference) |
+| Functional clarity | Requires understanding of engineering intent |
+| Gameplay suitability | Requires playtesting intuition |
+| Baked terrain quality | Requires visual judgment of tile seams |
+| Sprite pivot correctness | Requires understanding of in-world behavior |
+| Manufacturing style accuracy | Requires comparison to real hardware |
+| Tech level progression | Requires comparative analysis across Mk1-Mk5 |
+
+**Output**: Approved / Rejected with specific human-readable feedback
 
 ### 7. Asset Registry
 
@@ -496,3 +567,35 @@ This architecture is **model-agnostic** and **version-independent**. It enables:
 - Canonical lookup by ID (not filename)
 
 The pipeline is the bridge between "design philosophy" and "game-ready assets." Every asset flows through it, ensuring consistency at scale.
+
+---
+
+## Current Status
+
+### ✅ Validated Through Production
+- [x] Architecture validated through first asset generation (catalog renders)
+- [x] Initial catalog renders produced and reviewed
+- [x] PromptBuilder philosophy refined based on production experience
+- [x] First surface sprites generated (preliminary)
+- [x] Human QA process established (transparent backgrounds, pivots, tile seams)
+
+### ✅ Architecture Complete
+- [x] Four-source input model (Blueprint + Operational Data + Visual Definition + Design System)
+- [x] Asset class distinction (Inspection vs Gameplay) documented
+- [x] Provenance tracking in Prompt Archive and Asset Registry
+- [x] Location-agnostic principle codified
+- [x] Shared components recognized as first-class concept
+- [x] Human QA stage with automated pre-filtering defined
+
+### 🔄 In Progress
+- [ ] Blueprint schema refinement (visualization section addition)
+- [ ] Visual Definition refinement (field completeness, defaults)
+- [ ] Prompt template automation (PromptBuilder service implementation)
+- [ ] First terrain/biome tile generation using compressed biome spec
+
+### 🔴 Pending
+- [ ] Unit sprites regeneration (16 files) — first full design system implementation
+- [ ] Corporate logos regeneration (~30 files) — Session 5 + Session 7 specs
+- [ ] Terrain Layer 0 tiles (~50+ files) — foundation for surface rendering
+- [ ] Biome tiles alignment (14 → ~16 canonical) — Session 10 compression
+- [ ] Catalog components regeneration (~200+ files) — Icon Bible hierarchy
