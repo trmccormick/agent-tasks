@@ -1,12 +1,12 @@
 # AI Manager Service Inventory
 
 > **Last Updated**: 2026-07-25
-> **Total Services**: 89 files in `app/services/ai_manager/` (flat directory)
-> **Related Domains**: Manufacturing (14 services), Terraforming (imported service)
+> **Total Services**: 93 files in `app/services/ai_manager/` (flat directory)
+> **Related Domains**: Manufacturing (31 services), Terraforming (imported service)
 
 ## Overview
 
-The AI Manager layer is the largest subsystem in galaxy_game, containing **89 Ruby files** all within a single flat directory (`app/services/ai_manager/`). Despite the task documentation suggesting hierarchical subdirectories (e.g., `super_mars/`, `luna/`), all services live at one depth level.
+The AI Manager layer is the largest subsystem in galaxy_game, containing **93 Ruby files** all within a single flat directory (`app/services/ai_manager/`). Despite the task documentation suggesting hierarchical subdirectories (e.g., `super_mars/`, `luna/`), all services live at one depth level.
 
 The AI Manager is responsible for autonomous decision-making across the game world: settlement management, mission planning, expansion, terraforming, wormhole infrastructure, market stabilization, and resource logistics. It orchestrates NPC behavior, procedural events, and complex multi-system coordination.
 

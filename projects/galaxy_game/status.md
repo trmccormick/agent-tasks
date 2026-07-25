@@ -10,9 +10,9 @@
 
 ### ✅ AI Manager Service Inventory — Architecture Doc + Contributor Guide
 - **Task**: `2026-07-24-CRITICAL-DOCUMENTATION-AI-MANAGER-SERVICE-INVENTORY.md` → `tasks/completed/2026-07/`
-- **Problem**: Architecture docs referenced ~8 core files; actual codebase has 89 AI Manager services with no inventory or contributor guide
+- **Problem**: Architecture docs referenced ~8 core files; actual codebase has 93 AI Manager services + 31 manufacturing services + 1 imported terraforming service = **125 total domain services** with no inventory or contributor guide
 - **Resolution**: 
-  - Created service inventory: `projects/galaxy_game/services/ai_manager_service_inventory.md` — lists all 89 AI Manager files + 14 manufacturing + 1 imported terraforming = **104 total domain services**
+  - Created service inventory: `projects/galaxy_game/services/ai_manager_service_inventory.md` — lists all 93 AI Manager files + 31 manufacturing + 1 imported terraforming = **125 total domain services**
   - Created contributor guide: `projects/galaxy_game/contributors/adding-ai-manager-service.md` — naming, wiring, testing, docs, pitfalls
   - Updated architecture doc: replaced stale "8 core files" section with accurate overview + deprecation table mapping old references to current services
   - Verified: exactly one copy of task file in completed/2026-07/, YAML status set to `completed`
