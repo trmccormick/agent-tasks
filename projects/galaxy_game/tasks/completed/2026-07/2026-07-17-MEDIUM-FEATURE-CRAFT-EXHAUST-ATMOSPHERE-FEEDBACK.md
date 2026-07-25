@@ -299,17 +299,26 @@ git push
 
 **Gap 1 (source_body respond_to?):** VERIFIED on real instance.
 - No Players in DB (count: 0). Used existing `Organizations::Corporation` (id: 1, "Lunar Development Corporation") as owner.
-- Result: `respond_to?(:source_body): true`, `source_body == orbiting body?: true`
 - **Bug found during verification:** Original delegation `delegate :source_body, to: :orbiting_celestial_body` called `harvester.orbiting_celestial_body.source_body` which failed because the celestial body doesn't have a `source_body` method. Fixed by replacing with `def source_body; orbiting_celestial_body; end`. Committed as `d482dee5`.
+- **Live verification output (after fix):**
+```
+=== GAP 1 LIVE VERIFICATION ===
+respond_to?(:source_body): true
+source_body class: CelestialBodies::Planets::Rocky::TerrestrialPlanet
+source_body id: 47
+source_body name: Mercury
+source_body == orbiting body?: true
+=== END VERIFICATION ===
+```
 
 **Gap 2 (propellant research task):** CONFIRMED EXISTS.
 - File: `2026-07-24-LOW-RESEARCH-PROPELLANT-CONSUMPTION-DATA-FOR-RAPTOR.md`
 - Location: `backlog/current/`, status: backlog
 - Not a dropped commitment — properly tracked.
 
-**Gap 3 ("18 examples" scope):** FULL SUITE VERIFIED.
+**Gap 3 ("18 examples" scope):** FULL SUITE VERIFIED (AFTER fix commit d482dee5).
 - Command: `docker-compose -f docker-compose.dev.yml exec -T web bundle exec rspec spec/models/craft/harvester_spec.rb spec/services/ai_manager/atmospheric_extraction_service_spec.rb --format progress`
-- Result: **32 examples, 0 failures** (6 minutes 11 seconds)
+- Result: **32 examples, 0 failures** (6 minutes 8 seconds)
 
 **Gap 4 (git mv vs cp):** CONFIRMED — only one copy exists in `completed/`. Stale active copy was removed.
 
