@@ -1,13 +1,14 @@
 ---
 title: "AI Manager service inventory — architecture doc + contributor guide"
 priority: CRITICAL
-status: active
+status: completed
 owner: Implementation Agent (Qwen)
 type: documentation
 system_domain: AI_MANAGER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 created: 2026-07-24
+completed: 2026-07-25
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)

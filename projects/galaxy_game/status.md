@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-25 — Blueprint Ports file consolidation + task lifecycle closure
+**Last Updated:** 2026-07-25 — AI Manager service inventory + task lifecycle closure
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -7,6 +7,19 @@
 ---
 
 ## 🎯 Latest Completion (2026-07-25)
+
+### ✅ AI Manager Service Inventory — Architecture Doc + Contributor Guide
+- **Task**: `2026-07-24-CRITICAL-DOCUMENTATION-AI-MANAGER-SERVICE-INVENTORY.md` → `tasks/completed/2026-07/`
+- **Problem**: Architecture docs referenced ~8 core files; actual codebase has 89 AI Manager services with no inventory or contributor guide
+- **Resolution**: 
+  - Created service inventory: `projects/galaxy_game/services/ai_manager_service_inventory.md` — lists all 89 AI Manager files + 14 manufacturing + 1 imported terraforming = **104 total domain services**
+  - Created contributor guide: `projects/galaxy_game/contributors/adding-ai-manager-service.md` — naming, wiring, testing, docs, pitfalls
+  - Updated architecture doc: replaced stale "8 core files" section with accurate overview + deprecation table mapping old references to current services
+  - Verified: exactly one copy of task file in completed/2026-07/, YAML status set to `completed`
+- **Commits**: 
+  - `d6903736` (galaxyGame) — architecture doc update
+  - `f7aa864` (agent-tasks) — service inventory + contributor guide created
+  - `8081ea7` (agent-tasks) — task file lifecycle closure
 
 ### ✅ Blueprint Ports Task — File Consolidation & Lifecycle Closure
 - **Task**: `2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md`
