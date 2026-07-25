@@ -9,7 +9,7 @@ system_domain: TERRA_SIM | AI_MANAGER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 created: 2026-07-17
-completed: 2026-07-24
+completed: 2026-07-25
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
@@ -293,21 +293,28 @@ git push
 **Commits**:
 - `b0535e1c` — fix: delegate source_body to orbiting_celestial_body, resolve missing migration blocker
 - `56e4b2d0` — fix: replace arbitrary exhaust constants with real Starship Raptor stoichiometry
+- `d482dee5` — fix: correct source_body method — replace broken delegation with direct accessor (found during gap verification)
 
-### Issues discovered
-**Blocker resolved**: Task had stated "source_body_id column doesn't exist" as blocker. Investigation revealed: `orbiting_celestial_body_id` FK already exists on base_crafts table. Solution: Changed from invalid `belongs_to :source_body` to `delegate :source_body, to: :orbiting_celestial_body, allow_nil: true`. This resolves the migration blocker without requiring new database schema.
+### Gap Verification (2026-07-25 — per user review)
 
-**Stoichiometry sourced from real data**: Task had arbitrary EXHAUST_RATE 1.37 (CH4_O2) and 9.0 (LH2_LOX). Used HLT mk1 blueprint (Starship Raptor-based) as grounding:
-- CH4 + 2O2 → CO2 + 2H2O (mass-conserved: 80g → 80g)
-- CO2 fraction: 44/80 = 0.55, H2O fraction: 36/80 = 0.45
-- EXHAUST_RATE: 1.0 for all types (mass conserved in combustion)
-- Multiplier: 0.1 (up from 0.01) with documented rationale
+**Gap 1 (source_body respond_to?):** VERIFIED on real instance.
+- No Players in DB (count: 0). Used existing `Organizations::Corporation` (id: 1, "Lunar Development Corporation") as owner.
+- Result: `respond_to?(:source_body): true`, `source_body == orbiting body?: true`
+- **Bug found during verification:** Original delegation `delegate :source_body, to: :orbiting_celestial_body` called `harvester.orbiting_celestial_body.source_body` which failed because the celestial body doesn't have a `source_body` method. Fixed by replacing with `def source_body; orbiting_celestial_body; end`. Committed as `d482dee5`.
 
-**Docker infrastructure issue**: Web container fails to start with "rails: not found" (pre-existing entrypoint PATH issue, unrelated to code changes). RSpec tests cannot run until Docker is fixed. Code syntax verified with `ruby -c`; both modified files pass validation. Previous test run (before Docker break): 32 examples, 0 failures.
+**Gap 2 (propellant research task):** CONFIRMED EXISTS.
+- File: `2026-07-24-LOW-RESEARCH-PROPELLANT-CONSUMPTION-DATA-FOR-RAPTOR.md`
+- Location: `backlog/current/`, status: backlog
+- Not a dropped commitment — properly tracked.
+
+**Gap 3 ("18 examples" scope):** FULL SUITE VERIFIED.
+- Command: `docker-compose -f docker-compose.dev.yml exec -T web bundle exec rspec spec/models/craft/harvester_spec.rb spec/services/ai_manager/atmospheric_extraction_service_spec.rb --format progress`
+- Result: **32 examples, 0 failures** (6 minutes 11 seconds)
+
+**Gap 4 (git mv vs cp):** CONFIRMED — only one copy exists in `completed/`. Stale active copy was removed.
 
 ### Follow-up tasks needed
 - Docker entrypoint PATH fix — infrastructure issue, separate from this feature task
-- RSpec verification once Docker is restored (should pass all existing tests)
 
 ### Lessons learned
 - Always check inherited associations before assuming migration is needed
