@@ -1,12 +1,26 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-24 — Blueprint Ports Bug Fix Completed
+**Last Updated:** 2026-07-25 — Blueprint Ports file consolidation + task lifecycle closure
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🎯 Latest Completion (2026-07-24)
+## 🎯 Latest Completion (2026-07-25)
+
+### ✅ Blueprint Ports Task — File Consolidation & Lifecycle Closure
+- **Task**: `2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md`
+- **Issue**: Five stray copies of the task file existed across active/, review/, and completed/ folders
+- **Resolution**: 
+  - Removed untracked active/ copy (git mv had failed earlier due to symlink)
+  - Removed two review/ copies — stray duplicates from initial repo migration, no independent purpose
+  - Verified git history: both review copies shared same commits as initial migration (d1e235a, fc8cd1b, 365a9b6), not intentional archives
+- **Final state**: Single authoritative copy at `tasks/completed/2026-03/` + synthesis report at `summaries/`
+- **Commit**: `40b6ecd` (agent-tasks)
+
+---
+
+## 🎯 Previous Completion (2026-07-24)
 
 ### ✅ Fix HasBlueprintPorts — Remove Fallback and Hardcoded Blueprint ID
 - **Task**: `2026-03-30-HIGH-BUG-FIX-BLUEPRINT-PORTS-REMOVE-FALLBACK.md`
