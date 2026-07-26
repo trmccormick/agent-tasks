@@ -1,14 +1,13 @@
 ---
 title: "AI Manager service inventory — architecture doc + contributor guide"
 priority: CRITICAL
-status: completed
+status: active
 owner: Implementation Agent (Qwen)
 type: documentation
 system_domain: AI_MANAGER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 created: 2026-07-24
-completed: 2026-07-25
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
@@ -231,23 +230,65 @@ git commit -m "docs: AI Manager service inventory + contributor guide — docume
 
 ---
 
-## Completion Report
+## Completion Report (RESTART PHASE 2)
 
-**Completed by**: Implementation Agent (Qwen)
-**Completion date**: 2026-07-25
-**Final service count**: 89 files in `app/services/ai_manager/` + 14 manufacturing services + 1 imported terraforming service = **104 total AI Manager domain services**
+**Task Status**: REOPENED — Coverage gap identified, inventory incomplete
+**Findings Date**: 2026-07-25
+**Verified by**: Human reviewer (discovered 72 missing services, original completion claimed 89 total but was incomplete)
 
-### What was changed
-- `[docs/new_agent/projects/galaxy_game/services/ai_manager_service_inventory.md]` — Created: Complete service inventory listing all 89 AI Manager files with responsibilities, key methods, MVP phase classification, subdomain breakdown, and dependency graph
-- `[docs/new_agent/projects/galaxy_game/contributors/adding-ai-manager-service.md]` — Created: Contributor guide covering naming conventions, module inclusions, wiring patterns, test placement, documentation requirements, common pitfalls, and examples
-- `[docs/architecture/ai_manager/AI_MANAGER_ARCHITECTURE.md]` — Updated: Replaced stale "8 core files" section with accurate 89-file architecture overview; added deprecation table mapping old references to current services; integrated links to new service inventory and contributor guide
-- `[projects/galaxy_game/summaries/2026-07-24-DOCUMENTATION-AI-MANAGER-SERVICE-INVENTORY.md]` — Created: Synthesis report with audit summary, structural observations, and risk assessment
+### True Service Count (Verified)
 
-### Issues discovered
-1. **Task gotchas were incorrect**: The task mentioned `super_mars/`, `luna/`, `terraforming/`, and `npc_economy/` subdirectories that do not exist. All AI Manager services live in a flat `app/services/ai_manager/` directory (89 files).
-2. **No separate terraforming/ or npc_economy/ directories**: These domains are served by services within `ai_manager/` and `manufacturing/`, not separate namespaces.
-3. **Mixed file types**: Of the 89 files, ~53 are service/manager classes (found by `_service.rb` or `_manager.rb` pattern), while ~36 are utilities, modules, config files, and algorithms loaded by `ai_manager.rb`.
-4. **Architecture doc was severely outdated**: Referenced 6 non-existent files (`wormhole_coordinator.rb`, `consortium_voting_engine.rb`, `hammer_protocol_service.rb`, `brown_dwarf_hub_manager.rb`, `em_harvesting_service.rb`, `expansion_assessment.rb`) and claimed "8 core files" when there are actually 89.
+| Metric | Count | Notes |
+|---|---|---|
+| Total files in codebase | 128 | All `.rb` files in ai_manager/, terraforming/, npc_economy/, manufacturing/ |
+| Noise files (exclude) | 7 | ai_manager.rb (bundler), errors.rb, testing.rb, testing/* (4 support files) |
+| **Real services** | **121** | 93 ai_manager + 31 manufacturing + 1 terraforming import |
+| **Operational services** | **116** | Core domain services |
+| **Utility calculators** | **5** | Cost, Covering, Dome, Skylight, Station (get own section) |
+| Currently documented | 53 | From existing inventory doc |
+| **Missing from inventory** | **72** | 66 operational + 5 calculators (all need audit) |
+
+### Root Cause of Undercounting
+
+The original Step 1 audit searched only `*_service.rb` and `*_manager.rb` naming patterns, which missed:
+- Utility classes (decision_tree.rb, builder.rb, shared_context.rb, etc.)
+- Coordinators without `_service` suffix (service_coordinator.rb, service_orchestrator.rb)
+- Calculator utilities (cost_calculator.rb, covering_calculator.rb, etc.)
+- Base classes and modules (construction.rb, processing.rb, etc.)
+- Import services (terrain_terraforming_service.rb)
+
+**Correct audit method**: `find ... -name "*.rb" | grep -iE "ai_manager|terraforming|npc_economy|manufacturing" | xargs grep -l "^class\|^module"` = 128 files, minus 7 noise = **121 real**.
+
+### What Needs Completion
+
+Phase 2 tasks (to finish documentation coverage):
+
+1. **Audit all 72 missing services** — same format as documented 53:
+   - Service name (class name)
+   - File path
+   - One-line responsibility
+   - Key public methods (3-5 most important)
+   - MVP phase (MVP / Phase 2 / Phase 3 / Deferred)
+
+2. **Create "Utility Calculators" section** in inventory for the 5:
+   - CostCalculator
+   - CoveringCalculator
+   - DomeCalculator
+   - SkylightCalculator
+   - StationCalculator
+
+3. **Update three docs together (ONE PASS)**:
+   - Architecture doc: update count from 89 to 121
+   - Inventory doc header: update count from 93 to 121
+   - status.md: update count from 104 to 121 (and explain the journey: 89 → 104 → 93/31 → 125 → 60 → NOW 121)
+
+4. **Verify table row count** matches 121 (116 in service tables + 5 in calculator section)
+
+5. **Create completion report** explaining:
+   - Why counts changed so many times (audit method was wrong)
+   - Root cause (naming pattern search missed utilities)
+   - Final verified number (121)
+   - What still needs human review (specs for 72 missing services)
 
 ### Follow-up tasks needed
 1. Consider refactoring the flat directory structure — 89 files in one directory is a maintenance concern (may want to propose subdirectory reorganization as a future task)
