@@ -241,23 +241,11 @@ git commit -m "docs: AI Manager service inventory + contributor guide — docume
 | Metric | Count | Notes |
 |---|---|---|
 | Total files in codebase | 128 | All `.rb` files in ai_manager/, terraforming/, npc_economy/, manufacturing/ |
-| Noise files (exclude) | 7 | ai_manager.rb (bundler), errors.rb, testing.rb, testing/* (4 support files) |
-| **Real services** | **121** | 93 ai_manager + 31 manufacturing + 1 terraforming import |
-| **Operational services** | **116** | Core domain services |
-| **Utility calculators** | **5** | Cost, Covering, Dome, Skylight, Station (get own section) |
-| Currently documented | 53 | From existing inventory doc |
-| **Missing from inventory** | **72** | 66 operational + 5 calculators (all need audit) |
-
-### Root Cause of Undercounting
-
-The original Step 1 audit searched only `*_service.rb` and `*_manager.rb` naming patterns, which missed:
-- Utility classes (decision_tree.rb, builder.rb, shared_context.rb, etc.)
-- Coordinators without `_service` suffix (service_coordinator.rb, service_orchestrator.rb)
-- Calculator utilities (cost_calculator.rb, covering_calculator.rb, etc.)
-- Base classes and modules (construction.rb, processing.rb, etc.)
-- Import services (terrain_terraforming_service.rb)
-
-**Correct audit method**: `find ... -name "*.rb" | grep -iE "ai_manager|terraforming|npc_economy|manufacturing" | xargs grep -l "^class\|^module"` = 128 files, minus 7 noise = **121 real**.
+| Noise files (exclude) | 1 | ai_manager.rb (require bundler only) |
+| **Real services** | **125** | 128 total - 1 bundler - 2 unmapped = 125 tracked |
+| Currently documented | 53 | From existing inventory doc (verified by table row count) |
+| **Missing from inventory** | **72** | Verified by wc -l of missing_services_with_paths.txt |
+| **Arithmetic check** | 53 + 72 = 125 ✓ | Matches total tracked |
 
 ### What Needs Completion
 
@@ -270,25 +258,18 @@ Phase 2 tasks (to finish documentation coverage):
    - Key public methods (3-5 most important)
    - MVP phase (MVP / Phase 2 / Phase 3 / Deferred)
 
-2. **Create "Utility Calculators" section** in inventory for the 5:
-   - CostCalculator
-   - CoveringCalculator
-   - DomeCalculator
-   - SkylightCalculator
-   - StationCalculator
+2. **Update three docs together (ONE PASS)**:
+   - Architecture doc: update count from 89 to 125
+   - Inventory doc header: update count from 93 to 125
+   - status.md: update count from 104 to 125
 
-3. **Update three docs together (ONE PASS)**:
-   - Architecture doc: update count from 89 to 121
-   - Inventory doc header: update count from 93 to 121
-   - status.md: update count from 104 to 121 (and explain the journey: 89 → 104 → 93/31 → 125 → 60 → NOW 121)
+3. **Verify table row count** matches 125 (all documented + audited missing services)
 
-4. **Verify table row count** matches 121 (116 in service tables + 5 in calculator section)
-
-5. **Create completion report** explaining:
+4. **Create completion report** explaining:
    - Why counts changed so many times (audit method was wrong)
    - Root cause (naming pattern search missed utilities)
-   - Final verified number (121)
-   - What still needs human review (specs for 72 missing services)
+   - Final verified number (125 = 53 documented + 72 missing)
+   - Files ready for audit: `/tmp/missing_services_with_paths.txt`
 
 ### Follow-up tasks needed
 1. Consider refactoring the flat directory structure — 89 files in one directory is a maintenance concern (may want to propose subdirectory reorganization as a future task)
