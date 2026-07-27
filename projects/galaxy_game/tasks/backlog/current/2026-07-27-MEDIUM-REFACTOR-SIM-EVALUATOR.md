@@ -3,7 +3,8 @@ status: backlog
 priority: MEDIUM
 type: refactor
 system_domain: AI_MANAGER
-mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
+mvp_alignment: VENUS_DEPLOYMENT
+phase: 10
 local_worker_safe: true
 ---
 

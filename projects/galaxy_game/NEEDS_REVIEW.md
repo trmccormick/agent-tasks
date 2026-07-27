@@ -36,17 +36,4 @@ this file should stay small. Full history stays in status.md.
 ## Current entries
 
 ### 2026-07-21 — InfrastructureCostCalculator calls non-existent method
-**What happened**: infrastructure_cost_calculator.rb:152 calls `AIManager::PrecursorCapabilityService.can_produce?(destination, material.chemical_formula)` — a two-arg method that does not exist on PrecursorCapabilityService. Only `can_produce_locally?(resource)` (one-arg) exists.
-
-**What I already checked**:
-- Confirmed via grep: only `can_produce_locally?(resource)` exists in precursor_capability_service.rb
-- Confirmed the one call site at infrastructure_cost_calculator.rb:152
-- Confirmed `can_produce_locally?` resolves celestial_body internally via settlement.location.celestial_body — doesn't accept a destination param even if renamed
-- No specs exist for InfrastructureCostCalculator (grep spec/ returned zero matches)
-- One caller in test script only: galaxy_game/test_realistic_costs.rb (not in spec/)
-
-**What needs a second opinion**:
-- Is this code path ever actually exercised? (calculate_local_production_discount is called from calculate_cost, need to confirm whether calculate_cost has any live callers/specs, or if this is dead/untested code)
-- If live: fix is to change the call to `can_produce_locally?(material.chemical_formula)` and remove the destination arg — but confirm InfrastructureCostCalculator has access to the right settlement context for that method to resolve celestial_body correctly, since it currently operates on a destination CelestialBody directly, not a settlement
-
-**Status**: OPEN
+**Status**: **RESOLVED (2026-07-26, confirmed dead code via grep, signature fixed, backlog task filed for test coverage)**

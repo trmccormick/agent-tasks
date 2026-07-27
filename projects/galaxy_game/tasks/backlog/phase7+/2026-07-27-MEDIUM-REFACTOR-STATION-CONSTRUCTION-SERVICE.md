@@ -3,7 +3,8 @@ status: backlog
 priority: MEDIUM
 type: refactor
 system_domain: MANUFACTURING
-mvp_alignment: ISRU_PRODUCTION
+mvp_alignment: ORBITAL_INFRASTRUCTURE
+phase: 7
 local_worker_safe: true
 ---
 

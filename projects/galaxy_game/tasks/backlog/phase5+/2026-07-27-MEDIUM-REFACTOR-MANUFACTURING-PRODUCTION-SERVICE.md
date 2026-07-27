@@ -4,6 +4,7 @@ priority: MEDIUM
 type: refactor
 system_domain: MANUFACTURING
 mvp_alignment: ISRU_PRODUCTION
+phase: 5
 local_worker_safe: true
 ---
 
