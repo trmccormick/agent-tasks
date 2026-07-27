@@ -3,7 +3,7 @@ status: backlog
 priority: MEDIUM
 type: refactor
 system_domain: MANUFACTURING
-mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
+mvp_alignment: LUNA_SETTLEMENT
 phase: 6
 local_worker_safe: true
 ---

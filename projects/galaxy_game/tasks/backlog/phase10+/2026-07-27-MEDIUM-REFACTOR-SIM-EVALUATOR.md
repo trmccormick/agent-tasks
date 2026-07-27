@@ -3,9 +3,10 @@ status: backlog
 priority: MEDIUM
 type: refactor
 system_domain: AI_MANAGER
-mvp_alignment: VENUS_DEPLOYMENT
+mvp_alignment: VENUS_EXPANSION
 phase: 10
 local_worker_safe: true
+---
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)

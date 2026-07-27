@@ -3,9 +3,10 @@ status: backlog
 priority: MEDIUM
 type: refactor
 system_domain: AI_MANAGER
-mvp_alignment: ADVANCED_ECONOMICS
+mvp_alignment: ADVANCED_TERRAFORMING_ECONOMICS
 phase: 13
 local_worker_safe: true
+---
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
