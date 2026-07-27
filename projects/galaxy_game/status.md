@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-27 — PostgreSQL healthcheck fix (database performance)
+**Last Updated:** 2026-07-27 — RH-400 PromptBuilder validation + PostgreSQL healthcheck fix
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -7,6 +7,25 @@
 ---
 
 ## 🎯 Latest Completion (2026-07-27)
+
+### ✅ RH-400 Gameplay Asset Prompt — Manual PromptBuilder Validation
+- **Purpose**: Validate that current documentation contains sufficient structured info to assemble a gameplay-asset prompt without creative interpretation
+- **Deliverables**:
+  - Finished gameplay-asset prompt (5 variants: Idle, Moving, Harvesting, Damaged, Destroyed) with identical camera/scale/pivot/orientation across all
+  - Source mapping table — each prompt section traced to canonical source (Blueprint, Design System, Asset Generation Architecture, RH-400 Prompt Template)
+  - Gap analysis: **18 gaps identified** (8 critical, 7 moderate, 3 low priority)
+- **Key Findings**:
+  - Blueprint provides physical specs (6.80×3.30×2.65m, 22800kg) and description — sufficient for dimensions
+  - RH-400 prompt template provides aesthetic profile (white/dark-grey hull, hazard stripes, exposed tracks, DMLS finish)
+  - ASSET_GENERATION_ARCHITECTURE.md provides gameplay asset requirements (transparent bg, isolated subject, fixed camera)
+  - **Two primary blockers for full automation**:
+    1. No instantiated Visual Definition file for RH-400 (template exists but not filled in)
+    2. Icon Bible file (`2026-07-19-HIGH-DESIGN-GALAXYGAME_ICON_BIBLE.md`) referenced in multiple docs but **missing from workspace**
+  - Critical gaps: recognition_features array, color_profile, technology_level, manufacturing_style, canonical asset ID, animation_profile, complexity_levels, shared_components
+- **Output**: `summaries/2026-07-26-MANUAL-PROMPTBUILDER-RH400-VALIDATION.md` (ready for Claude review)
+- **Status**: Awaiting manual review — no file modifications made during validation
+
+---
 
 ### ✅ PostgreSQL Healthcheck Fix — Database Role Authentication Error
 - **Problem**: Recurring "FATAL: role 'root' does not exist" errors appearing every 30 seconds, causing slow/timeout database operations
