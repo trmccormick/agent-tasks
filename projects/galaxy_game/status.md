@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-27 — RH-400 PromptBuilder validation + PostgreSQL healthcheck fix
+**Last Updated:** 2026-07-27 — TerrainQualityAssessor namespace fix + setup.sh improvements + db:seed completion
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -7,6 +7,24 @@
 ---
 
 ## 🎯 Latest Completion (2026-07-27)
+
+### ✅ TerrainQualityAssessor Namespace Fix + setup.sh Improvements
+- **Problem**: `app/services/terrain/terrain_quality_assessor.rb` defined `module TerrainAnalysis` but lived in `app/services/terrain/`. Rails autoloading maps directory → namespace, so it loaded as `Terrain::QualityAssessor`, not `TerrainAnalysis::TerrainQualityAssessor`. Every terrestrial body (28+ per seed) logged: `NameError: uninitialized constant TerrainAnalysis::TerrainQualityAssessor`.
+- **Root Cause**: Namespace/directory mismatch — file in `app/services/terrain/` should use `module Terrain`, not `module TerrainAnalysis`.
+- **Solution**:
+  - `terrain_quality_assessor.rb`: Changed to `module Terrain / class QualityAssessor`
+  - `automatic_terrain_generator.rb:48`: Updated reference to `Terrain::QualityAssessor.new`
+  - `spec/services/terrain/terrain_quality_assessor_spec.rb`: Updated describe block
+  - `test_automatic_terrain_generation.rb` and `test_terrain_integration_minimal.rb`: Updated references
+- **Verification**: 39 examples, 0 failures — no more NameError warnings during seed
+- **setup.sh fixes**:
+  - Added `set -e` for error-on-fail behavior
+  - Added 30-minute timeout on `db:seed` (was hanging indefinitely)
+  - Added `db:environment:set RAILS_ENV=test` before test schema load (fixes EnvironmentMismatchError at end of seed)
+  - Added progress logging between steps
+- **Seed completion**: Built all 75 celestial bodies across Sol + Gaia systems successfully. Saturn was never stuck — processed through all moons and continued to Gaia system.
+
+---
 
 ### ✅ RH-400 Gameplay Asset Prompt — Manual PromptBuilder Validation
 - **Purpose**: Validate that current documentation contains sufficient structured info to assemble a gameplay-asset prompt without creative interpretation
