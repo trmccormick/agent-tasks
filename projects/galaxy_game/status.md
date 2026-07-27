@@ -6,13 +6,13 @@
 
 ---
 
-## 🎯 Latest Completion (2026-07-25)
+## 🎯 Latest Completion (2026-07-26)
 
 ### ✅ AI Manager Service Inventory — Architecture Doc + Contributor Guide
 - **Task**: `2026-07-24-CRITICAL-DOCUMENTATION-AI-MANAGER-SERVICE-INVENTORY.md` → `tasks/completed/2026-07/`
-- **Problem**: Architecture docs referenced ~8 core files; actual codebase has 93 AI Manager services + 31 manufacturing services + 1 imported terraforming service = **125 total domain services** with no inventory or contributor guide
+- **Problem**: Architecture docs referenced ~8 core files; actual codebase has 121 AI Manager domain services (93 ai_manager + 31 manufacturing + 1 terraforming import — 7 noise files excluded) with no inventory or contributor guide
 - **Resolution**: 
-  - Created service inventory: `projects/galaxy_game/services/ai_manager_service_inventory.md` — lists all 93 AI Manager files + 31 manufacturing + 1 imported terraforming = **125 total domain services**
+  - Created service inventory: `projects/galaxy_game/services/ai_manager_service_inventory.md` — lists all 121 services (53 originally documented + 68 newly audited across 5 batches), plus Known Incomplete Services section (6 entries) and Utility Calculators section (5 entries)
   - Created contributor guide: `projects/galaxy_game/contributors/adding-ai-manager-service.md` — naming, wiring, testing, docs, pitfalls
   - Updated architecture doc: replaced stale "8 core files" section with accurate overview + deprecation table mapping old references to current services
   - Verified: exactly one copy of task file in completed/2026-07/, YAML status set to `completed`
@@ -63,6 +63,12 @@
 ---
 
 ## 🎯 Previous Completion (2026-07-24)
+
+### ✅ InfrastructureCostCalculator Dead Code Audit + Signature Fix
+- **Problem**: `InfrastructureCostCalculator` has zero live callers across `app/`, `lib/`, `config/`. Only exercised by `test_realistic_costs.rb` (outside RSpec suite). Line 152 called non-existent two-arg `can_produce?` method — signature fixed to `can_produce_locally?(material.chemical_formula)`.
+- **Verification**: grep confirmed zero callers; no spec coverage exists.
+- **Resolution**: Signature corrected for correctness; backlog task filed (`2026-07-26-LOW-BUGFIX-INFRASTRUCTURE-COST-CALCULATOR-DEAD-CODE.md`) for keep/remove decision + test coverage. NEEDS_REVIEW entry archived.
+- **NEEDS_REVIEW**: Resolved (2026-07-26, confirmed dead code via grep, signature fixed, backlog task filed for test coverage)
 
 ### ✅ Fitting Service Inventory Parity Fix
 - **Task**: `2026-04-01-HIGH-BUGFIX-FITTING-SERVICE-INVENTORY-PARITY.md` (moved to completed/2026-07)
