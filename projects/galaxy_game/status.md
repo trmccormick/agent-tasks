@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-27 — TerrainQualityAssessor namespace fix + setup.sh improvements + db:seed completion
+**Last Updated:** 2026-07-27 — Three-Layer View Architecture + TerrainQualityAssessor namespace fix
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -7,6 +7,27 @@
 ---
 
 ## 🎯 Latest Completion (2026-07-27)
+
+### ✅ Three-Layer View Architecture & Integration
+- **Task**: `2026-07-13-HIGH-ARCHITECTURE-THREE-LAYER-VIEWS.md` → completed/2026-07/
+- **Problem**: No architecture doc existed defining layer boundaries, data flow, or zoom hierarchy for Planetary/Surface/TerrainForge views
+- **Deliverable**: `docs/new_agent/projects/galaxy_game/architecture/three_layer_views.md` (585 lines)
+- **Contents**:
+  - Complete spec for all three layers: Planetary View (SimEarth), Surface View (Civ4/FreeCiv), TerrainForge Detail View (SimCity)
+  - Zoom hierarchy flow chart (Mermaid diagram) with context preservation rules
+  - Layer separation rules (IS/IS NOT responsibility tables + scope boundary enforcement)
+  - Data ownership matrix — single shared `terrain_data` for Surface + TerrainForge; Planetary owns atmosphere/weather only
+  - Integration points defined: Planetary→Surface click-region transition, Surface→TerrainForge double-click zoom, TerrainForge→Surface return with camera position preservation
+  - Rendering technology recommendations: Three.js for Planetary, existing 2D Canvas for Surface/TerrainForge (same pipeline, camera zoom only)
+  - Current Surface View state documented (grounded in `surface_view.js` — rendering pipeline, layer system, camera state, known issues)
+- **Critical Architecture Rules Established**:
+  - TerrainForge is NOT a separate renderer — same `surface_view.js` with camera zoomed 10-100x on one settlement tile
+  - Planetary View: interface contract only (no implementation in this task)
+  - Single shared `terrain_data` object — no duplication across layers
+- **Follow-up tasks identified**: Surface View Layer 4 (Civilization), Unit Sprite Regeneration, Monitor View GeoTIFF Loading, Planetary View Implementation, TerrainForge Camera Zoom
+- **Commits**: `8a81472` (architecture doc), `61bc691` (task lifecycle closure)
+
+---
 
 ### ✅ TerrainQualityAssessor Namespace Fix + setup.sh Improvements
 - **Problem**: `app/services/terrain/terrain_quality_assessor.rb` defined `module TerrainAnalysis` but lived in `app/services/terrain/`. Rails autoloading maps directory → namespace, so it loaded as `Terrain::QualityAssessor`, not `TerrainAnalysis::TerrainQualityAssessor`. Every terrestrial body (28+ per seed) logged: `NameError: uninitialized constant TerrainAnalysis::TerrainQualityAssessor`.
