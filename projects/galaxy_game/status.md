@@ -1,12 +1,32 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-25 — AI Manager service inventory + task lifecycle closure
+**Last Updated:** 2026-07-27 — PostgreSQL healthcheck fix (database performance)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🎯 Latest Completion (2026-07-26)
+## 🎯 Latest Completion (2026-07-27)
+
+### ✅ PostgreSQL Healthcheck Fix — Database Role Authentication Error
+- **Problem**: Recurring "FATAL: role 'root' does not exist" errors appearing every 30 seconds, causing slow/timeout database operations
+- **Root Cause**: PostgreSQL healthcheck in docker-compose.dev.yml used incorrect CMD-SHELL syntax. When Docker processes array-format CMD-SHELL without proper quoting, the `-U postgres` parameter isn't passed to pg_isready, causing fallback to OS user (root).
+- **Solution**: Changed healthcheck from `["CMD-SHELL", "pg_isready", "-d", "postgres", "-U", "postgres"]` to `["CMD", "pg_isready", "-d", "postgres", "-U", "postgres"]`
+  - CMD format executes command directly with proper parameter handling
+  - CMD-SHELL spawns /bin/bash and requires careful escaping (unnecessary for this use case)
+- **Verification**:
+  - ✓ Web container runs as rails user (non-root) from Dockerfile `USER rails + ENTRYPOINT`
+  - ✓ Zero "FATAL: role 'root' does not exist" errors in fresh database logs
+  - ✓ Healthchecks execute silently without authentication failures
+  - ✓ Database accepts connections correctly using postgres:password credentials
+- **Commits**: 
+  - `26341c0d` (galaxyGame) — Dockerfile ENTRYPOINT configuration + docker-entrypoint.sh
+  - `a63996f7` (galaxyGame) — PostgreSQL healthcheck fix (CMD format)
+- **Impact**: Database operations no longer slowed by repeated failed authentication attempts; application can connect cleanly
+
+---
+
+## 🎯 Previous Completion (2026-07-26)
 
 ### ✅ AI Manager Service Inventory — Architecture Doc + Contributor Guide
 - **Task**: `2026-07-24-CRITICAL-DOCUMENTATION-AI-MANAGER-SERVICE-INVENTORY.md` → `tasks/completed/2026-07/`
