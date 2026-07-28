@@ -1,7 +1,7 @@
 ---
 title: "Investigate db:seed hang at Saturn + setup.sh timeout and TerrainQualityAssessor errors"
 priority: HIGH
-status: backlog
+status: active
 owner: Implementation Agent (Qwen)
 type: investigation
 system_domain: OTHER
