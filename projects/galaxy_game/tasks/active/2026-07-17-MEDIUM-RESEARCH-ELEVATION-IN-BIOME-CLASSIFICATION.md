@@ -1,7 +1,7 @@
 ---
 title: "Research — Does elevation feed into biome/temperature classification?"
 priority: MEDIUM
-status: active
+status: completed
 phase: phase1
 owner: Research Agent (Qwen)
 type: research
