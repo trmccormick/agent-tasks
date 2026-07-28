@@ -38,7 +38,7 @@
 ### ✅ Three-Layer View Architecture & Integration
 - **Task**: `2026-07-13-HIGH-ARCHITECTURE-THREE-LAYER-VIEWS.md` → completed/2026-07/
 - **Problem**: No architecture doc existed defining layer boundaries, data flow, or zoom hierarchy for Planetary/Surface/TerrainForge views
-- **Deliverable**: `docs/new_agent/projects/galaxy_game/architecture/three_layer_views.md` (585 lines)
+- **Deliverable**: `docs/architecture/three_layer_views.md` (585 lines) — placed in canonical docs/architecture/, not new_agent symlink path
 - **Contents**:
   - Complete spec for all three layers: Planetary View (SimEarth), Surface View (Civ4/FreeCiv), TerrainForge Detail View (SimCity)
   - Zoom hierarchy flow chart (Mermaid diagram) with context preservation rules
@@ -52,7 +52,8 @@
   - Planetary View: interface contract only (no implementation in this task)
   - Single shared `terrain_data` object — no duplication across layers
 - **Follow-up tasks identified**: Surface View Layer 4 (Civilization), Unit Sprite Regeneration, Monitor View GeoTIFF Loading, Planetary View Implementation, TerrainForge Camera Zoom
-- **Commits**: `8a81472` (architecture doc), `61bc691` (task lifecycle closure)
+- **Commits**: `8a81472` (architecture doc), `61bc691` (task lifecycle closure), `d1125bd6` (doc corrections: TILE_SIZE inconsistency, projection type, unit sprite direction handling)
+- **Lifecycle cleanup** (2026-07-28): Removed stray duplicate task file from active/; updated YAML status to `completed` in authoritative copy at completed/2026-07/ — only one copy remains per protocol
 
 ---
 
