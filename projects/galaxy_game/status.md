@@ -1,12 +1,25 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-28 — Task File Review Session + Composite Sprite Retirement + db:seed Hang Fix
+**Last Updated:** 2026-07-29 — Raw Resource Extraction Pricing Task Review + Composite Sprite Retirement + db:seed Hang Fix
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🎯 Latest Completion (2026-07-28)
+## 🎯 Latest Completion (2026-07-29)
+
+### ✅ Raw Resource Extraction Pricing — Task File Review & Reorganization
+- **Task**: `2026-04-16-HIGH-ARCHITECTURE-RAW-RESOURCE-EXTRACTION-PRICING.md` (review/ folder)
+- **Review findings**:
+  - Still actionable — gap confirmed: `NpcPriceCalculator` has no floor price model for harvested raw resources
+  - Phase assignment corrected: phase8 → phase9+ (extraction pricing relevant to Mars surface settlement, not shipyard/craft validation)
+  - File paths corrected: `economics/npc_price_calculator.rb` → `market/npc_price_calculator.rb`, `models/tier1_price_modeler.rb` → `services/tier1_price_modeler.rb`
+- **Resolution**: Updated to current TASK_TEMPLATE.md format (YAML frontmatter, ⚡ Minimal Handoff section), moved to `phase9+/` in agent-tasks repo
+- **Commit**: `a736daa` (agent-tasks)
+
+---
+
+## 🎯 Previous Completion (2026-07-28)
 
 ### ✅ Task File Review Session — backlog_april_2026 + current/ Triage
 - **Scope**: Reviewed and triaged stale task files in agent-tasks review/ folder
