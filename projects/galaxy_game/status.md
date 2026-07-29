@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-28 — db:seed Hang Fix: StarSystemLookupService Lazy-Loading
+**Last Updated:** 2026-07-28 — Composite Sprite Retirement + db:seed Hang Fix
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -7,6 +7,17 @@
 ---
 
 ## 🎯 Latest Completion (2026-07-28)
+
+### ✅ Composite Sprite Retirement — Scope Expanded to Atlas Assets
+- **Task**: `2026-07-27-LOW-DATA-RETIRE-COMPOSITE-SPRITE-EXTRACTION.md` → completed/2026-07/
+- **Problem**: Old composite-sheet sprite/atlas test assets and their extraction-guide metadata were sitting in the repo as potential confusion for future Layer 5 (unit sprites) work
+- **Resolution**: Deleted (not archived) — scope expanded beyond `unit_sprites/` to include related settlement/atlas assets: `settlement_atlas.json`, `settlement_sprites.png`, `settlement_sprites_DEBUG.png`, `settlement_sprites_final.jpg`, `settlement_sprites_final.png`, `settlement_terrain.png`, `source_preview.jpg`, `galaxy_regional_atlas.json`, `settlement_tileset.json`
+- **Key detail**: `galaxy_regional_atlas.json` and `settlement_tileset.json` were extraction-guide metadata for locating individual sprites within the composite sheet — not standalone data. With sprite images gone, this metadata had no remaining purpose
+- **Verified**: Zero live code dependencies outside the already-gated-off `showUnits: false` array/lookup in `surface_view.js` (untouched, per scope)
+- **Safety**: Deleted rather than archived, covered by Time Machine + git history (commit f742a430)
+- **Impact**: Layer 5 unit sprites ready for direct single-unit generation under precision_industrial_v1 pipeline, starting with RH-400 Production Asset
+
+---
 
 ### ✅ db:seed Hang at Saturn — StarSystemLookupService Lazy-Loading Fix
 - **Task**: `2026-07-27-HIGH-INVESTIGATION-SEED-HANG-SATURN-SETUP-TIMEOUT.md` → completed/2026-07/
