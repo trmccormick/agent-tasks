@@ -46,7 +46,9 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting a
 **Priority**: LOW
 **Type**: bug-fix
 **Created**: 2026-07-26
-**Last Updated**: 2026-07-26
+**Last Updated**: 2026-07-28
+
+Note (2026-07-28): a manual test script referencing this class exists at `galaxy_game/test_realistic_costs.rb` (single commit 90ba2a25, 2026-01-31, swept in under an unrelated 'diameter-based grid sizing for terrain generation' commit message — not touched since). Confirms the class was run/exercised once for cost-calibration purposes but is otherwise dormant; does not change the zero-live-callers-in-app/spec conclusion.
 
 ## Problem
 
