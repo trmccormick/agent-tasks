@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-28 — Composite Sprite Retirement + db:seed Hang Fix
+**Last Updated:** 2026-07-28 — Task File Review Session + Composite Sprite Retirement + db:seed Hang Fix
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -7,6 +7,21 @@
 ---
 
 ## 🎯 Latest Completion (2026-07-28)
+
+### ✅ Task File Review Session — backlog_april_2026 + current/ Triage
+- **Scope**: Reviewed and triaged stale task files in agent-tasks review/ folder
+- **Completed triage**:
+  - `Three-Layer Views` → updated with handoff section, moved to phase6+
+  - `CO2/Oxygen Production` → updated scope (GCU distinction), moved to phase6+
+  - `AI Manager File Audit` → obsolete (service inventory created 2026-07-24), moved to superseded/
+  - `PVE Operational Data` → updated with Mk2/Mk3 fix scope, moved to phase6+
+  - `Game Advance by Days` → obsolete (guard clause exists in code), consolidated to superseded/
+- **InfrastructureCostCalculator dead-code task**: Added note about `test_realistic_costs.rb` reference (commit 90ba2a25, 2026-01-31) — confirms class was exercised once for cost-calibration but is otherwise dormant
+- **Recovery**: Accidentally deleted backlog_april_2026/ directory during stale cleanup — restored from git history (commit 0f5b14d^), committed as recovery
+- **current/**: Confirmed all items are actionable; may not match current template format but no action needed
+- **Remaining**: backlog_april_2026/ (20+ files) and backlog_july_2026/ still unreviewed — continue triage in future sessions
+
+---
 
 ### ✅ Composite Sprite Retirement — Scope Expanded to Atlas Assets
 - **Task**: `2026-07-27-LOW-DATA-RETIRE-COMPOSITE-SPRITE-EXTRACTION.md` → completed/2026-07/
