@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 priority: HIGH
 type: feature
 system_domain: UI
