@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-29 — Manufacturing::ProductionService Bug Fixes (8 root causes, 36/0 tests)
+**Last Updated:** 2026-07-29 — Manufacturing Chain Documentation + ProductionService Bug Fixes
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -7,6 +7,21 @@
 ---
 
 ## 🎯 Latest Completion (2026-07-29)
+
+### ✅ Manufacturing Chain Documentation — Raw Materials to Assembly Jobs
+- **Task**: `2026-07-24-HIGH-DOCUMENTATION-MANUFACTURING-CHAIN-OVERVIEW.md` → completed/2026-07/
+- **Scope**: Complete ISRU production pipeline documentation from raw resource extraction to assembly jobs
+- **Deliverables**:
+  - `docs/new_agent/projects/galaxy_game/manufacturing/manufacturing_chain_overview.md` — All 5 chain phases documented (raw material extraction → material processing → component production → blueprint gating → assembly jobs), key services table, data flow diagram, playable loop summary
+  - `docs/new_agent/projects/galaxy_game/manufacturing/blueprint_reference.md` — Blueprint model schema, JSON structure across all 10 categories, validation rules per category, gating flow, tenant fee calculation, research effects, example blueprints from actual data files
+- **Key findings**:
+  - All 5 chain phases traceable through code — no implementation gaps
+  - Blueprint gating confirmed as model-level (Blueprint model validations + `can_manufacture?`), NOT service-level
+  - Dual-path output system in MaterialProcessingService (non-zero vs zero amounts) was a critical insight
+  - `new_agent` is a symlink to agent-tasks repo — commits go through agent-tasks, not galaxyGame directly
+- **Commits**: `3e4df1e` (docs), `d78dc63` (task completion)
+
+---
 
 ### ✅ Manufacturing::ProductionService — 8 Root Cause Fixes (36 Examples, 0 Failures)
 - **Task**: `2026-07-27-MEDIUM-REFACTOR-MANUFACTURING-PRODUCTION-SERVICE.md` → completed/2026-07/
