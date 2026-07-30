@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-29 — Raw Resource Extraction Pricing Task Review + Composite Sprite Retirement + db:seed Hang Fix
+**Last Updated:** 2026-07-29 — Manufacturing::ProductionService Bug Fixes (8 root causes, 36/0 tests)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -7,6 +7,24 @@
 ---
 
 ## 🎯 Latest Completion (2026-07-29)
+
+### ✅ Manufacturing::ProductionService — 8 Root Cause Fixes (36 Examples, 0 Failures)
+- **Task**: `2026-07-27-MEDIUM-REFACTOR-MANUFACTURING-PRODUCTION-SERVICE.md` → completed/2026-07/
+- **Initial state**: 12 test failures in production_service_spec.rb (36 examples)
+- **Root causes identified & fixed**:
+  1. **Double-consumption of raw_regolith** — Step 5 consumed pile, Step 9 consumed again from materials_needed hash → Added guard to delete raw_regolith from materials_needed before Step 9 consumption (line 57, production_service.rb)
+  2. **Item properties nil crash** — properties.dig() on nil object → Added safe navigation operator `properties&.dig()` (line 282, item.rb)
+  3. **Storage method type mismatch** — Hardcoded `:bulk_storage` symbol vs JSON strings → Replaced with ItemLookupService lookup, returns string default 'bulk_storage' (lines 305-309, production_service.rb)
+  4. **MaterialPile filtering by wrong column** — Used `.where(name:)` instead of `.where(material_type:)` → Corrected association filtering in diagnostics
+  5. **Pile query timing** — Looked up pile BEFORE service call, got nil → Moved lookup AFTER service call creates pile (lines 110-114, spec)
+  6. **JSON byproducts key mismatch** — Expected symbols (:cycle) but JSON has strings ("cycle") → Changed 4 key assertions to strings (lines 149-152, spec)
+  7. **consume_materials test impossible math** — Setup 60kg, consume 80kg (mathematically -20) → Added 2nd item row via metadata to make 110kg total (lines 337-348, spec)
+  8. **Destroy assertion contradicts test name** — Test "destroys items" expected count=1 → Changed to count=0 (lines 349-354, spec)
+- **Real-world validation** at target_units=3: raw_regolith 3000→2700kg (300kg consumed = 100×3), binding_agent 40→10kg (30kg consumed = 10×3) — confirms no double-consumption and proper proportional scaling
+- **Commits**: `b621175d` (ProductionService + spec), `7e31f695` (item.rb nil-safety)
+- **Risk**: item.rb safe navigation affects shared model method `set_item_attributes` — impacts all Item.create! (recommend follow-up review of Item usage patterns elsewhere)
+
+---
 
 ### ✅ Raw Resource Extraction Pricing — Task File Review & Reorganization
 - **Task**: `2026-04-16-HIGH-ARCHITECTURE-RAW-RESOURCE-EXTRACTION-PRICING.md` (review/ folder)
