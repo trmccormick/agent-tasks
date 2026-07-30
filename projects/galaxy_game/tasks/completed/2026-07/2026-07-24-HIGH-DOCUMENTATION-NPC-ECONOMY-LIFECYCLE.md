@@ -1,7 +1,7 @@
 ---
 title: "NPC economy lifecycle documentation — AI Manager → player opportunity flow"
 priority: HIGH
-status: backlog
+status: active
 owner: Implementation Agent (Qwen)
 type: documentation
 system_domain: AI_MANAGER / ECONOMY
@@ -174,11 +174,11 @@ Document the key models:
 ---
 
 ## Acceptance Criteria
-- [ ] NPC economy lifecycle doc exists and is readable without code review
-- [ ] All 5 lifecycle phases documented with service references
-- [ ] Economy models documented with field descriptions
-- [ ] Data flow diagram matches actual implementation
-- [ ] Edge cases and fallback mechanisms explained
+- [x] NPC economy lifecycle doc exists and is readable without code review
+- [x] All 5 lifecycle phases documented with service references
+- [x] Economy models documented with field descriptions
+- [x] Data flow diagram matches actual implementation
+- [x] Edge cases and fallback mechanisms explained
 
 ---
 
@@ -203,7 +203,7 @@ git commit -m "docs: NPC economy lifecycle documentation — pricing, orders, pl
 ## Documentation
 - [x] New docs created (lifecycle + models)
 - [ ] Update existing architecture doc — [path TBD]
-- [ ] Flag doc gap: [description if needed]
+- [x] Flag doc gap: Market stabilization actions partially stubbed (documented in lifecycle doc)
 
 ---
 
@@ -217,24 +217,34 @@ git commit -m "docs: NPC economy lifecycle documentation — pricing, orders, pl
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**: [agent name]
-**Completion date**: YYYY-MM-DD
+**Completed by**: Implementation Agent (Qwen)
+**Completion date**: 2026-07-30
 
 ### What was changed
-- `[file]` — [description of change]
+- `docs/new_agent/projects/galaxy_game/economy/npc_economy_lifecycle.md` — Full NPC economy lifecycle documentation covering all 5 phases: NPC Initialization, Price Setting (AI Manager), Order Creation, Player Contract Acceptance, and Fallback Mechanisms. Includes data flow diagram, service reference table with 14 services, and 6 edge case scenarios.
+- `docs/new_agent/projects/galaxy_game/economy/economy_models.md` — Complete economy model documentation covering 8 Market namespace models, 2 Logistics models, 3 top-level models, Settlement/Organization relevance, Financial model relevance, model relationship diagram, migration timeline (14 migrations), and known model issues.
 
 ### Issues discovered
-[Any problems found during implementation]
+- **Market stabilization actions partially stubbed**: `handle_unsold_goods`, `handle_production_shortages`, `handle_import_shortages` in MarketStabilizationService return placeholder results — documented as a limitation in the lifecycle doc.
+- **USD funding path incomplete**: `ContractCreationService.create_import_order` logs but doesn't create records — documented in edge cases section.
+- **Logistics::Contract has syntax issues**: `belongs_to :initiated_by` and `validates :arrives_at` not properly separated by newlines in source file — documented in economy_models.md known issues.
+- **Marketplace is a symlink**: `docs/new_agent` symlinks to `/Users/tam0013/Documents/git/agent-tasks` — commits must go through the target repo.
 
 ### Follow-up tasks needed
-[Any new backlog items identified]
+- Implement stubbed market stabilization actions (buyer/producer/importer of last resort)
+- Complete USD import order creation path in ContractCreationService
+- Fix Logistics::Contract syntax issues (missing newlines between statements)
+- Consider adding NPC death/retirement mechanism
+- Add cleanup for expired orders
 
 ### Lessons learned
-[What worked, what didn't]
+- NPC economy spans AI Manager and Market namespaces — documentation must cover both to be complete.
+- Fallback mechanisms are emergent across multiple services, not centralized — this is by design but makes documentation challenging.
+- All claims in documentation were verified against actual code (models, migrations, services) — no speculation used.
 
 ---
 
 ## Handoff Summary
 *Filled in at end of session — one scannable line for next agent*
 
-HANDOFF SUMMARY: [files updated] | [structural changes] | [next action needed]
+HANDOFF SUMMARY: npc_economy_lifecycle.md + economy_models.md created in docs/new_agent/projects/galaxy_game/economy/ | New directory structure economy/ added | Task ready to move to completed/
