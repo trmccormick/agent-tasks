@@ -1,24 +1,218 @@
 ---
-title: "Settlement Tiles & SimCity Entry Point Design"
-date: 2026-07-13
-priority: HIGH
-type: DESIGN
 status: backlog
-phase: UI
-assigned_to: qwen
-depends_on: "2026-07-13-HIGH-ARCHITECTURE-THREE-LAYER-VIEWS"
+priority: HIGH
+type: feature
+system_domain: UI
+mvp_alignment: OTHER
+local_worker_safe: true
+created: 2026-07-13
+last_updated: 2026-07-30
 ---
 
-## Summary
-Define how settlement tiles function as navigation points between Surface View (Civ4-style tactical map) and TerrainForge (SimCity-style detail view). A settlement tile is a special map location where structures/infrastructure are housed.
+## ⚡ Minimal Handoff (Copy this to send to agent)
+```text
+You are **Implementation Agent**.
+
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-07-13-HIGH-DESIGN-SETTLEMENT-TILES-ENTRY-POINT.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/current/2026-07-13-HIGH-DESIGN-SETTLEMENT-TILES-ENTRY-POINT.md \
+         projects/galaxy_game/tasks/active/2026-07-13-HIGH-DESIGN-SETTLEMENT-TILES-ENTRY-POINT.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-07-13-HIGH-DESIGN-SETTLEMENT-TILES-ENTRY-POINT.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+  Filename pattern: 2026-07-13-FEATURE-SETTLEMENT-TILES-ENTRY-POINT.md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
+
+---
+
+# TASK: Settlement Tiles & SimCity Entry Point Design
+**Status**: BACKLOG
+**Priority**: HIGH
+**Type**: feature
+**Created**: 2026-07-13
+**Last Updated**: 2026-07-30
 
 ## Context
+
 The three-layer architecture works as follows:
 - **Planetary View:** Entire planet at macro level
 - **Surface View:** Tactical grid map showing entire settlement region (50×50 tiles, 32px per tile on screen)
 - **TerrainForge "Detail View":** Same Surface View rendering, but **zoomed in 10-100x on one settlement tile** to show buildings at full scale
 
 TerrainForge is NOT a separate rendering system — it's the same surface_view.js, just with the camera focused on a single tile and zoomed way in. Buildings that appear as tiny sprites on a settlement tile in Surface View become full-scale buildings when zoomed in to TerrainForge.
+
+## Prerequisites — READ FIRST (Sequential Order)
+
+1. **Workflow**: `/Users/tam0013/Documents/git/agent-tasks/README.md` (EXECUTOR Role section)
+2. **Project Guide**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/README.md`
+3. **This Task File**: Everything below
+
+> Agent MUST read in this order. Do not skip. Synthesis report goes in chat BEFORE starting work.
+
+---
+
+## Critical Information for This Task
+
+### Architecture Gotchas (Critical to understand BEFORE starting)
+
+⚠️ **GOTCHA 1**: This is a DESIGN/SCHEMA task, NOT an implementation task.
+- ❌ Wrong: Implement settlement tile rendering or camera zoom logic
+- ✅ Right: Define the data structure, visual treatment rules, and navigation flow — save implementation for a follow-up task
+- Why: The scope of implementing this (rendering, camera system, UI panels) is massive; design first prevents wasted implementation effort
+
+⚠️ **GOTCHA 2**: TerrainForge is NOT a separate rendering layer — it's surface_view.js at a different zoom level.
+- ❌ Wrong: Design a new canvas or rendering pipeline for TerrainForge
+- ✅ Right: Design settlement tile data that works with the EXISTING surface_view.js rendering, just at higher zoom
+- Why: The architecture doc (three_layer_views.md) already established this; don't duplicate work
+
+⚠️ **GOTCHA 3**: Settlement tiles are a NEW concept — no `settlement_tile` or `has_settlement` property exists in the codebase yet.
+- ❌ Wrong: Assume settlement tile data structures already exist in terrain_data JSON
+- ✅ Right: Design the schema from scratch, including how it integrates into existing terrain_data export
+- Why: This is greenfield work; verify what terrain_data currently exports before designing integration
+
+---
+
+## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
+
+Before navigating to any URLs, running any commands, or modifying any files, you MUST create and post a **synthesis report** in chat.
+
+**Synthesis Report Template** (save as MD file, do NOT paste in chat):
+```markdown
+## STATUS SYNTHESIS REPORT
+
+**Task**: Settlement Tiles & SimCity Entry Point Design
+**Status**: [backlog → active → completed]
+**Date**: YYYY-MM-DD
+
+### What I'm About to Do
+[2-3 sentences: the goal, the verification method, the success criteria]
+
+### Files I'll Reference
+| File | Purpose | Status |
+|---|---|---|
+| terrain_data export code | Understand current JSON structure | [not started / pending / done] |
+| surface_view.js | Verify existing rendering pipeline | [not started / pending / done] |
+| settlement tile design doc | Output of this task | [not started / pending / done] |
+
+### Prerequisites Completed
+- ✅ Step 0: Task file moved to active/ with git mv (find output pasted in chat)
+- ✅ Step 0: YAML status updated from backlog → active
+- ✅ Read README.md EXECUTOR section
+- ✅ Read project guide
+- ✅ Read this task file
+- ✅ Understand architecture gotchas above
+- ✅ Know which domain/credentials to use
+
+### Expected Outcomes
+[Exact description of what "done" looks like]
+
+### Critical Gotchas I Will Avoid
+- ❌ Implementing rendering/camera code — instead ✅ Design data structure and visual rules only
+- ❌ Creating a new TerrainForge layer — instead ✅ Use existing surface_view.js at different zoom
+- ❌ Assuming settlement tile schema exists — instead ✅ Design from scratch, verify terrain_data export
+
+---
+
+**SYNTHESIS COMPLETE.** Ready to proceed with [PRIORITY 1 / PRIORITY 2 / etc].
+```
+
+**POST THIS TO CHAT BEFORE PROCEEDING.** Do not start actual work until synthesis is approved.
+
+---
+
+## Prerequisites — READ FIRST (Sequential Order)
+
+1. **Workflow**: `/Users/tam0013/Documents/git/agent-tasks/README.md` (EXECUTOR Role section)
+2. **Project Guide**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/README.md`
+3. **This Task File**: Everything below
+
+> Agent MUST read in this order. Do not skip. Synthesis report goes in chat BEFORE starting work.
+
+---
+
+## Critical Information for This Task
+
+### Architecture Gotchas (Critical to understand BEFORE starting)
+
+⚠️ **GOTCHA 1**: This is a DESIGN/SCHEMA task, NOT an implementation task.
+- ❌ Wrong: Implement settlement tile rendering or camera zoom logic
+- ✅ Right: Define the data structure, visual treatment rules, and navigation flow — save implementation for a follow-up task
+- Why: The scope of implementing this (rendering, camera system, UI panels) is massive; design first prevents wasted implementation effort
+
+⚠️ **GOTCHA 2**: TerrainForge is NOT a separate rendering layer — it's surface_view.js at a different zoom level.
+- ❌ Wrong: Design a new canvas or rendering pipeline for TerrainForge
+- ✅ Right: Design settlement tile data that works with the EXISTING surface_view.js rendering, just at higher zoom
+- Why: The architecture doc (three_layer_views.md) already established this; don't duplicate work
+
+⚠️ **GOTCHA 3**: Settlement tiles are a NEW concept — no `settlement_tile` or `has_settlement` property exists in the codebase yet.
+- ❌ Wrong: Assume settlement tile data structures already exist in terrain_data JSON
+- ✅ Right: Design the schema from scratch, including how it integrates into existing terrain_data export
+- Why: This is greenfield work; verify what terrain_data currently exports before designing integration
+
+---
+
+## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
+
+Before navigating to any URLs, running any commands, or modifying any files, you MUST create and post a **synthesis report** in chat.
+
+**Synthesis Report Template** (save as MD file, do NOT paste in chat):
+```markdown
+## STATUS SYNTHESIS REPORT
+
+**Task**: Settlement Tiles & SimCity Entry Point Design
+**Status**: [backlog → active → completed]
+**Date**: YYYY-MM-DD
+
+### What I'm About to Do
+[2-3 sentences: the goal, the verification method, the success criteria]
+
+### Files I'll Reference
+| File | Purpose | Status |
+|---|---|---|
+| terrain_data export code | Understand current JSON structure | [not started / pending / done] |
+| surface_view.js | Verify existing rendering pipeline | [not started / pending / done] |
+| settlement tile design doc | Output of this task | [not started / pending / done] |
+
+### Prerequisites Completed
+- ✅ Step 0: Task file moved to active/ with git mv (find output pasted in chat)
+- ✅ Step 0: YAML status updated from backlog → active
+- ✅ Read README.md EXECUTOR section
+- ✅ Read project guide
+- ✅ Read this task file
+- ✅ Understand architecture gotchas above
+- ✅ Know which domain/credentials to use
+
+### Expected Outcomes
+[Exact description of what "done" looks like]
+
+### Critical Gotchas I Will Avoid
+- ❌ Implementing rendering/camera code — instead ✅ Design data structure and visual rules only
+- ❌ Creating a new TerrainForge layer — instead ✅ Use existing surface_view.js at different zoom
+- ❌ Assuming settlement tile schema exists — instead ✅ Design from scratch, verify terrain_data export
+
+---
+
+**SYNTHESIS COMPLETE.** Ready to proceed with [PRIORITY 1 / PRIORITY 2 / etc].
+```
+
+**POST THIS TO CHAT BEFORE PROCEEDING.** Do not start actual work until synthesis is approved.
+
+---
 
 ## Scope
 
@@ -189,3 +383,37 @@ TerrainForge uses **the same terrain_data JSON as Surface View** — no separate
 5. Implement settlement tile click detection and info panel
 6. Design TerrainForge entry/exit transition
 7. Test with sample 3-settlement region
+
+---
+
+## Stop Conditions — escalate to user immediately if:
+- Existing terrain_data export already has settlement tile data that this task would duplicate
+- surface_view.js rendering pipeline has changed significantly since this task was created and the zoom/camera model is no longer viable
+- The three-layer views architecture doc (Phase 3) has been superseded by a different approach
+
+---
+
+## Completion Report
+*Filled in by the implementing agent after completion*
+
+**Completed by**: [agent name]
+**Completion date**: YYYY-MM-DD
+
+### What was changed
+- `[file/dir]` — [description of change]
+
+### Issues discovered
+[Any problems found during implementation that weren't in the original task]
+
+### Follow-up tasks needed
+[Any new backlog items identified — do not create the files, just list them here]
+
+### Lessons learned
+[What worked, what didn't, what future tasks in this area should know]
+
+---
+
+## Handoff Summary
+*Filled in at end of session — one scannable line for next agent*
+
+HANDOFF SUMMARY: [files updated] | [structural changes] | [next action needed]
