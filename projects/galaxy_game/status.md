@@ -1,12 +1,39 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-30 — Task File Review Session (5 files)
+**Last Updated:** 2026-07-31 — Sprite Tiles → Surface View Integration (COMPLETE)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🎯 Today's Work (2026-07-30) — Task File Review & Template Compliance
+## 🎯 Today's Work (2026-07-31) — Sprite Tiles → Surface View Integration (COMPLETE)
+
+### ✅ Sprite Tiles → Surface View Integration — FEATURE COMPLETE
+- **Task**: `2026-07-13-HIGH-FEATURE-SPRITE-TILES-SURFACE-VIEW-INTEGRATION.md` → completed/2026-07/
+- **Investigation phase**: Completed 2026-07-30 (all 45 terrain tiles verified 150×150px, Docker volume mount simplified tile serving)
+- **Implementation phase**: Completed 2026-07-31
+  - **TerrainTileRenderer class** (terrain_tile_renderer.js, 210 lines):
+    - Loads all 45 PNG sprites (5 terrain families × 9 variants) in parallel with graceful fallback
+    - Deterministic variant selection via seed hashing (`Math.abs(seed) % VARIANT_COUNT`)
+    - Canvas rendering with crisp pixel scaling, Turbo navigation safety patterns
+    - Mirrors BiomeRenderer architecture for consistency
+  - **surface_view.js integration**:
+    - Added terrainRenderer property initialization in init() method
+    - Awaits terrainRenderer.init() for full tile loading before first renderGrid() call
+  - **RSpec test suite** (spec/services/tileset/terrain_tile_renderer_spec.rb):
+    - 59 examples, all passing ✅
+    - Validates all 45 tile files present and valid PNG format
+    - Confirms docker volume mount maps data/images/terrain → public/assets/terrain
+    - Verifies 150×150px dimensions via sips utility
+    - Tile inventory summary: 45/45 tiles, 5 families, 9 variants each
+- **Commits**: 
+  - galaxyGame: `08119b53` (feat: TerrainTileRenderer integration + RSpec)
+  - agent-tasks: `e7ae603` (chore: task completion + move to completed/)
+- **Status**: ✅ READY FOR BROWSER VERIFICATION
+
+---
+
+## 🎯 Latest Completion (2026-07-30)
 
 ### ✅ Civ4 Surface View Gameplay Layer — Full Rewrite (Template-Compliant)
 - **Task**: `2026-07-13-HIGH-FEATURE-CIV4-SURFACE-VIEW-GAMEPLAY.md` (backlog/current/)
