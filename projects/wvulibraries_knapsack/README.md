@@ -77,6 +77,49 @@ Architectural Decisions: Knapsack pattern ensures upstream compatibility. Submod
 
 ---
 
+## Three-Layer Architecture & Submodule Management
+
+The Knapsack operates within a three-layer dependency chain. Understanding these layers is critical for proper code management and upstream contribution:
+
+### Layer 1: Hyrax (Core Framework)
+- **Purpose**: Single-instance repository platform (no multi-tenancy).
+- **Repository**: https://github.com/samvera/hyrax
+- **Role**: Foundation — handles works, filesets, collections, metadata indexing, derivatives, search/discovery.
+- **Customization**: Community-standard gem pulled into Hyku Gemfile.
+- **Fix Pattern**: Issues that belong in core Hyrax should be PRed to samvera/hyrax (community accepted, benefits all users).
+
+### Layer 2: Hyku (Multi-Tenant Instance)
+- **Purpose**: Production-ready multi-tenant Hyrax instance with cloud features.
+- **Repository**: https://github.com/samvera/hyku
+- **Role**: Hyrax + multi-tenancy, account management, theme system, cloud integrations.
+- **Knapsack Reference**: `./hyrax-webapp/` (git submodule).
+- **Customization**: Fewer customizations than Knapsack; mostly theme overrides and multi-tenant workflows.
+- **Fix Pattern**: Issues specific to multi-tenancy or Hyku features should be PRed to samvera/hyku.
+
+### Layer 3: WVU Knapsack (Customized Hyku)
+- **Purpose**: WVU-specific customizations and experimental features.
+- **Repository**: https://github.com/wvulibraries/wvu_knapsack
+- **Role**: CSS overrides, M3 metadata profiles, custom work types, experimental fixes not yet upstreamed.
+- **Contents**: Decorator pattern isolates customizations from core (app/, config/, lib/).
+- **Fix Pattern**: WVU-specific or experimental features stay here; working fixes are proposed upstream for community benefit.
+
+### Submodule Management Best Practices
+- **NEVER modify hyrax-webapp files locally for pushing** — it's a separate repo (Hyku).
+- **Proper workflow for fixes**:
+  1. Fix issues at the appropriate layer (Hyrax → Hyku → Knapsack).
+  2. For community fixes: PR upstream, wait for merge, update submodule reference.
+  3. For WVU-specific work: Keep in Knapsack decorators; no changes to hyrax-webapp contents.
+- **Upstream contribution process**: 
+  - Fix in Knapsack while upstream review happens (non-blocking).
+  - Once community accepts change, update submodule ref to point to merged commit.
+  - Example: CSS fix proposed to Hyku → merged in 2-4 weeks → update hyrax-webapp reference.
+- **Keeping submodule clean**:
+  - Discard local changes: `git checkout <file>` inside hyrax-webapp.
+  - Only modify submodule reference commit in parent repo.
+  - Storage data must live in `./data/` (knapsack root), never in hyrax-webapp.
+
+---
+
 ## Override Patterns
 The knapsack uses a "higher precedence" loading mechanism: Files in the knapsack override those in the Hyku submodule without editing core code. Overrides are applied via decorators (modules prepended to classes) or direct file copies.
 

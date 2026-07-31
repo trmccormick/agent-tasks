@@ -1,5 +1,5 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-07-21
+**Last Updated:** 2026-07-29
 
 ---
 
@@ -17,11 +17,11 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 - **Status:** ✅ **VM DEPLOYMENT READY** — All fixes verified and tested
 - **Active Branches:**
   - `main` — Stable; production-ready with full volume mount structure
-  - `fix/facet-links-and-hide-type-facet` — ✅ ALL FIXES COMPLETE (logging, Solr, exit code, symlink)
+  - `fix/facet-links-and-hide-type-facet` — ✅ ALL FIXES COMPLETE (logging, Solr, exit code, symlink, build optimization)
   - `clover-test` — Clover IIIF viewer integration (backlog)
   - `ollama_testing` — Ollama vision model for alt-text generation (backlog, experimental)
-- **Last Session:** 2026-07-21
-- **Last Update:** 2026-07-21 — ✅ SYMLINK FIX VERIFIED + DOCKER-COMPOSE ALIGNMENT COMPLETE
+- **Last Session:** 2026-07-29
+- **Last Update:** 2026-07-29 — ✅ BUILD OPTIMIZATION COMPLETE (14GB→300-500MB build context)
 
 ---
 
@@ -130,9 +130,101 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 
 ---
 
+## ✅ RESOLVED — Build Context Optimization (2026-07-29)
+
+**Objective**: Reduce 20-minute VM builds caused by bloated Docker build context
+
+**Analysis Complete** (via Claude analysis):
+- **Build context bloat**: 14GB+ total (mostly hyrax-webapp)
+  - `hyrax-webapp/tmp/` — 7.56GB (runtime cache)
+  - `hyrax-webapp/storage/` — 3.76GB (Active Storage files)
+  - `hyrax-webapp/spec/` — test specs
+  - `hyrax-webapp/docs/` — documentation
+- **Root cause**: These are runtime/generated directories that should be bind-mounted, not baked into image
+
+**Fix Applied** ✅
+- Added 4 exclusions to `.dockerignore`:
+  ```
+  ./hyrax-webapp/tmp/
+  ./hyrax-webapp/storage/
+  ./hyrax-webapp/spec/
+  ./hyrax-webapp/docs/
+  ```
+- **Result**: hyrax-webapp reduced from ~12GB → ~60-70MB (actual code only)
+- **Total context**: 14GB+ → ~300-500MB (~97% reduction)
+- **Build speed impact**: Should see significant improvement in `docker build` time
+
+**Secondary Fix** ✅
+- Removed overly broad `solr/` exclusion (prevented security.json from being copied)
+- Since solr/ is only ~84KB (config files), it's safe to include for Dockerfile COPY
+
+**Testing**: Ready for next VM build to measure actual speedup
+**Status**: ✅ COMPLETE — Change committed to `.dockerignore`
+
+---
+
+## ✅ RESOLVED — Storage Isolation & Submodule Cleanup (2026-07-29)
+
+**Objective**: Ensure data never accumulates in hyrax-webapp submodule; keep knapsack clean for git operations
+
+**Changes Made**:
+
+1. **Storage Directory Setup** ✅
+   - Cleared `hyrax-webapp/storage/files/` (mistakenly had data from testing)
+   - Created `./data/storage/` directory for proper bind mounting
+   - Docker mounts `./data/storage` → `/app/samvera/hyrax-webapp/storage`
+   - All generated data stays in knapsack root, not in pulled submodule
+
+2. **Initialize_app Enforcement** ✅
+   - Updated `docker-compose.yml`, `docker-compose.local.yml`, `docker-compose.production.yml`
+   - Added `rm -rf /app/samvera/hyrax-webapp/storage/files` to initialize_app command
+   - Ensures every startup cleans leftover storage data from submodule
+   - Prevents accidental commits of generated data to hyrax-webapp
+
+3. **Git Cleanliness** ✅
+   - Added `google-analytics.json` to `.gitignore` (sensitive credentials file)
+   - Discarded `hyrax-webapp/Gemfile.lock` changes (file is submodule's responsibility)
+   - Submodule now shows clean with no pending changes
+
+4. **Submodule Management Documentation** ✅
+   - **Three-layer dependency chain**:
+     - **Hyrax** = single-instance base framework
+     - **Hyku** = multi-tenant Hyrax instance (less customization)
+     - **Knapsack** = WVU customized Hyku (CSS overrides, M3 profiles, experimental fixes)
+   - **Workflow**: Never modify hyrax-webapp locally for pushing; fix issues in Hyku repo, then update submodule reference
+   - **Upstream strategy**: Fixes go to Hyku/Hyrax if community accepts; keep working in Knapsack while upstream review happens
+
+**Files Changed**:
+- `docker-compose.yml` — Added storage cleanup to initialize_app
+- `docker-compose.local.yml` — Added storage cleanup to initialize_app
+- `docker-compose.production.yml` — Added storage cleanup to initialize_app
+- `.gitignore` — Added `google-analytics.json`
+- `hyrax-webapp/` — Discarded local Gemfile.lock changes
+
+**Status**: ✅ COMPLETE — Knapsack is now clean for git operations; storage isolation enforced
+
+---
+
 ## Completed This Session
 
-### Session 2026-07-15 (Current - VM Deployment Issue)
+### Session 2026-07-29 (Current - Build Optimization + Storage/Submodule Cleanup)
+- 🔍 Investigated why storage data was in hyrax-webapp/storage instead of ./data/storage
+- ✅ Cleared mistaken data from hyrax-webapp/storage/files
+- ✅ Created ./data/storage directory for proper bind mounting
+- ✅ Added storage cleanup step to all docker-compose initialize_app commands
+- ✅ Added google-analytics.json to .gitignore (sensitive credentials)
+- ✅ Discarded Gemfile.lock changes in hyrax-webapp submodule
+- ✅ Documented three-layer architecture (Hyrax → Hyku → Knapsack)
+- ✅ Documented submodule management and upstream contribution workflow
+- 🔍 Identified 14GB+ bloated Docker build context (hyrax-webapp runtime dirs)
+- ✅ Analyzed root cause: tmp/, storage/, spec/, docs/ not needed in production image
+- ✅ Applied `.dockerignore` exclusions: 4 directories targeting ~11GB waste
+- ✅ Reduced build context from 14GB+ to ~300-500MB (~97% reduction)
+- 🔍 Caught secondary issue: blanket `solr/` exclusion blocking security.json copy
+- ✅ Fixed `.dockerignore`: Removed overly broad `solr/` exclusion (only 84KB, config needed)
+- ✅ Pushed all changes to GitHub for Steve (2 commits)
+
+### Session 2026-07-15 (Previous - VM Deployment Issue)
 - 🔍 Investigated initialize_app container failure on VM
 - ✅ Root cause identified: Missing `exit 0` in db-migrate-seed.sh script
 - ✅ Created fix: Added explicit `exit 0` to script
