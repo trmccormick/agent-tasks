@@ -1,12 +1,13 @@
 ---
-status: backlog
+status: completed
 priority: HIGH
 type: feature
 system_domain: UI
 mvp_alignment: OTHER
 local_worker_safe: true
 created: 2026-07-13
-last_updated: 2026-07-30
+last_updated: 2026-07-31
+completed: 2026-07-31
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
