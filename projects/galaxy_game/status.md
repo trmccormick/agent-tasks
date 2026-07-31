@@ -1,14 +1,14 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-31 — Sprite Tiles → Surface View Integration (COMPLETE)
+**Last Updated:** 2026-07-31 — Sprite Tiles → Surface View Integration (COMPLETE + HOTFIX)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🎯 Today's Work (2026-07-31) — Sprite Tiles → Surface View Integration (COMPLETE)
+## 🎯 Today's Work (2026-07-31) — Sprite Tiles → Surface View Integration (COMPLETE + HOTFIX)
 
-### ✅ Sprite Tiles → Surface View Integration — FEATURE COMPLETE
+### ✅ Sprite Tiles → Surface View Integration — FEATURE COMPLETE + ASSET PIPELINE FIX
 - **Task**: `2026-07-13-HIGH-FEATURE-SPRITE-TILES-SURFACE-VIEW-INTEGRATION.md` → completed/2026-07/
 - **Investigation phase**: Completed 2026-07-30 (all 45 terrain tiles verified 150×150px, Docker volume mount simplified tile serving)
 - **Implementation phase**: Completed 2026-07-31
@@ -20,16 +20,29 @@
   - **surface_view.js integration**:
     - Added terrainRenderer property initialization in init() method
     - Awaits terrainRenderer.init() for full tile loading before first renderGrid() call
+    - Added error handling to prevent init() failure if TerrainTileRenderer fails to load
   - **RSpec test suite** (spec/services/tileset/terrain_tile_renderer_spec.rb):
     - 59 examples, all passing ✅
     - Validates all 45 tile files present and valid PNG format
     - Confirms docker volume mount maps data/images/terrain → public/assets/terrain
     - Verifies 150×150px dimensions via sips utility
     - Tile inventory summary: 45/45 tiles, 5 families, 9 variants each
-- **Commits**: 
-  - galaxyGame: `08119b53` (feat: TerrainTileRenderer integration + RSpec)
-  - agent-tasks: `e7ae603` (chore: task completion + move to completed/)
-- **Status**: ✅ READY FOR BROWSER VERIFICATION
+  
+- **Hotfix 2026-07-31 — Asset Pipeline Integration** 
+  - **Problem**: Surface view showed "NO TERRAIN DATA" error on planetary views
+  - **Root causes**:
+    1. TerrainTileRenderer script not added to `app/assets/config/manifest.js` → Asset precompile failed with 500 error
+    2. Script include tag missing from `app/views/admin/celestial_bodies/surface.html.erb` → Script never loaded in browser
+  - **Solutions**:
+    1. Added `//= link terrain_tile_renderer.js` to manifest (line 17)
+    2. Added `<%= javascript_include_tag 'terrain_tile_renderer', 'data-turbo-track': 'reload' %>` to surface view (line 203)
+    3. Added explicit precompile directive to `config/initializers/assets.rb` for biome_renderer, surface_view, terrain_tile_renderer, admin/monitor scripts
+    4. Added error handling in surface_view.js init() to gracefully handle TerrainTileRenderer initialization failures
+  - **Commits**:
+    - `bc3934ad`: Add script include + error handling
+    - `32160de2`: Add to asset precompile list
+    - `bb86078b`: Add to asset manifest
+  - **Status**: ✅ HOTFIX COMPLETE — Surface view pages now load without errors (terrain data availability depends on individual body generation)
 
 ---
 
