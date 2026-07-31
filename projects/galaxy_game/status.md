@@ -1,25 +1,65 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-29 — Manufacturing Chain Documentation + ProductionService Bug Fixes
+**Last Updated:** 2026-07-30 — Task File Review Session (5 files)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🎯 Latest Completion (2026-07-29)
+## 🎯 Today's Work (2026-07-30) — Task File Review & Template Compliance
 
-### ✅ Manufacturing Chain Documentation — Raw Materials to Assembly Jobs
-- **Task**: `2026-07-24-HIGH-DOCUMENTATION-MANUFACTURING-CHAIN-OVERVIEW.md` → completed/2026-07/
-- **Scope**: Complete ISRU production pipeline documentation from raw resource extraction to assembly jobs
-- **Deliverables**:
-  - `docs/new_agent/projects/galaxy_game/manufacturing/manufacturing_chain_overview.md` — All 5 chain phases documented (raw material extraction → material processing → component production → blueprint gating → assembly jobs), key services table, data flow diagram, playable loop summary
-  - `docs/new_agent/projects/galaxy_game/manufacturing/blueprint_reference.md` — Blueprint model schema, JSON structure across all 10 categories, validation rules per category, gating flow, tenant fee calculation, research effects, example blueprints from actual data files
-- **Key findings**:
-  - All 5 chain phases traceable through code — no implementation gaps
-  - Blueprint gating confirmed as model-level (Blueprint model validations + `can_manufacture?`), NOT service-level
-  - Dual-path output system in MaterialProcessingService (non-zero vs zero amounts) was a critical insight
-  - `new_agent` is a symlink to agent-tasks repo — commits go through agent-tasks, not galaxyGame directly
-- **Commits**: `3e4df1e` (docs), `d78dc63` (task completion)
+### ✅ Civ4 Surface View Gameplay Layer — Full Rewrite (Template-Compliant)
+- **Task**: `2026-07-13-HIGH-FEATURE-CIV4-SURFACE-VIEW-GAMEPLAY.md` (backlog/current/)
+- **Problem**: File had duplicate Prerequisites/Gotchas/Synthesis sections (each appeared 3x) from earlier incremental edits
+- **Resolution**: Full-file rewrite in one pass — removed all duplicates, correct section order: YAML → Minimal Handoff → Context → Prerequisites → Gotchas → Synthesis Report → Scope → Acceptance Criteria → Blockers → Dependencies → Notes → Next Steps → Stop Conditions → Completion Report → Handoff Summary
+- **Commit**: `5c16912` (agent-tasks)
+
+### ✅ Sprite Tiles → Surface View Integration — Full Rewrite (Template-Compliant)
+- **Task**: `2026-07-13-HIGH-FEATURE-SPRITE-TILES-SURFACE-VIEW-INTEGRATION.md` (backlog/current/)
+- **Problem**: Non-compliant YAML (`title`, `date`, `type: FEATURE` uppercase, `phase`, `assigned_to`), missing Minimal Handoff/Prerequisites/Gotchas/Synthesis/Stop Conditions/Completion Report/Handoff Summary
+- **Resolution**: Full rewrite with compliant YAML, 3 Architecture Gotchas (data/ .gitignore serving, canvas vs DOM rendering, Ruby/JS terrain enum mismatch), all required sections added
+- **Commit**: `95e5b27` (agent-tasks)
+
+### ✅ Propellant Consumption Data — Full Rewrite + Naming Correction
+- **Task**: `2026-07-24-LOW-RESEARCH-PROPELLANT-CONSUMPTION-DATA-FOR-RAPTOR.md` (backlog/current/)
+- **Problem**: Referenced real-world "SpaceX Raptor" names — codebase uses generic engine names (`methane_engine`, `lox_tank`)
+- **Resolution**: Replaced all SpaceX/Raptor references with generic engine classes (methane/LOX, hydrogen/LOX, kerosene/LOX); full template compliance added; research scope expanded from single class to 3 engine classes
+- **Commit**: `8ae43ea` (agent-tasks)
+
+### ✅ AI Manager → SettlementDeploymentService — Reviewed ACTIONABLE + Template-Compliant
+- **Task**: `2026-04-16-HIGH-REFACTOR-AI_MANAGER-USE-SETTLEMENT_DEPLOYMENT_SERVICE.md` (review/)
+- **Review verdict**: ACTIONABLE — 3 `BaseSettlement.create!` calls confirmed in code (manager.rb:235, task_execution_engine_v2.rb:107, system_architect.rb:377)
+- **Resolution**: Template-compliant rewrite; moved from review/ → backlog/phase6+/
+- **Commit**: `ffa713f` (agent-tasks)
+
+### ✅ Material Storage Classification — Reviewed SUPERSEDED
+- **Task**: `2026-04-16-MEDIUM-ARCHITECTURE-MATERIAL-STORAGE-CLASSIFICATION.md` (review/)
+- **Review verdict**: SUPERSEDED — `DockingTransactionService` no longer exists (merged into `UniversalDockingService`); no `requires_enclosure`/`outdoor_eligible` fields in material schema; surface_storage system already handles outdoor eligibility (6+ examples, 0 failures)
+- **Resolution**: Marked deprecated with reasoning; moved to backlog/superseded/
+- **Commit**: `30bdb81` (agent-tasks)
+
+### ✅ Lookup Service Caching Pattern — Prerequisites & Inventory Filled In (No Implementation)
+- **Task**: `2026-07-30-MEDIUM-REFACTOR-LOOKUP-SERVICE-CACHING-PATTERN.md` (backlog/current/)
+- **Work done**: Read-only research only — confirmed method names match reality (`materials_cache`, `reset_cache!`, `load_materials_class` all correct); enumerated all 14 lookup services classified as needs-fix (6), already-fine (2), not-applicable (4)
+- **No implementation performed** — file remains in backlog/current/ with status: backlog
+
+---
+
+## 🎯 Latest Completion (2026-07-30)
+
+### ✅ MaterialLookupService — Class-Level Caching Fix
+- **Problem**: Every `MaterialLookupService.new` call triggered a full disk scan of 213 JSON files across 8 subdirectories — repeated dozens of times during a single simulation run
+- **Root cause**: Materials loaded into instance variable `@materials` in `initialize`, so each new instance re-scanned all files with no memoization
+- **Solution**: Implemented class-level cache (`self.materials_cache`) that loads materials once on first access and keeps them in memory for the process lifetime
+  - Added `load_materials_class`, `load_json_files_class`, `load_json_files_recursively_class` as class methods (bypasses private instance method visibility issue)
+  - Cache keyed by normalized lookup key (id, name, chemical_formula — all lowercase) for O(1) lookups
+  - Added `reset_cache!` class method for manual refresh
+- **Bug found**: Initial implementation called `new.send(:load_materials)` which failed with "private method 'load_materials' called for an instance of Lookup::MaterialLookupService" — fixed by extracting class methods instead
+- **RSpec tests added** (`spec/services/lookup/material_lookup_service_spec.rb`): 44 examples, 0 failures
+  - Class-level caching behavior: cache shared across instances (same object_id), O(1) exact match performance, cache reset capability, no disk I/O after warmup
+  - Updated test code to use chemical formulas (e.g., "O2") for backend lookups per project convention — common names ("oxygen") only supported for UI compatibility
+- **Cron integration**: Added `maintenance:refresh_material_cache` rake task to `config/schedule.rb` daily maintenance block — refreshes cache before server restart so new materials are available on next boot
+- **Impact**: 213 JSON files loaded once → all subsequent lookups are in-memory hash operations (~microseconds vs ~milliseconds)
 
 ---
 
