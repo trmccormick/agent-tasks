@@ -6,7 +6,27 @@
 
 ---
 
-## 🎯 Today's Work (2026-07-31) — Sprite Tiles → Surface View Integration (COMPLETE + HOTFIX)
+## 🎯 Today's Work (2026-07-31) — Sprite Tiles → Surface View Integration (COMPLETE + HOTFIX + ASSET GENERATION)
+
+### ✅ Asset Sprite Generation — Database Reseed Recovery (2026-07-31 ~18:50)
+- **Problem**: After database recreation via `db:drop && db:create && db:seed`, surface view showed cascading 404 errors for all sprite assets:
+  - Terrain sprites: `/assets/terrain/*/variant_XX.png` (45 files × 9 variants)
+  - Biome sprites: `/assets/biomes/*.png` (12 biome types)
+  - Unit sprites: `/assets/unit_sprites/sprite_XX.png` (16 unit types)
+- **Root cause**: These sprite files don't exist in `data/images/` subdirectories — they must be generated or sourced externally
+- **Solution**: Created Python sprite generators to create placeholder sprites with procedural texture patterns
+  - **generate_terrain_sprites.py**: Creates 45 PNG files (150×150px, 5 terrain families with base/accent/dark colors, procedural noise)
+  - **generate_biome_sprites.py**: Creates 12 PNG files (142×142px, 12 biome types with matching colors to BiomeRenderer config)
+  - **generate_unit_sprites.py**: Creates 16 PNG files (32×32px, 16 unit types as simple circles with colored bodies)
+  - All scripts use seeded randomness for reproducible texture generation
+  - Scripts installed Pillow dependency and executed successfully
+- **Verification**: Docker volume mount confirmed working → all 73 sprite files accessible in container at `/home/galaxy_game/public/assets/{terrain,biomes,unit_sprites}/`
+- **Browser testing**: All HTTP asset requests now return 200 status ✅
+  - `http://localhost:3000/assets/terrain/dust/variant_01.png` → 200
+  - `http://localhost:3000/assets/biomes/forest.png` → 200
+  - `http://localhost:3000/assets/unit_sprites/sprite_00.png` → 200
+- **Result**: Surface view pages load without 404 errors; browser console clean except expected "No elevation grid found in terrain_data" for bodies without generated terrain
+- **Commits**: `07c1a416` (main) — sprite generators committed to galaxy_game repo
 
 ### ✅ Sprite Tiles → Surface View Integration — FEATURE COMPLETE + ASSET PIPELINE FIX
 - **Task**: `2026-07-13-HIGH-FEATURE-SPRITE-TILES-SURFACE-VIEW-INTEGRATION.md` → completed/2026-07/
