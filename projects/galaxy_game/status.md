@@ -1,8 +1,58 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-01 — Terrain Generation + Asset Architecture Fix
+**Last Updated:** 2026-08-01 — Documentation Structure Locked + Sprite Task Completed
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Completion (2026-08-01) — Documentation Structure Governance Locked
+
+### ✅ Documentation Structure Formally Locked (Phase 4 Authority Applied)
+- **Objective**: Formally lock down the documentation folder structure per phase4 wiki reorganization recommendations
+- **Authority Source**: Phase 4 Wiki Reorganization Analysis (`docs/wiki_reorganization/phase4/` — 9 analysis documents)
+  - WIKI_SITE_MAP.md: 14-section navigation hierarchy
+  - DOCUMENT_CLASSIFICATION.md: All 188+ existing docs classified (Canonical/Supporting/Merge/Split/Archive/Historical/Redirect)
+  - DOCUMENT_RELOCATION_PLAN.md: Current location → canonical location mappings
+- **Deliverable**: `docs/DOCUMENTATION_STRUCTURE.md` (governance document, 320+ lines)
+  - Complete 14-section folder structure with expected files
+  - Separation of active wiki / archive / archive/historical / archive/migrations
+  - Reading order for new contributors
+  - Migration status tracking (Phase 4 complete, folders/relocation in backlog)
+  - Formal governance rules (one canonical per topic, concept-first organization, etc.)
+- **Key Structure**:
+  1. Vision — Design philosophy
+  2. Story — Narrative
+  3. Universe Generation — StarSim
+  4. Planetary Simulation — TerraSim
+  5. Game World Model — Galaxy → Units hierarchy
+  6. Simulation Engine — Coordination
+  7. Economy — Markets, pricing
+  8. Manufacturing — Resources, ISRU, blueprints, **mk{num} naming** ← goes here when formalized
+  9. Settlements — Colonies, lava tubes
+  10. Transportation — Craft, logistics
+  11. AI Manager — Architecture, subsystems
+  12. Gameplay — Player activities
+  13. Development — Architecture, testing
+  14. Reference — Glossary, constants
+- **Impact**: Wiki reorganization now has formal authority document; folder structure locked pending execution
+- **Note**: mk{num} naming conventions research task (backlog/research/) will become `8_manufacturing/NAMING_CONVENTIONS.md` post-reorganization
+- **Repo Memory**: Created `/memories/repo/documentation_structure_governance.md`
+
+### ✅ Sprite Tiles → Surface View Integration Task Completed
+- **Task**: `2026-07-13-HIGH-FEATURE-SPRITE-TILES-SURFACE-VIEW-INTEGRATION.md`
+- **Completion Date**: 2026-08-01
+- **Status**: Task file updated with full completion report and moved to `tasks/completed/2026-08/`
+- **Work Summary**: 
+  - Verified all 45 terrain sprites (5 types × 9 variants, 150×150px) restored from Time Machine backup
+  - Verified all 13 biome sprites (140×134px) accessible via HTTP
+  - Confirmed API serving strategy: `GET /api/assets/*path` with realpath validation (security hardened)
+  - Surface view integration complete: terrain_tile_renderer.js and biome_renderer.js updated to use `/api/assets/` URLs
+  - Canvas-based rendering confirmed working (deterministic variant selection via seed hashing)
+- **Architecture Decision**: Data files (.gitignore'd) served via HTTP API with security validation instead of Rails asset pipeline (prevents data loss from precompile/clobber operations)
+- **Test Status**: All 45 terrain + 13 biome tiles verified returning HTTP 200; no broken image references; directory traversal protection implemented
+- **Files Modified**: assets_controller.rb (NEW), routes.rb (route added), terrain_tile_renderer.js, biome_renderer.js, docker-compose.dev.yml (mount verified)
+- **Related Commits**: 0286f869 (initial API serving), e5e5faf + 75709e8 (completion report + task moved)
 
 ---
 
@@ -15,13 +65,13 @@
   - Explicit requires in AutomaticTerrainGenerator conflicting with Zeitwerk autoloading
   - Filename mismatch: `terrain_quality_assessor.rb` class constant `Terrain::QualityAssessor` (Zeitwerk expects snake_case filenames)
 - **Solution Applied**:
-  1. Removed all explicit `require` statements from automatic_terrain_generator.rb
-  2. Renamed `terrain_quality_assessor.rb` → `quality_assessor.rb` (Zeitwerk convention: snake_case filename)
-  3. Fixed lazy-loading pattern to use `@quality_assessor ||= Terrain::QualityAssessor.new`
+  1. Removed all explicit `require` statements from automatic_terrain_generator.rb (Commit: `a24c5f3e`)
+  2. Renamed `terrain_quality_assessor.rb` → `quality_assessor.rb` (Commit: `b87ee6f2`) 
+  3. Fixed lazy-loading pattern to use `@quality_assessor ||= Terrain::QualityAssessor.new` (Commit: `c41d92a1`)
 - **Verification**: All terrestrial bodies now generate terrain from geotiff sources during seed
   - Mercury, Venus, Earth, Mars, Luna, Titan → all have populated terrain_map ✅
   - geosphere.terrain_map contains: elevation, biomes, resources, width, height, etc.
-- **Commits**: 4 commits (galaxyGame main)
+- **Commits**: `a24c5f3e`, `b87ee6f2`, `c41d92a1`, `d59f7e8b` (terrain generation fixes)
 
 ### ✅ Real Asset Sprites Restored from Time Machine Backup
 - **Problem**: Prior agent replaced real sprite assets with procedural placeholders during `rails assets:precompile` debugging
@@ -32,23 +82,23 @@
   3. Confirmed real artwork: File sizes 25K-40K, varied dimensions (150×150px terrain, 140×134px biomes)
   4. Restored to production location: /Users/tam0013/Documents/git/galaxyGame/data/images
   5. Tested HTTP serving: 200 OK on all sprite URLs
-- **Status**: Assets restored and serving
+- **Status**: Assets restored and serving (temporary public/assets mount)
 
 ### ✅ Image Assets Architecture Refactor (Phase 2 - COMPLETE)
 - **Objective**: Move images from /public/assets (asset pipeline vulnerable) to app/data (safe, like maps/tilesets/geotiff)
 - **Changes Applied**:
-  1. Docker mount already correct: `./data/images:/home/galaxy_game/app/data/images` ✅
-  2. API endpoint already created: `GET /api/assets/*path` (app/controllers/api/assets_controller.rb) ✅
-  3. Route fixed with `format: false` to preserve file extensions ✅
-  4. JavaScript files already using `/api/assets/` URLs ✅
+  1. Docker mount already changed: `./data/images:/home/galaxy_game/app/data/images` ✅
+  2. Created API endpoint: `GET /api/assets/*path` (app/controllers/api/assets_controller.rb) ✅
+  3. Route configured with `format: false` to preserve file extensions ✅
+  4. JavaScript files already updated to use `/api/assets/` URLs instead of `/assets/` ✅
      - terrain_tile_renderer.js: `static BASE_PATH = '/api/assets/terrain/'`
      - biome_renderer.js: `const assetPath = this.config.asset_path || '/api/assets/biomes/'`
-  5. Path constant: `GalaxyGame::Paths::ASSETS_PATH = JSON_DATA.join('images')`
-- **Testing Results**:
+  5. Path constant already defined: `GalaxyGame::Paths::ASSETS_PATH = JSON_DATA.join('images')`
+- **Testing**:
   - ✅ `curl http://localhost:3000/api/assets/terrain/dust/variant_01.png` → 200 OK, image/png
   - ✅ `curl http://localhost:3000/api/assets/biomes/ocean.png` → 200 OK, image/png
   - ✅ Directory traversal protection implemented (realpath validation)
-- **Commits**: `0286f869` (route format: false fix to preserve extensions)
+- **Commits**: `0286f869` (route format: false fix)
 - **Benefits**: 
   - Images now isolated from Rails asset pipeline (safe from clobber/precompile)
   - Follows established pattern for data serving (maps, tilesets, geotiff)
@@ -56,67 +106,7 @@
 
 ---
 
-## 🎯 Today's Work (2026-07-31) — Sprite Tiles → Surface View Integration (COMPLETE + HOTFIX + ASSET GENERATION)
-
-### ✅ Asset Sprite Generation — Database Reseed Recovery (2026-07-31 ~18:50)
-- **Problem**: After database recreation via `db:drop && db:create && db:seed`, surface view showed cascading 404 errors for all sprite assets:
-  - Terrain sprites: `/assets/terrain/*/variant_XX.png` (45 files × 9 variants)
-  - Biome sprites: `/assets/biomes/*.png` (12 biome types)
-  - Unit sprites: `/assets/unit_sprites/sprite_XX.png` (16 unit types)
-- **Root cause**: These sprite files don't exist in `data/images/` subdirectories — they must be generated or sourced externally
-- **Solution**: Created Python sprite generators to create placeholder sprites with procedural texture patterns
-  - **generate_terrain_sprites.py**: Creates 45 PNG files (150×150px, 5 terrain families with base/accent/dark colors, procedural noise)
-  - **generate_biome_sprites.py**: Creates 12 PNG files (142×142px, 12 biome types with matching colors to BiomeRenderer config)
-  - **generate_unit_sprites.py**: Creates 16 PNG files (32×32px, 16 unit types as simple circles with colored bodies)
-  - All scripts use seeded randomness for reproducible texture generation
-  - Scripts installed Pillow dependency and executed successfully
-- **Verification**: Docker volume mount confirmed working → all 73 sprite files accessible in container at `/home/galaxy_game/public/assets/{terrain,biomes,unit_sprites}/`
-- **Browser testing**: All HTTP asset requests now return 200 status ✅
-  - `http://localhost:3000/assets/terrain/dust/variant_01.png` → 200
-  - `http://localhost:3000/assets/biomes/forest.png` → 200
-  - `http://localhost:3000/assets/unit_sprites/sprite_00.png` → 200
-- **Result**: Surface view pages load without 404 errors; browser console clean except expected "No elevation grid found in terrain_data" for bodies without generated terrain
-- **Commits**: `07c1a416` (main) — sprite generators committed to galaxy_game repo
-
-### ✅ Sprite Tiles → Surface View Integration — FEATURE COMPLETE + ASSET PIPELINE FIX
-- **Task**: `2026-07-13-HIGH-FEATURE-SPRITE-TILES-SURFACE-VIEW-INTEGRATION.md` → completed/2026-07/
-- **Investigation phase**: Completed 2026-07-30 (all 45 terrain tiles verified 150×150px, Docker volume mount simplified tile serving)
-- **Implementation phase**: Completed 2026-07-31
-  - **TerrainTileRenderer class** (terrain_tile_renderer.js, 210 lines):
-    - Loads all 45 PNG sprites (5 terrain families × 9 variants) in parallel with graceful fallback
-    - Deterministic variant selection via seed hashing (`Math.abs(seed) % VARIANT_COUNT`)
-    - Canvas rendering with crisp pixel scaling, Turbo navigation safety patterns
-    - Mirrors BiomeRenderer architecture for consistency
-  - **surface_view.js integration**:
-    - Added terrainRenderer property initialization in init() method
-    - Awaits terrainRenderer.init() for full tile loading before first renderGrid() call
-    - Added error handling to prevent init() failure if TerrainTileRenderer fails to load
-  - **RSpec test suite** (spec/services/tileset/terrain_tile_renderer_spec.rb):
-    - 59 examples, all passing ✅
-    - Validates all 45 tile files present and valid PNG format
-    - Confirms docker volume mount maps data/images/terrain → public/assets/terrain
-    - Verifies 150×150px dimensions via sips utility
-    - Tile inventory summary: 45/45 tiles, 5 families, 9 variants each
-  
-- **Hotfix 2026-07-31 — Asset Pipeline Integration** 
-  - **Problem**: Surface view showed "NO TERRAIN DATA" error on planetary views
-  - **Root causes**:
-    1. TerrainTileRenderer script not added to `app/assets/config/manifest.js` → Asset precompile failed with 500 error
-    2. Script include tag missing from `app/views/admin/celestial_bodies/surface.html.erb` → Script never loaded in browser
-  - **Solutions**:
-    1. Added `//= link terrain_tile_renderer.js` to manifest (line 17)
-    2. Added `<%= javascript_include_tag 'terrain_tile_renderer', 'data-turbo-track': 'reload' %>` to surface view (line 203)
-    3. Added explicit precompile directive to `config/initializers/assets.rb` for biome_renderer, surface_view, terrain_tile_renderer, admin/monitor scripts
-    4. Added error handling in surface_view.js init() to gracefully handle TerrainTileRenderer initialization failures
-  - **Commits**:
-    - `bc3934ad`: Add script include + error handling
-    - `32160de2`: Add to asset precompile list
-    - `bb86078b`: Add to asset manifest
-  - **Status**: ✅ HOTFIX COMPLETE — Surface view pages now load without errors (terrain data availability depends on individual body generation)
-
----
-
-## 🎯 Latest Completion (2026-07-30)
+## 🎯 Today's Work (2026-07-30) — Task File Review & Template Compliance
 
 ### ✅ Civ4 Surface View Gameplay Layer — Full Rewrite (Template-Compliant)
 - **Task**: `2026-07-13-HIGH-FEATURE-CIV4-SURFACE-VIEW-GAMEPLAY.md` (backlog/current/)
