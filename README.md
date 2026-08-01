@@ -12,9 +12,10 @@
 
 1. **Identify your role** — You are assigned ONE of: PLANNING / STRATEGIST / EXECUTOR / REVIEWER / DOMAIN EXPERT (see roles below)
 2. **Read your role section** — Find your assigned role in this README and understand your scope (in-scope ✅ vs out-of-scope ❌)
-3. **Read the task file** (if assigned) — Located at `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/tasks/active/[TASKFILE].md`
-4. **Read project context** (if needed) — Located at `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/README.md`
-5. **Execute the task** — Use terminal tools to verify, implement, test
+3. **If your role is PLANNING or STRATEGIST: read `NEEDS_REVIEW.md`** — Located at `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/NEEDS_REVIEW.md`. This is the primary interface for anything flagged as needing a second opinion — check it before starting new triage, analysis, or task drafting. See "Persistent Coordination Role (Qwen)" below for who maintains it and when.
+4. **Read the task file** (if assigned) — Located at `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/tasks/active/[TASKFILE].md`
+5. **Read project context** (if needed) — Located at `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/README.md`
+6. **Execute the task** — Use terminal tools to verify, implement, test
 
 **This keeps you targeted and prevents scope creep.**
 
@@ -626,6 +627,17 @@ Task files are the source of truth. Executors read full context there.
 ---
 
 ## Persistent Coordination Role (Qwen)
+
+**Role identity clarification (added 2026-07-30):** this is NOT a separate
+agent from the per-session Planning Agent/Session Strategist described
+below — it is the same Qwen instance, and `NEEDS_REVIEW.md` maintenance is
+part of ordinary Planning Agent duties, not an optional add-on role that
+only activates in some special "coordinator" context. Any session
+operating in PLANNING or STRATEGIST mode (including sessions dispatched
+via `QUICK_START_PLANNING_SESSION.md`) is responsible for reading and
+maintaining `NEEDS_REVIEW.md`. This section previously read as if it
+described a distinct, optional role, which is very likely why it was
+getting skipped by ordinary planning sessions — corrected here.
 
 In addition to per-session Planner/Implementer/Reviewer roles, one Qwen
 instance may run as a persistent coordinator across sessions to reduce

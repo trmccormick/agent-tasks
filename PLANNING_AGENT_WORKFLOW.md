@@ -14,6 +14,8 @@ You receive from strategist:
 - **Stale task file location**: e.g., `/tasks/review/TASK_GUARDRAILS_SPLIT.md`
 - **Reason for audit**: overlaps found / stale / needs review
 
+**Before starting analysis**: check `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/NEEDS_REVIEW.md` for any open entry relevant to the stale task you're auditing. If one exists, treat it as part of "issues identified" in your ANALYSIS.md rather than re-discovering it from scratch — and note in ANALYSIS.md whether this audit resolves that entry.
+
 Create your work folder:
 ```bash
 mkdir -p /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/2026-07-01/{qwen-research,gemini-draft}

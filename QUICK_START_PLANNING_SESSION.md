@@ -11,8 +11,9 @@ You are the PLANNING/REVIEW Agent for [PROJECT] in this session.
 Read these files IN ORDER:
 1. /Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md
 2. /Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/README.md
-3. [Paste status.md]
-4. [Paste previous handoff]
+3. [Paste NEEDS_REVIEW.md] — check for open entries before starting new triage/planning work. If any entry is OPEN, address or explicitly carry it forward before moving on.
+4. [Paste status.md]
+5. [Paste previous handoff]
 
 YOUR ASSIGNMENT TODAY:
 [e.g., "Triage 50 GitHub issues and prioritize top 5 for next sprint"]
@@ -93,6 +94,7 @@ Executor must post this to chat and WAIT for approval before coding.
 
 - [ ] Know what PROJECT you're working on
 - [ ] Know what ASSIGNMENT (triage / review / plan / etc.)
+- [ ] Have NEEDS_REVIEW.md ready to paste — check it for open entries first
 - [ ] Have status.md ready to paste
 - [ ] Have previous handoff ready to paste
 - [ ] Generic guide available at: `/Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md`
@@ -144,5 +146,6 @@ Post your synthesis to chat and wait for approval before implementing.
 - [TASK_TEMPLATE.md](TASK_TEMPLATE.md) — Template for minimal task files
 - [REVIEW_AGENT_WORKFLOW.md](REVIEW_AGENT_WORKFLOW.md) — Full workflow (for reference)
 - `projects/[PROJECT]/README.md` — Project-specific context
+- `projects/[PROJECT]/NEEDS_REVIEW.md` — Short, active list of items needing a second opinion; check for open entries at the start of every session
 - `projects/[PROJECT]/status.md` — Current state (progress tracking)
 - `projects/[PROJECT]/handoffs/` — Session handoffs (continuity)
