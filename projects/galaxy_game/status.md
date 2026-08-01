@@ -1,8 +1,58 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-07-31 — Sprite Tiles → Surface View Integration (COMPLETE + HOTFIX)
+**Last Updated:** 2026-08-01 — Terrain Generation + Asset Architecture Fix
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Completion (2026-08-01) — Terrain Generation + Asset Architecture Fix
+
+### ✅ Terrain Data Generation Restored (AutomaticTerrainGenerator)
+- **Problem**: After database reseed, all celestial bodies showed empty terrain_map (NO TERRAIN DATA)
+- **Error**: `uninitialized constant Terrain::QualityAssessor` during system seed
+- **Root Cause**: 
+  - Explicit requires in AutomaticTerrainGenerator conflicting with Zeitwerk autoloading
+  - Filename mismatch: `terrain_quality_assessor.rb` class constant `Terrain::QualityAssessor` (Zeitwerk expects snake_case filenames)
+- **Solution Applied**:
+  1. Removed all explicit `require` statements from automatic_terrain_generator.rb
+  2. Renamed `terrain_quality_assessor.rb` → `quality_assessor.rb` (Zeitwerk convention: snake_case filename)
+  3. Fixed lazy-loading pattern to use `@quality_assessor ||= Terrain::QualityAssessor.new`
+- **Verification**: All terrestrial bodies now generate terrain from geotiff sources during seed
+  - Mercury, Venus, Earth, Mars, Luna, Titan → all have populated terrain_map ✅
+  - geosphere.terrain_map contains: elevation, biomes, resources, width, height, etc.
+- **Commits**: 4 commits (galaxyGame main)
+
+### ✅ Real Asset Sprites Restored from Time Machine Backup
+- **Problem**: Prior agent replaced real sprite assets with procedural placeholders during `rails assets:precompile` debugging
+- **Root Cause**: data/images mounted to /public/assets (vulnerable to asset pipeline operations like clobber/precompile)
+- **Solution**:
+  1. Located Time Machine backup (2026-07-30-233420.backup)
+  2. Verified complete: 45 terrain sprites (5 types × 9 variants) + 13 biome sprites
+  3. Confirmed real artwork: File sizes 25K-40K, varied dimensions (150×150px terrain, 140×134px biomes)
+  4. Restored to production location: /Users/tam0013/Documents/git/galaxyGame/data/images
+  5. Tested HTTP serving: 200 OK on all sprite URLs
+- **Status**: Assets restored and serving
+
+### ✅ Image Assets Architecture Refactor (Phase 2 - COMPLETE)
+- **Objective**: Move images from /public/assets (asset pipeline vulnerable) to app/data (safe, like maps/tilesets/geotiff)
+- **Changes Applied**:
+  1. Docker mount already correct: `./data/images:/home/galaxy_game/app/data/images` ✅
+  2. API endpoint already created: `GET /api/assets/*path` (app/controllers/api/assets_controller.rb) ✅
+  3. Route fixed with `format: false` to preserve file extensions ✅
+  4. JavaScript files already using `/api/assets/` URLs ✅
+     - terrain_tile_renderer.js: `static BASE_PATH = '/api/assets/terrain/'`
+     - biome_renderer.js: `const assetPath = this.config.asset_path || '/api/assets/biomes/'`
+  5. Path constant: `GalaxyGame::Paths::ASSETS_PATH = JSON_DATA.join('images')`
+- **Testing Results**:
+  - ✅ `curl http://localhost:3000/api/assets/terrain/dust/variant_01.png` → 200 OK, image/png
+  - ✅ `curl http://localhost:3000/api/assets/biomes/ocean.png` → 200 OK, image/png
+  - ✅ Directory traversal protection implemented (realpath validation)
+- **Commits**: `0286f869` (route format: false fix to preserve extensions)
+- **Benefits**: 
+  - Images now isolated from Rails asset pipeline (safe from clobber/precompile)
+  - Follows established pattern for data serving (maps, tilesets, geotiff)
+  - Permanent architectural fix prevents future asset loss
 
 ---
 
