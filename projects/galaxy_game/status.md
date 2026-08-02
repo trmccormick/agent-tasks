@@ -1,8 +1,23 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-01 — Documentation Structure Locked + Sprite Task Completed
+**Last Updated:** 2026-08-02 — Spin-Gravity Core Mk1 Validation + Tech Tree Fixes
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Completion (2026-08-02) — Spin-Gravity Core Mk1 Validation + Tech Tree Fixes
+
+### ✅ Task: 2026-08-01-HIGH-ARCHITECTURE-SPIN-GRAVITY-CORE-VALIDATION — COMPLETED
+- **Validation**: Blueprint (38/45 fields match), operational_data file EXISTS (was untracked, not missing), tech tree gaps identified and fixed
+- **Contradiction resolved**: Earlier "exists" claim was correct; my validation report's "CRITICAL — file does NOT exist" was a false negative from search.exclude patterns
+- **Changes applied**:
+  1. `spin_gravity_core_mk1_bp.json` — Added `subsurface_specs` section (excavation diameter/depth, anchor points, vibration isolation, foundation type) + metadata fields (`settlement_phase`, `power_grid_priority`, `mandatory_for_permanent_settlements`)
+  2. `particle_physics.json` — gravitational_engineering prerequisites: added `magnetic_systems`, `Composite Materials`, `precision_manufacturing`; added spin_gravity_core_mk1 to unlocks list
+  3. `power_generation.json` — Created new tier_1c: **Magnetic Systems** (no prereqs, unlocks Magnetic Field Generator)
+  4. `construction_manufacturing.json` — Created new tier_2b: **Precision Manufacturing** (prereq: ISRU, unlocks Precision Alignment Tooling)
+- **Validation report**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/2026-08-01-VALIDATION-SPIN-GRAVITY-CORE-IMPLEMENTATION.md`
+- **Note**: All data/ files are gitignored by design — no commits expected for JSON changes
 
 ---
 
@@ -38,21 +53,6 @@
 - **Impact**: Wiki reorganization now has formal authority document; folder structure locked pending execution
 - **Note**: mk{num} naming conventions research task (backlog/research/) will become `8_manufacturing/NAMING_CONVENTIONS.md` post-reorganization
 - **Repo Memory**: Created `/memories/repo/documentation_structure_governance.md`
-
-### ✅ Sprite Tiles → Surface View Integration Task Completed
-- **Task**: `2026-07-13-HIGH-FEATURE-SPRITE-TILES-SURFACE-VIEW-INTEGRATION.md`
-- **Completion Date**: 2026-08-01
-- **Status**: Task file updated with full completion report and moved to `tasks/completed/2026-08/`
-- **Work Summary**: 
-  - Verified all 45 terrain sprites (5 types × 9 variants, 150×150px) restored from Time Machine backup
-  - Verified all 13 biome sprites (140×134px) accessible via HTTP
-  - Confirmed API serving strategy: `GET /api/assets/*path` with realpath validation (security hardened)
-  - Surface view integration complete: terrain_tile_renderer.js and biome_renderer.js updated to use `/api/assets/` URLs
-  - Canvas-based rendering confirmed working (deterministic variant selection via seed hashing)
-- **Architecture Decision**: Data files (.gitignore'd) served via HTTP API with security validation instead of Rails asset pipeline (prevents data loss from precompile/clobber operations)
-- **Test Status**: All 45 terrain + 13 biome tiles verified returning HTTP 200; no broken image references; directory traversal protection implemented
-- **Files Modified**: assets_controller.rb (NEW), routes.rb (route added), terrain_tile_renderer.js, biome_renderer.js, docker-compose.dev.yml (mount verified)
-- **Related Commits**: 0286f869 (initial API serving), e5e5faf + 75709e8 (completion report + task moved)
 
 ---
 
