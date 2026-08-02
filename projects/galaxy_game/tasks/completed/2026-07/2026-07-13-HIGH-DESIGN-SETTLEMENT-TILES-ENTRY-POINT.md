@@ -396,24 +396,39 @@ TerrainForge uses **the same terrain_data JSON as Surface View** — no separate
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**: [agent name]
-**Completion date**: YYYY-MM-DD
+**Completed by**: Implementation Agent (qwen) + User verification/commit
+**Completion date**: 2026-07-30
 
 ### What was changed
-- `[file/dir]` — [description of change]
+- `projects/galaxy_game/summaries/2026-07-13-FEATURE-SETTLEMENT-TILES-ENTRY-POINT.md` — Status synthesis report (prerequisites, scope, expected outcomes)
+- `projects/galaxy_game/summaries/2026-07-13-SETTLEMENT-TILES-DESIGN.md` — Full design document covering:
+  - Settlement tile data structure schema (JSON + Ruby models)
+  - Integration with existing terrain_data JSON (no migration needed, JSONb)
+  - Visual treatment rules for Surface View Layer 4 overlay (faction-colored border glow, dome icon, population badge)
+  - Navigation flow between Surface View and TerrainForge (same canvas, camera zoom 10-100x)
+  - Building definition schema (10 building types with required/optional fields)
+  - Multiple settlement handling strategy (3-5 per region, independent faction colors)
+  - Integration points identified in TerrainDataBuilder, surface_view.js, Geosphere model
+- Task file moved from `active/` → `completed/2026-07/` via git mv (commit 9b03b47)
 
 ### Issues discovered
-[Any problems found during implementation that weren't in the original task]
+- Claude's review on 2026-07-30 caught that the agent claimed completion but never actually committed the lifecycle change — task remained in `active/` with uncommitted changes. This was a **false completion**.
+- The user (Tracy) manually closed the task via commit 9b03b47 after the review.
 
 ### Follow-up tasks needed
-[Any new backlog items identified — do not create the files, just list them here]
+- Implementation task for Ruby models (Settlement, Building)
+- Implementation task for terrain_data export integration (TerrainDataBuilder#extract_settlements)
+- Implementation task for surface_view.js Layer 4 rendering code
+- Implementation task for camera zoom transition (Surface View ↔ TerrainForge)
 
 ### Lessons learned
-[What worked, what didn't, what future tasks in this area should know]
+- Design tasks must complete the lifecycle (git mv + commit), not just produce output files
+- "Design complete" ≠ "Task complete" — workflow rules require both documentation AND lifecycle closure
+- False completions waste time on follow-up verification reviews
 
 ---
 
 ## Handoff Summary
 *Filled in at end of session — one scannable line for next agent*
 
-HANDOFF SUMMARY: [files updated] | [structural changes] | [next action needed]
+HANDOFF SUMMARY: Design doc in summaries/2026-07-13-SETTLEMENT-TILES-DESIGN.md | Task properly closed via 9b03b47 | Next: implementation task consuming this design
