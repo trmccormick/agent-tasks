@@ -1,8 +1,18 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-02 — Unit Naming Convention Audit (v1→mk1) + NEEDS_REVIEW Entries
+**Last Updated:** 2026-08-02 — Settlement Tiles false-completion closure + Unit Naming Convention Audit
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Completion (2026-08-02) — Settlement Tiles False-Completion Closure
+
+### ✅ Task File Lifecycle Properly Closed
+- **Task**: `2026-07-13-HIGH-DESIGN-SETTLEMENT-TILES-ENTRY-POINT.md` was already moved to `completed/2026-07/` via commit `9b03b47` (2026-07-30, user Tracy)
+- **Gap**: Completion Report section still had placeholder text — never filled in with actual work details
+- **Fix**: Filled in Completion Report with design doc references, issues discovered, follow-up tasks, and lessons learned (commit `91ab5e9`)
+- **Lesson documented**: "Design complete" ≠ "Task complete" — workflow rules require both documentation AND lifecycle closure
 
 ---
 
