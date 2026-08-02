@@ -1,12 +1,36 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-02 — Spin-Gravity Core Mk1 Validation + Tech Tree Fixes
+**Last Updated:** 2026-08-02 — Unit Naming Convention Audit (v1→mk1) + NEEDS_REVIEW Entries
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🎯 Latest Completion (2026-08-02) — Spin-Gravity Core Mk1 Validation + Tech Tree Fixes
+## 🎯 Latest Completion (2026-08-02) — Unit Naming Convention Audit + Rename
+
+### ✅ Research: Unit Naming Conventions (mk{num} vs Designation Codenames)
+- **Task**: `2026-08-01-MEDIUM-RESEARCH-UNIT-NAMING-CONVENTIONS-MK-VS-DESIGNATION.md` → completed/2026-08/
+- **Scope**: Audited 139 blueprint files across 28 directories for naming convention compliance
+- **Findings**:
+  - 18 files with v1/v1.1 naming (should be mk1/mk1.1) — largest group: industrial/ (7 files)
+  - ~100+ files without version indicators (convention says "assume Mk I")
+  - Conventions working correctly for CAR-300, PVE, AeroFab, VSI, Spin-Gravity Core
+  - Habitat variants correctly treated as separate designs (not mk progressions)
+- **Synthesis report**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/2026-08-01-RESEARCH-UNIT-NAMING-CONVENTIONS-AUDIT.md`
+
+### ✅ Implementation: v1→mk1 Rename (19 files)
+- **Renamed**: 19 blueprint files from v1/v1.1 to mk1/mk1.1 across propulsion, sensors, electronics, specialized, storage, industrial, mechanical, life_support, infrastructure, power_generation
+- **JSON content updated**: id fields in all 19, name field in asteroid_hollowing_laser ("v1.1" → "Mk1.1"), cross-references in mining_drone and drone_bay_heavy operational_data_reference
+- **No dangling references found** — only audit summary + historical handoff doc contain old names
+- **Critical correction**: Force-added commit (9bd5e60b) was undone — data/ is fully gitignored by design, Time Machine handles backup. Files remain on disk with mk1 filenames, untracked.
+
+### ✅ NEEDS_REVIEW.md Entries Added
+- **Entry 1** (2026-08-02): 19 renamed blueprints have no operational data — needs classification pass (active deployable unit vs component)
+- **Entry 2** (2026-08-02): Possible CNT fabricator naming collision — industrial/cnt_fabricator_unit_mk1_bp.json vs production/fabricators/cnt_fabricator_mk1_bp.json
+
+---
+
+## 🎯 Latest Completion (2026-08-01) — Spin-Gravity Core Mk1 Validation + Tech Tree Fixes
 
 ### ✅ Task: 2026-08-01-HIGH-ARCHITECTURE-SPIN-GRAVITY-CORE-VALIDATION — COMPLETED
 - **Validation**: Blueprint (38/45 fields match), operational_data file EXISTS (was untracked, not missing), tech tree gaps identified and fixed
