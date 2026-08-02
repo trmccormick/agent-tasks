@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: architecture
 system_domain: Settlement Infrastructure
