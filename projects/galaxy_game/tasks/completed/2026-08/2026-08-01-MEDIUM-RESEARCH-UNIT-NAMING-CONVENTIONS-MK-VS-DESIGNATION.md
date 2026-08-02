@@ -1,14 +1,49 @@
 ---
-status: backlog
+status: completed
 priority: MEDIUM
 type: research
 system_domain: OTHER
 mvp_alignment: OTHER
 local_worker_safe: true
 created: 2026-08-01
+completed: 2026-08-01
 ---
 
-# Unit Naming Conventions: mk{num} vs Designation Codenames
+## ⚡ Minimal Handoff (Copy this to send to agent)
+
+```
+You are **Implementation Agent**.
+
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/research/2026-08-01-MEDIUM-RESEARCH-UNIT-NAMING-CONVENTIONS-MK-VS-DESIGNATION.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/research/2026-08-01-MEDIUM-RESEARCH-UNIT-NAMING-CONVENTIONS-MK-VS-DESIGNATION.md \
+         projects/galaxy_game/tasks/active/2026-08-01-MEDIUM-RESEARCH-UNIT-NAMING-CONVENTIONS-MK-VS-DESIGNATION.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks -name "2026-08-01-MEDIUM-RESEARCH-UNIT-NAMING-CONVENTIONS-MK-VS-DESIGNATION.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
+
+---
+
+# TASK: Unit Naming Conventions: mk{num} vs Designation Codenames
 
 ## Context
 
