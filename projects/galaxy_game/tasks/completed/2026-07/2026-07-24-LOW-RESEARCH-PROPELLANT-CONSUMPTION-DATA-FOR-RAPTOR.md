@@ -187,3 +187,9 @@ When done, provide:
 **Key Risk**: extraction_rate is a mining metric, not an aerospace metric — multiplier derivation requires understanding the game's economy model mapping
 **Approach**: Research published data for 3 engine classes (methane/LOX, hydrogen/LOX, kerosene/LOX), derive multiplier ranges, deliver as documentation-ready values
 
+---
+
+## Synthesis Report
+
+Full research findings linked here: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/2026-07-24-RESEARCH-PROPELLANT-CONSUMPTION-DATA.md`
+
