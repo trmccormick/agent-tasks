@@ -84,6 +84,18 @@ Current surface_view.js is **pure rendering** (read-only visualization). Civ4 ga
 - ✅ Right: Verify what terrain_data currently exports; design the Ruby-side export if needed before implementing JS rendering
 - Why: The JS layer depends on correct server-side data; don't implement rendering for data that doesn't exist
 
+⚠️ **BLOCKER CORRECTION (2026-08-02)** — Do NOT re-investigate whether City/Improvement/Yield models exist.
+Tracy confirmed the underlying game concepts already exist under different names:
+  - "City" → `Settlement::BaseSettlement` (tile-level) + `Colony` (governance layer over multiple settlements). No new model needed.
+  - "Farms" (improvement) → existing `Structures` with functions (e.g., greenhouse structure behaving like a farm). No new model needed.
+  - "Mines" (improvement) → excavated geological feature (`CelestialBodies::Features::ExcavatedCavity` / `BaseFeature`) or a Unit doing excavation (e.g., `hollowing_equipment.json`). No new model needed — a mine is interaction with an existing feature/unit, not a distinct game concept.
+  - "Roads" (improvement) → **genuinely does NOT exist** anywhere in the game yet. This is a design question (does Galaxy Game want tile-connectivity/logistics-network mechanics at all?), not an implementation task. Parked as an open design question, not scoping this further.
+  - The real blocker for terrain_data_builder.rb is **exposing existing Structure/Unit/Feature per-tile data** through the builder's export — a data-export task, much smaller than originally scoped. NOT missing game models.
+
+⚠️ **DEFERRED (not blockers)**:
+  - Geological features (`BaseFeature`) have a `coordinates` accessor returning lat/long format (`/\A\d+\.\d+°[NS]\s+\d+\.\d+°[EW]\z/`). A lat/long-to-tile-grid mapping helper is expected at this stage but not needed yet — game hasn't progressed far enough. Deferred, not a gap.
+  - Planetary/Surface/TerrainForge views are the same underlying data at different scales/zoom, not three separate systems needing translation.
+
 ---
 
 ## REQUIRED Synthesis Report (Before You Start Any Work)
