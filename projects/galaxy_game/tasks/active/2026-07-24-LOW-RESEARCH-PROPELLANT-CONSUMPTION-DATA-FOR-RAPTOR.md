@@ -1,12 +1,12 @@
 ---
-status: backlog
+status: active
 priority: LOW
 type: research
 system_domain: CRAFT/EXHAUST
 mvp_alignment: SPEC_HEALTH
 local_worker_safe: true
 created: 2026-07-24
-last_updated: 2026-07-30
+last_updated: 2026-08-02
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
