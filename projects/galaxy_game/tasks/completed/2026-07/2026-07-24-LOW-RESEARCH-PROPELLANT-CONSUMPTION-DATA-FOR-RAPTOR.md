@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 priority: LOW
 type: research
 system_domain: CRAFT/EXHAUST
@@ -7,6 +7,7 @@ mvp_alignment: SPEC_HEALTH
 local_worker_safe: true
 created: 2026-07-24
 last_updated: 2026-08-02
+completed: 2026-08-02
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
