@@ -58,3 +58,18 @@ this file should stay small. Full history stays in status.md.
 **Blocker**: Wiki reorganization (docs/wiki_reorganization/) must complete first — phase4/DOCUMENT_CLASSIFICATION.md and CANONICAL_DOCUMENT_INDEX.md define where naming docs belong.
 **Research task filed**: `2026-08-01-MEDIUM-RESEARCH-UNIT-NAMING-CONVENTIONS-MK-VS-DESIGNATION.md` in backlog/research/ (assigned to Qwen for post-wiki work).
 **Status**: OPEN (waiting on wiki reorganization)
+
+### 2026-08-02 — 19 renamed unit blueprints have no operational data
+**What happened**: The v1→mk1 rename audit (19 files across propulsion, sensors, electronics, specialized, storage, industrial, mechanical, life_support, infrastructure, power_generation) found that NONE of the 19 blueprints have a matching operational_data file. Per Tracy's rule — active/deployable units need operational data, components used in construction of other things don't — this needs a classification pass.
+**What I already checked**: Confirmed via direct search during the rename audit — zero operational_data files found for any of the 19 IDs post-rename.
+**What needs a second opinion**: For each of the 19, is it an active deployable unit (needs operational data written) or a component/subunit (doesn't need one)? Likely a mixed bag given the range of categories (e.g. mining_drone/construction_drone sound like active units; asteroid_attachment_clamp sounds more like a component).
+**Status**: OPEN
+
+### 2026-08-02 — Possible CNT fabricator naming collision
+**What happened**: The rename audit surfaced two separate CNT fabricator blueprint families in different folders:
+- industrial/cnt_fabricator_unit_mk1_bp.json (part of this rename batch)
+- production/fabricators/cnt_fabricator_mk1_bp.json (pre-existing, already has mk1/mk2/mk3 progression with real production data)
+Near-identical names, different directories — unclear if these represent the same unit with two deployment profiles, true duplicates, or two genuinely distinct things that happen to share a name.
+**What I already checked**: Confirmed both files exist independently, different content/directory, no direct reference between them found.
+**What needs a second opinion**: Tracy already flagged general "CNT overlap" concern independently — this may be the same question. Needs a side-by-side comparison of the two families before deciding whether to consolidate, rename one for clarity, or confirm they're intentionally distinct.
+**Status**: OPEN
