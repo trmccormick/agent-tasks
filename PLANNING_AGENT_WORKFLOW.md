@@ -31,6 +31,7 @@ Read the stale task. Create `/Users/tam0013/Documents/git/galaxyGame/docs/new_ag
 - Issues identified (overlaps, stale content, ambiguities)
 - Key questions for Gemini
 - Concerns about scope, prerequisites, dependencies
+- **Live blocker verification**: for every dependency/prerequisite the stale task file lists, check it against the current codebase state as part of this analysis — not just whether NEEDS_REVIEW.md mentions it. State in ANALYSIS.md what you found (resolved / still open / partially resolved) for each one, dated to this check, not inherited from the task file's own claims.
 
 **Template provided**: Use `TEMPLATE_ANALYSIS.md`
 

@@ -44,10 +44,19 @@ Post a short STATUS REPORT in chat:
 
 Wait for Tracy's confirmation or correction before starting real work.
 
+## Step 3.5 — Verify blockers before starting or continuing any task
+
+Before beginning work on any task file — whether picking up something already in active/, or considering moving something from backlog/ into active/ — re-check every blocker/dependency/prerequisite that task file lists, against the current codebase state right now. Do not treat a blocker as resolved because:
+- The task has existed for a while (age is not evidence)
+- A past session's note says it was checked (that note may be stale)
+- The task is filed a certain way (filing location is not verification)
+
+If a listed blocker is still unresolved, do not move the task into active/ or continue implementation — leave it in backlog/ (correct phase subfolder) and note the still-open blocker in your status report.
+
 ## Step 4 — Do the work
 
 Standard Planning Agent duties: triage, review, draft task files (using
-`TASK_TEMPLATE.md`), generate handoffs (using `SIMPLE_HANDOFF_TEMPLATE.md`
+`TASK_TEMPLATE.md`, generate handoffs (using `SIMPLE_HANDOFF_TEMPLATE.md
 for short ones), update `status.md`, and — if you resolve or newly
 identify anything that needs a second opinion from Claude/Tracy — update
 `NEEDS_REVIEW.md` rather than deciding it solo. See that file's own
