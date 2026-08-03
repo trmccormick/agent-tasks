@@ -1,8 +1,30 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-02 — Hierarchy diagram + namespace history docs + Settlement Tiles false-completion closure
+**Last Updated:** 2026-08-02 — Magnetosphere Architecture + Two-Task System for Atmospheric Loss
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 In Progress (2026-08-02 EVENING) — Magnetosphere Architecture & Atmospheric Loss Design
+
+### ✅ Completed This Session
+1. **Grounding Audit**: Verified magnetosphere is binary flag with no game mechanics (discovery: "magnetosphere" field exists but unused)
+2. **Data Model Design**: Created numeric gradient model (0.0-1.0) for magnetosphere_strength (Mars 0.0, Venus 0.3, Earth 1.0, Jupiter 1.0, Ganymede 0.15)
+3. **Sol System Data Updates**:
+   - Jupiter: Added `magnetosphere_strength: 1.0, magnetosphere_radius_km: 7000000`
+   - Ganymede: Added `magnetosphere_strength: 0.15, magnetosphere_radius_km: 500, orbital_distance_km: 1070400`
+   - Committed with real-physics grounding in commit message
+4. **Architecture Gotcha Discovery**: Parent magnetosphere inheritance (Titan/Saturn, Ganymede/Jupiter compound protection)
+5. **Two-Task System Created** (in agent-tasks/projects/galaxy_game/tasks/backlog/current/):
+   - **Task 1** (PREREQUISITE): `2026-08-02-HIGH-ARCHITECTURE-DATA-DRIVEN-CELESTIAL-BODY-GENERATION.md` — Remove hardcoding, implement calculate_magnetosphere_strength/radius, refactor ProceduralGenerator/SystemBuilderService/AtmosphereGeneratorService, add tests
+   - **Task 2** (BLOCKED): `2026-08-02-HIGH-FEATURE-ATMOSPHERIC-LOSS-SOLAR-WIND-EROSION.md` — Implement per-gas loss rates, stellar distance scaling, parent magnetosphere protection calculation
+6. **StarSim Procedural Generation Gotcha Fixed**: Added Step 3 to Task 1 for moon generation (parent_body, orbital_distance_km, optional magnetosphere for moons like Ganymede)
+
+### 📋 Both Tasks Ready for Agent Dispatch
+- Task 1: 10 implementation steps, comprehensive tests, manual integration test, completion report template
+- Task 2: Blocked by Task 1 via YAML frontmatter; ~3 gotchas; detailed examples (Titan 0.4-0.5 effective, Ganymede 0.7-0.8 effective)
+- See `/memories/session/magnetosphere_architecture_plan.md` for architecture details
 
 ---
 
