@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-02 — Settlement Tiles false-completion closure + Unit Naming Convention Audit
+**Last Updated:** 2026-08-02 — Hierarchy diagram + namespace history docs + Settlement Tiles false-completion closure
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -1253,3 +1253,19 @@ Section 6 (Simulation Engine) should document hydrosphere as a computed layer, n
 
 ### 📌 Civilization Layer Architecture Doc — NEEDS DRAFTING
 - `docs/architecture/intent/civilization_layer_scale_design.md` — three-scale design locked in 07-10 session
+
+---
+
+## 🎯 Latest Completion (2026-08-02) — Hierarchy Diagram + Namespace History Documentation
+
+### ✅ Model Hierarchy Diagram Created
+- **Task**: `2026-07-24-MEDIUM-DOCUMENTATION-HIERARCHY-DIAGRAM-NAMESPACE-HISTORY.md` → completed/2026-07/
+- **Deliverable**: `docs/new_agent/projects/galaxy_game/architecture/hierarchy_diagram.md` (comprehensive doc)
+- **Audit findings** (verified against code + git log):
+  - Hierarchy is **parallel, not strict tree**: Colony → Settlements (has_many), Settlements → Structures (via SettlementCore concern)
+  - Settlements have independent identity (location, marketplace) separate from Colony ownership
+  - OrbitalDepot retirement was clean on 2026-04-11: both SpaceStation + OrbitalDepot rewired to OrbitalSettlement in single commit (bee0a625)
+  - No deprecation period with parallel existence — migration was direct
+  - Root-level OrbitalDepot was PORO (never a Rails model); namespaced version was the actual ActiveRecord model
+- **Synthesis report**: `summaries/2026-07-24-DOCUMENTATION-HIERARCHY-DIAGRAM-NAMESPACE-HISTORY.md`
+
