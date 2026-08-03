@@ -517,3 +517,14 @@ When encountering tasks in `active/` that have no agent actively working on them
 5. NEVER delete task files without first verifying their status and getting human approval
 
 **Confirmed violation, 2026-07-08**: Planning Agent deleted 3 stale active tasks without reviewing them for completed work. One task (Monitor Canvas) had a fully implemented spec with 9 passing tests that was staged but never committed. The task file was lost until restored from Time Machine. This rule prevents loss of completed work and duplicate task creation by agents that recreate tasks instead of following the lifecycle protocol.
+
+### Rule 28 — Never Force-Add Anything Under `data/`
+**Applies to all agents, all roles, all supervision tiers.**
+
+The entire `data/` directory is intentionally gitignored (Time Machine-backed, not git-backed) because its contents — blueprints, images, tech_tree, operational_data, everything — are under active churn. `git add -f` on any file under this path is never correct, regardless of file type or how confident the change feels. If tracking a specific data file ever becomes genuinely necessary, that's a decision for Tracy to make explicitly, not something an agent decides mid-task by overriding the gitignore.
+
+**Confirmed violations:**
+- **2026-07-31**: Agent force-added sprite images under `data/images/` after noticing gitignore during asset pipeline debugging. Treated gitignore as an obstacle to route around rather than a boundary to respect.
+- **2026-08-02**: Agent force-added blueprint JSON files under `data/json-data/` for the same reason — gitignore seen as something to override, not a signal to stop and ask.
+
+**Two incidents in two days on two different file types (sprite images + blueprint JSON) from the same failure pattern:** an agent notices `data/` is gitignored, treats it as an obstacle rather than a boundary, and force-adds anyway. If an agent is about to force-add anything under `data/`, that instinct itself is the signal to stop and ask Tracy, not proceed.

@@ -15,14 +15,24 @@ You are **Research Agent**.
 Project: galaxy_game
 Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/research/2026-07-07-MEDIUM-RESEARCH-PATTERN-BASED-SETTLEMENT-DECISION-LOGIC.md
 
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/research/2026-07-07-MEDIUM-RESEARCH-PATTERN-BASED-SETTLEMENT-DECISION-LOGIC.md \
+         projects/galaxy_game/tasks/active/2026-07-07-MEDIUM-RESEARCH-PATTERN-BASED-SETTLEMENT-DECISION-LOGIC.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
 LIFECYCLE: backlog → active → completed
-  - Tracked file: git mv to new folder
-  - New/untracked file: move with filesystem (mv), then git add the final path
-  - Never copy task files between folders
-READ FIRST: Task file contains all prerequisites, credentials, gotchas, and verification steps.
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks -name "2026-07-07-MEDIUM-RESEARCH-PATTERN-BASED-SETTLEMENT-DECISION-LOGIC.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
 CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
-  Summaries path: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/summaries/
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
   Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
   Chat is for questions only — never paste synthesis into chat (formatting breaks).
 ```

@@ -1,7 +1,7 @@
 ---
 title: "Worldhouse design clarification — structures over terrain vs terraforming"
 priority: MEDIUM
-status: backlog
+status: active
 owner: Implementation Agent (Qwen)
 type: documentation
 system_domain: TERRA_SIM
@@ -16,10 +16,10 @@ created: 2026-07-24
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/drafts/2026-07-24/2026-07-24-MEDIUM-DOCUMENTATION-WORLDHOUSE-DESIGN-CLARIFICATION.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-07-24-MEDIUM-DOCUMENTATION-WORLDHOUSE-DESIGN-CLARIFICATION.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/drafts/2026-07-24/2026-07-24-MEDIUM-DOCUMENTATION-WORLDHOUSE-DESIGN-CLARIFICATION.md \
+  git mv projects/galaxy_game/tasks/backlog/current/2026-07-24-MEDIUM-DOCUMENTATION-WORLDHOUSE-DESIGN-CLARIFICATION.md \
          projects/galaxy_game/tasks/active/2026-07-24-MEDIUM-DOCUMENTATION-WORLDHOUSE-DESIGN-CLARIFICATION.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.

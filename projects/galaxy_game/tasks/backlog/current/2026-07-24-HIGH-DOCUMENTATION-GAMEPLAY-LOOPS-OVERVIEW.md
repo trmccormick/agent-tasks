@@ -16,10 +16,10 @@ created: 2026-07-24
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/drafts/2026-07-24/2026-07-24-HIGH-DOCUMENTATION-GAMEPLAY-LOOPS-OVERVIEW.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-07-24-HIGH-DOCUMENTATION-GAMEPLAY-LOOPS-OVERVIEW.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/drafts/2026-07-24/2026-07-24-HIGH-DOCUMENTATION-GAMEPLAY-LOOPS-OVERVIEW.md \
+  git mv projects/galaxy_game/tasks/backlog/current/      2026-07-24-HIGH-DOCUMENTATION-GAMEPLAY-LOOPS-OVERVIEW.md \
          projects/galaxy_game/tasks/active/2026-07-24-HIGH-DOCUMENTATION-GAMEPLAY-LOOPS-OVERVIEW.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.

@@ -36,7 +36,7 @@ This keeps "make sure the task is well-specified" and "start the work" as two di
 
 ## What Claude Should Proactively Flag
 
-- **Data path bugs:** Watch for data files landing in tracked app directories vs gitignored data directories (e.g., `data/json-data/` top-level vs `<app>/data/json-data/`). This exact bug has recurred multiple times. Any task touching JSON data files needs this checked.
+- **Data path bugs:** Watch for data files landing in tracked app directories vs gitignored data directories (e.g., `data/json-data/` top-level vs `<app>/data/json-data/`). This exact bug has recurred multiple times. Any task touching JSON data files needs this checked. AND for `git add -f` being used to force-track anything under `data/` that should stay untracked. Both are the same underlying failure: treating `data/`'s gitignore boundary as incidental rather than intentional.
 - **`git add -f` on anything under `data/json-data/`:** always wrong. That path is gitignored by design; forcing it into tracking is the bug, not a workaround.
 - **Claims of "complete" without independent re-verification** in the same session — a fix that was reasoned about but never re-tested is not confirmed.
 - **Green tests are not sufficient verification for a live-behavior claim.** A service can have a fully passing RSpec suite while actively crashing in a real triggering run (e.g. a private-method-visibility bug that unit tests never exercised the way a live multi-call simulation did). When a fix touches runtime behavior — caching, cross-instance calls, anything order-dependent — ask whether it's been confirmed with an actual run, not just a green suite.
@@ -44,6 +44,7 @@ This keeps "make sure the task is well-specified" and "start the work" as two di
 - **Cross-task architecture conflicts** — one task's fix contradicting or duplicating a mechanism another already-completed task built.
 - **"Most recently created" as a lookup strategy is unreliable** in a repeatedly-reseeded dev environment — stray test/sanity-check records can silently outrank the real seeded data. If a task or fix relies on "most recent X," check whether stray records could interfere.
 - **Symlinked/duplicate directory paths** (e.g. `docs/new_agent/projects/...` vs the real repo root) are a recurring source of "file not found" errors and stray duplicate files when commands are run from the wrong side of the symlink. Suggest confirming the real path with `find` rather than assuming.
+- **A task's stated blockers/dependencies are a claim to verify, not a fact to trust — regardless of the task's age or filing date.** A task's creation date only reflects when it was authored, not whether its listed blockers are still accurate. A blocker resolved months ago may have regressed; a blocker noted as open may since have been quietly fixed by unrelated work. Before treating any task as ready to implement — whether it's brand new or has been sitting for weeks — re-check every listed blocker against the current codebase state right now. Do not infer blocker status from how long the task has existed, which folder it's filed in, or a past session's note claiming it was checked before. This applies equally to Qwen picking up local work and to any cloud agent (Haiku, etc.) taking a handoff.
 
 ## Escalation Triggers (for Qwen to Use)
 
