@@ -1,8 +1,68 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-02 — Magnetosphere Architecture + Two-Task System for Atmospheric Loss
+**Last Updated:** 2026-08-03 — Shell Printing Dependency Chain Clarification
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Completion (2026-08-03) — Shell Printing Dependency Chain Clarification
+
+### ✅ Updated: `2026-08-03-HIGH-BUGFIX-SHELL-PRINTING-THICKNESS-USes-CONSTRUCTION-TIME-SHIELDING.md`
+- **Dependency block clarified**: Explicitly states shell printing is a **consumer** of the shielding model, not the source of truth
+- **Construction-time link made explicit**: blocker_reason now reads "Shell thickness and material requirements must be derived from the celestial body's surface conditions at build time, using the same values that future construction systems will also consume"
+- **Full dependency chain documented**: 
+  1. `2026-08-02-HIGH-ARCHITECTURE-DATA-DRIVEN-CELESTIAL-BODY-GENERATION` (architecture — source of truth)
+  2. `2026-08-02-HIGH-FEATURE-ATMOSPHERIC-LOSS-SOLAR-WIND-EROSION` (establishes magnetosphere_strength scale)
+  3. `2026-08-03-HIGH-BUGFIX-SHELL-PRINTING-THICKNESS...` (consumes the scale for construction-time thickness)
+- **Dependencies section fixed**: Was contradicting YAML header by saying "Blocked by: None" — now correctly lists full chain
+- **Consumer note added**: Dedicated line clarifying that future construction systems should consume the same shielding values
+
+---
+
+## 🎯 Latest Completion (2026-08-03) — TerraformingManager World-Agnostic Cleanup
+
+### ✅ Completed
+- **Task**: `2026-07-24-MEDIUM-REFACTOR-TERRAFORMING-MANAGER-CLEANUP.md` → completed/2026-08/
+- **Scope**: Made `TerraformingManager` world-agnostic — removed Mars/Venus/Titan/Saturn hardcoded references from comments and parameter names
+- **Changes** (79/-90 lines):
+  - Renamed `mars_liquid_water_threshold` → generic `liquid_water_threshold` (2 locations)
+  - Renamed `titan_capacity` → generic `cycler_capacity`
+  - Removed hardcoded `0.81` default pressure in `determine_phase_from_pattern`
+  - Updated all comments to be world-agnostic
+  - `default_params` now returns empty hash `{}` with comment explaining atmospheric targets belong in data/config
+
+### ⚠️ Issues Discovered (Not Fixed — Follow-up Needed)
+- **`default_params` bug**: Two definitions existed; second silently overrode first, returning only `{mars_liquid_water_threshold: 1.0}` instead of all 9 defaults
+- **Private/public naming collision**: Private `calculate_warming_phase_needs` and `calculate_maintenance_phase_needs` shadow public methods with same names
+- **Hardcoded atmospheric targets** throughout the codebase that should come from world data/templates
+
+### 📋 Skipped — Do NOT Continue Without Audit First
+- **Step 1 audit (read-only method inventory)** was skipped per planning agent guidance. Before any further cleanup, perform a read-only audit to identify intentional fallback duplication vs actual duplicates.
+
+---
+
+## 🎯 Latest Completion (2026-08-03) — Shell Printing Thickness Task Review & Classification
+
+### ✅ Reviewed: `2026-08-03-HIGH-BUG-FIX-SHELL-PRINTING-THICKNESS-USES-CONSTRUCTION-TIME-ENVIRONMENT.md`
+- **Source of truth confirmed**: All required data sources exist in codebase
+  - `CelestialBody#has_magnetosphere` (boolean, stored in properties JSON)
+  - `CelestialBody#magnetic_field` (Gauss, computed from body_category/mass/rotation_period)
+  - `CelestialBody#atmosphere.pressure` (already used by current formula)
+- **No new data source needed** — thickness formula should combine existing atmosphere pressure + magnetosphere presence
+- **Database column exists**: `construction_jobs.target_thickness_mm` (decimal, validated > 0) — no schema change needed
+- **Specs researched**: Three pending xit tests at lines 127, 142, 155 in `shell_printing_service_spec.rb` ("PENDING: target_thickness_mm source not yet designed")
+- **Implementation details filled in**:
+  - Gotcha 2: Added current floor (80mm) and recommended new floor (100mm)
+  - Gotcha 3: Added note about `natural_shielding` on lava tube features to prevent conflation
+  - Dependencies section: Replaced vague "may need magnetosphere data" with confirmed sources + pending improvement note
+  - Problem statement: Added exact current formula values (0→150mm, 0-1→140mm, etc.) and recommended minimum floor (100mm)
+  - Implementation steps: Replaced vague research steps with concrete design steps (shielding-weighted formula, min floor constant, spec updates)
+  - Stop conditions: Updated to reflect confirmed no-schema-change requirement
+  - Blocked by: Changed from "magnetosphere data if not exists" → "None — all sources exist"
+- **Classification**: Moved from `backlog/drafts/` → `backlog/current/` with corrected filename (kebab-case, BUGFIX type)
+- **Phase placement**: `current` (non-blocking manufacturing improvement — actionable now, doesn't gate any phase milestone)
+- **Blocker relationship added**: Blocked by `2026-08-02-HIGH-FEATURE-ATMOSPHERIC-LOSS-SOLAR-WIND-EROSION` — both tasks depend on magnetosphere data model; shell printing should use the 0.0–1.0 scale from that task rather than binary flag
 
 ---
 
