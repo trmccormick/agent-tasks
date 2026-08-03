@@ -224,7 +224,59 @@ end
 - Delete: `planet['tei_score'] = 0.88`
 - If Topaz needs these values, they should be in sol-complete.json data
 
-### Step 3: Refactor SystemBuilderService — Read from JSON, Don't Calculate
+### Step 3: Fix Procedural Moon Generation — Support Compound Magnetosphere
+**File**: `app/services/star_sim/procedural_generator.rb` (method `generate_moons_for_planet`, line 1077)
+
+**Problem**: Moon generation doesn't support compound magnetosphere protection (intrinsic + parent):
+- Moon has `"orbiting_body"` (text) but NOT `"parent_body"` field
+- Orbital distance is nested in `"orbits"` array, NOT at top level as `orbital_distance_km`
+- NO magnetosphere generation for moons (even though architecture now supports it)
+- **Gotcha**: If a moon is randomly generated with intrinsic magnetosphere (e.g., Ganymede-like, 0.22 strength), it needs parent_body reference to inherit parent protection too
+
+**Solution**:
+1. **Add `parent_body` field** to moon_data:
+   ```ruby
+   moon_data = {
+     "name" => moon_name,
+     "parent_body" => planet_data["name"],  # NEW: Reference to parent
+     "orbital_distance_km" => orbital_distance / 1000.0,  # NEW: Top-level field
+     # ... rest of fields ...
+   }
+   ```
+
+2. **Extract orbital_distance to top level**:
+   - Currently: `orbital_distance = rand(2..50) * planet_data["radius"]` (local variable)
+   - Add to moon_data: `"orbital_distance_km" => orbital_distance / 1000.0`
+
+3. **Add magnetosphere calculation for moons** (optional but recommended):
+   ```ruby
+   # Some moons have intrinsic magnetospheres (rare, like Ganymede)
+   # Only ~1% chance, but allows for realistic cases
+   if rand < 0.01
+     moon_magnetosphere_strength = calculate_magnetosphere_strength(
+       moon_data["mass"],
+       24,  # Moons rotate with parent
+       4.5e9  # Assume solar system age
+     )
+     if moon_magnetosphere_strength > 0.01
+       moon_data["magnetosphere_strength"] = moon_magnetosphere_strength
+       moon_data["magnetosphere_radius_km"] = calculate_magnetosphere_radius(
+         moon_data["mass"],
+         moon_magnetosphere_strength
+       )
+     end
+   end
+   ```
+
+**Verification**:
+- Procedurally generated moon with intrinsic field has all three fields:
+  - `parent_body: "Parent Name"` (enables parent protection inheritance calculation)
+  - `magnetosphere_strength: X` (own protection)
+  - `orbital_distance_km: Y` (for distance-based scaling of inherited protection)
+- Example: moon with 0.15 intrinsic can inherit Saturn's protection if orbit < Saturn's radius
+- Data structure supports future compound protection calculation in Task 2
+
+### Step 4: Refactor SystemBuilderService — Read from JSON, Don't Calculate
 **Replace lines 415-419** (terrestrial planet properties logic):
 
 **Old code**:
@@ -251,7 +303,7 @@ end
 - properties['magnetosphere_strength'] is numeric, not boolean
 - Both JSON-generated and legacy data paths work
 
-### Step 4: Refactor AtmosphereGeneratorService — Accept Numeric Strength
+### Step 5: Refactor AtmosphereGeneratorService — Accept Numeric Strength
 **Update method signature** (line 12):
 ```ruby
 def generate_composition_for_body(
@@ -531,6 +583,7 @@ Mars: magnetosphere_strength = 0.0 (type: Float)
 - [ ] All properties stored as data-driven values, not calculated in code
 - [ ] sol-complete.json updated with all necessary fields (magnetosphere_strength, others if found in synthesis)
 - [ ] AtmosphereGeneratorService updated to accept numeric magnetosphere_strength
+- [ ] Procedurally generated moons have parent_body + orbital_distance_km fields
 - [ ] Tests pass (RSpec) and manual integration confirms data flow
 - [ ] Git diff shows removals only where intended (old hardcode deleted)
 
