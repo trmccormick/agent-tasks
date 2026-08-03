@@ -1,7 +1,7 @@
 ---
 title: "Hierarchy diagram and namespace history — Colony → Settlement → Structure"
 priority: MEDIUM
-status: backlog
+status: active
 owner: Implementation Agent (Qwen)
 type: documentation
 system_domain: CONTROLLERS / OTHER
@@ -258,3 +258,26 @@ git commit -m "docs: Hierarchy diagram + OrbitalDepot namespace history — Colo
 *Filled in at end of session — one scannable line for next agent*
 
 HANDOFF SUMMARY: [files updated] | [structural changes] | [next action needed]
+
+## Completion Report
+**Completed by**: Implementation Agent (Qwen)
+**Completion date**: 2026-08-02
+
+### What was changed
+- `docs/new_agent/projects/galaxy_game/architecture/hierarchy_diagram.md` — Created comprehensive hierarchy diagram documenting Colony → Settlement → Structure relationships with verified model associations
+- `docs/new_agent/projects/galaxy_game/summaries/2026-07-24-DOCUMENTATION-HIERARCHY-DIAGRAM-NAMESPACE-HISTORY.md` — Created synthesis report
+
+### Key findings from audit
+1. **Hierarchy is parallel, not strict tree**: Colony owns Settlements via has_many, but Settlements have independent identity (location, marketplace). Settlements own Structures via SettlementCore concern.
+2. **OrbitalDepot retirement was clean on 2026-04-11**: Both Settlement::SpaceStation and Settlement::OrbitalDepot were retired in a single commit (bee0a625), rewired to Settlement::OrbitalSettlement. Stub files kept for git history.
+3. **No deprecation period with parallel existence**: The two classes never coexisted as active implementations — the migration was direct from SpaceStation/OrbitalDepot → OrbitalSettlement.
+4. **Root-level OrbitalDepot was PORO**: Never a Rails model, just a Plain Old Ruby Object for gas storage. Namespaced version (Settlement::OrbitalDepot) was the actual ActiveRecord model.
+
+### Issues discovered
+- None. Git history was clear and complete. All claims backed by code/git evidence.
+
+### Follow-up tasks needed
+- None identified.
+
+### Lessons learned
+- OrbitalDepot namespace change was driven by naming clarity (conflating settlement vs depot concepts) and architecture consolidation (constellation model for orbital settlements).
