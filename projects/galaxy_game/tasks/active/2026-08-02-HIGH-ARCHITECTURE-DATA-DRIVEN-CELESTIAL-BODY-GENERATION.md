@@ -1,10 +1,12 @@
 ---
-status: backlog
+status: completed
 priority: HIGH
 category: ARCHITECTURE
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
+completed: 2026-08-03
 estimated_effort: 4-5 hours
+actual_effort: ~4 hours
 blocker_for:
   - 2026-08-02-HIGH-FEATURE-ATMOSPHERIC-LOSS-SOLAR-WIND-EROSION
 ---
@@ -111,21 +113,42 @@ blocker_for:
 6. Identify other hardcoded values: Search for planet-specific conditionals (e.g., `if body_data[:name] == 'Mars'`)
 
 **Document findings in one section below before proceeding to implementation**:
-```
+
 ## Synthesis Findings
 
 ### Sol System Hardcoding
-- [List all hardcoded assignments for Topaz, Mars, Venus, Earth]
+- **Topaz patches**: Found in `ProceduralGenerator#load_vetted_system` (lines ~1258-1267) — hardcoded `magnetic_moment: 0.82`, `tei_score: 0.88`, and alias injection for planet named 'Topaz'
+- **Earth**: Already had `magnetosphere_strength: 1.0` and `magnetosphere_radius_km: 60000` in JSON (correct) — but had DUPLICATE entries at lines 394-395 and 503-504 (fixed by removing second duplicate)
+- **Venus**: Already had `magnetosphere_strength: 0.3` and `magnetosphere_radius_km: 500` in JSON (correct)
+- **Mars**: Already had `magnetosphere_strength: 0.0` in JSON, no radius field (correct)
+- **Mercury**: MISSING magnetosphere fields — added `magnetosphere_strength: 0.0001`, `magnetosphere_radius_km: 500`
+- **Jupiter**: Already had `magnetosphere_strength: 1.0`, `magnetosphere_radius_km: 7000000` (correct)
+- **Ganymede**: Already had `magnetosphere_strength: 0.15`, `magnetosphere_radius_km: 500`, `parent_body: "Jupiter"`, `orbital_distance_km: 1070400` (correct)
 
 ### Procedural Generation Gaps
-- [Fields NOT calculated in generate_procedural_terrestrial()]
+- `generate_procedural_terrestrial()` did NOT calculate or include:
+  - `magnetosphere_strength` — now calculated via physics formula
+  - `magnetosphere_radius_km` — now calculated from strength and mass
+  - `rotation_period_hours` — now included (6-48 hours random)
+- `generate_moons_for_planet()` did NOT include:
+  - `parent_body` field — now added for parent protection inheritance
+  - `orbital_distance_km` at top level — now extracted from orbits array
+  - Magnetosphere calculation for moons — now added (1% chance for rare Ganymede-like cases)
 
 ### Consumer Dependencies
-- [Who calls AtmosphereGeneratorService? What binary values are passed?]
+- **AtmosphereGeneratorService.generate_composition_for_body**: Called from 6 locations in ProceduralGenerator + 1 test file
+  - Old: Passed `rand < 0.5` (boolean), `true`, or `false`
+  - New: Passes numeric `magnetosphere_strength` (0.0-1.0)
+- **SystemBuilderService**: Used `body_data[:magnetic_field].to_f > 30` to set boolean `strong_magnetosphere`
+  - Old: Binary logic, no strength passthrough
+  - New: Reads `magnetosphere_strength` directly from body_data, stores as numeric
 
-### Data Flow Breaks
-- [Where does data-driven pattern break down?]
-```
+### Data Flow Breaks (FIXED)
+1. ✅ Topaz hardcoding removed from ProceduralGenerator
+2. ✅ SystemBuilderService now reads numeric magnetosphere_strength instead of boolean magnetic_field
+3. ✅ AtmosphereGeneratorService accepts numeric strength, uses protection_factor for scaled escape
+4. ✅ All callers updated to pass numeric values
+5. ✅ sol-complete.json cleaned up (duplicate fields removed, Mercury added)
 
 ---
 
@@ -670,3 +693,48 @@ This task establishes the **data-driven architecture foundation** required for p
 **Effort**: 4-5 hours (calculation methods, test setup, integration verification)
 
 **Risk**: Low — backward-compatible with legacy data; new hardcoding violations will be caught by tests
+
+## Completion Report
+
+**Status**: ✅ COMPLETE — All implementation steps finished, all tests passing.
+
+### Changes Made
+
+1. **sol-complete.json** (data file):
+   - Added `magnetosphere_strength` + `magnetosphere_radius_km` to Mercury (0.0001 / 500 km)
+   - Added `magnetosphere_strength: 0.9` + `magnetosphere_radius_km: 5270000` to Saturn
+   - Removed duplicate magnetosphere fields from Earth entry
+   - All existing values (Earth 1.0, Venus 0.3, Mars 0.0, Jupiter 1.0/7M km, Ganymede 0.15/500) preserved
+
+2. **ProceduralGenerator** (galaxy_game/app/services/star_sim/procedural_generator.rb):
+   - Added `calculate_magnetosphere_strength()` — physics-based formula using mass, rotation, age
+   - Added `calculate_magnetosphere_radius()` — scales with strength and mass
+   - Updated `generate_procedural_terrestrial()` to include `rotation_period_hours`, `magnetosphere_strength`, `magnetosphere_radius_km`
+   - Updated `generate_moons_for_planet()` with `parent_body`, `orbital_distance_km` top-level fields, optional intrinsic magnetosphere (1% chance)
+   - Removed Topaz `magnetic_moment`/`tei_score` hardcoding
+   - Updated all 6 `generate_composition_for_body` callers to pass numeric magnetosphere_strength
+
+3. **SystemBuilderService** (galaxy_game/app/services/star_sim/system_builder_service.rb):
+   - Replaced `body_data[:magnetic_field].to_f > 30` boolean logic with direct `magnetosphere_strength` passthrough
+   - Added legacy fallback for old data format
+
+4. **AtmosphereGeneratorService** (galaxy_game/app/services/star_sim/atmosphere_generator_service.rb):
+   - Changed parameter from `has_magnetic_field` (boolean) to `magnetosphere_strength` (float 0.0-1.0)
+   - Updated `model_atmospheric_escape()` to use `protection_factor = 1.0 - magnetosphere_strength` for scaled escape
+
+5. **Tests**:
+   - Created `spec/services/star_sim/procedural_generator_magnetosphere_spec.rb` (16 examples)
+   - Created `spec/services/star_sim/data_driven_generation_spec.rb` (12 examples)
+   - All 28 tests passing (0 failures)
+
+### Verification
+- ✅ RSpec: 28/28 tests passing
+- ✅ JSON valid, no duplicate fields
+- ✅ Ruby syntax OK for all modified files
+- ✅ No planet-specific conditionals remain in code
+- ✅ Topaz hardcoding removed
+- ✅ All `has_magnetic_field` boolean parameters replaced with numeric `magnetosphere_strength`
+
+### Git Commit
+- Commit: `d59613a0` — "refactor: Data-driven celestial body generation — remove hardcoded values"
+- 8 files changed, 3201 insertions(+), 30 deletions(-)
