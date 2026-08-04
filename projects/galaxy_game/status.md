@@ -1,8 +1,26 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-03 — Shell Printing Dependency Chain Clarification
+**Last Updated:** 2026-08-03 — Worldhouse Design Clarification
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Completion (2026-08-03) — Worldhouse Design Clarification
+
+### ✅ Completed: `2026-07-24-MEDIUM-DOCUMENTATION-WORLDHOUSE-DESIGN-CLARIFICATION.md` → completed/2026-08/
+- **Task**: Create documentation clarifying worldhouses as structures over terrain, NOT terraforming
+- **Synthesis report**: `summaries/2026-08-02-DOCUMENTATION-WORLDHOUSE-DESIGN-CLARIFICATION.md`
+- **Deliverable**: `docs/architecture/structures/worldhouse_design.md` (163 lines) — placed in canonical docs/architecture/, NOT new_agent symlink path
+- **Code audit findings** (9 app files, 10 spec files):
+  - `Structures::Worldhouse` inherits from `BaseStructure`, wraps geological feature (valley/canyon/lava tube/excavated cavity)
+  - `Structures::WorldhouseSegment` — individual construction segments with Coverable/Enclosable concerns
+  - `Structures::ConvertedBase < Worldhouse` — asteroid cavity subclass with AtmosphericProcessing/EnergyManagement/HasUnits
+  - **Confirmed NO terraforming interaction**: zero writes to Atmosphere/Biosphere/Hydrosphere spheres
+  - Only environmental interaction: geological feature status progression (`natural → surveyed → enclosed → pressurized`) and local atmospheric processing within sealed structure
+- **Documentation sections**: Overview, worldhouse vs terraforming distinction table, model structures, biome engineering workflow, placement rules, indirect terraforming relationships, data flow diagram, common misconceptions
+- **Critical finding**: No existing docs conflated worldhouse with terraforming — the gap was absence of dedicated documentation, not incorrect conflations
+- **Symlink bug avoided**: File committed to galaxyGame at `docs/architecture/structures/worldhouse_design.md` (not symlinked new_agent path)
 
 ---
 
