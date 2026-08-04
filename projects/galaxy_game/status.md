@@ -1,8 +1,39 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-03 — Worldhouse Design Clarification
+**Last Updated:** 2026-08-04 — GGMap Format Split + Review Queue Cleanup
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Completion (2026-08-04) — GGMap Format Design Split into 4 Implementation Tasks
+
+### ✅ Completed: `2026-04-17-ADVANCED-CLAUDE-DEFINE-GGMAP-FORMAT.md` → superseded/
+- **Problem**: Original GGMap task was a 28-hour monolith — too large for any single executor
+- **Solution**: Split into 4 properly scoped tasks based on the design doc's natural phase boundaries
+- **New tasks** (all in `backlog/phase8+/`):
+  1. **Phase 1** (2h): `2026-08-04-MEDIUM-FEATURE-GGMAP-FORMAT-DEFINITION.md` — JSON schema, sample file, format spec doc
+  2. **Phase 2** (8h): `2026-08-04-MEDIUM-FEATURE-GGMAP-GENERATION-SERVICES.md` — Ruby reader/writer + 4 layer generators
+  3. **Phase 3** (12h): `2026-08-04-MEDIUM-FEATURE-GGMAP-MAP-STUDIO-INTEGRATION.md` — Layer editor UI, feature tools, property panel, save/load
+  4. **Phase 4** (6h): `2026-08-04-MEDIUM-FEATURE-GGMAP-GAME-INTEGRATION.md` — AI Manager strategic layer, terraforming system, mission system, monitor view rendering
+- **Dependency chain**: Phase 1 → Phase 2 → Phase 3 → Phase 4 (each blocks the next)
+- **Source design doc**: `docs/archive/task_archives/GGMAP_FORMAT_DESIGN.md` (~900 lines, complete format spec)
+- **Old task deprecated**: Moved to `superseded/` — its purpose was to generate the design doc, which is now done
+
+---
+
+## 🎯 Latest Completion (2026-08-04) — Review Queue Cleanup: Market Fees + GGMap Audit
+
+### ✅ Reviewed: `2026-04-16-MEDIUM-DATA-ECONOMIC-PARAMETERS-MARKET-FEES.md`
+- **Verdict**: SUPERSEDED — `DockingTransactionService` no longer exists (merged into `UniversalDockingService`)
+- **Core assumption wrong**: Task assumed universal fee defaults in `economic_parameters.yml`, but fees are per-location (set by settlement/orbital station owner)
+- **Concept still valid**: Per-location market fees managed by AI Manager is a real feature need — just needs reframing
+- **Action taken**: Deprecated to `superseded/` + created new properly-framed task: `2026-08-03-MEDIUM-FEATURE-PER-LOCATION-MARKET-FEE-MANAGEMENT.md` in `backlog/current/`
+
+### ✅ Reviewed: `2026-04-17-ADVANCED-CLAUDE-DEFINE-GGMAP-FORMAT.md`
+- **Verdict**: Design work already done — `GGMAP_FORMAT_DESIGN.md` exists (~900 lines) covering everything the task asked for
+- **No implementation done**: No Ruby classes, no schema file, no .ggmap files exist in codebase
+- **Action taken**: Split into 4 implementation tasks (see above) + deprecated original prompt
 
 ---
 
