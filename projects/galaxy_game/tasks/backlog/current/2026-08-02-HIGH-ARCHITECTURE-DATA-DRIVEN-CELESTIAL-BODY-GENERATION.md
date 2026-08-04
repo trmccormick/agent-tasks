@@ -1,15 +1,43 @@
 ---
 status: backlog
 priority: HIGH
-category: ARCHITECTURE
+type: architecture
+system_domain: TERRA_SIM
+mvp_alignment: OTHER
+local_worker_safe: true
 created: 2026-08-02
-updated: 2026-08-02
+updated: 2026-08-03
 estimated_effort: 4-5 hours
 blocker_for:
   - 2026-08-02-HIGH-FEATURE-ATMOSPHERIC-LOSS-SOLAR-WIND-EROSION
 ---
 
 # Task: Data-Driven Celestial Body Generation — Remove Code Hardcoding
+
+## ⚡ Minimal Handoff (Copy this to send to agent)
+
+```
+You are **Implementation Agent**.
+
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/backlog/current/2026-08-02-HIGH-ARCHITECTURE-DATA-DRIVEN-CELESTIAL-BODY-GENERATION.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv docs/new_agent/projects/galaxy_game/tasks/backlog/current/2026-08-02-HIGH-ARCHITECTURE-DATA-DRIVEN-CELESTIAL-BODY-GENERATION.md \
+         docs/new_agent/projects/galaxy_game/tasks/active/2026-08-02-HIGH-ARCHITECTURE-DATA-DRIVEN-CELESTIAL-BODY-GENERATION.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find docs/new_agent/projects/galaxy_game/tasks -name "2026-08-02-HIGH-ARCHITECTURE-DATA-DRIVEN-CELESTIAL-BODY-GENERATION.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
+```
 
 ## Context
 
