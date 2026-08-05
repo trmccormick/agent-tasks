@@ -1,10 +1,40 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-04 — GGMap Format Split + Review Queue Cleanup
+**Last Updated:** 2026-08-05 — Magnetosphere Baseline+Modifiers Architecture + Core-State Gate Fix + Titan Conservation Mandate + Visual Definition RH-400 + Planetary Terraforming SOP + Habitability Task Reframe + Slow Spec Closure + Manufacturing Service Duplicate Diagnosis
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
+---
+
+## 🎯 Latest Completion (2026-08-05) — Magnetosphere Baseline+Modifiers Architecture
+
+### ✅ Refactored: `calculate_magnetosphere_strength()` → baseline from JSON + additive modifiers
+- **Problem**: Formula overrode JSON values — Venus calculated to 0.004 but JSON has correct value 0.3 (induced field, not geodynamo)
+- **Architecture change**: 
+  - `baseline` = natural magnetosphere_strength from celestial body JSON data (geodynamo, induced field, crustal remanence)
+  - `modifiers` = artificial magnetosphere + parent body influence + game-system effects (all stubbed at 0.0)
+  - `effective = baseline + modifiers`, capped at 1.0
+- **Changes** (2 files):
+  - `galaxy_game/app/services/star_sim/procedural_generator.rb` — refactored method signature, added modifier stubs with architecture comments
+  - `galaxy_game/spec/services/star_sim/procedural_generator_magnetosphere_spec.rb` — rewrote tests for baseline-first API
+- **JSON baseline values verified** (8 bodies have magnetosphere_strength):
+  | Body | Baseline | Mechanism |
+  |------|----------|-----------|
+  | Mercury | 0.0001 | Weak geodynamo |
+  | Venus | 0.3 | Induced field (solar wind interaction) |
+  | Earth | 1.0 | Strong geodynamo |
+  | Mars | 0.0 | Dead core (flagship zero-shielding world) |
+  | Jupiter | 1.0 | Strongest geodynamo |
+  | Saturn | 0.9 | Strong geodynamo |
+  | Ganymede | 0.15 | Intrinsic moon magnetosphere |
+  | Titan | 0.0 | No intrinsic field (relies on Saturn) |
+- **41 bodies** without the field — will use procedural default (0.5) or inherit from parent body lookup (future)
+- **Spec suite**: 18 examples, 0 failures
+
+
+
+
 
 ## 🎯 Latest Completion (2026-08-04) — GGMap Format Design Split into 4 Implementation Tasks
 
