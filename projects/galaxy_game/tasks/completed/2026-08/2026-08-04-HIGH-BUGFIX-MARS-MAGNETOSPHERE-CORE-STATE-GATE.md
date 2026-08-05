@@ -1,10 +1,11 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: bug-fix
 system_domain: STAR_SIM
 mvp_alignment: OTHER
 local_worker_safe: true
+completed_date: 2026-08-05
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
@@ -31,10 +32,22 @@ Chat is for questions only — never paste synthesis into chat.
 ---
 
 # TASK: Fix Mars magnetosphere formula — add core-state gate to calculate_magnetosphere_strength()
-**Status**: BACKLOG
+**Status**: COMPLETED
 **Priority**: HIGH
 **Type**: bug-fix
 **Created**: 2026-08-04
+**Completed**: 2026-08-05
+
+---
+
+## Completion Report
+
+**Original approach (core-state gate)** was superseded by a corrected architecture: **JSON baseline + modifiers**. The final implementation preserves JSON magnetosphere_strength values from sol-complete.json and applies modifier-based adjustments, producing correct results for all bodies.
+
+**Verification**: 18 specs, 0 failures
+**Commits**: `2cbabf41`, `40f451b`
+
+**Atmospheric Loss Task 2 is now unblocked** — the formula it depends on is correct and verified.
 
 ---
 
