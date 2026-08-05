@@ -5,6 +5,7 @@ type: feature
 system_domain: AI_MANAGER_LUNA_SETTLEMENT
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
+last_updated: 2026-08-05
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
@@ -18,7 +19,7 @@ Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlo
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
   git mv projects/galaxy_game/tasks/backlog/current/2026-08-04-HIGH-FEATURE-WORLD-AGNOSTIC-HABITABILITY-EVALUATION.md \
          projects/galaxy_game/tasks/active/2026-08-04-HIGH-FEATURE-WORLD-AGNOSTIC-HABITABILITY-EVALUATION.md
-  Then open the moved file and change: status: backlog → status: active
+  Then open the moved file and change: status: active → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
