@@ -1,0 +1,227 @@
+# Session Handoff — 2026-06-12 (Evening Update)
+**Branch:** main
+**Strategist:** Claude (Free Tier)
+**Prepared:** End of 2026-06-12 evening session
+
+---
+
+## Baseline
+
+- **ai_manager suite:** 746 examples, 3 failures (all confirmed flaky — never touch), 4 pending
+- **Last full suite:** 3966 examples, 3 failures (all known flaky)
+- **Full suite log:** Run fresh at session start — confirm still clean
+- **Last commit (galaxyGame):** 01919af8 — Phase 4 consumption-aware ordering + precursor phase gating
+- **Last commit (agent-tasks):** Phase 4 status.md update + triage session + new task files
+
+---
+
+## Completed Today
+
+| Task | Agent | Result |
+|---|---|---|
+| Cleanup task — remove plural API + Logistics::ServiceCoordinator | Qwen3.5-27B | ✅ committed f54ead49 |
+| Repo reorganization + completed/deprecated normalization | Manual + Claude | ✅ committed bf7dc52 |
+| Design addendum — skimmer ops, gas economics, Virtual Ledger, portal tech | Claude | ✅ committed to research/ |
+| Market calibration concept + phase6+ placeholder task | Claude | ✅ drafted — needs committing |
+| Phase 4 — consumption-aware ordering + precursor phase gating | Qwen3.5-27B + Claude Haiku | ✅ committed 01919af8 — 746 examples, 0 failures |
+| April 2026 backlog triage — 6 files reviewed | Qwen3.5-27B | ✅ stopped at 6/57 — session tracking doc updated |
+| TTR/failure cascade task extracted to phase6+ | Qwen3.5-27B | ✅ committed to agent-tasks |
+| AI Manager training pipeline audit task | Claude | ✅ drafted — place in phase5+/ |
+| Procedural map generation quality task | Claude | ✅ drafted — place in phase9+/ |
+| Return Cargo Profit Optimization task (updated) | Claude | ✅ revised — ready for 27B dispatch |
+| Plural API removal verification | Qwen3.5-27B (planning agent) | ✅ verified complete, baseline preserved |
+
+---
+
+## Dispatch Order for Next Session
+
+1. **Confirm suite still clean** — run ai_manager suite before dispatching anything
+   ```bash
+   docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/ --format progress 2>&1 | tail -5'
+   ```
+   Expected: 746 examples, 0 failures, 4 pending
+
+2. **Confirm 27B triage closeout committed** — verify session tracking doc updated,
+   two new task files placed, map quality duplicate search completed
+
+3. **Commit market calibration files** — two files drafted this session, need committing:
+   - `research/AI-MANAGER-MARKET-CALIBRATION-CONCEPT.md`
+   - `tasks/phase6+/2026-06-11-MEDIUM-RESEARCH-AI-MARKET-CALIBRATION-SERVICE.md`
+
+4. **Place new task files** (from this session):
+   - `2026-06-12-MEDIUM-RESEARCH-AI-MANAGER-TRAINING-PIPELINE-AUDIT.md` → `tasks/phase5+/`
+   - `2026-06-12-LOW-FEATURE-PROCEDURAL-MAP-GENERATION-QUALITY.md` → `tasks/phase9+/`
+     (only if no duplicate found by 27B triage closeout)
+
+5. **Dispatch Return Cargo Profit Optimization to 27B** — updated task file ready,
+   market infrastructure confirmed live in schema
+
+6. **Archive Phase 4 task** — move to completed/2026-06/ in agent-tasks
+
+---
+
+## Active Backlog (Luna MVP)
+
+| File | Priority | Status | Notes |
+|---|---|---|---|
+| `2026-06-08-HIGH-FEATURE-LUNA-PHASE-4-CONSUMPTION-AWARE-ORDERING.md` | HIGH | ✅ COMPLETE | Committed 01919af8 — archive to completed/2026-06/ |
+| `2026-06-08-MEDIUM-FEATURE-RETURN-CARGO-PROFIT-OPTIMIZATION.md` | HIGH | Ready — next dispatch | Updated task file — market infrastructure confirmed live |
+
+---
+
+## AI Manager Training — Key Findings (June 12 Evening)
+
+**This section documents a significant discovery made during session review.**
+Full audit task written: `2026-06-12-MEDIUM-RESEARCH-AI-MANAGER-TRAINING-PIPELINE-AUDIT.md`
+
+### Data layer is richer than expected
+- ~1,309 performance JSON files in `ai_manager/performance/` (~5.4MB) — all decisions recorded
+- All files show `outcome: null`, `success_score: null`, `lessons_learned: []` — feedback
+  loop not firing, but data corpus exists and is ready
+- Real crater data scraped from Wikipedia in `craters.json` (Shackleton etc. with real
+  coordinates, dimensions, ice volumes)
+- GeoTIFF pattern extraction worked correctly — `geotiff_patterns_luna.json` has good
+  empirical data. Pixelation is a generation-step problem, not extraction.
+
+### Training architecture (now understood)
+```
+data/json-data/missions/tasks/          # original mission-specific tasks (Jan training source)
+data/json-data/missions/tasks_v2/       # generic reusable tasks, 140+ files (NOT yet trained)
+data/json-data/missions/<body>/         # individual mission folders — reference + training examples
+data/json-data/ai-manager/             # training outputs + decision logic
+```
+
+**Mission folders are reference implementations** — kept as-is, not deprecated. They show
+how generic task types apply to specific bodies. Valuable training signal alongside tasks_v2.
+tasks_v2 is additive to AI Manager knowledge, not a replacement for originals.
+
+### Critical gap: hollow lunar_pattern
+- `mission_profile_patterns.json` → `lunar_pattern` has `total_unit_count: 0`,
+  `equipment_requirements: {}`, `economic_model: {}`
+- January training read `lunar-precursor-ai_profile_v1.json` which had no populated manifests
+- `luna_settlement_patterns.json` exists with real data (equipment, ISRU rates, economic
+  model) but was never fed into training
+- **This is the primary Luna MVP simulation blocker** — AI Manager has no Luna behavioral
+  substance to draw from
+
+### Learned patterns — preserve completely
+```json
+"lunar_precursor_lunar": { "success_rate": 0.92 }  // DO NOT OVERWRITE
+"venus_pattern":          { "success_rate": 0.88 }  // DO NOT OVERWRITE
+"venus_atmospheric_elevators": { "success_rate": 0.85 }
+"venus_forge_operations": { "success_rate": 0.78 }
+```
+
+### resource_acquisition_logic_v1.json — four known issues
+1. Dead steps during pre-player arc: `check_player_market` and `check_wormhole_network`
+   always fail (no players, no wormhole tech yet)
+2. Player market = NPC market — one unified market, steps 2/3 are logically the same
+3. `check_wormhole_network` is mislabeled — correct concept is intra-solar logistics
+   routing via stations/cyclers/providers
+4. All tuning parameters unvalidated — `target_self_sufficiency: 0.8` vs observed
+   Luna ISRU capability of 0.7 means Luna perpetually under target
+
+### Market infrastructure — confirmed live
+- `market_price_histories`, `market_settings`, `market_supply_chains` tables exist in schema
+- `market_settings.transportation_cost_per_kg` column exists — use as Luna pricing floor
+- `docs/market/economic_baseline.md` exists — read before any market work
+- Market needs production-level testing, not just RSpec
+
+---
+
+## April 2026 Backlog Triage — Current State
+
+**Session tracking doc:** `research/BACKLOG_TRIAGE_APRIL_2026_SESSION.md` in agent-tasks
+
+| File | Finding |
+|---|---|
+| `2026-04-01-HIGH-BUG-FIX-MATERIAL-PROCESSING-GAS-YIELDS.md` | ✅ Obsolete — implemented same day (1d92bd3d) |
+| `2026-03-30-HIGH-REFACTOR-MATERIAL-PROCESSING-GEOSPHERE-DRIVEN-YIELDS.md` | ✅ Obsolete — implemented April 26 (05756030) |
+| `2026-04-10-MEDIUM-ARCHITECTURE-ORBITAL-SETTLEMENT-LOCATION.md` | ✅ Obsolete — implemented April 13 (6841035d) |
+| `2026-04-17-CRITICAL-FIX-MONITOR-LOADING.md` | 🔁 Duplicate — fixed Feb 20 before task created |
+| `2026-04-17-CRITICAL-ARCHITECTURE-ENCLOSED-ATMOSPHERE-FAILURE-PREDICTION-PLANNING.md` | ⚠️ Partial — TTR/cascade extracted to phase6+ |
+| `2026-04-07-HIGH-DATA-AI-MANAGER-MISSION-PROFILE-TRAINING-REFRESH.md` | ⚠️ Genuine gap — full audit task written (phase5+) |
+
+**Pattern so far:** ~67% obsolete/duplicate, ~33% genuine gaps
+**Files reviewed:** 6 of ~57
+**Triage paused** — 27B redirected to Return Cargo implementation
+**Resume:** future session, pick up at file 7
+
+---
+
+## Phase Folder State (as of June 12 Evening)
+
+| Folder | Count | Notes |
+|---|---|---|
+| `backlog/2026-06/` | 1 task | Return Cargo (dispatched) — Phase 4 needs archiving |
+| `phase5+/` | 1 task | AI Manager training pipeline audit (new) |
+| `phase6+/` | 6+ tasks | L1 Depot, LEO Depot, orbital infrastructure, TTR/cascade, market calibration research |
+| `phase9+/` | 6 tasks | Wormhole, multi-system, map generation quality (new, if no duplicate) |
+
+---
+
+## Design Documentation Updates (June 12)
+
+**Second addendum still needed (next design session):**
+- CNT economy and Venus foundry role
+- Three cycler loop topology (Core Shuttle, Outer Volatile Pipeline, Belt Supply Line)
+- Fuel cell power matrix on Mars (H2 + O2 → electricity + H2O)
+- Saturn subsystem cross-reference to `data/json-data/missions/titan-resource-hub/`
+- EAP as price ceiling against player monopolies
+
+---
+
+## Agent Performance Notes (June 12)
+
+- **Qwen3.5-27B:** Reliable for implementation when task files are tight. Struggled with
+  spec file insertion — multiple truncation incidents. Fallback to Haiku was correct call.
+  Slow on triage (~1 file per significant time window) — not suitable for large batch work
+  in single session.
+- **Claude Haiku 4.5:** Successfully completed Phase 4 spec insertion when 27B stalled.
+  Good fallback for focused spec work.
+- **Qwen3.5-27B (triage):** Good discipline on git mv, history verification, partial
+  implementation identification.
+- **DeepSeek-R1 8B (Ryzen 7):** Evaluated for triage. Reads template correctly, asks
+  before acting. Watch for phase alignment accuracy on full run.
+
+---
+
+## Key Infrastructure Notes
+
+- Qwen3.5-27B on M4 is primary implementation worker
+- Git commits on Intel MacBook host only — never inside Docker
+- One model per session per machine — no switching
+- Copilot tools list — keep minimal: `['vscode', 'execute', 'read', 'edit', 'search']`
+- Hardware topology: no duplicate models across M4 and Ryzen
+- Cannot run two tasks on 27B simultaneously — single task per session
+- **Migration rule:** Always `rails generate migration` inside Docker — never create
+  migration files manually. Manual files bypass timestamp tracking and cause
+  `maintain_test_schema!` failures in test environment. Pattern:
+  `docker exec -it web bash -c 'cd /home/galaxy_game && rails generate migration MigrationName col:type'`
+
+---
+
+## Flaky Specs — Never Touch
+
+| Spec | Line |
+|---|---|
+| `spec/services/construction/orbital_shipyard_service_spec.rb` | 129 |
+| `spec/services/generators/game_data_generator_spec.rb` | 13 |
+| `spec/services/lookup/material_lookup_service_spec.rb` | 251 |
+
+---
+
+## Session Startup Checklist
+
+1. `CLAUDE_FREE_GUIDE.md` — current copy
+2. This handoff
+3. `status.md` — updated with fresh suite results
+4. Verify Copilot 27B tool use working before dispatching
+5. If broken: `ollama pull qwen3.5:27b` on M4, reload VS Code, retry
+
+**Full suite baseline:** 3966 examples, 3 failures (all flaky)
+**ai_manager suite baseline:** 746 examples, 3 failures (all confirmed flaky), 4 pending
+**Last galaxyGame commit:** 01919af8
+**Last agent-tasks commit:** Phase 4 status update + triage session + new task files
+
+Good night.
