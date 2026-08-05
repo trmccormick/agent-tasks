@@ -1,10 +1,9 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-05 — Magnetosphere Baseline+Modifiers Architecture + Core-State Gate Fix + Titan Conservation Mandate + Visual Definition RH-400 + Planetary Terraforming SOP + Habitability Task Reframe + Slow Spec Closure + Manufacturing Service Duplicate Diagnosis
+**Last Updated:** 2026-08-05 — Magnetosphere Baseline+Modifiers (complete) + Titan Conservation Mandate + Visual Definition RH-400 + Planetary Terraforming SOP + Habitability Task Reframe + Slow Spec Closure + Manufacturing Chain Diagnosis + Dead Code Removal Tasks Filed
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
----
 ---
 
 ## 🎯 Latest Completion (2026-08-05) — Magnetosphere Baseline+Modifiers Architecture
@@ -32,9 +31,107 @@
 - **41 bodies** without the field — will use procedural default (0.5) or inherit from parent body lookup (future)
 - **Spec suite**: 18 examples, 0 failures
 
+---
 
+## 🎯 Latest Completion (2026-08-04) — Mars Magnetosphere Core-State Gate Fix
 
+### ✅ Completed: `2026-08-04-HIGH-BUGFIX-MARS-MAGNETOSPHERE-CORE-STATE-GATE.md` → completed/2026-08/
+- **Problem**: `calculate_magnetosphere_strength()` produced ~0.47 for Mars-like inputs (dead-core body) when design requires ≤0.05
+- **Root cause**: Formula gave partial credit from mass_factor (~0.48) even with dead/frozen core — no global geodynamo possible below minimum mass threshold
+- **Solution**: Added core-state gate — mass threshold (0.15 Earth masses) with exponent-7 decay below threshold for bodies that cannot sustain a geodynamo
+- **Changes** (2 files):
+  - `galaxy_game/app/services/star_sim/procedural_generator.rb` — core-state gate logic (6 lines)
+  - `galaxy_game/spec/services/star_sim/procedural_generator_magnetosphere_spec.rb` — new test expectation for Mars ≤0.05
+- **Results**: Mars 0.47→0.045 ✅ | Earth 0.98→1.0 ✅ (unchanged) | Venus 0.004→0.004 ✅ (unchanged)
+- **Spec suite**: 17 examples, 0 failures (was 16/0, +1 new test)
+- **Synthesis report**: `summaries/2026-08-04-BUGFIX-MARS-MAGNETOSPHERE-CORE-STATE-GATE.md`
 
+---
+
+## 🎯 Latest Completion (2026-08-04) — Titan Conservation Mandate
+
+### ✅ Completed: `2026-08-04-HIGH-DOCUMENTATION-TITAN-CONSERVATION-MANDATE.md` → completed/2026-08/
+- **Problem**: Sol Tri-System Volatile Loop had no stated limit on Titan's volatile extraction — economic model treated it as unlimited source
+- **Changes** (1 file):
+  - `docs/gameplay/PLANETARY_TERRAFORMING_SOP.md`: Added "Titan Conservation Mandate" subsection under Sol Tri-System Volatile Loop covering:
+    - **Capped Extraction**: Dual constraint (rate limit per cycle + total reserve cap)
+    - **Deep-Freeze Gas Depot**: Cryogenic infrastructure with CapEx/maintenance/capacity scaling
+    - **Protected Heritage Site Status**: Three-zone model (core/buffer/beyond) with permit/tax economics
+  - Cross-reference to Titan magnetosphere-inheritance physics added without merging concepts
+- **Ambiguities flagged for follow-up design pass**: exact extraction rate numbers, depot capacity scaling specifics, heritage zone radius definitions, permit/tax mechanics
+- **Synthesis report**: `summaries/2026-08-04-DOCUMENTATION-TITAN-CONSERVATION-MANDATE.md`
+
+---
+
+## 🎯 Latest Completion (2026-08-04) — Manufacturing Chain Diagnosis
+
+### ✅ Completed: `2026-07-26-MEDIUM-RESEARCH-MANUFACTURING-CURRENT-STATE-VS-DOCS.md` → completed/2026-08/
+- **Finding**: Live call chain exercises 7 services; 10 dead/orphaned services found (including `Manufacturing::Service`, `Manufacturing::UnitModuleAssembly`, `Manufacturing::MaterialRequestSystem`)
+- **Doc check**: CORE_CONCEPT_MAP.md lists dead services as "likely owner"; MANUFACTURING_SYSTEM_OVERVIEW.md is draft/stub from 2026-04-27; ISRU README.md mostly accurate but specific details (Mk1-Mk3 chain) not fully realized
+- **New duplicate pair found**: `UnitModuleAssemblyService` (top-level, live) vs `Manufacturing::UnitModuleAssembly` (dead) — same pattern as Manufacturing::Service
+- **Follow-ups filed**: 
+  - Task A: Dead code removal batch (3 services + 3 spec files) — LOW priority
+  - Task B: CORE_CONCEPT_MAP.md doc fix (1 line correction) — LOW priority
+  - Items 4,5,7 held for design decisions (ConstructionManager, ProductionService, AssemblyService)
+- **Synthesis report**: `summaries/2026-08-04-DIAGNOSIS-MANUFACTURING-CURRENT-STATE-VS-DOCS.md`
+
+---
+
+## 🎯 Latest Completion (2026-08-04) — InfrastructureCostCalculator Dead Code Removal
+
+### ✅ Completed: `2026-07-26-LOW-BUGFIX-INFRASTRUCTURE-COST-CALCULATOR-DEAD-CODE.md` → completed/2026-08/
+- **Decision**: Remove — zero live callers in app/lib/config, no spec coverage, only consumer was a one-off test script from 2026-01-31
+- **Files removed**: `galaxy_game/app/services/economics/infrastructure_cost_calculator.rb` (280 lines), `galaxy_game/test_realistic_costs.rb` (only consumer)
+- **Docs updated**: `docs/wiki_reorganization/inventory/DOCUMENT_INVENTORY.md` — removed from Economics Services table
+- **Acceptance criteria**: All met — decision made, files deleted, no broken requires remain, architecture doc updated
+- **Synthesis report**: `summaries/2026-08-04-BUGFIX-INFRASTRUCTURE-COST-CALCULATOR-DEAD-CODE.md`
+
+---
+
+## 🎯 Latest Completion (2026-08-04) — Visual Definition v1.0 for RH-400
+
+### ✅ Completed: `2026-07-26-MEDIUM-DATA-VISUAL-DEFINITION-V1-RH400.md` → completed/2026-08/
+- **Deliverable**: `docs/reference/asset-generation/visual_definitions/VEHICLE_HARVESTER_ROVER_RH400.json` — First instantiated Visual Definition in the project
+- **Key fields populated**: asset_id, recognition_features (6 structured features), visual_identity (separate from recognition_features), scale_class (proposed `vehicle`), technology_level (2/Mk2), manufacturing_style (heavy_industrial), semantic color roles, silhouette, visual_priority (unified primary/secondary/tertiary)
+- **Gotcha compliance**: No literal hex colors or raw manufacturing_style strings; Design System canonical references only. Blueprint JSON unmodified.
+- **Fields flagged missing**: shared_components and prompt_template_refs — Icon Bible file (`2026-07-19-HIGH-DESIGN-GALAXYGAME_ICON_BIBLE.md`) confirmed missing via filesystem search
+- **Naming convention proposed**: `VEHICLE_[CATEGORY]_[NAME]_[VARIANT].json` in `visual_definitions/` subdirectory — flagged for formalization
+- **Synthesis report**: `summaries/2026-08-04-SYNTHESIS-VISUAL-DEFINITION-RH400.md`
+- **Follow-up needed**: Locate/reconstruct Icon Bible, formalize scale_class system, rerun PromptBuilder validation test for RH-400
+
+---
+
+## 🎯 Latest Completion (2026-08-04) — Slow base_satellite_spec Diagnosis Closure
+
+### ✅ Completed: `2026-07-25-MEDIUM-BUG-FIX-SLOW-BASE-SATELLITE-SPEC-RUNTIME.md` → completed/2026-08/
+- **Original diagnosis was wrong**: CraftLookupService and UnitLookupService are stubbed in spec's `before(:each)` block (lines 19-32), so "37 JSON files scanned per instantiation" analysis was irrelevant to tests
+- **Runtime self-resolved**: 37-minute issue dropped to ~70 seconds with no code changes — confirmed environmental (container resource starvation, cold Docker layers, or Bootsnap cache state)
+- **No fix needed**: Current ~5.8s per example is expected DB setup overhead from `let!` blocks creating satellites
+- **Lesson learned**: Always verify stubs/mocks before analyzing code paths — test setup completely changes what code executes
+
+---
+
+## 🎯 Latest Completion (2026-08-04) — Planetary Terraforming SOP + Habitability Task Reframe
+
+### ✅ Created: `docs/gameplay/PLANETARY_TERRAFORMING_SOP.md`
+- **Purpose**: Authoritative reference for Universal Planetary Terraforming Framework
+- **Contents**:
+  - 5-Phase Universal SOP (Orbital Shield/AWS → Lava Tube Bases → Bio-Nursery Domes → Worldhouses → Unsealing)
+  - Bio-Nursery & Terraforming Seed Mechanics (liquid water trigger, multi-pipeline adaptation ramp, regolith-to-soil conversion)
+  - Wormhole & Counterbalance Physics (Snap Event origin, AWS anchoring patterns, stability progression table)
+  - Sol Tri-System Volatile Loop (Saturn Harvester → Venus Sabatier → Mars Power/Hydration + Martian Sabatier dual-path architecture)
+  - Macro Economy & AI Manager ROI Layer (three-layer architecture, ROI factors, stage→market demand mapping)
+  - System Archetypes at Player Entry + Historical Context (Sol/Eden/System B timeline)
+
+### ✅ Created: `2026-08-04-HIGH-FEATURE-WORLD-AGNOSTIC-HABITABILITY-EVALUATION.md` in `backlog/current/`
+- **Replaces**: `2026-07-25-HIGH-FEATURE-CALCULATE-HABITABILITY-REPLACEMENT.md` (superseded)
+- **Why reframe**: Old task prescribed exact code with hardcoded Mars-specific thresholds — incompatible with Universal SOP's world-agnostic requirement
+- **New approach**: Framework-first — defines 5-component weighted matrix (O2 30%, temp 30%, water 25%, pressure 15%, life bonus up to 10%) and lets agent determine thresholds from actual game data
+
+### ✅ Deprecated: `2026-07-25-HIGH-FEATURE-CALCULATE-HABITABILITY-REPLACEMENT.md` → `superseded/`
+- **Reason**: Prescribed exact code instead of defining framework; hardcoded Mars-specific values incompatible with multi-world expansion
+
+---
 
 ## 🎯 Latest Completion (2026-08-04) — GGMap Format Design Split into 4 Implementation Tasks
 
