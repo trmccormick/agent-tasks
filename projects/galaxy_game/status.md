@@ -1,8 +1,28 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-05 — Magnetosphere Baseline+Modifiers (complete) + Titan Conservation Mandate + Visual Definition RH-400 + Planetary Terraforming SOP + Habitability Task Reframe + Slow Spec Closure + Manufacturing Chain Diagnosis + Dead Code Removal Tasks Filed
+**Last Updated:** 2026-08-05 — World-Agnostic Habitability Matrix + Magnetosphere Baseline+Modifiers (complete) + Titan Conservation Mandate + Visual Definition RH-400 + Planetary Terraforming SOP + Slow Spec Closure + Manufacturing Chain Diagnosis + Dead Code Removal Tasks Filed
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Completion (2026-08-05) — World-Agnostic Habitability Matrix
+
+### ✅ Completed: `2026-08-04-HIGH-FEATURE-WORLD-AGNOSTIC-HABITABILITY-EVALUATION.md` → completed/2026-08/
+- **Problem**: `calculate_habitability()` used hardcoded absolute thresholds (310K, O2 21%, pressure 2.0 bar) — breaks Universal Planetary Terraforming SOP for non-Mars worlds
+- **Solution**: Replaced with 5-component weighted matrix using relative thresholds:
+  | Factor | Weight | Baseline | Range |
+  |--------|--------|----------|-------|
+  | Oxygen | 30% | O2 presence/proportion | 0-1 tiers at 5/10/15/30% |
+  | Temperature | 30% | Delta from ambient | ±15/30/60/120K tiers |
+  | Liquid water | 25% | hydrosphere.state_distribution['liquid'] | 0-1 or 0-100 support |
+  | Pressure | 15% | Ratio vs Earth-normal (1 bar) | 0.3/0.5/3.0/10.0 tiers |
+  | Life bonus | up to 10% | count + domain diversity | capped at 0.1 |
+- **Changes** (2 files):
+  - `galaxy_game/app/models/celestial_bodies/spheres/biosphere.rb` — new formula + fixed `simulate_life_cycle` ambient_temp argument
+  - `galaxy_game/spec/models/celestial_bodies/spheres/biosphere_spec.rb` — comprehensive tests for each factor, graceful degradation, Mars/Venus/Earth worlds
+- **Results**: 84 examples, 0 failures | Formula works for Mars (210K), Venus (737K), and Earth (288K) worlds
+- **Synthesis report**: `summaries/2026-08-05-FEATURE-WORLD-AGNOSTIC-HABITABILITY-SYNTHESIS.md`
 
 ---
 
