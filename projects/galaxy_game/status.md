@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-05 — World-Agnostic Habitability Matrix + Magnetosphere Baseline+Modifiers (complete) + Titan Conservation Mandate + Visual Definition RH-400 + Planetary Terraforming SOP + Slow Spec Closure + Manufacturing Chain Diagnosis + Dead Code Removal Tasks Filed
+**Last Updated:** 2026-08-05 — World-Agnostic Habitability Matrix + Magnetosphere Baseline+Modifiers Architecture + Core-State Gate Fix + Titan Conservation Mandate + Visual Definition RH-400 + Planetary Terraforming SOP + Slow Spec Closure + Manufacturing Service Duplicate Diagnosis
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -83,17 +83,14 @@
 
 ---
 
-## 🎯 Latest Completion (2026-08-04) — Manufacturing Chain Diagnosis
+## 🎯 Latest Completion (2026-08-04) — Manufacturing Service Duplicate Diagnosis
 
-### ✅ Completed: `2026-07-26-MEDIUM-RESEARCH-MANUFACTURING-CURRENT-STATE-VS-DOCS.md` → completed/2026-08/
-- **Finding**: Live call chain exercises 7 services; 10 dead/orphaned services found (including `Manufacturing::Service`, `Manufacturing::UnitModuleAssembly`, `Manufacturing::MaterialRequestSystem`)
-- **Doc check**: CORE_CONCEPT_MAP.md lists dead services as "likely owner"; MANUFACTURING_SYSTEM_OVERVIEW.md is draft/stub from 2026-04-27; ISRU README.md mostly accurate but specific details (Mk1-Mk3 chain) not fully realized
-- **New duplicate pair found**: `UnitModuleAssemblyService` (top-level, live) vs `Manufacturing::UnitModuleAssembly` (dead) — same pattern as Manufacturing::Service
-- **Follow-ups filed**: 
-  - Task A: Dead code removal batch (3 services + 3 spec files) — LOW priority
-  - Task B: CORE_CONCEPT_MAP.md doc fix (1 line correction) — LOW priority
-  - Items 4,5,7 held for design decisions (ConstructionManager, ProductionService, AssemblyService)
-- **Synthesis report**: `summaries/2026-08-04-DIAGNOSIS-MANUFACTURING-CURRENT-STATE-VS-DOCS.md`
+### ✅ Completed: `2026-07-26-LOW-REFACTOR-MANUFACTURING-SERVICE-DUPLICATE.md` → completed/2026-08/
+- **Finding**: Both `ManufacturingService` and `Manufacturing::Service` were created in the same commit (`53eeac63` on 2025-06-21) — strong evidence of parallel same-era development, not an abandoned migration
+- **Git history**: ManufacturingService last touched 2026-05-10 (actively maintained); Manufacturing::Service last touched 2026-05-04 (zero production callers, only its spec references it)
+- **Doc check**: CORE_CONCEPT_MAP.md mentions Manufacturing::Service as "likely owner" but uses hedged language and contains confirmed-stale claims; MANUFACTURING_SYSTEM_OVERVIEW.md and isru/README.md do NOT mention either service by name
+- **Conclusion**: Abandoned duplicate code — safe to remove in a follow-up decision task
+- **Synthesis report**: `summaries/2026-08-04-DIAGNOSIS-MANUFACTURING-SERVICE-DUPLICATE.md`
 
 ---
 
