@@ -19,6 +19,17 @@
   - Different cost model than live version (construction-cost multiplier vs market-based pricing) — confirms competing implementations, neither formally adopted
 - **Follow-up**: Removal task already drafted (`2026-08-05-LOW-BUGFIX-DEAD-CODE-REMOVAL-MANUFACTURING-NAMESPACE.md`) — covers 3 dead services; not yet executed
 
+## 🎯 Latest Completion (2026-08-07) — Partial Dead Code Removal (Scope Correction)
+
+### ⚠️ Partially Completed: `2026-08-05-LOW-BUGFIX-DEAD-CODE-REMOVAL-MANUFACTURING-NAMESPACE.md`
+- **Action**: Deleted 2 of 3 scoped services + their specs (4 files total):
+  - `Manufacturing::Service` — confirmed dead, zero callers ✅
+  - `Manufacturing::UnitModuleAssembly` — confirmed dead, zero callers ✅
+  - `Manufacturing::MaterialRequestSystem` — **RETAINED** — has live caller in `manager.rb:266` (`fulfill_material_request` method) ❌
+- **Scope correction**: Task file incorrectly classified all 3 as dead. Stop condition triggered when grep found production caller for MaterialRequestSystem.
+- **Verification**: 197 manufacturing spec examples, 0 failures — no broken imports
+- **Task status**: NOT closed as complete — task file scope was wrong; needs follow-up correction note
+
 ## 🎯 Latest Completion (2026-08-06) — Duplicate Temperature Delegation Block Removal
 
 ### ✅ Completed: `2026-07-25-MEDIUM-BUGFIX-DUPLICATE-TEMPERATURE-DELEGATION-SPEC.md` → completed/2026-08/
