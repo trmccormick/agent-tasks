@@ -1,10 +1,32 @@
 # Galaxy Game — Project Status & Task Tracking
+**Last Updated:** 2026-08-06 — Shell Printing Thickness Uses Construction-Time Shielding + Pre-existing Test Bug Triage
 **Last Updated:** 2026-08-05 — World-Agnostic Habitability Matrix + Magnetosphere Baseline+Modifiers Architecture + Core-State Gate Fix + Titan Conservation Mandate + Visual Definition RH-400 + Planetary Terraforming SOP + Slow Spec Closure + Manufacturing Service Duplicate Diagnosis
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
+
+
+---
+
+## 🎯 Latest Completion (2026-08-06) — Shell Printing Thickness Uses Construction-Time Shielding
+
+### ✅ Completed: `2026-08-03-HIGH-BUGFIX-SHELL-PRINTING-THICKNESS-USes-CONSTRUCTION-TIME-SHIELDING.md` → completed/2026-08/
+- **Problem**: `ShellPrintingService#calculate_target_thickness` used atmosphere pressure buckets only — no magnetosphere/radiation shielding consideration, no minimum thickness floor
+- **Solution**: Two-input formula combining atmosphere pressure + magnetosphere presence:
+  - Base thickness from pressure buckets (existing): 0→150mm, 0-1→140mm, 1-10→130mm, 10-50→110mm, 50+→80mm
+  - Magnetosphere present: -20mm shielding bonus
+  - Minimum floor clamp: `MINIMUM_SHELL_THICKNESS_MM = 100.0`
+- **Changes**:
+  - `shell_printing_service.rb`: Added constant + updated formula with 3-step process (pressure bucket → shielding bonus → min floor)
+  - `shell_printing_service_spec.rb`: Un-skipped 3 xit tests; added 4 new thickness calculation tests using `send(:calculate_target_thickness)`
+- **Test result**: 14 examples, 0 failures, 2 pending (pre-existing bugs reverted to xit)
+
+### ⚠️ Issues Discovered — Filed as Separate Task
+- `job.inflatable_tank` doesn't exist on ConstructionJob (should be `job.target_unit`) — line 133
+- Materials composition not stored in `materials_consumed` — returns `{}` — line 155
+- Filed: `2026-08-06-MEDIUM-BUGFIX-SHELL-PRINTING-SERVICE-PREEXISTING-TEST-FAILURES.md` (backlog/current/)
 
 ## 🎯 Latest Completion (2026-08-05) — World-Agnostic Habitability Matrix
 
