@@ -1,11 +1,11 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: feature
 system_domain: AI_MANAGER_LUNA_SETTLEMENT
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
-last_updated: 2026-08-05
+last_updated: 2026-08-06
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
@@ -128,3 +128,36 @@ The new method must evaluate habitability using a **weighted factor matrix** wit
 ## Supersedes
 
 - `2026-07-25-HIGH-FEATURE-CALCULATE-HABITABILITY-REPLACEMENT.md` (deprecated — prescribed exact code instead of defining framework)
+
+## Completion Report
+
+**Completed by**: Implementation Agent
+**Completion date**: 2026-08-06
+**Final test result**: 84 examples, 0 failures
+
+### What was changed
+- `galaxy_game/app/models/celestial_bodies/spheres/biosphere.rb` — replaced `calculate_habitability` with world-agnostic weighted matrix (145 lines changed)
+- `galaxy_game/spec/models/celestial_bodies/spheres/biosphere_spec.rb` — comprehensive test suite for all factors (306 lines added)
+
+### Implementation details
+- **5-component formula**: O2 (30%), temperature (30%), liquid water (25%), pressure (15%), life bonus (up to 10%)
+- **All thresholds relative** to body's ambient conditions — no hardcoded absolute values
+- **Temperature**: delta from ambient ±15/30/60/120K tiers
+- **Pressure**: ratio-based vs Earth-normal (1 bar) for Mars/Venus compatibility
+- **Liquid water**: derived from hydrosphere.state_distribution['liquid'] with 0-1 and 0-100 support
+- **Graceful fallback** when hydrosphere data missing or incomplete
+- **Life presence bonus** based on count + domain diversity, capped at 10%
+- Fixed `simulate_life_cycle` to pass ambient_temp as second argument
+
+### Issues discovered
+- None — implementation completed cleanly with all acceptance criteria met
+
+### Follow-up tasks needed
+- Monitor habitability values across different celestial bodies in production
+- Verify integration with SOP Phase 3→Phase 4 gating works correctly
+
+---
+
+## Handoff Summary
+
+HANDOFF SUMMARY: World-agnostic habitability evaluation — replace Mars-specific thresholds with relative weighted matrix | 5-component formula (O2/temp/water/pressure/life) | All thresholds relative to body ambient | 84 examples, 0 failures
