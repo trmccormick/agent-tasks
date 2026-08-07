@@ -3,7 +3,7 @@ title: "Fix CORE_CONCEPT_MAP.md — correct manufacturing chain owner"
 date: 2026-08-05
 type: DOCUMENTATION
 priority: LOW
-status: backlog
+status: completed
 phase: phase9+
 assigned_to: Qwen
 ---
