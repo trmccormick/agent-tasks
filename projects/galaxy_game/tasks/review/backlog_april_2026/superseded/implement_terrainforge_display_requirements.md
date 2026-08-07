@@ -1,3 +1,5 @@
+> **SUPERSEDED (2026-08-07)**: This task describes an abandoned architecture (TerrainForge as a separate layer with its own Admin/Player-Corporation modes and ConstructionEvent schema). Current architecture: TerrainForge is the same Surface View rendering pipeline, camera zoomed in on a single tile — see [2026-07-13-HIGH-ARCHITECTURE-THREE-LAYER-VIEWS.md](../../completed/2026-07/2026-07-13-HIGH-ARCHITECTURE-THREE-LAYER-VIEWS.md) (completed) and `three_layer_views.md`.
+>
 # Implement TerrainForge Display Requirements
 
 **ARCHITECTURAL CORRECTION**: TerrainForge is NOT a separate admin monitoring interface. It is the Civilization Layer interaction mode within the existing Surface View, supporting both Admin and Player Corporation modes with appropriate access controls and display restrictions.
