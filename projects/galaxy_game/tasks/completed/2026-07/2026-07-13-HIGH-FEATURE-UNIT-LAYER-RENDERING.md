@@ -1,7 +1,7 @@
 ---
 title: "Unit/Structure Layer Rendering & Sprite Integration"
 priority: HIGH
-status: active
+status: completed
 phase: UI
 owner: Implementation Agent (Qwen)
 type: feature
