@@ -3,7 +3,7 @@ title: "Dead Code Removal — Manufacturing namespace cleanup"
 date: 2026-08-05
 type: BUGFIX
 priority: LOW
-status: backlog
+status: completed
 phase: phase9+
 assigned_to: Qwen
 ---
@@ -77,3 +77,31 @@ Fill in:
 ---
 
 **Status**: Ready for dispatch — same dead-code-removal pattern as the already-completed Manufacturing::Service task.
+
+---
+
+## Scope Correction (2026-08-07)
+
+Original task scope listed 3 services for removal:
+Manufacturing::Service, Manufacturing::UnitModuleAssembly,
+Manufacturing::MaterialRequestSystem.
+
+During execution, MaterialRequestSystem was found to have a live
+production caller in manager.rb:266 — it is NOT dead code, unlike the
+other two. The task file's scope was wrong on this point.
+
+**Actual outcome**: Only Manufacturing::Service and
+Manufacturing::UnitModuleAssembly were removed (confirmed dead — zero
+production callers, parallel-development origin per git history).
+MaterialRequestSystem was left in place and its working-tree deletion
+was reverted before commit.
+
+Root cause of the scope error: the 2026-08-07 diagnosis task
+(2026-08-07-DIAGNOSIS-MANUFACTURING-SERVICE-DUPLICATE-INVESTIGATION.md)
+concluded "safe to remove all three" without independently checking
+MaterialRequestSystem's call sites — that diagnosis was itself
+incomplete on this one point, worth noting against its own record even
+though it's already closed out.
+
+Verified: 197 manufacturing specs, 0 failures, post-correction.
+Committed as galaxyGame 024f649b / agent-tasks 3ff5e8e.
