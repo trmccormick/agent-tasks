@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-06 — Shell Printing Thickness Uses Construction-Time Shielding + Pre-existing Test Bug Triage
+**Last Updated:** 2026-08-06 — Shell Printing Thickness Uses Construction-Time Shielding + Pre-existing Test Bug Triage + Duplicate Temperature Delegation Block Removal
 **Last Updated:** 2026-08-05 — World-Agnostic Habitability Matrix + Magnetosphere Baseline+Modifiers Architecture + Core-State Gate Fix + Titan Conservation Mandate + Visual Definition RH-400 + Planetary Terraforming SOP + Slow Spec Closure + Manufacturing Service Duplicate Diagnosis
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
@@ -9,6 +9,13 @@
 
 
 ---
+
+## 🎯 Latest Completion (2026-08-06) — Duplicate Temperature Delegation Block Removal
+
+### ✅ Completed: `2026-07-25-MEDIUM-BUGFIX-DUPLICATE-TEMPERATURE-DELEGATION-SPEC.md` → completed/2026-08/
+- **Problem**: `biosphere_spec.rb` contained two `describe 'temperature delegation'` blocks — first at line ~512 (original), second at line ~541 (stale duplicate)
+- **Solution**: Second block was already removed; verified no regression
+- **Verification**: 84 examples, 0 failures, 1 pending (pre-existing xit)
 
 ## 🎯 Latest Completion (2026-08-06) — Shell Printing Thickness Uses Construction-Time Shielding
 
