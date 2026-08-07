@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: LOW
 type: bug-fix
 system_domain: ECONOMICS
@@ -61,33 +61,31 @@ Note (2026-07-28): a manual test script referencing this class exists at `galaxy
 
 ## Current State
 
-- ✅ Signature fix applied: `can_produce?(destination, ...)` → `can_produce_locally?(material.chemical_formula)`
-- ⏳ Still needs: decision on whether the class is wanted, and if so, spec coverage
+- ✅ Signature fix applied: `can_produce?(destination, ...)` → `can_produce_locally?(material.chemical_formula)` (commit 4d68dafe)
+- ✅ **Class removed**: `galaxy_game/app/services/economics/infrastructure_cost_calculator.rb` deleted (commit a288a60e)
+- ✅ **Test script removed**: `galaxy_game/test_realistic_costs.rb` deleted (commit a288a60e)
+- ✅ Decision made: REMOVE — zero live callers, no spec coverage, dead code removal commit applied
 
-## What Needs to Happen
+## Completion Report
 
-1. **Decision**: Is `InfrastructureCostCalculator` still needed?
-   - If yes → write specs covering `calculate_cost` and `calculate_local_production_discount`
-   - If no → remove the file and any remaining references
+**Decision**: REMOVE (already executed in commit a288a60e)
 
-2. **If keeping it**:
-   - Create `spec/services/economics/infrastructure_cost_calculator_spec.rb`
-   - Test `calculate_cost(infrastructure_type, location, options = {})` with realistic inputs
-   - Test `calculate_local_production_discount(blueprint, destination)` including the ISRU capability check
-   - Verify the class works end-to-end (no nil errors, correct discount calculations)
+**Rationale:**
+1. Zero live callers in the actual application — nothing depends on this class
+2. No spec coverage — the signature bug went undetected because of this
+3. The test script is a one-off from 2026-01-31, never integrated into RSpec
+4. Keeping dead code creates future maintenance burden and false confidence
+5. If needed later, git history preserves the class for reference
 
-3. **If removing it**:
-   - Delete `galaxy_game/app/services/economics/infrastructure_cost_calculator.rb`
-   - Remove any remaining require/load statements
-   - Update architecture docs if they reference this class
+**Files removed (commit a288a60e):**
+- `galaxy_game/app/services/economics/infrastructure_cost_calculator.rb` (203 lines)
+- `galaxy_game/test_realistic_costs.rb` (79 lines)
 
-## Acceptance Criteria
-- [ ] Decision made: keep or remove InfrastructureCostCalculator
-- [ ] If kept: specs exist with >80% coverage of public methods
-- [ ] If removed: file deleted, no broken requires remain
-- [ ] Architecture doc updated to reflect current state
+**Acceptance Criteria:**
+- [x] Decision made: remove InfrastructureCostCalculator
+- [x] File deleted, no broken requires remain
+- [x] Architecture doc updated to reflect current state (NEEDS_REVIEW.md entry RESOLVED)
 
 ## Notes
-- This is low priority because nothing depends on this class today
-- The signature fix was applied as a correctness measure even though nothing exercises it
-- Before trusting this class for any real cost calculation, it needs actual specs plus the keep/remove decision
+- This work was completed on 2026-08-04 (commit a288a60e) but the task file was never moved to completed/
+- Synthesis report exists at: `docs/new_agent/projects/galaxy_game/summaries/2026-08-04-BUGFIX-INFRASTRUCTURE-COST-CALCULATOR-DEAD-CODE.md`
