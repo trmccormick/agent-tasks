@@ -20,11 +20,11 @@ blocker_for:
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/backlog/current/2026-08-02-HIGH-ARCHITECTURE-DATA-DRIVEN-CELESTIAL-BODY-GENERATION.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase05-luna-calibration/2026-08-02-HIGH-ARCHITECTURE-DATA-DRIVEN-CELESTIAL-BODY-GENERATION.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv docs/new_agent/projects/galaxy_game/tasks/backlog/current/2026-08-02-HIGH-ARCHITECTURE-DATA-DRIVEN-CELESTIAL-BODY-GENERATION.md \
-         docs/new_agent/projects/galaxy_game/tasks/active/2026-08-02-HIGH-ARCHITECTURE-DATA-DRIVEN-CELESTIAL-BODY-GENERATION.md
+  git mv projects/galaxy_game/tasks/backlog/phase05-luna-calibration/2026-08-02-HIGH-ARCHITECTURE-DATA-DRIVEN-CELESTIAL-BODY-GENERATION.md \
+         projects/galaxy_game/tasks/active/2026-08-02-HIGH-ARCHITECTURE-DATA-DRIVEN-CELESTIAL-BODY-GENERATION.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
@@ -161,7 +161,7 @@ READ FIRST (after Step 0): Task file contains all prerequisites, credentials, go
 
 ### Step 0: Move Task to Active & Verify Synthesis
 **PREREQUISITE — Do NOT skip:**
-1. Move task from backlog/current/ → active/
+1. Move task from backlog/phase05-luna-calibration/ → active/
 2. Update YAML header: `status: backlog` → `status: active`
 3. Commit move before writing any code: `git add ... && git commit -m "Task moved to active"`
 4. Complete Synthesis Report above (document current state)
