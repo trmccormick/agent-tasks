@@ -8,7 +8,7 @@ local_worker_safe: true
 ---
 
 # Master Backlog Triage Registry
-**Path**: `docs/new_agent/tasks/backlog/TRIAGE_REGISTRY.md`  
+**Path**: `projects/galaxy_game/tasks/backlog/TRIAGE_REGISTRY.md`  
 **Description**: The centralized tracking sheet for converting legacy tasks into high-fidelity 0x files. Pass this file to the agent context (`@TRIAGE_REGISTRY.md`) at the start of every triage session.
 
 ---
@@ -21,6 +21,19 @@ local_worker_safe: true
 | ⏳ **In Triage** | 0 | Tasks currently being analyzed and structured. |
 | 🚀 **Ready for Copilot** | 14 | High-fidelity 0x tasks optimized for tomorrow's code sprint. |
 | 🧼 **Completed & Cleaned** | 0 | Legacy files permanently deleted from the workspace. |
+
+---
+
+## 📁 Canonical Phase Folders (Updated 2026-08-08)
+
+| Folder | Phase | Purpose |
+|--------|-------|---------|
+| `phase05-luna-calibration/` | Phase 5 | Luna simulation validation (not building) |
+| `phase06-lava-tube-base/` | Phase 6 | Luna surface-first bootstrap construction |
+| `phase07-depot-building/` | Phase 7 | LEO/L1 depot infrastructure |
+| `phase08-shipyards/` | Phase 8 | Shipyard construction & large craft |
+| `phase09-sol-expansion/` | Phase 9+ | Sol expansion (Mars, Venus, outer system) |
+| `deferred-cleanup/` | — | Off-path items (Surface View, TerrainForge, docs, UI) |
 
 ---
 

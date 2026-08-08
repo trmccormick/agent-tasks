@@ -9,8 +9,8 @@ local_worker_safe: true
 
 # 🎯 Master Triage Guide for Galaxy Game Agent Tasks
 
-**Version**: 1.1  
-**Last Updated**: 2026-06-08  
+**Version**: 1.2  
+**Last Updated**: 2026-08-08  
 **Owner**: Senior Engineer / Team Lead
 
 ---
@@ -32,6 +32,12 @@ This guide explains how to triage, assign, and manage tasks in the Galaxy Game p
 ### `backlog/`
 **Purpose**: All approved but unassigned tasks, organized by date  
 **Contents**: 
+- `phase05-luna-calibration/` — Phase 5: Luna simulation validation (not building)
+- `phase06-lava-tube-base/` — Phase 6: Luna surface-first bootstrap construction
+- `phase07-depot-building/` — Phase 7: LEO/L1 depot infrastructure
+- `phase08-shipyards/` — Phase 8: Shipyard construction & large craft
+- `phase09-sol-expansion/` — Phase 9+: Sol expansion (Mars, Venus, outer system)
+- `deferred-cleanup/` — Off-path items (Surface View, TerrainForge, documentation, UI)
 - New feature requests
 - Refactoring work
 - Technical debt cleanup
@@ -299,7 +305,8 @@ Before starting any task:
 
 ### Weekly Cleanup (Team Lead)
 - Archive old completed tasks (> 30 days) into backup folder
-- Review backlog for stale tasks (> 1 week unassigned)
+- Review `deferred-cleanup/` for stale items (> 2 weeks unassigned)
+- Update phase folder contents as tasks are dispatched or archived
 - Update priority levels if MVP scope changed
 - Remove duplicate or superseded tasks
 
