@@ -264,9 +264,9 @@ Between TEU/PVU online and Titan arrival, the entire fleet runs on:
 
 > **SCOPE LIMIT:** Phase 5 = Luna validation only. Skimmer operations are NOT part of Phase 5 calibration. The simulation must prove the Luna fuel loop works BEFORE skimmers arrive.
 
-The simulation calibration phase is not "tune until it feels right." These are the specific things the simulation must demonstrate before Phase 6 (L1 infrastructure) is unlocked.
+The simulation calibration phase is not "tune until it feels right." These are the specific things the simulation must demonstrate before Phase 6 (Luna surface base construction) is unlocked.
 
-The simulation calibration phase is not "tune until it feels right." These are the specific things the simulation must demonstrate before Phase 6 (L1 infrastructure) is unlocked.
+The simulation calibration phase is not "tune until it feels right." These are the specific things the simulation must demonstrate before Phase 6 (Luna surface base construction) is unlocked.
 
 ### Build Sequence Validation
 - [ ] Precursor dependency chain completes in correct order (power → comms → TEU → PVU → tanks → pad)
@@ -352,13 +352,13 @@ Mechanical foundation: transit-aware ordering + precursor phase gating. `current
 **Phase 5 — Luna Simulation Calibration** *(next)*
 Not a feature phase — a validation phase. Run the simulation, observe behavior against acceptance criteria above, tune constants. Specific focus: LOX crossover point, CH4 bridge survivability, skimmer timing. **This phase does not complete until all acceptance criteria pass.**
 
-**Phase 6 — L1 Depot Infrastructure** *(after Phase 5 validated)*
-Venus and Titan skimmers need an unloading/refueling point that isn't the Luna surface. Initial gas processing at depot. Unlocks HLT tanker operations at scale.
+**Phase 6 — Luna Lava-Tube Base Construction** *(after Phase 5 validated)*
+Surface-first bootstrap: subterranean enclosure, pressurization, ISRU extraction, and material stockpiling. Establishes the surface industrial base that supplies structural components for all subsequent orbital infrastructure.
 
-**Phase 7 — LEO Depot** *(after L1 viable)*
-Earth-side revenue node. Gas sales. Craft leaving Earth fuel up here. GCC currency volume starts building toward peg separation.
+**Phase 7 — Depot Building (LEO / L1 Infrastructure)** *(after Luna surface base operational)*
+Orbital depots built using materials bootstrapped from the Luna surface. Venus and Titan skimmers need an unloading/refueling point that isn't the Luna surface. Initial gas processing at depot. Unlocks HLT tanker operations at scale.
 
-**Phase 8 — L1 Shipyards** *(after depot network profitable)*
+**Phase 8 — Shipyard Construction & First Large Craft** *(after depot network profitable)*
 Unlocks tug and cycler construction. First tug goes to Mars for Phobos/Deimos repositioning.
 
 **Phase 9+ — Sol Expansion** *(after L1 Shipyard operational)*
