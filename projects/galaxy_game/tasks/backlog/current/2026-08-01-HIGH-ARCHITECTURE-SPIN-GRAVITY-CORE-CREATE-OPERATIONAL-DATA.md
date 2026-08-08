@@ -183,6 +183,12 @@ The spin-gravity core design is complete (all 5 architectural decisions finalize
 |---|---|---|
 | Design task (completed) | `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/completed/2026-08/2026-08-01-HIGH-DESIGN-SPIN-GRAVITY-CORE-ARCHITECTURE.md` | Contains complete JSON spec in "Existing Blueprint Data" section |
 
+### Supporting Design Docs (ECLSS context for operational data values)
+| File | Location | Why You Need It |
+|---|---|---|
+| ECLSS_PARAMETERS.md | `/Users/tam0013/Documents/git/galaxyGame/docs/design/ECLSS_PARAMETERS.md` | ISS-derived constants: water recovery efficiency (0.98), crew water daily (3.5 kg/person/day), bone loss rate (0.01/month), critical/emergency buffer thresholds (14/3 days) — use these to validate or calibrate spin-gravity core operational data values |
+| LUNA_SETTLEMENT_LIFECYCLE.md | `/Users/tam0013/Documents/git/galaxyGame/docs/design/LUNA_SETTLEMENT_LIFECYCLE.md` | Luna settlement lifecycle context: Phase 1-3 bootstrapping, nitrogen bottleneck, regolith shielding depth (3.0m), dust abrasion decay (0.02/cycle) — use to verify spin-gravity core fits the correct phase and habitat requirements |
+
 ### Related Files — do NOT touch
 | File | Why |
 |---|---|

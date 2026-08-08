@@ -1,7 +1,7 @@
 ---
 title: "Gameplay loops overview — exploration, terraforming, settlement, logistics, trading, combat"
 priority: HIGH
-status: active
+status: backlog
 owner: Implementation Agent (Qwen)
 type: documentation
 system_domain: OTHER
@@ -21,7 +21,7 @@ Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlo
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
   git mv projects/galaxy_game/tasks/backlog/current/      2026-07-24-HIGH-DOCUMENTATION-GAMEPLAY-LOOPS-OVERVIEW.md \
          projects/galaxy_game/tasks/active/2026-07-24-HIGH-DOCUMENTATION-GAMEPLAY-LOOPS-OVERVIEW.md
-  Then open the moved file and change: status: backlog → status: active
+  Then open the moved file and change: status: active → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
