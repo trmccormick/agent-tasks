@@ -1,8 +1,49 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-07 — Manufacturing Service Duplicate Diagnosis Confirmed (Dead Code, Safe to Remove)
+**Last Updated:** 2026-08-08 — Luna Simulation Baseline Re-established (with findings)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Session Work (2026-08-08) — Luna Simulation Baseline
+
+### ✅ `luna_mission:execute` — 16/17 PASS, 1 FAIL
+- **Settlement:** Luna Base (ID: 42) on LUNA-01
+- **Phase 1 (Power/Comms):** PASSED — 5/5 tasks PASS
+- **Phase 2 (Infrastructure):** PARTIAL_OR_FAILED — `deploy_pve_unit` FAIL
+  - **Bug:** `InfrastructureSequenceError: PVU Mk1 has no available internal_unit_ports (0 of 0 free)`
+  - This is a **regression** from previous 17/17 baseline (2026-07-26)
+- **Phase 3 (Processing):** PASSED — 3/3 tasks PASS
+- **Phase 4 (Operations):** PASSED — 4/4 tasks PASS
+- ISRU stockpile initiation produced: 1000x TEU, 500x PVU, 300x GS output
+
+### ⚠️ `luna:simulate_operations[50,42]` — Ran clean but zero output
+- **Ran without crashing** ✓
+- **All 50 days: +0.0 production across all resources** (oxygen, hydrogen, water, food, regolith)
+- **0 import decisions** made
+- **Root cause:** Settlement population = 0 (no crew assigned), no regolith stockpile ≥75 kg for blueprint production
+- **Not a simulation bug** — service works correctly; data gap makes evaluation impossible
+
+### 📊 Acceptance Criteria Results (per LUNA-MVP-SIMULATION-DESIGN.md)
+| Category | Result |
+|----------|--------|
+| Build Sequence Validation | FAIL — PVU disconnected blocks volatiles chain |
+| Propellant Economics | NOT_TESTED — zero production, no crew |
+| Tank Farm Coordination | NOT_TESTED — no inbound skimmers |
+| ImportRequestGenerator Behavior | PASS (by default) — zero imports of any kind |
+| Economic Viability | NOT_TESTED — no economic activity |
+
+### 🔍 Key Findings
+1. **deploy_pve_unit internal ports bug** — NEW regression, blocks entire volatiles production chain
+2. **Population = 0 data gap** — simulation needs crew to produce meaningful metrics
+3. **No regolith stockpile** — blueprint production requires ≥75 kg regolith in inventory
+4. **Recommendation:** Fix PVU port bug → add crew → seed regolith → re-run simulation
+
+### ✅ Task Management
+- Moved `2026-08-08-HIGH-FEATURE-LUNA-SIMULATION-BASELINE.md` to completed/2026-08/
+- Synthesis report saved in task file with full per-task breakdown + tick-by-tick data + acceptance criteria table
+- agent-tasks commits: `952c64c`, `8d62321`
 
 ---
 
