@@ -9,6 +9,51 @@
 
 ---
 
+## 🎯 Latest Session Work (2026-08-07) — TerrainForge Cleanup + Research Tasks
+
+### ✅ Architecture A → B Supersession (TerrainForge docs/task cleanup)
+- **agent-tasks**: Archived 6 stale task files to `review/backlog_april_2026/superseded/` with SUPERSEDED headers:
+  - `implement_terrainforge_layer.md`, `implement_terrainforge_data_models.md`, `implement_terrainforge_view.md`
+  - `implement_terrainforge_routes_controllers.md`, `implement_terrainforge_display_requirements.md`
+  - `implement_settlement_pattern_tracking.md` (not `implement_settlement_pattern_logic.md` — name correction)
+- **galaxyGame**: Updated 5 docs with deprecated terminology notes pointing to `three_layer_views.md`:
+  - `CURRENT_STATUS.md` (4 TerrainForge L4 milestone references)
+  - `DOCUMENTATION_STRATEGIST.md` (2 references)
+  - `SURFACE_VIEW_IMPLEMENTATION_PLAN.md` (line 27 entry)
+  - `GLOSSARY_SYSTEM_MECHANICS.md` (Micro Layer definition)
+  - `DESIGN_RESEARCH_INDEX.md` (multi-view abstraction note)
+- **Commits**: agent-tasks `d4f955c`, galaxyGame `36aeeccc`
+
+### ✅ sol-complete.json Git Tracking Violation Cleanup
+- `git rm --cached data/json-data/star_systems/sol-complete.json` — removed from index (file remains on disk)
+- Added `.gitignore` pattern: `/data/json-data/star_systems/*.json`
+- **Commit**: galaxyGame `23e2e11d`
+- **Note**: File still exists in 5 historical commits — history rewriting deferred
+
+### ✅ Worldhouse Design.md Symlink Issue — Confirmed Clean
+- Only 1 commit references it (`d59613a0`)
+- `git ls-files --cached` shows single path, no phantom entries
+- `git status --short` is clean (no D entries)
+
+### 📋 Drafted Tasks (backlog, not dispatched)
+- **terrain_data_builder.rb export**: `2026-08-07-HIGH-FEATURE-TERRAIN-DATA-BUILDER-EXPORT-GAMEPLAY-FIELDS.md` — full investigation of all 4 missing fields (city_overlays, improvements, yield_grid, unit_orders). yield_grid and unit_orders confirmed as blockers needing design tasks.
+- **yield_grid research**: `2026-08-07-RESEARCH-YIELD-GRID-DESIGN-OPTIONS.md` — found 5 reusable patterns (LunaOpsService delta tracking, Craft#recalculate_stats mining rate, BaseStructure#output_resources, etc.). Recommended hybrid approach.
+- **unit order research**: `2026-08-07-RESEARCH-UNIT-ORDER-TRACKING-OPTIONS.md` — found Job + ConstructionJob as extendable patterns. Recommended simple current_order enum for immediate export.
+- **parent magnetosphere research**: `2026-08-07-RESEARCH-PARENT-MAGNETOSPHERE-INFLUENCE-GAMEPLAY-VALUE.md` — found has_magnetosphere gates only ONE runtime calc (atmospheric loss in TerraSim). Recommended Option B (static parent-influence bonus, generation-time only).
+
+### 🔍 Mars Magnetosphere Investigation
+- **Root cause**: `has_magnetosphere` boolean never derived from `magnetosphere_strength` anywhere in code
+- sol-complete.json has `magnetosphere_strength: 0.0` for Mars (correct)
+- ProceduralGenerator defaults to 0.5 baseline for random planets
+- SystemBuilderService reads JSON value into properties but does NOT set has_magnetosphere boolean
+- Two competing sources: JSON (0.0) vs procedural formula (0.5) — which wins depends on data source path
+
+### 📋 Pre-dispatch Verification for CIV4-SURFACE-VIEW-GAMEPLAY
+- SPRITE-TILES task: completed ✅
+- UNIT-LAYER-RENDERING: file in completed/ but YAML still says "active" — paperwork gap (fixed this session)
+- terrain_data_builder.rb exports only 8 fields; missing city_overlays, improvements, yield_grid, unit_orders
+- surface_view.js has canvas listeners for wheel/mouse events but NO click/hover gameplay listeners
+
 ## 🎯 Latest Completion (2026-08-07) — Manufacturing Service Duplicate Diagnosis
 
 ### ✅ Completed: `2026-07-26-LOW-REFACTOR-MANUFACTURING-SERVICE-DUPLICATE.md` → completed/2026-08/
