@@ -1,8 +1,48 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-08 — Luna Simulation Baseline Re-established (with findings)
+**Last Updated:** 2026-08-09 — Task Template Compliance + Post-Luna Mission Profile Inventory
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🎯 Latest Session Work (2026-08-09) — Task Template Compliance + Post-Luna Inventory
+
+### ✅ Post-Luna Mission Profile Inventory (research task completed)
+- **Task**: `2026-08-08-MEDIUM-RESEARCH-INVENTORY-POST-LUNA-MISSION-PROFILES` → completed/2026-08/
+- **Report**: `summaries/2026-08-08-RESEARCH-INVENTORY-POST-LUNA-MISSION-PROFILES.md` (226 lines)
+- **Cross-referenced 7 build stages** against active missions directories:
+
+| Build Stage | Maturity | Gap Status |
+|---|---|---|
+| L1 Depot | manifest-only (2 files) | 🔴 Most critical gap — no profile/phases |
+| Mars | Full (profile+manifest+15 phases) | ✅ Ready for task extraction |
+| Phobos/Deimos | Thought experiment only | 🔴 Not production-ready |
+| Asteroid Belt | Full (v1/v2/v3 iterations) | ✅ Ready |
+| Venus Station | Full (10 profiles, 5 manifests, 19 phases) | ✅ Most extensive design |
+| Cycler Network | Fragmented (profile+phase+tasks scattered) | 🟡 Needs unified design as infrastructure |
+| Psyche | Full (v1/v2/v3) | ✅ Ready |
+
+- **Out-of-scope**: 17 outer solar system directories noted (europa, ganymede, callisto, uranus/neptune systems, etc.) — all "found, not yet reviewed, not part of current MVP path"
+- **Top recommendation**: L1 Depot is the bottleneck — placed immediately after Luna in build order but has no dedicated profile or phases
+
+### ✅ Drafted: L1 Depot Profile + Phase Structure (task file created, backlog/undispatched)
+- **File**: `phase07-depot-building/2026-08-08-HIGH-FEATURE-L1-DEPOT-PROFILE-PHASES.md`
+- **Structure**: profile_v2 → mission_plan_v2 (5-phase DAG: core_structure → fuel_infrastructure → cargo_logistics → cycler_coordination → operational_test) → 4-6 phase files
+- **Status**: backlog — not dispatched until ready for implementation
+
+### ✅ Task Template Compliance Reviews (4 task files updated)
+
+| Task File | Issue Found | Action Taken |
+|---|---|---|
+| `2026-05-23-HIGH-BUG-FIX-UNIVERSE-REGISTRATION-JOB-SPATIAL-BOUNDARY-VALIDATION.md` | Missing YAML frontmatter, no Minimal Handoff block | Added frontmatter, Minimal Handoff, Architecture Gotchas; fixed Docker command (removed cd /home/galaxy_game) |
+| `2026-08-06-MEDIUM-BUGFIX-SHELL-PRINTING-SERVICE-PREEXISTING-TEST-FAILURES.md` | mvp_alignment: PHASE 9+ (wrong), missing Minimal Handoff | Fixed to AI_MANAGER_LUNA_SETTLEMENT, added gotchas, verified bugs still actionable (both xit tests confirmed pending) |
+| `2026-08-08-MEDIUM-RESEARCH-AI-MANAGER-DECISION-LOGIC-GAP.md` | Missing YAML frontmatter, non-standard headers | Added frontmatter, Minimal Handoff, Architecture Gotchas; verified dead code still exists (4 files confirmed) |
+| `2026-06-17-LUNA-SIMULATION-LOOP.md` | L1 dependency BLOCKED — no deployed L1 settlement exists in seeds/db/data | Updated Context section with blocker finding + known architecture baseline; left status: draft |
+| `2026-06-11-MEDIUM-FEATURE-PRESSURIZATION-TTR-FAILURE-CASCADE-MODELING.md` | Non-standard fields (created_date, extracted_from), missing Minimal Handoff | Rewrote to match template; verified PressurizationService + Worldhouse exist, TTR metric confirmed absent |
+
+### ✅ Stale File Cleanup
+- Removed duplicate `2026-08-08-MEDIUM-RESEARCH-AI-MANAGER-DECISION-LOGIC-GAP.md` from `phase5+/` (correct copy remains in `phase05-luna-calibration/`)
 
 ---
 
