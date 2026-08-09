@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 priority: HIGH
 type: bugfix
 system_domain: AI_MANAGER | NPC_ECONOMY
@@ -15,7 +15,7 @@ blocker_reason: "None"
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase05-luna-calibration/2026-08-06-HIGH-BUGFIX-MARKET-STABILIZATION-SERVICE-MISSING-THRESHOLD-METHOD.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/active/2026-08-06-HIGH-BUGFIX-MARKET-STABILIZATION-SERVICE-MISSING-THRESHOLD-METHOD.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
   cd /Users/tam0013/Documents/git/agent-tasks
