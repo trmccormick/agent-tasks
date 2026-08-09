@@ -50,6 +50,17 @@
 
 ---
 
+## 🎯 Previous Completion (2026-08-08) — Luna Simulation Baseline Re-established
+
+### ✅ Task: `2026-08-08-HIGH-FEATURE-LUNA-SIMULATION-BASELINE` → completed/2026-08/
+- **luna_mission:execute**: 16/17 PASS, 1 FAIL (`deploy_pve_unit` internal ports regression)
+- **luna:simulate_operations[50,42]**: Ran clean but zero output (population=0 data gap)
+- **Key finding**: PVU Mk1 port bug blocked entire volatiles chain — this was the blocker for all Phase 5 acceptance criteria
+- **Resolution**: Both issues fixed in subsequent 2026-08-09 session (see above: PVU blueprint migration + ISRU production logic)
+- **Synthesis report**: Saved in task file with full per-task breakdown + tick-by-tick data + acceptance criteria table
+
+---
+
 ## 🎯 Latest Completion (2026-08-07) — Manufacturing Service Duplicate Diagnosis
 
 ### ✅ Completed: `2026-07-26-LOW-REFACTOR-MANUFACTURING-SERVICE-DUPLICATE.md` → completed/2026-08/
