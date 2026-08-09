@@ -36,6 +36,29 @@ The Luna MVP requires the initial settlement to be established before broader ex
 
 The AI Manager should evaluate the local situation, choose among valid options, and produce a task artifact that can later be reviewed by Claude or a local agent.
 
+### Current Architecture Baseline (as of 2026-08-08)
+
+**tasks_v2/ missions_v2/** use flat lists with `task_ref` + static parameters — no conditional/scoring logic today. This task is meant to add decision logic on top of that baseline. The AI Manager's current capabilities are limited to:
+- `Settlements::CostAnalyzer` — autonomous cost analysis (Phase 1)
+- `Logistics::ManifestGenerator` — smart sourcing (player → NPC → Earth priority) (Phase 1)
+- `Logistics::ShortageDetector` — resource monitoring (Phase 1)
+- `ImportRequestGenerator` — shortage prediction (Phase 1)
+- `StrategySelector` — pattern matching for life-support prioritization (Phase 1)
+
+None of these provide the location-driven expansion option generation this task requires. That logic must be built as a new capability layer.
+
+### L1 Dependency Status — BLOCKED (verified 2026-08-08)
+
+**"L1 settlement exists" is NOT currently true.** Confirmed via codebase search:
+- Zero matches for `L1.*Station` in `db/seeds.rb`, `db/migrate/`, or `data/` — no L1 settlement record exists in any seed data.
+- The only real L1 content is two bare manifest files (`l1_station_depot_manifest_v1.json`, `leo_depot_construction_manifest_v1.json`) — no profile, no phases, no deployment data.
+- Codebase has infrastructure stubs (cost calculations, trade service looking for `/L1.*Station/`, location operations job routing) — these are placeholder gateways that would only activate once an L1 settlement record exists.
+- **This is a hard block.** The task cannot proceed until Phase 7 (Depot Building) creates a deployed L1 base with profile, plan, and phases.
+
+### Luna Dependency Status — UNBLOCKED
+
+**"Luna settlement exists" is confirmed true.** Settlement ID 103, Luna Base, seeded and validated per 2026-08-08 simulation work.
+
 ## Scope
 
 In scope:

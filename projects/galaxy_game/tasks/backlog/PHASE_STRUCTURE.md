@@ -78,15 +78,15 @@ Each world can progress at its own pace, with the AI Manager learning to priorit
 | Phase | Structure | Status | Execution Model | Purpose |
 |-------|-----------|--------|---|---------|
 | **1-4** | Foundation | ✅ Complete | Sequential baseline | AI Manager core logic + service integration |
-| **5** | 5a/5b/5c | **ACTIVE** | Sequential prerequisite | Luna validation → option testing → AI training |
-| **6** | 6a/6b/6c | **QUEUED** | Sequential prerequisite | Luna infrastructure validation → AI training |
-| **7** | 7a/7b/7c | **QUEUED** | Sequential prerequisite<br>→ **PARALLEL TRIGGER** | Orbital infrastructure validation<br>🔁 Enables Phases 9-13 to start in parallel |
-| **8** | 8a/8b/8c | **QUEUED** | Sequential prerequisite<br>+ **PARALLEL SUPPORT** | Shipyard/craft validation<br>🔁 Supports concurrent world expansion |
-| **9** | 9a/9b/9c/9d/9e | **PLANNED** | 🔁 **PARALLEL** with 10,11,12,13 | Mars: orbital + surface + terraforming + AI training |
-| **10** | 10a/10b/10c/10d | **PLANNED** | 🔁 **PARALLEL** with 9,11,12,13 | Venus: cloud cities + atmospheric + asteroid + AI training |
-| **11** | 11a/11b/11c/11d | **PLANNED** | 🔁 **PARALLEL** with 9,10,12,13 | Multi-world logistics coordination + AI training |
-| **12** | 12a/12b/12c | **PLANNED (optional)** | 🔁 **PARALLEL** with 9,10,11,13 | Optional branch expansion (Ceres/Titan) |
-| **13** | 13a/13b/13c | **PLANNED** | 🔁 **PARALLEL** with 9,10,11,12 | Psyche + coordinated terraforming + AI training |
+| **5** | `phase05-luna-calibration/` | ACTIVE | Luna validation → option testing → AI training |
+| **6** | `phase06-lava-tube-base/` | QUEUED | Surface-first bootstrap construction |
+| **7** | `phase07-depot-building/` | QUEUED | Orbital infrastructure (LEO/L1) |
+| **8** | `phase08-shipyards/` | QUEUED | Shipyard/craft validation + parallel support |
+| **9** | `phase09-sol-expansion/` | PLANNED | 🔁 PARALLEL with 10,11,12,13 — Mars/Venus/outer system |
+| **10** | `phase09-sol-expansion/` (Venus subfolder) | **PLANNED** | 🔁 **PARALLEL** with 9,11,12,13 | Venus: cloud cities + atmospheric + asteroid + AI training |
+| **11** | `phase09-sol-expansion/` (logistics subfolder) | **PLANNED** | 🔁 **PARALLEL** with 9,10,12,13 | Multi-world logistics coordination + AI training |
+| **12** | `phase09-sol-expansion/` (optional subfolder) | **PLANNED (optional)** | 🔁 **PARALLEL** with 9,10,11,13 | Optional branch expansion (Ceres/Titan) |
+| **13** | `phase09-sol-expansion/` (Psyche subfolder) | **PLANNED** | 🔁 **PARALLEL** with 9,10,11,12 | Psyche + coordinated terraforming + AI training |
 | **14+** | TBD | **FUTURE** | Sequential gate | AI operational independence + Eden expansion |
 
 **🔁 Parallel Trigger**: Phase 7 completion triggers Phases 9-13 to begin simultaneously. All four world-expansion streams run concurrently, with Phase 11 coordinating logistics across them.

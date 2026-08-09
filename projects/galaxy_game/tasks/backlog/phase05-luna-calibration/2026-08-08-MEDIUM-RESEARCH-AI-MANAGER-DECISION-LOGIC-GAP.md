@@ -1,12 +1,45 @@
+---
+status: backlog
+priority: MEDIUM
+type: research
+system_domain: AI_MANAGER
+mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
+local_worker_safe: true
+---
+
 # TASK: AI Manager Decision-Logic Gap — Codebase Analysis
 
-**Task ID:** `2026-08-08-MEDIUM-RESEARCH-AI-MANAGER-DECISION-LOGIC-GAP`
-**Date Created:** 2026-08-08
-**Priority:** MEDIUM
-**Type:** research
-**System Domain:** AI_MANAGER
-**MVP Alignment:** AI_MANAGER_LUNA_SETTLEMENT
-**Local Worker Safe:** true
+---
+
+## ⚡ Minimal Handoff (Copy this to send to agent)
+
+```
+You are **Implementation Agent**.
+
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase05-luna-calibration/2026-08-08-MEDIUM-RESEARCH-AI-MANAGER-DECISION-LOGIC-GAP.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/phase05-luna-calibration/2026-08-08-MEDIUM-RESEARCH-AI-MANAGER-DECISION-LOGIC-GAP.md \
+         projects/galaxy_game/tasks/active/2026-08-08-MEDIUM-RESEARCH-AI-MANAGER-DECISION-LOGIC-GAP.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-08-08-MEDIUM-RESEARCH-AI-MANAGER-DECISION-LOGIC-GAP.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
 
 ---
 
@@ -15,6 +48,32 @@
 `LUNA-MVP-SIMULATION-DESIGN.md` (lines ~375-390) lists 6 "Outstanding Architecture Questions" about the AI Manager decision-logic layer. Claude's handoff narrowed these to 5 core questions. This task answers them against the real codebase — **no code changes, just analysis.**
 
 The design doc states: *"The AI Manager decision-logic layer — 'given a location + intent, evaluate settlement options' — does not exist yet."* This task confirms that claim and maps what DOES exist vs what's missing.
+
+**Relevant Architecture Docs** — read before starting:
+- `docs/new_agent/projects/galaxy_game/research/LUNA-MVP-SIMULATION-DESIGN.md` — Outstanding Architecture Questions section
+- `data/json-data/missions_v2/mission_plans/luna_precursor_mission_plan_v2.json` — DAG execution order (if wired)
+
+---
+
+## Critical Information for This Task
+
+### Architecture Gotchas
+
+⚠️ **GOTCHA 1: Analysis only — NO code changes**
+- ❌ Wrong: Write models, services, or modify any files to fill gaps
+- ✅ Right: grep/find the codebase, report what exists and what doesn't
+- Why: This is a research task. Creating new code here would be scope creep.
+
+⚠️ **GOTCHA 2: Report confidence levels**
+- ❌ Wrong: Say "doesn't exist" without checking thoroughly
+- ✅ Right: Report confidence (high/medium/low) for each answer — low confidence means the system might exist under an unusual name/interface
+- Why: Hidden behind an unusual interface is still "exists" and changes the gap analysis.
+
+---
+
+## Problem Statement
+
+`LUNA-MVP-SIMULATION-DESIGN.md` lists 6 outstanding architecture questions about the AI Manager decision-logic layer. This task answers them against the real codebase to confirm what's missing before Phase 7+ implementation begins.
 
 ---
 
@@ -75,71 +134,65 @@ Answer each question by searching the codebase. Report findings with file paths,
 
 ---
 
-## Stop Conditions
-
-- **STOP** if you find evidence that any of these systems DO exist but are hidden behind an unusual interface — report the finding and stop researching that question.
-- **DO NOT** write any code, create models, or modify any files. This is analysis only.
+## Acceptance Criteria
+- [ ] All 5 research questions answered with file/line evidence
+- [ ] Confidence level (high/medium/low) reported for each answer
+- [ ] Summary lists systems that EXIST vs DO NOT EXIST
+- [ ] No code changes made — analysis only
+- [ ] Recommendations for next steps included
 
 ---
 
-## Output Format
+## Stop Conditions — escalate to user immediately if:
+- Evidence found that a system DOES exist but is hidden behind an unusual interface — report the finding and stop researching that question
+- Any architectural decision is required beyond answering the 5 questions
 
-Return a structured report:
+---
 
+## Commit Instructions
+Run git commands on **host only** — never inside the Docker container:
+```bash
+git add [summary file path]
+git commit -m "research: AI Manager decision-logic gap analysis (5 questions answered against codebase)"
+git push
 ```
-AI Manager Decision-Logic Gap Analysis
-========================================
 
-Q1: ImportRequestGenerator multi-source support
-  Answer: [Earth-only / Multiple sources listed]
-  Evidence: [file.rb:line — brief description]
-  Confidence: [high/medium/low]
-
-Q2: Inbound cargo/manifest tracking
-  Answer: [Exists / Does not exist]
-  Evidence: [file.rb:line or "no matches found"]
-  Confidence: [high/medium/low]
-
-Q3: Precursor build dependency graph
-  Answer: [Wired into code / JSON-only / Not modeled]
-  Evidence: [file.rb:line or "no matches found"]
-  Confidence: [high/medium/low]
-
-Q4: CH4/scarce-resource priority-queue arbitration
-  Answer: [Exists / Does not exist]
-  Evidence: [file.rb:line or "no matches found"]
-  Confidence: [high/medium/low]
-
-Q5: Skimmer persistent asset model
-  Answer: [Exists / Does not exist]
-  Evidence: [file.rb:line or "no matches found"]
-  Confidence: [high/medium/low]
-
-Summary:
-  - Systems that EXIST: [list]
-  - Systems that DO NOT EXIST (confirmed gap): [list]
-  - Recommendations for next steps: [brief]
+**Task file move on completion:**
+```bash
+mv projects/galaxy_game/tasks/active/2026-08-08-MEDIUM-RESEARCH-AI-MANAGER-DECISION-LOGIC-GAP.md \
+   projects/galaxy_game/tasks/completed/2026-08/2026-08-08-MEDIUM-RESEARCH-AI-MANAGER-DECISION-LOGIC-GAP.md
+git add projects/galaxy_game/tasks/completed/2026-08/2026-08-08-MEDIUM-RESEARCH-AI-MANAGER-DECISION-LOGIC-GAP.md
+git commit -m "chore: move 2026-08-08-MEDIUM-RESEARCH-AI-MANAGER-DECISION-LOGIC-GAP.md to completed/"
 ```
 
 ---
 
-## References
-
-- `LUNA-MVP-SIMULATION-DESIGN.md` — Outstanding Architecture Questions section
-- `luna_precursor_mission_plan_v2.json` — DAG execution order (if wired)
-- `AIManager::TaskExecutionEngineV2` — Mission execution engine
-- `Logistics::ImportRequestGenerator` — Import request generation
-- `StrategySelector` — AI Manager strategy selection
+## Documentation
+- [ ] Update `LUNA-MVP-SIMULATION-DESIGN.md` — mark Outstanding Architecture Questions as resolved with findings
 
 ---
 
-## Minimal Handoff Block
+## Dependencies
+**Blocked by**: none — requires only codebase read access
+**Blocks**: Phase 7+ implementation (needs gap analysis before design)
+**Related tasks**: `2026-08-08-HIGH-FEATURE-LUNA-SIMULATION-BASELINE` (simulation baseline that exposed these gaps)
 
-```
-You are the Implementation Agent.
+---
 
-Project: galaxy_game
-Task: Analyze codebase for 5 AI Manager decision-logic capabilities
-Scope: grep/find analysis only — NO code changes, NO model creation
-Return structured report per task specification above.
-```
+## Completion Report
+*Filled in by the implementing agent after completion*
+
+**Completed by**:
+**Completion date**:
+
+### Findings Summary
+- **Systems that EXIST:** [list with file/line]
+- **Systems that DO NOT EXIST (confirmed gap):** [list]
+
+### Recommendations for next steps
+-
+
+---
+
+## Handoff Summary
+HANDOFF SUMMARY: [5 questions answered] | gap analysis complete | next: Phase 7 implementation planning

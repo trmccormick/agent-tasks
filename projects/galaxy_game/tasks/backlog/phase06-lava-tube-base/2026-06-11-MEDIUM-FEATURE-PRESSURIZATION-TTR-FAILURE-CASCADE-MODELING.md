@@ -3,82 +3,90 @@ status: backlog
 priority: MEDIUM
 type: feature
 system_domain: PRESSURIZATION | LIFE_SUPPORT
-mvp_alignment: LUNA_SETTLEMENT_INFRASTRUCTURE_PHASE6
-local_worker_safe: false
-created_date: 2026-06-11
-extracted_from: docs/agent/archive/backlog_april_2026/deprecated/2026-04-17-CRITICAL-ARCHITECTURE-ENCLOSED-ATMOSPHERE-FAILURE-PREDICTION-PLANNING.md
+mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT (Phase 6+ — lava-tube base construction)
+local_worker_safe: true
 gate_condition: Phase 5 simulation running with observable pressurization events (Luna fuel loop validated)
 ---
 
 # TASK: Implement TTR Metric and Failure Cascade Modeling in PressurizationService
 
-**Status**: BACKLOG  
-**Priority**: MEDIUM  
-**Type**: feature  
-**Created**: 2026-06-11  
-**Last Updated**: 2026-06-11  
-
 ---
 
-## Local Worker Triage Report
-*Filled in during April 2026 backlog triage session (June 12, 2026)*
+## ⚡ Minimal Handoff (Copy this to send to agent)
 
-- **Template Conformance**: PASS — all required sections present  
-- **Docker Wrapper Check**: N/A — feature task requiring implementation work  
-- **MVP Alignment**: VALID for Phase 6+ — NOT needed for Luna simulation calibration per `research/LUNA-MVP-SIMULATION-DESIGN.md`
-- **MVP Impact Note**: Pressurization infrastructure exists but TTR metric and failure cascade modeling not implemented; deferred to Phase 6+ as future scalability enhancement after fuel loop proven  
-- **Action Line**: READY FOR CLOUD HANDOFF — task file created in phase6+/ backlog with gate condition
+```
+You are **Implementation Agent**.
 
----
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase06-lava-tube-base/2026-06-11-MEDIUM-FEATURE-PRESSURIZATION-TTR-FAILURE-CASCADE-MODELING.md
 
-## Agent Assignment
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/phase06-lava-tube-base/2026-06-11-MEDIUM-FEATURE-PRESSURIZATION-TTR-FAILURE-CASCADE-MODELING.md \
+         projects/galaxy_game/tasks/active/2026-06-11-MEDIUM-FEATURE-PRESSURIZATION-TTR-FAILURE-CASCADE-MODELING.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
-**Assigned To**: GPT-5 mini 0x or Claude Sonnet 1x (requires architectural reasoning across pressurization services and life support systems)
-**Why This Agent**: Requires deep understanding of existing PressurizationService infrastructure, TTR calculation patterns, failure propagation modeling  
-**Supervision Level**: watched carefully
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-06-11-MEDIUM-FEATURE-PRESSURIZATION-TTR-FAILURE-CASCADE-MODELING.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
 
 ---
 
 ## Context
 
-Enclosed atmospheric systems require robust failure prediction to model realistic habitat maintenance scenarios. The current codebase has pressurization infrastructure (`app/services/pressurization_service.rb` + specialized handlers) but lacks:
-- **TTR (Time-to-Reversion)** metric — how long before atmosphere degrades below safe thresholds  
-- **Failure cascade modeling** — propagation of atmospheric failures across interconnected habitats
+Enclosed atmospheric systems require robust failure prediction to model realistic habitat maintenance scenarios. The current codebase has pressurization infrastructure but lacks TTR (Time-to-Reversion) metric and failure cascade modeling.
 
-This task was extracted from April 2026 backlog during June 12 triage audit. Original file archived at `docs/agent/archive/backlog_april_2026/deprecated/2026-04-17-CRITICAL-ARCHITECTURE-ENCLOSED-ATMOSPHERE-FAILURE-PREDICTION-PLANNING.md`. Per `research/LUNA-MVP-SIMULATION-DESIGN.md`, this is **NOT needed for Phase 5 Luna simulation calibration** (which focuses on fuel loop validation), making it a Phase 6+ future scalability enhancement.
+**Relevant Architecture Docs** — read before starting:
+- `docs/new_agent/projects/galaxy_game/research/LUNA-MVP-SIMULATION-DESIGN.md` — Phase alignment reference (confirms NOT Phase 5 work)
+- `galaxy_game/app/services/pressurization_service.rb` — existing pressurization infrastructure entry point
+- `galaxy_game/app/models/structures/worldhouse.rb` — worldhouse model with enclosed_segments, coverage_percent tracking
 
-### Gate Condition
-This task should NOT be dispatched until:
-✅ Phase 5 simulation running with observable pressurization events  
-✅ Luna fuel loop validated (consumption modeling, precursor phase gating working)  
+---
 
-Once gate condition met, this work enables realistic multi-settlement atmospheric failure scenarios for L1 Depot infrastructure operations.
+## Critical Information for This Task
 
-**Relevant Architecture Docs — read before starting:**
-- `docs/new_agent/projects/galaxy_game/research/LUNA-MVP-SIMULATION-DESIGN.md` — Phase alignment reference (confirms NOT Phase 5 work)  
-- `app/services/pressurization_service.rb` — existing pressurization infrastructure entry point  
-- `app/models/structures/worldhouse.rb` — worldhouse model with enclosed_segments, coverage_percent tracking
+### Architecture Gotchas
+
+⚠️ **GOTCHA 1: Gate condition is real**
+- ❌ Wrong: Implement this before Phase 5 simulation validates the fuel loop
+- ✅ Right: Verify gate condition is met before starting — no observable pressurization events = no test data to validate against
+- Why: This task depends on Phase 5 proving consumption modeling and precursor phase gating work. Without that foundation, TTR calculations have no baseline to compare against.
+
+⚠️ **GOTCHA 2: Scope is PressurizationService only**
+- ❌ Wrong: Build AI Manager integration hooks or player-facing UI during this task
+- ✅ Right: Implement `time_to_reversion` and `simulate_atmospheric_failure` methods in PressurizationService only. Extract AI Manager integration as a separate task if needed later.
+- Why: This is a focused infrastructure enhancement, not an AI Manager feature.
+
+### Verified Current State (2026-08-09)
+
+| Component | Status | Evidence |
+|-----------|--------|----------|
+| Pressurization infrastructure | ✅ EXISTS | `galaxy_game/app/services/pressurization_service.rb` line 1 |
+| Worldhouse model with atmospheric tracking | ✅ EXISTS | `galaxy_game/app/models/structures/worldhouse.rb` line 2 |
+| TTR metric calculation | ❌ NOT IMPLEMENTED | grep for `time_to_reversion\|ttr\|TTR` returned 0 results in codebase |
+| Failure cascade modeling | ❌ NOT IMPLEMENTED | No event propagation patterns found across atmospheric systems |
 
 ---
 
 ## Problem Statement
 
 **Current behavior**: PressurizationService handles gas calculations and retention multipliers based on magnetic field strength. Worldhouse model tracks construction progress (enclosed_segments vs total_segments). However:
-- No TTR metric exists to predict when atmosphere will degrade below safe thresholds  
+- No TTR metric exists to predict when atmosphere will degrade below safe thresholds
 - No failure cascade modeling for interconnected habitats sharing life support infrastructure
 
 **Expected behavior**: PressurizationService includes `time_to_reversion` method calculating hours until atmospheric degradation, plus basic failure propagation patterns for connected settlements. This enables realistic simulation of habitat maintenance scenarios where failures propagate through connected settlements (e.g., L1 Depot → Luna surface habitats).
-
----
-
-## Current State Analysis
-
-| Component | Status | Evidence |
-|-----------|--------|----------|
-| Pressurization infrastructure | ✅ EXISTS | `app/services/pressurization_service.rb` + specialized handlers (habitat, structure, unit, craft) |
-| Worldhouse model with atmospheric tracking | ✅ EXISTS | `app/models/structures/worldhouse.rb` tracks enclosed_segments, coverage_percent, population_capacity |
-| TTR metric calculation in PressurizationService | ❌ NOT IMPLEMENTED | grep search for "ttr\|time_to_reversion" returned 0 results in pressurization services |
-| Failure cascade modeling in PressurizationService | ❌ NOT IMPLEMENTED | No event propagation patterns found across atmospheric systems |
 
 ---
 
@@ -86,28 +94,43 @@ Once gate condition met, this work enables realistic multi-settlement atmospheri
 
 ### In Scope (Phase 6+ — Future Scalability)
 1. **TTR Metric Design & Implementation in PressurizationService**
-   - Define TTR calculation formula based on: current pressure, leak rate, atmospheric composition, magnetic field strength  
+   - Define TTR calculation formula based on: current pressure, leak rate, atmospheric composition, magnetic field strength
    - Add `time_to_reversion` method to PressurizationService returning hours until atmosphere degrades below safe threshold (e.g., 0.5 atm for human habitation)
 
 2. **Failure Cascade Modeling in PressurizationService**
-   - Design event propagation patterns for interconnected habitats sharing life support infrastructure  
+   - Design event propagation patterns for interconnected habitats sharing life support infrastructure
    - Implement basic failure cascade logic that tracks dependencies between settlements (e.g., L1 Depot supplies Luna surface habitats with N2)
 
 ### Out of Scope (Not Phase 6+)
-- AI Manager integration hooks — separate task if needed after TTR/failure modeling proven working  
-- Terraforming atmosphere stabilization tiers from original April task matrix — those are Act 3/4 work, move to phase9+/ if needed  
+- AI Manager integration hooks — separate task if needed after TTR/failure modeling proven working
+- Terraforming atmosphere stabilization tiers from original April task matrix — those are Act 3/4 work, move to phase9+/ if needed
 - Player-facing UI for atmospheric failure warnings — that's a different system layer
 
 ---
 
-## Technical Requirements
+## Files Involved
 
-### Phase A: TTR Metric Implementation in PressurizationService
-1. **Define Atmospheric Degradation Model**
-   - Research real-world atmosphere loss rates (Venus, Mars, Luna) to establish baseline leak rate constants  
-   - Design formula incorporating: current_pressure_kpa, target_safe_threshold_kpa, magnetic_field_strength_tesla
+### Primary Files — you will edit these
+| File | Purpose | Key Method/Section |
+|---|---|---|
+| `galaxy_game/app/services/pressurization_service.rb` | Add TTR metric and failure cascade methods | New public methods + private helpers |
+| `galaxy_game/spec/services/pressurization_service_spec.rb` | Tests for new methods | Append to existing test suite |
 
-2. **Add TTR Calculation Method to PressurizationService**
+### Reference Files — read but do not edit
+| File | Why You Need It |
+|---|---|
+| `galaxy_game/app/models/structures/worldhouse.rb` | Worldhouse model with enclosed_segments, coverage_percent tracking |
+| `config/initializers/game_constants.rb` | Source of truth for boundary constants (MIN_SAFE_PRESSURE_KPA, etc.) |
+
+### Migration (if needed)
+- [ ] No migration needed
+
+---
+
+## Implementation Steps
+
+### Step 1 — Add TTR Metric to PressurizationService
+
 ```ruby
 # In app/services/pressurization_service.rb
 
@@ -148,12 +171,8 @@ def get_atmospheric_mix_percentages
 end
 ```
 
-### Phase B: Failure Cascade Modeling in PressurizationService
-1. **Design Settlement Dependency Tracking**
-   - Model which settlements supply life support materials to others (L1 Depot → Luna habitats, Earth imports → all settlements)  
-   - Add dependency tracking logic within PressurizationService or create helper module
+### Step 2 — Add Failure Cascade Modeling to PressurizationService
 
-2. **Implement Basic Failure Cascade Logic in PressurizationService**
 ```ruby
 # In app/services/pressurization_service.rb (or separate module if too complex for single file)
 
@@ -184,17 +203,11 @@ rescue ActiveRecord::StatementInvalid
 end
 ```
 
----
+### Step 3 — Write Tests
 
-## Testing Requirements
-
-### Unit Tests (Isolation)
-- `spec/services/pressurization_service_spec.rb` — add TTR calculation tests with various atmospheric compositions and magnetic field strengths  
-- Verify time_to_reversion returns nil when atmosphere already below safe threshold  
-- Test failure cascade simulation with different severity levels and dependent settlement counts
+Append to `spec/services/pressurization_service_spec.rb`:
 
 ```ruby
-# spec/services/pressurization_service_spec.rb (add to existing test suite)
 describe '#time_to_reversion' do
   context 'when atmosphere is above safe threshold' do
     it 'returns hours until critical degradation based on magnetic field strength' do
@@ -246,80 +259,90 @@ describe '#simulate_atmospheric_failure' do
 end
 ```
 
-### Integration Tests (Multi-Settlement Cascades)
-```ruby
-# spec/services/pressurization_service_spec.rb (integration section)
-describe 'failure cascade across connected settlements' do
-  let(:l1_depot) { create(:orbital_settlement, settlement_type: 'depot') }  
-  let(:luna_habitat_1) { create(:base_settlement, population_capacity: 500) }
-  let(:luna_habitat_2) { create(:base_settlement, population_capacity: 300) }
+### Step 4 — Verify
 
-  it 'identifies dependent settlements and calculates cascade impact' do
-    service = PressurizationService.new(l1_depot)
-    
-    result = service.simulate_atmospheric_failure(
-      failure_severity: :critical, 
-      dependent_settlements: [luna_habitat_1, luna_habitat_2]
-    )
-    
-    expect(result[:affected_count]).to eq(2)  
-    expect(result[:total_population_at_risk]).to be_between(80, 350) # Based on severity multiplier logic
-  end
-end
+> CRITICAL EXECUTION MANDATE: All RSpec commands must use the Docker wrapper below.
+> The container working directory is already /home/galaxy_game — do NOT add cd /home/galaxy_game.
+
+```bash
+docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/pressurization_service_spec.rb --format progress' 2>&1 | tail -5
+```
+
+Expected result: All examples pass with 0 failures (confirm total count after adding new tests).
+
+---
+
+## Acceptance Criteria
+- [ ] `PressurizationService#time_to_reversion` returns accurate hours until atmosphere degrades below safe threshold for various test scenarios (Luna, Mars, Venus habitats)
+- [ ] `PressurizationService#simulate_atmospheric_failure` correctly calculates affected settlements and population at risk metrics
+- [ ] All new tests added to pressurization_service_spec.rb pass with 0 failures (TTR calculation + failure cascade scenarios)
+- [ ] Integration test demonstrates correct multi-settlement propagation behavior
+- [ ] Documentation updated: `app/services/pressurization_service.rb` includes inline comments explaining TTR formula and failure severity multiplier logic
+
+---
+
+## Stop Conditions — escalate to user immediately if:
+- Gate condition not met (Phase 5 simulation not running with observable pressurization events) — report and stop
+- PressurizationService API differs from expected — do not guess, flag it
+- Fix requires changes to shared inventory models beyond pressurization service — extract as separate task
+- Any architectural decision is required beyond what's specified here
+
+---
+
+## Commit Instructions
+Run git commands on **host only** — never inside the Docker container:
+```bash
+git add galaxy_game/app/services/pressurization_service.rb galaxy_game/spec/services/pressurization_service_spec.rb
+git commit -m "feature: pressurization_service — add TTR metric and failure cascade modeling
+
+- time_to_reversion: calculates hours until atmosphere degrades below safe threshold
+- simulate_atmospheric_failure: models cascade impact across connected settlements
+- Tests: TTR calculation with various magnetic field strengths, failure severity levels"
+git push
+```
+
+**Task file move on completion:**
+```bash
+mv projects/galaxy_game/tasks/active/2026-06-11-MEDIUM-FEATURE-PRESSURIZATION-TTR-FAILURE-CASCADE-MODELING.md \
+   projects/galaxy_game/tasks/completed/2026-08/2026-06-11-MEDIUM-FEATURE-PRESSURIZATION-TTR-FAILURE-CASCADE-MODELING.md
+git add projects/galaxy_game/tasks/completed/2026-08/2026-06-11-MEDIUM-FEATURE-PRESSURIZATION-TTR-FAILURE-CASCADE-MODELING.md
+git commit -m "chore: move 2026-06-11-MEDIUM-FEATURE-PRESSURIZATION-TTR-FAILURE-CASCADE-MODELING.md to completed/"
 ```
 
 ---
 
-## Dependencies & Blockers
-
-### Prerequisite Tasks (Must Complete First)
-- None — pressurization infrastructure already exists and functional per audit findings  
-- **Gate Condition**: Phase 5 simulation running with observable pressurization events (Luna fuel loop validated)
-
-### Blocks These Future Tasks  
-- AI Manager integration hooks for automated atmospheric failure response (if ever implemented as separate task)  
-- Player-facing atmospheric failure warning UI systems  
-- Advanced multi-settlement cascade modeling beyond basic dependency tracking
+## Documentation
+- [ ] Update `app/services/pressurization_service.rb` — inline comments explaining TTR formula and failure severity multiplier logic
 
 ---
 
-## Success Criteria & Acceptance Tests Checklist
-
-- [ ] **TTR Metric Implemented**: `PressurizationService#time_to_reversion` returns accurate hours until atmosphere degrades below safe threshold for various test scenarios (Luna, Mars, Venus habitats)  
-- [ ] **Failure Cascade Logic Built**: `PressurizationService#simulate_atmospheric_failure` correctly calculates affected settlements and population at risk metrics  
-- [ ] **Unit Tests Passing**: All new tests added to pressurization_service_spec.rb pass with 0 failures (TTR calculation + failure cascade scenarios)  
-- [ ] **Integration Tests Passing**: Failure cascade spec demonstrates correct multi-settlement propagation behavior  
-- [ ] **Documentation Updated**: `app/services/pressurization_service.rb` includes inline comments explaining TTR formula and failure severity multiplier logic
+## Dependencies
+**Blocked by**: Phase 5 simulation running with observable pressurization events (Luna fuel loop validated)
+**Blocks**: AI Manager integration hooks for automated atmospheric failure response (if ever implemented as separate task)
+**Related tasks**: none identified
 
 ---
 
-## Completion Report Template
-*To be filled in by implementing agent after completion*
+## Completion Report
+*Filled in by the implementing agent after completion*
 
-**Completed by**:  
-**Completion date**:  
-**Final test result**: X examples, Y failures  
+**Completed by**:
+**Completion date**:
+**Final test result**: X examples, Y failures
 
 ### What was changed
-- [List files modified with brief description of changes]
+-
 
 ### Issues discovered
-- [Note any architectural gaps or unexpected dependencies found during implementation]
+-
 
 ### Follow-up tasks needed
-- [Identify any related work that should be extracted as separate task files (e.g., AI Manager integration)]
+-
 
-### Lessons learned  
-- [Document insights gained about pressurization systems, failure modeling patterns, etc.]
+### Lessons learned
+-
 
 ---
 
-## Notes for Future Reviewers
-
-This task was **extracted from April 2026 backlog during June 12 triage session**. Original file: `docs/agent/archive/backlog_april_2026/deprecated/2026-04-17-CRITICAL-ARCHITECTURE-ENCLOSED-ATMOSPHERE-FAILURE-PREDICTION-PLANNING.md`
-
-**Why Phase 6+ and not Phase 5?**: Per `research/LUNA-MVP-SIMULATION-DESIGN.md`, Luna simulation calibration (Phase 5) focuses on proving the fuel loop closes — consumption modeling, precursor phase gating, life support ordering. TTR/failure prediction is NOT listed as a Phase 5 acceptance criterion; it's future scalability work for multi-settlement infrastructure after L1 Depot operational.
-
-**Gate Condition**: This task should only be dispatched when Phase 5 simulation is running with observable pressurization events (Luna fuel loop validated). Do not attempt implementation before gate condition met — ensures proper context and test data availability.
-
-**Original April task was CRITICAL priority**: Adjusted to MEDIUM since this is deferred work, not immediate Phase 5 blocker. Scope narrowed from full architecture planning to focused PressurizationService implementation only (AI Manager integration moved out of scope for future consideration).
+## Handoff Summary
+HANDOFF SUMMARY: [files updated] | TTR metric + failure cascade implemented | next: AI Manager integration (if needed)

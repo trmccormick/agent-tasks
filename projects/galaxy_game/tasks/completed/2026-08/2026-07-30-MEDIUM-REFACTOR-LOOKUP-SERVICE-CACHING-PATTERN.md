@@ -1,11 +1,12 @@
 ---
-status: backlog
+status: active
 priority: MEDIUM
 type: refactor
 system_domain: AI_MANAGER | MANUFACTURING | TERRA_SIM | OTHER
 mvp_alignment: SPEC_HEALTH | OTHER
 local_worker_safe: true
----
+created: 2026-07-30
+last_updated: 2026-08-08
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
 
@@ -53,7 +54,8 @@ starting any work.
 **Priority**: MEDIUM
 **Type**: refactor
 **Created**: 2026-07-30
-**Last Updated**: 2026-07-30
+**Last Updated**: 2026-08-08
+**Assigned**: Implementation Agent (2026-08-08 session)
 
 ---
 

@@ -4,36 +4,42 @@ priority: HIGH
 type: bug-fix
 system_domain: OTHER
 mvp_alignment: SPEC_HEALTH
-local_worker_safe: false
-relocated_from: reorganization_attempt_3
-relocated_reason: "Procedural generation task not needed for Luna MVP phases — relevant only after wormholes established and system generation begins"
+local_worker_safe: true
 ---
 
 # TASK: Implement Spatial Boundary Validation in UniverseRegistrationJob
-**Status**: BACKLOG
-**Priority**: HIGH
-**Type**: bug-fix
-**Created**: 2026-05-23
-**Last Updated**: 2026-05-23
 
 ---
 
-## Local Worker Triage Report
-*Filled in by local model (Ollama via Continue) during backlog review*
+## ⚡ Minimal Handoff (Copy this to send to agent)
 
-- **Template Conformance**: PASS
-- **Docker Wrapper Check**: PASS — RSpec commands use correct docker exec format
-- **MVP Alignment**: VALID — silent out-of-bounds planet placement corrupts orbital calculation loops downstream
-- **MVP Impact Note**: Without this gate, procedural generation can produce invalid systems that silently break simulation
-- **Action Line**: READY FOR CLOUD HANDOFF
+```
+You are **Implementation Agent**.
 
----
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase05-luna-calibration/2026-05-23-HIGH-BUG-FIX-UNIVERSE-REGISTRATION-JOB-SPATIAL-BOUNDARY-VALIDATION.md
 
-## Agent Assignment
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/phase05-luna-calibration/2026-05-23-HIGH-BUG-FIX-UNIVERSE-REGISTRATION-JOB-SPATIAL-BOUNDARY-VALIDATION.md \
+         projects/galaxy_game/tasks/active/2026-05-23-HIGH-BUG-FIX-UNIVERSE-REGISTRATION-JOB-SPATIAL-BOUNDARY-VALIDATION.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
-**Assigned To**: GPT-4.1 0x
-**Why This Agent**: Well-specified implementation task with exact code, exact spec cases, no architectural decisions required
-**Supervision Level**: watched carefully
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-05-23-HIGH-BUG-FIX-UNIVERSE-REGISTRATION-JOB-SPATIAL-BOUNDARY-VALIDATION.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
 
 ---
 
@@ -47,17 +53,27 @@ relocated_reason: "Procedural generation task not needed for Luna MVP phases —
 
 ---
 
+## Critical Information for This Task
+
+### Architecture Gotchas
+
+⚠️ **GOTCHA 1: AU vs meters unit mismatch**
+- ❌ Wrong: Compare `semi_major_axis_au` directly against `GameConstants::SAFE_DISTANCE_FROM_STAR` or `MAX_DISTANCE_FROM_STAR`
+- ✅ Right: Convert first — `distance_m = semi_major_axis_au * 1.496e11`, then compare against meter constants
+- Why: Seed stores orbital distances in AU; GameConstants are in meters. Direct comparison produces silent false negatives.
+
+⚠️ **GOTCHA 2: Seed hash key type**
+- ❌ Wrong: Assume symbol keys without checking
+- ✅ Right: Check if seed uses string or symbol keys — adjust `dig` calls accordingly
+- Why: If the fix requires changes beyond this file, stop and flag it.
+
+---
+
 ## Problem Statement
 
 **Current behavior**: `SystemGeneratorService#fallback_build` creates celestial bodies with no orbital distance validation. `UniverseRegistrationJob` writes system seeds to `SYSTEMS_PATH` without checking spatial boundaries or wormhole cap.
 
 **Expected behavior**: `UniverseRegistrationJob` raises `InvalidSystemBoundariesError` before any write when a seed contains a body outside the valid orbital band or exceeds `MAX_WORMHOLES_PER_SYSTEM`.
-
-**Critical note on units**: Orbital distances in the seed are stored in AU (`semi_major_axis_au` inside the `orbits` array). The macro constants are in meters. Conversion is required before comparison:
-```ruby
-distance_m = semi_major_axis_au * 1.496e11
-```
-Do not compare AU values directly against `SAFE_DISTANCE_FROM_STAR` or `MAX_DISTANCE_FROM_STAR`.
 
 ---
 
@@ -78,7 +94,7 @@ Do not compare AU values directly against `SAFE_DISTANCE_FROM_STAR` or `MAX_DIST
 | `docs/wiki/System-Blueprints.md` | Full spec of mandated validation behaviour |
 
 ### Migration (if needed)
-- [x] No migration needed
+- [ ] No migration needed
 
 ---
 
@@ -167,8 +183,11 @@ end
 
 ### Step 4 — Verify
 
+> CRITICAL EXECUTION MANDATE: All RSpec commands must use the Docker wrapper below.
+> The container working directory is already /home/galaxy_game — do NOT add cd /home/galaxy_game.
+
 ```bash
-docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/jobs/universe_registration_job_spec.rb 2>&1 | tail -20'
+docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/jobs/universe_registration_job_spec.rb 2>&1 | tail -20'
 ```
 
 Expected result: 5 examples, 0 failures
@@ -193,11 +212,58 @@ Expected result: 5 examples, 0 failures
 ---
 
 ## Commit Instructions
-Run git commands on **host**, not inside container:
+Run git commands on **host only** — never inside the Docker container:
 ```bash
 git add app/jobs/universe_registration_job.rb spec/jobs/universe_registration_job_spec.rb
 git commit -m "bug-fix: universe_registration_job — add spatial boundary validation and InvalidSystemBoundariesError"
 git push
+```
+
+**Task file move on completion:**
+```bash
+mv projects/galaxy_game/tasks/active/2026-05-23-HIGH-BUG-FIX-UNIVERSE-REGISTRATION-JOB-SPATIAL-BOUNDARY-VALIDATION.md \
+   projects/galaxy_game/tasks/completed/2026-08/2026-05-23-HIGH-BUG-FIX-UNIVERSE-REGISTRATION-JOB-SPATIAL-BOUNDARY-VALIDATION.md
+git add projects/galaxy_game/tasks/completed/2026-08/2026-05-23-HIGH-BUG-FIX-UNIVERSE-REGISTRATION-JOB-SPATIAL-BOUNDARY-VALIDATION.md
+git commit -m "chore: move 2026-05-23-HIGH-BUG-FIX-UNIVERSE-REGISTRATION-JOB-SPATIAL-BOUNDARY-VALIDATION.md to completed/"
+```
+
+---
+
+## Documentation
+- [ ] Update `docs/wiki/System-Blueprints.md` — mark gap tracker item resolved for boundary validation
+
+---
+
+## Dependencies
+**Blocked by**: none — requires only test environment access
+**Blocks**: none
+**Related tasks**: `2026-05-23-MEDIUM-DOCUMENTATION-PLANET-TEMPLATE-LOADER-VERIFICATION.md`
+
+---
+
+## Completion Report
+*Filled in by the implementing agent after completion*
+
+**Completed by**:
+**Completion date**:
+**Final test result**:
+
+### What was changed
+-
+
+### Issues discovered
+-
+
+### Follow-up tasks needed
+-
+
+### Lessons learned
+-
+
+---
+
+## Handoff Summary
+HANDOFF SUMMARY: [files updated] | spatial boundary gate implemented | next: expand fallback_build planet type coverage
 ```
 
 ---

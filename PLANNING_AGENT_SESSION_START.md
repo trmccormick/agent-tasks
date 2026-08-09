@@ -53,6 +53,34 @@ Before beginning work on any task file — whether picking up something already 
 
 If a listed blocker is still unresolved, do not move the task into active/ or continue implementation — leave it in backlog/ (correct phase subfolder) and note the still-open blocker in your status report.
 
+## Step 3.6 — Check legacy phase folders before dispatching
+
+Before dispatching any task, check whether related work exists in
+`phase10+/` through `phase16+/` — the old suffix-numbered folders that
+sit outside the current `phaseNN-name/` scheme (phase05-luna-calibration
+through phase09-sol-expansion, plus deferred-cleanup/, active/,
+superseded/, design/, current/, research/).
+
+These folders predate the 2026-08-08 backlog reorganization and haven't
+been reviewed since. Before dispatching a task that touches this
+territory:
+
+1. Check whether the task belongs in the new `phaseNN-name/` scheme
+   instead — migrate it if so.
+2. Check whether the task needs design or research completed first.
+   If so, add that dependency as an explicit blocker in the task file
+   before dispatching implementation — don't dispatch work that's
+   silently missing a design/research prerequisite.
+
+This is a standing dispatch-time check, not a one-time cleanup —
+repeat it for any new task landing in this territory going forward.
+
+Note: `current/`, `design/`, and `research/` are all valid, intentional
+folders (not legacy cruft) — `current/` for phase-agnostic work,
+`design/` for architecture specs, `research/` for investigation work.
+Only `phase10+` through `phase16+` are the genuinely unmigrated legacy
+scheme this step is checking.
+
 ## Step 4 — Do the work
 
 Standard Planning Agent duties: triage, review, draft task files (using
