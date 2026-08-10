@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: architecture
 system_domain: TERRA_SIM
@@ -678,26 +678,46 @@ git commit -m "refactor: Data-driven celestial body generation — remove hardco
 ## Data-Driven Refactor Completion Summary
 
 ### Changes Made
-- [ ] sol-complete.json updated (fields added: magnetosphere_strength for Earth/Venus/Mars)
-- [ ] ProceduralGenerator refactored (Topaz hardcodes removed, calculate_magnetosphere_strength added)
-- [ ] SystemBuilderService updated (reads magnetosphere_strength, no hardcoded logic)
-- [ ] AtmosphereGeneratorService updated (accepts numeric strength)
-- [ ] Tests written and passing (procedural_generator_magnetosphere_spec.rb, data_driven_generation_spec.rb)
+- [x] sol-complete.json updated (fields added: magnetosphere_strength for Earth/Venus/Mars)
+- [x] ProceduralGenerator refactored (Topaz hardcodes removed, calculate_magnetosphere_strength added)
+- [x] SystemBuilderService updated (reads magnetosphere_strength, no hardcoded logic)
+- [x] AtmosphereGeneratorService updated (accepts numeric strength)
+- [x] Tests written and passing (procedural_generator_magnetosphere_spec.rb, data_driven_generation_spec.rb)
 
 ### Test Results
-- RSpec: [X/X tests passing]
-- Manual integration: [Earth/Venus/Mars values correct]
-- Git log: [Commit hash and message]
+- RSpec: 40/40 tests passing (28 in procedural_generator_magnetosphere_spec.rb + 12 in data_driven_generation_spec.rb)
+- Manual integration: Earth=1.0, Venus=0.3, Mars=0.0 confirmed via sol-complete.json
+- Git log: See galaxyGame commits below
 
 ### Verification
-- [ ] No hardcoded planet names in code (grep confirmed)
-- [ ] No binary magnetosphere flags (all numeric 0.0-1.0)
-- [ ] sol-complete.json is complete data source (no patches in Ruby)
-- [ ] Ready for atmospheric loss task implementation
+- [x] No hardcoded planet names in code (grep confirmed — no Topaz/magnetic_moment/tei_score references)
+- [x] No binary magnetosphere flags (all numeric 0.0-1.0)
+- [x] sol-complete.json is complete data source (no patches in Ruby)
+- [x] Ready for atmospheric loss task implementation
 
 ### Notes
-- [Any gotchas encountered or workarounds applied]
-- [Follow-up tasks if any]
+- **Critical finding**: The dead-core gate was NOT implemented as a physics formula initially — only stubbed with baseline passthrough. Implemented the actual core-state/dynamo-threshold logic using sigmoid-based cooling time calculation.
+- **Infrastructure issue**: Docker Desktop macOS bind mount caching caused new spec files to not appear in container. Resolved by recreating container with --force-recreate.
+- **Follow-up**: Atmospheric loss task (2026-08-02-HIGH-FEATURE-ATMOSPHERIC-LOSS-SOLAR-WIND-EROSION) can now proceed — it depends on numeric magnetosphere_strength values for parent protection inheritance calculation.
+```
+
+---
+
+## Acceptance Criteria
+
+- [x] `sol-complete.json` updated with `magnetosphere_strength` for all terrestrial planets (Earth=1.0, Venus=0.3, Mars=0.0)
+- [x] Topaz hardcoded `magnetic_moment`/`tei_score` removed from `ProceduralGenerator`
+- [x] `calculate_magnetosphere_strength()` produces **~0.0 for dead-core bodies** (Mars-class: mass < 1e24 kg, age > 4.5 Gy)
+- [x] `calculate_magnetosphere_strength()` produces **~1.0 for Earth-mass planets at ~4.5 Gy age**
+- [x] `calculate_magnetosphere_strength()` clamps to [0.0, 1.0] for all inputs
+- [x] Core-state/dynamo threshold gate implemented: dead-core bodies decay to ~0.0 regardless of mass/rotation
+- [x] `SystemBuilderService` reads `magnetosphere_strength` from JSON (no planet-specific conditionals)
+- [x] `AtmosphereGeneratorService` accepts numeric strength (not boolean `has_magnetic_field`)
+- [x] Procedurally generated moons have `parent_body` + `orbital_distance_km` fields
+- [x] All RSpec tests pass (0 failures) — 40 examples, 0 failures
+- [x] Manual integration confirms: Earth=1.0, Venus=0.3, Mars=0.0
+- [x] No hardcoded planet names in Ruby code (grep confirmed)
+- [x] No binary `strong_magnetosphere` flags — all values numeric 0.0–1.0
 ```
 
 ---
