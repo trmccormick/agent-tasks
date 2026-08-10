@@ -1,12 +1,12 @@
 ---
-status: backlog
+status: active
 priority: MEDIUM
 type: feature
 system_domain: AI_MANAGER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 created: 2026-08-03
-updated: 2026-08-03
+updated: 2026-08-10
 estimated_effort: 3-4 hours
 blocker_for: []
 ---
