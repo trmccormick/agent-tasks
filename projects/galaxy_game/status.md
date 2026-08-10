@@ -1,11 +1,25 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-09 — Luna MVP Validation: Build Sequence 17/17 PASS, Water Consumption Fixed, ISRU Production Added + RSpec Load Blocker Fixed
+**Last Updated:** 2026-08-10 — Spatial Boundary Validation Implemented + AU Constant Bugfix
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
+
+---
+
+## 🎯 Latest Completion (2026-08-10) — Spatial Boundary Validation Gate
+
+### ✅ Completed: `2026-05-23-HIGH-BUG-FIX-UNIVERSE-REGISTRATION-JOB-SPATIAL-BOUNDARY-VALIDATION` → completed/2026-08/
+- **Problem**: `SystemGeneratorService#fallback_build` and `ProceduralGenerator` create celestial bodies with no orbital distance validation; `UniverseRegistrationJob` had no boundary gate
+- **Solution**: Created `UniverseRegistrationJob` from scratch with:
+  - `InvalidSystemBoundariesError` exception class
+  - `validate_system_envelope!` method validating wormhole count + planet orbital distances
+  - Handles both full seed format (string keys, `celestial_bodies.terrestrial_planets`) and simplified format (symbol keys, top-level `planets`)
+- **Bug fix discovered during implementation**: `GameConstants::SAFE_DISTANCE_FROM_STAR` was `1.496e8` (149,600 km) — off by 1000x from 1 AU = `1.496e11` m. Same for `MAX_DISTANCE_FROM_STAR`. Both corrected.
+- **Verification**: 24 spec examples, 0 failures; generation specs regression check: 55 examples, 0 failures
+- **galaxyGame commit**: `74d48139`
 
 ---
 
