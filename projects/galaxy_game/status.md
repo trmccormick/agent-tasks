@@ -50,17 +50,6 @@
 
 ---
 
-## 🎯 Previous Completion (2026-08-08) — Luna Simulation Baseline Re-established
-
-### ✅ Task: `2026-08-08-HIGH-FEATURE-LUNA-SIMULATION-BASELINE` → completed/2026-08/
-- **luna_mission:execute**: 16/17 PASS, 1 FAIL (`deploy_pve_unit` internal ports regression)
-- **luna:simulate_operations[50,42]**: Ran clean but zero output (population=0 data gap)
-- **Key finding**: PVU Mk1 port bug blocked entire volatiles chain — this was the blocker for all Phase 5 acceptance criteria
-- **Resolution**: Both issues fixed in subsequent 2026-08-09 session (see above: PVU blueprint migration + ISRU production logic)
-- **Synthesis report**: Saved in task file with full per-task breakdown + tick-by-tick data + acceptance criteria table
-
----
-
 ## 🎯 Latest Completion (2026-08-07) — Manufacturing Service Duplicate Diagnosis
 
 ### ✅ Completed: `2026-07-26-LOW-REFACTOR-MANUFACTURING-SERVICE-DUPLICATE.md` → completed/2026-08/
@@ -194,6 +183,17 @@
 - **Synthesis report**: `summaries/2026-08-04-DIAGNOSIS-MANUFACTURING-SERVICE-DUPLICATE.md`
 
 ---
+
+## 🎯 Latest Completion (2026-08-09) — Manufacturing::Service Dead Code Removal
+
+### ✅ Completed: `2026-08-04-LOW-BUGFIX-REMOVE-MANUFACTURING-SERVICE-DEAD-CODE.md` → completed/2026-08/
+- **Finding**: All work already completed in a prior session — no new implementation needed
+- **Class removed**: `galaxy_game/app/services/manufacturing/service.rb` (Manufacturing::Service) — already deleted, only exists in `data/old-code/` backup
+- **Spec removed**: `spec/services/manufacturing/service_spec.rb` — already deleted, only exists in `data/old-code/` backup
+- **Doc corrected**: `CORE_CONCEPT_MAP.md` line 157 already lists `ManufacturingService` (top-level) as owner, not `Manufacturing::Service`
+- **Fresh grep**: Confirmed zero production callers across `app/`, `lib/`, `config/` — no new references added since 2026-08-04 investigation
+- **Synthesis report**: `summaries/2026-08-09-BUGFIX-REMOVE-MANUFACTURING-SERVICE-DEAD-CODE.md`
+
 
 ## 🎯 Latest Completion (2026-08-04) — InfrastructureCostCalculator Dead Code Removal
 
