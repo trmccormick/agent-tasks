@@ -1,11 +1,33 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-10 — Pattern-Based Settlement Research Completed (Superseded)
+**Last Updated:** 2026-08-10 — Data-Driven Celestial Body Generation Completed
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
+
+---
+
+## 🎯 Latest Completion (2026-08-10) — Data-Driven Celestial Body Generation
+
+### ✅ Completed: `2026-08-02-HIGH-ARCHITECTURE-DATA-DRIVEN-CELESTIAL-BODY-GENERATION` → completed/2026-08/
+- **Problem**: World-specific data (magnetosphere values) embedded in Ruby code instead of JSON; no dead-core gate for Mars-class bodies
+- **Solution**: 
+  - `sol-complete.json` already had magnetosphere_strength for all terrestrial planets (Earth=1.0, Venus=0.3, Mars=0.0) — verified via Python extraction
+  - Implemented actual core-state/dynamo-threshold gate in `calculate_magnetosphere_strength()`:
+    * `calculate_core_state_factor(mass_kg, age_years)` — sigmoid-based cooling time calculation (cooling_time ∝ mass²)
+    * `calculate_physics_modifier(mass_kg, rotation_period_hours, age_years)` — mass/rotation/age factors applied only when core is alive
+    * Dead-core short-circuit: core_state < 0.05 → physics_modifier = 0.0 → effective strength ≤ 0.02
+  - SystemBuilderService reads magnetosphere_strength from JSON (numeric passthrough with legacy fallback)
+  - AtmosphereGeneratorService accepts numeric magnetosphere_strength (not boolean has_magnetic_field)
+  - Procedurally generated moons have parent_body + orbital_distance_km fields for future parent protection inheritance
+- **Critical finding**: Dead-core gate was NOT implemented as physics formula initially — only stubbed with baseline passthrough. Implemented the actual sigmoid-based core state calculation per 2026-08-05 design decision.
+- **Infrastructure issue**: Docker Desktop macOS bind mount caching caused new spec files to not appear in container. Resolved by recreating container with --force-recreate.
+- **Tests**: 40 examples, 0 failures (28 in procedural_generator_magnetosphere_spec.rb + 12 in data_driven_generation_spec.rb)
+- **Key tests**: PROCEDURAL MARS ANALOG (0.05 M⊕, 5 Gy, no rotation → ~0.0), PROCEDURAL EARTH (Earth mass + young age → alive core), calculate_core_state_factor returns 0.0 for dead-core inputs
+- **Verification**: No hardcoded planet names in code (grep confirmed), no binary strong_magnetosphere flags, sol-complete.json is complete data source
+- **galaxyGame commits**: See previous session work
 
 ---
 
