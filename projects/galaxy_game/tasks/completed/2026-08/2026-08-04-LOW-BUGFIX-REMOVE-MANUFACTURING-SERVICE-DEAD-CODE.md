@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completedted
 priority: LOW
 type: bug-fix
 system_domain: MANUFACTURING
