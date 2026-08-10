@@ -18,10 +18,10 @@ relates_to:
 You are **Design Researcher**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-08-01-HIGH-DESIGN-SPIN-GRAVITY-CORE-ARCHITECTURE.md
+Task: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/backlog/design/2026-08-01-HIGH-DESIGN-SPIN-GRAVITY-CORE-ARCHITECTURE.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/current/2026-08-01-HIGH-DESIGN-SPIN-GRAVITY-CORE-ARCHITECTURE.md \
+  git mv projects/galaxy_game/tasks/backlog/design/2026-08-01-HIGH-DESIGN-SPIN-GRAVITY-CORE-ARCHITECTURE.md \
          projects/galaxy_game/tasks/active/2026-08-01-HIGH-DESIGN-SPIN-GRAVITY-CORE-ARCHITECTURE.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
