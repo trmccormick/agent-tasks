@@ -20,13 +20,13 @@ Project: galaxy_game
 Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase07-depot-building/2026-08-08-HIGH-FEATURE-L1-DEPOT-PROFILE-PHASES.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/phase07-depot-building/2026-08-08-HIGH-FEATURE-L1-DEPOT-PROFILE-PHASES.md \
+  git mv projects/galaxy_game/tasks/drafts/2026-08-08-HIGH-FEATURE-L1-DEPOT-PROFILE-PHASES.md \
          projects/galaxy_game/tasks/active/2026-08-08-HIGH-FEATURE-L1-DEPOT-PROFILE-PHASES.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
-LIFECYCLE: backlog → active → completed
+LIFECYCLE: draft → active → completed
   - Tracked file: git mv (never cp or plain mv)
   - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-08-08-HIGH-FEATURE-L1-DEPOT-PROFILE-PHASES.md"
     Only ONE result should exist. Paste this output before committing.

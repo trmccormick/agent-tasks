@@ -66,6 +66,27 @@ READ FIRST (after Step 0): Task file contains all prerequisites, credentials, go
 
 4. **Market::TransactionFee model exists**: A generic fee calculator exists at `app/models/market/transaction_fee.rb` with `percentage`/`fixed` types and a `calculate(amount)` method. This can be reused as the calculation engine — the per-location config just needs to reference which fee type and value to use.
 
+## Synthesis Findings
+
+### Existing fee fields on settlement models
+**None found.** grep for `fee|commission|broker` returned 0 matches in both `base_settlement.rb` and `orbital_settlement.rb`. No existing fee-related fields exist — clean slate.
+
+### TransactionFee model usage
+- **Model**: `Market::TransactionFee` (table: `market_transaction_fees`) with `fee_type`, `percentage`, `fixed_amount` columns
+- **Factory**: `spec/factories/market/transaction_fees.rb` exists with default `percentage: 2.5`
+- **Spec**: `spec/models/market/transaction_fee_spec.rb` tests percentage/fixed calculation
+- **Usage**: NOT used anywhere in app code — only factory + spec exist. It's a dead model that can be reused as the calculation engine per task spec.
+
+### UniversalDockingService fee logic
+**None exists.** `UniversalDockingService` has dock/transfer methods but NO fee calculation at all. Step 4 (dock integration) is needed.
+
+### Proposed fee fields for BaseSettlement/OrbitalSettlement
+- `broker_fee_type` (percentage/fixed), `broker_fee_value`
+- `transaction_fee_type` (percentage/fixed), `transaction_fee_value`
+- `order_duration_min`, `order_duration_max`
+- Methods: `calculate_broker_fee(amount)`, `calculate_transaction_fee(amount)`, `default_fee_configuration`
+- All stored as jsonb in `operational_data` (consistent with existing pattern like `construction_cost_percentage`)
+
 ## Files Involved
 
 ### Primary Files — you will edit these

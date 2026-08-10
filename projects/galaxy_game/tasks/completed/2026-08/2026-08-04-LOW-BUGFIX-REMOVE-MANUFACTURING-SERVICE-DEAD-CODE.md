@@ -1,5 +1,5 @@
 ---
-status: completedted
+status: completed
 priority: LOW
 type: bug-fix
 system_domain: MANUFACTURING

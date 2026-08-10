@@ -1,12 +1,12 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: architecture
 system_domain: TERRA_SIM
 mvp_alignment: OTHER
 local_worker_safe: true
 created: 2026-08-02
-updated: 2026-08-03
+updated: 2026-08-10
 estimated_effort: 4-5 hours
 blocker_for:
   - 2026-08-02-HIGH-FEATURE-ATMOSPHERIC-LOSS-SOLAR-WIND-EROSION
@@ -49,6 +49,7 @@ READ FIRST (after Step 0): Task file contains all prerequisites, credentials, go
 3. `AtmosphereGeneratorService` receives boolean `has_magnetic_field` instead of numeric magnetosphere strength
 4. Star distances, orbital parameters, and other world attributes scattered between JSON and Ruby calculations
 5. No way to properly support Venus's induced magnetosphere (0.3) vs Mars bare atmosphere (0.0) vs Earth (1.0) without code changes
+6. **Mars formula bug** — `calculate_magnetosphere_strength()` produces ~0.47 for dead-core bodies when design requires ~0.0 (Mars = flagship zero-shielding world). The age/rotation/mass factors don't account for core-state/dynamo threshold: a body with a dead core should decay to ~0.0 regardless of mass/rotation. Found post-close in 2026-08-04 Claude session (28/28 specs passed because they accepted ~0.47). **Must fix before JSON extraction** or the bad formula will be encoded into sol-complete.json.
 
 **Goal**: Make celestial body generation fully data-driven so:
 - All world-specific values (including magnetosphere strength, atmospheric composition modifiers, geological features) live in JSON
@@ -648,6 +649,24 @@ git commit -m "refactor: Data-driven celestial body generation — remove hardco
 - sol-complete.json doesn't have terrestrial_planets section
 - SystemBuilderService can't find magnetosphere_strength in body_data
 - AtmosphereGeneratorService callers can't be updated to pass numeric value
+
+---
+
+## Acceptance Criteria
+
+- [ ] `sol-complete.json` updated with `magnetosphere_strength` for all terrestrial planets (Earth=1.0, Venus=0.3, Mars=0.0)
+- [ ] Topaz hardcoded `magnetic_moment`/`tei_score` removed from `ProceduralGenerator`
+- [ ] `calculate_magnetosphere_strength()` produces **~0.0 for dead-core bodies** (Mars-class: mass < 1e24 kg, age > 4.5 Gy)
+- [ ] `calculate_magnetosphere_strength()` produces **~1.0 for Earth-mass planets at ~4.5 Gy age**
+- [ ] `calculate_magnetosphere_strength()` clamps to [0.0, 1.0] for all inputs
+- [ ] Core-state/dynamo threshold gate implemented: dead-core bodies decay to ~0.0 regardless of mass/rotation
+- [ ] `SystemBuilderService` reads `magnetosphere_strength` from JSON (no planet-specific conditionals)
+- [ ] `AtmosphereGeneratorService` accepts numeric strength (not boolean `has_magnetic_field`)
+- [ ] Procedurally generated moons have `parent_body` + `orbital_distance_km` fields
+- [ ] All RSpec tests pass (0 failures)
+- [ ] Manual integration confirms: Earth=1.0, Venus=0.3, Mars=0.0
+- [ ] No hardcoded planet names in Ruby code (grep confirmed)
+- [ ] No binary `strong_magnetosphere` flags — all values numeric 0.0–1.0
 
 ---
 
