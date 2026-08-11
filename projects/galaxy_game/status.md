@@ -1,11 +1,29 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-10 — Pattern-Based Settlement Research Completed (Superseded)
+**Last Updated:** 2026-08-10 — Day/Night Power-Cycle & Game Clock Research (Read-Only)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
+## 🔍 Research (2026-08-10) — Day/Night Power-Cycle & Game Clock Investigation
+
+### ✅ Read-Only: Day/Night Power-Cycle Mechanic Assessment
+- **Finding**: FULLY GREENFIELD — no day/night power-cycle mechanic exists in production code
+- **Data layer exists but unused**: `celestial_bodies.rotational_period` (DB column, indexed), `Planet#day_night_cycle` method, `Moon#solar_efficiency_factor` (static 0.3–1.0 constant)
+- **Solar output is static**: `location.solar_output_factor` returns fixed per-body-type constant (moon=0.9, terrestrial=0.8, gas_giant=0.1) — no time-of-day component
+- **Battery system exists but untriggered**: `charge_battery`, `discharge_battery`, `battery_drain` in `battery_management.rb` — stateful storage with no day/night trigger
+- **No power-generation service varies output by illumination** — all solar panels/generators operate at constant output
+- **Documentation/planning references exist** (708-hour lunar cycle, 14-day night requiring nuclear baseload) but none implemented in code
+
+### ✅ Read-Only: Game Clock / Tick System Assessment
+- **Finding**: NO production game clock infrastructure — all time tracking is manual/discrete
+- `GameState#update_time!` — real-time delta computation with speed multipliers (5min–10sec per game day) — **never auto-triggered**
+- `GameSimulation#advance_by_days` — manual discrete step, calls `TerraSim::Simulator.calc_current` — **never auto-triggered**
+- `LunaOperationsSimulationService` — local `day_count` loop counter (transient simulation, no clock connection)
+- Sidekiq scheduler: one entry only (`MineGccJob` on real-time midnight cron) — not game-time
+- **Granularity**: daily only, no hourly/sub-daily tick system
+- **No hooks into game clock** for resource production, contract expiration, or ECLSS cascading failures
 
 ---
 
