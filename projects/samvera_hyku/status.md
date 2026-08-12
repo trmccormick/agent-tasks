@@ -1,5 +1,5 @@
 # Samvera Hyku — Project Status & Task Tracking
-**Last Updated:** 2026-08-07
+**Last Updated:** 2026-08-11
 
 ---
 
@@ -10,9 +10,9 @@ Main repo: https://github.com/samvera/hyku (278 open issues)
 ---
 
 ## Current Status
-- **Status:** Multi-tenant GA fix (Phase 1 complete + Phase 2 ready). NEW: Wings::ModelRegistry no-Wings mode fix deployed. Bulkrax importer form now accessible.
-- **Latest Session:** 2026-08-07 — Fixed Bulkrax importer NameError from no-Wings mode; GA Phase 1 implementation complete from 2026-07-22
-- **Last Session:** 2026-07-22 — Qwen identified critical architecture issue, created synthesis, planning adjusted approach
+- **Status:** Multi-tenant GA fix (Phase 1 complete + Phase 2 ready). Wings::ModelRegistry fix implemented. Upstream investigation complete — 3 candidates assessed.
+- **Latest Session:** 2026-08-11 — Completed upstream investigation for Knapsack soft launch findings. All 3 tasks investigated. Branch separation needed for PRs.
+- **Last Session:** 2026-08-07 — Fixed Bulkrax importer NameError from no-Wings mode; GA Phase 1 implementation complete from 2026-07-22
 - **Agent Notes**: See `notes.md` for technical discoveries and contextual findings from work sessions
 - **Synthesis Complete**: [2026-07-22-SYNTHESIS-GA-MULTITENANT-IMPLEMENTATION-OPTIONS.md](summaries/2026-07-22-SYNTHESIS-GA-MULTITENANT-IMPLEMENTATION-OPTIONS.md) — Documents both approaches
 - **Phase 1 Task**: [2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYKU-OVERRIDE.md](tasks/active/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYKU-OVERRIDE.md) — ACTIVE, ready for executor
@@ -49,6 +49,24 @@ Main repo: https://github.com/samvera/hyku (278 open issues)
   - [lib/hyrax/goddess/query_method_missing_machinations_decorator.rb](../../hyku/lib/hyrax/goddess/query_method_missing_machinations_decorator.rb)
 - **Status**: ✅ Deployed to feature branch `fix/ga-tenant-property-scoping`
 - **Next**: Manual verification in docker environment
+
+---
+
+## Upstream Investigation (2026-08-11)
+
+WVU Knapsack soft launch identified 3 issues for upstream contribution. Investigation complete:
+
+| # | Issue | Status | Effort | Target Repo | Branch Needed |
+|---|-------|--------|--------|-------------|---------------|
+| 1 | Wings::ModelRegistry NameError | ✅ Fix implemented, needs PR | ~30 min (PR prep) | Hyku | `fix/wings-modelregistry-guard` (separate from GA branch) |
+| 2 | Facet label auto-generation | ⚠️ Enhancement needed | ~2-4 hours | Hyku | New branch when ready |
+| 3 | Facet label docs | ✅ Docs-only PR | ~1 hour | Hyrax | New branch when ready |
+
+**Branch Separation Required**: Current branch `fix/ga-tenant-property-scoping` bundles two distinct pieces of work:
+- 6 files → GA multi-tenant analytics (Phase 1)
+- 1 file → Wings::ModelRegistry fix
+
+**Recommended**: Cherry-pick the Wings fix onto a new branch before PR.
 
 ---
 
