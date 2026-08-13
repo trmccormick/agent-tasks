@@ -1,5 +1,5 @@
 # Samvera Hyku — Project Status & Task Tracking
-**Last Updated:** 2026-07-22
+**Last Updated:** 2026-08-11
 
 ---
 
@@ -10,8 +10,9 @@ Main repo: https://github.com/samvera/hyku (278 open issues)
 ---
 
 ## Current Status
-- **Status:** Multi-tenant GA fix split into two-phase parallel approach. Phase 1 (urgent override) ready for executor. Phase 2 (upstream PR) ready after Phase 1 completion.
-- **Last Session:** 2026-07-22 — Qwen identified critical architecture issue, created synthesis, planning adjusted approach
+- **Status:** Multi-tenant GA fix (Phase 1 complete + Phase 2 ready). Wings::ModelRegistry fix implemented. Upstream investigation complete — 3 candidates assessed.
+- **Latest Session:** 2026-08-11 — Completed upstream investigation for Knapsack soft launch findings. All 3 tasks investigated. Branch separation needed for PRs.
+- **Last Session:** 2026-08-07 — Fixed Bulkrax importer NameError from no-Wings mode; GA Phase 1 implementation complete from 2026-07-22
 - **Agent Notes**: See `notes.md` for technical discoveries and contextual findings from work sessions
 - **Synthesis Complete**: [2026-07-22-SYNTHESIS-GA-MULTITENANT-IMPLEMENTATION-OPTIONS.md](summaries/2026-07-22-SYNTHESIS-GA-MULTITENANT-IMPLEMENTATION-OPTIONS.md) — Documents both approaches
 - **Phase 1 Task**: [2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYKU-OVERRIDE.md](tasks/active/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYKU-OVERRIDE.md) — ACTIVE, ready for executor
@@ -22,31 +23,54 @@ Main repo: https://github.com/samvera/hyku (278 open issues)
 ## Active Tasks
  — Two-Phase Parallel Implementation
 
-#### PHASE 1: Hyku Override (PERMANENT FIX — ACTIVE) ✅ Ready for Dispatch
+#### PHASE 1: Hyku Override (PERMANENT FIX — COMPLETE) ✅ 
 - **Task File**: [2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYKU-OVERRIDE.md](tasks/active/2026-07-22-HIGH-BUGFIX-GA-MULTITENANT-HYKU-OVERRIDE.md)
-- **Approach**: Create monkey-patch overrides in Hyku to fix multi-tenant analytics
-- **Timeline**: Ready NOW (this Hyku instance)
-- **Scope**: This is the **PERMANENT solution** for multi-tenant GA support in Hyku
-- **Why Hyku?**: Multi-tenancy is a Hyku feature, not a Hyrax feature (Hyrax is single-tenant)
-- **Deliverables**: 
-  - Override modules for Ga4 service
-  - Override code for analytics controllers
-  - RSpec tests for tenant isolation
-  - Multi-tenant manual testing
-- **Estimated Work**: ~3-4 hours
-- **Status**: ✅ Ready for Qwen executor agent dispatch
+- **Status**: ✅ Implementation complete, committed to branch `fix/ga-tenant-property-scoping`
+- **Deliverables Completed**: 
+  - ✅ 5 new files (lib + app + spec)
+  - ✅ Unit + integration tests
+  - ✅ Committed to feature branch
+  - ⏳ Manual multi-tenant testing (pending docker environment)
 
 #### PHASE 2: Hyrax Proposal (DISCUSSION/PROPOSAL — BACKLOG) ⏳ After Phase 1
 - **Task File**: [2026-07-22-MEDIUM-DOC-GA-HYRAX-FLEXIBILITY-PROPOSAL.md](tasks/backlog/2026-07-22-MEDIUM-DOC-GA-HYRAX-FLEXIBILITY-PROPOSAL.md)
-- **Approach**: Create GitHub issue in samvera/hyrax proposing optional `property_id` parameter
-- **Timeline**: No rush — this is a background discussion
-- **Scope**: Community proposal, not a blocker
-- **Purpose**: Suggest that Hyrax consider optional `property_id` parameter for flexibility
-- **Possible Outcomes**:
-  - ✅ If Hyrax accepts: Future versions could skip override
-  - ✅ If Hyrax declines: Hyku keeps override (correct approach for multi-tenancy)
-- **Estimated Work**: ~30-45 minutes (create issue, not implementation)
-- **Status**: 📋 BACKLOG — After Phase 1 completion + approval
+- **Status**: 📋 BACKLOG — Ready after Phase 1 manual testing complete
+
+---
+
+## NEW: Bulkrax Importer Fix (2026-08-07)
+
+#### Wings::ModelRegistry No-Wings Mode Fix — DEPLOYED ✅
+- **Commit**: `e20f31e9` — "fix: guard Wings::ModelRegistry lookup in no-Wings mode for Bulkrax importer"
+- **Root Cause**: Hyrax Goddess::Query unconditionally called Wings::ModelRegistry even when Wings disabled
+- **Error**: NameError in Bulkrax::Importers#new — "uninitialized constant Wings::ModelRegistry"
+- **Solution**: Added Hyku decorator for Goddess::Query::MethodMissingMachinations#model_class_for
+- **Files Added**: 
+  - [lib/hyrax/goddess/query_method_missing_machinations_decorator.rb](../../hyku/lib/hyrax/goddess/query_method_missing_machinations_decorator.rb)
+- **Status**: ✅ Deployed to feature branch `fix/ga-tenant-property-scoping`
+- **Next**: Manual verification in docker environment
+
+---
+
+## Upstream Investigation (2026-08-11)
+
+WVU Knapsack soft launch identified 3 issues for upstream contribution. Investigation complete:
+
+| # | Issue | Status | Effort | Target Repo | Branch Needed |
+|---|-------|--------|--------|-------------|---------------|
+| 1 | Wings::ModelRegistry NameError | ✅ Fix implemented, needs PR | ~30 min (PR prep) | Hyku | `fix/wings-modelregistry-guard` (separate from GA branch) |
+| 2 | Facet label auto-generation | ⚠️ Enhancement needed | ~2-4 hours | Hyku | New branch when ready |
+| 3 | Facet label docs | ✅ Docs-only PR | ~1 hour | Hyrax | New branch when ready |
+
+**Branch Separation Required**: Current branch `fix/ga-tenant-property-scoping` bundles two distinct pieces of work:
+- 6 files → GA multi-tenant analytics (Phase 1)
+- 1 file → Wings::ModelRegistry fix
+
+**Recommended**: Cherry-pick the Wings fix onto a new branch before PR.
+
+---
+
+## Active Tasks
 
 ### Why This Architecture Is Better
 
