@@ -1,50 +1,43 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-10 — Day/Night Power-Cycle & Game Clock Research (Read-Only)
+**Last Updated:** 2026-08-11 — RSpec Triage (4710/175) + 3 Task Files Filed
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🔍 Research (2026-08-10) — Day/Night Power-Cycle & Game Clock Investigation
-
-### ✅ Read-Only: Day/Night Power-Cycle Mechanic Assessment
-- **Finding**: FULLY GREENFIELD — no day/night power-cycle mechanic exists in production code
-- **Data layer exists but unused**: `celestial_bodies.rotational_period` (DB column, indexed), `Planet#day_night_cycle` method, `Moon#solar_efficiency_factor` (static 0.3–1.0 constant)
-- **Solar output is static**: `location.solar_output_factor` returns fixed per-body-type constant (moon=0.9, terrestrial=0.8, gas_giant=0.1) — no time-of-day component
-- **Battery system exists but untriggered**: `charge_battery`, `discharge_battery`, `battery_drain` in `battery_management.rb` — stateful storage with no day/night trigger
-- **No power-generation service varies output by illumination** — all solar panels/generators operate at constant output
-- **Documentation/planning references exist** (708-hour lunar cycle, 14-day night requiring nuclear baseload) but none implemented in code
-
-### ✅ Read-Only: Game Clock / Tick System Assessment
-- **Finding**: NO production game clock infrastructure — all time tracking is manual/discrete
-- `GameState#update_time!` — real-time delta computation with speed multipliers (5min–10sec per game day) — **never auto-triggered**
-- `GameSimulation#advance_by_days` — manual discrete step, calls `TerraSim::Simulator.calc_current` — **never auto-triggered**
-- `LunaOperationsSimulationService` — local `day_count` loop counter (transient simulation, no clock connection)
-- Sidekiq scheduler: one entry only (`MineGccJob` on real-time midnight cron) — not game-time
-- **Granularity**: daily only, no hourly/sub-daily tick system
-- **No hooks into game clock** for resource production, contract expiration, or ECLSS cascading failures
 
 ---
 
-## 🎯 Latest Completion (2026-08-10) — Pattern-Based Settlement Research
+## 📋 Active Tasks: NONE (0)
 
-### ✅ Completed: `2026-07-07-MEDIUM-RESEARCH-PATTERN-BASED-SETTLEMENT-DECISION-LOGIC` → completed/2026-08/
-- **Finding**: SUPERSEDED_BY_EXISTING_ARCHITECTURE — pattern infrastructure already exists in codebase
-- **Existing pattern services discovered**:
-  * `MissionProfileAnalyzer` — extracts patterns from mission JSON profiles (phases, equipment, economics)
-  * `OperationalManager#load_trained_patterns` / `find_expansion_pattern` — loads and scores settlement patterns
-  * `PatternValidator` — validates patterns against world knowledge, assesses compatibility
-  * `AI_MISSION_PATTERNS_PATH` + `AI_SETTLEMENT_PATTERNS_PATH` — pattern storage locations (JSON files)
-- **Gap identified**: `StrategySelector` does not consult learned patterns during decision-making
-- **Remaining work**: Integration task (wire OperationalManager into StrategySelector) when Phase 14+ becomes relevant
-- **Phase alignment**: Phase 14+ primary, Phase 6+ possible if cross-world needed earlier
-- **Synthesis report**: `summaries/2026-08-10-SYNTHESIS-PATTERN-BASED-SETTLEMENT-DECISION-LOGIC.md`
-- **Research report**: `summaries/2026-08-10-RESEARCH-PATTERN-BASED-SETTLEMENT-DECISION-LOGIC.md`
+All active tasks have been completed and moved to completed/2026-08/. Ready for new assignments.
 
 ---
 
-## 🎯 Latest Completion (2026-08-10) — Data-Driven Celestial Body Generation
+## 🎯 Today's Work (2026-08-11) — RSpec Triage + Task Filing
+
+### Full Suite Run: 4710 examples, 175 failures, 54 pending (vs. last known 4646/172 from 08-09)
+- Net change: +64 examples, +3 failures
+- ~130 failures are TerrainTileRenderer/BiomeRenderer asset/PNG (NEEDS_REVIEW #1 — data/images mount architecture bug)
+- ~15 Manufacturing::ProductionService/ComponentProductionService test-setup gaps
+- ~8 UnitModuleAssemblyService test setup issues
+
+### Task Files Filed (HIGH priority):
+1. **TerraformingManager `initialize_depots` NameError** — `2026-08-11-HIGH-BUGFIX-TERRAFORMING-MANAGER-INITIALIZE_DEPOTS-NAMEROR.md`
+   - Root cause: commit 93e5143f (08-03 world-agnostic cleanup) deleted the method but left the call in `#initialize`
+   - 10 failing examples, all at construction time
+2. **LunaOperationsSimulationService ISRU regression** — `2026-08-11-HIGH-BUGFIX-LUNA-OPERATIONS-SPEC-ISRU-REGRESSION.md`
+   - 2 failures connected to 08-09 ISRU changes (water constant 250→0.07 kg/day, regolith sentinel)
+   - Executor must determine: spec stale vs. code broken
+
+### Task Files Filed (LOW priority):
+3. **CraftLookupService ENOTDIR** — confirmed real bug (Dir.glob not wrapped in rescue clause)
+4. **Test fixture/expectation bundle** — 8 items (catalog_controller, material_spec, geosphere_concern, etc.)
+
+### Items Investigated (No Task Filed):
+- HarvesterCompletionJob: traced full code path — inventory write IS real, test fixture gap
+- CraftLookupService ENOTDIR: confirmed real bug, not fixture issue
 
 ### ✅ Completed: `2026-08-02-HIGH-ARCHITECTURE-DATA-DRIVEN-CELESTIAL-BODY-GENERATION` → completed/2026-08/
 - **Problem**: World-specific data (magnetosphere values) embedded in Ruby code instead of JSON; no dead-core gate for Mars-class bodies
@@ -66,24 +59,7 @@
 
 ---
 
-## 🎯 Latest Completion (2026-08-10) — Pattern-Based Settlement Research
-
-### ✅ Completed: `2026-07-07-MEDIUM-RESEARCH-PATTERN-BASED-SETTLEMENT-DECISION-LOGIC` → active/
-- **Finding**: SUPERSEDED_BY_EXISTING_ARCHITECTURE — pattern infrastructure already exists in codebase
-- **Existing pattern services discovered**:
-  * `MissionProfileAnalyzer` — extracts patterns from mission JSON profiles (phases, equipment, economics)
-  * `OperationalManager#load_trained_patterns` / `find_expansion_pattern` — loads and scores settlement patterns
-  * `PatternValidator` — validates patterns against world knowledge, assesses compatibility
-  * `AI_MISSION_PATTERNS_PATH` + `AI_SETTLEMENT_PATTERNS_PATH` — pattern storage locations (JSON files)
-- **Gap identified**: `StrategySelector` does not consult learned patterns during decision-making
-- **Remaining work**: Integration task (wire OperationalManager into StrategySelector) when Phase 14+ becomes relevant
-- **Phase alignment**: Phase 14+ primary, Phase 6+ possible if cross-world needed earlier
-- **Synthesis report**: `summaries/2026-08-10-SYNTHESIS-PATTERN-BASED-SETTLEMENT-DECISION-LOGIC.md`
-- **Research report**: `summaries/2026-08-10-RESEARCH-PATTERN-BASED-SETTLEMENT-DECISION-LOGIC.md`
-
----
-
-## 🎯 Latest Completion (2026-08-10) — Spatial Boundary Validation Gate
+## 🎯 Latest Completion (2026-08-10) — Spatial Boundary Validation + AU Constant Bugfix
 
 ### ✅ Completed: `2026-05-23-HIGH-BUG-FIX-UNIVERSE-REGISTRATION-JOB-SPATIAL-BOUNDARY-VALIDATION` → completed/2026-08/
 - **Problem**: `SystemGeneratorService#fallback_build` and `ProceduralGenerator` create celestial bodies with no orbital distance validation; `UniverseRegistrationJob` had no boundary gate
@@ -92,72 +68,34 @@
   - `validate_system_envelope!` method validating wormhole count + planet orbital distances
   - Handles both full seed format (string keys, `celestial_bodies.terrestrial_planets`) and simplified format (symbol keys, top-level `planets`)
 - **Bug fix discovered during implementation**: `GameConstants::SAFE_DISTANCE_FROM_STAR` was `1.496e8` (149,600 km) — off by 1000x from 1 AU = `1.496e11` m. Same for `MAX_DISTANCE_FROM_STAR`. Both corrected.
-- **Verification**: 24 spec examples, 0 failures; generation specs regression check: 55 examples, 0 failures
+- **Verification**: 24 spec examples, 0 failures; generation specs regression: 55 examples, 0 failures
 - **galaxyGame commit**: `74d48139`
 
----
-
-## 🎯 Latest Completion (2026-08-09) — RSpec Load Blocker Fix
-
-### ✅ Completed: `2026-08-08-HIGH-BUGFIX-RSPEC-LOAD-BLOCKER-TERRAIN-QUALITY-ASSESSOR` → completed/2026-08/
-- **Problem**: `terrain_quality_assessor_spec.rb` require path mismatch blocked full RSpec suite loading
-- **Root cause**: Spec required `terrain_quality_assessor` but source file is `quality_assessor.rb` (one-word prefix mismatch)
-- **Fix**: Corrected `require_relative` from `.../terrain/terrain_quality_assessor` → `.../terrain/quality_assessor`
-- **Verification**: RSpec dry-run — 4646 examples, **0 failures**, 37 pending — zero load errors
-- **galaxyGame commit**: `7b7059ac`
+### ⚠️ Architectural Issue Exposed — Follow-up Task Filed
+- Wormhole coordinate generation was using `MAX_DISTANCE_FROM_STAR` (orbital constant) for local grid coordinates — a pre-existing architectural violation per System-Blueprints.md
+- **Wormhole specs verified**: 78 examples, 0 failures — no regression from AU constant change
+- **Follow-up task filed**: `2026-08-10-HIGH-REFACTOR-SEPARATE-MAX_DISTANCE_FROM_STAR-FOR-ORBITAL-WORMHOLES.md` (backlog)
 
 ---
 
-## 🎯 Latest Completion (2026-08-09) — Luna MVP Validation: Build Sequence + Water Bugfix + ISRU Production
+## 🎯 Latest Completion (2026-08-10) — Task File Duplicate Cleanup
 
-### ✅ Completed: `2026-08-09-HIGH-FEATURE-ADD-TEU-PVE-ISRU-PRODUCTION-LOGIC-TO-LUNA-OPERATIONS-SIMULATION` → completed/2026-08/
-- **Problem**: Simulation produced zero O2/H2 despite PVE Mk1 and TEU Mk1 deployed — `LunaOperationsSimulationService` only implemented I-beam production, no ISRU logic
-- **Solution**: Added Tier B ISRU production to simulation:
-  - Regolith → Processed Regolith (TEU thermal processing): 5 kg regolith → 1 kg processed per tick
-  - Processed Regolith → O2 + H2 + He3 (PVE volatile extraction): 1.575 kg O2/day for 5 crew (NASA Bioastronautics ratio)
-  - Feedstock chain validated: regolith pile consumed → processed regolith created → O2/H2/He3 produced
-  - ECLSS-grounded constants: 12 GameConstants with NASA references (CREW_WATER_DAILY_KG, BASE_WATER_RECOVERY_EFFICIENCY, etc.)
-- **Validation**: Real deployed settlement (ID 173) — non-zero O2 production confirmed at 1.575 kg/day over 50 ticks
-- **Synthesis report**: `summaries/2026-08-09-LUNA-MVP-VALIDATION-SYNTHESIS.md`
+### ✅ Cleaned: 7 duplicate task files removed from agent-tasks repo
+| Item | Filename | Removed From | Kept In |
+|---|---|---|---|
+| 1 | TERRAFORMING-MANAGER | `backlog/phase14+/` | `review/backlog_april_2026/` |
+| 3 | ROBOT-LOGISTICS | `completed/2026-06/` | `deprecated/` |
+| 5 | STRATEGY-SELECTOR | `deprecated/` | `completed/2026-06/` |
+| 6 | SPRITE-TILES | `completed/2026-07/` | `completed/2026-08/` |
+| 7 | SPIN-GRAVITY | `backlog/design/` | `completed/2026-08/` |
+| 4 | CO2-OXYGEN | `deprecated/` | `review/` |
+| 8 | TEU-PVE-ISRU | Already gone from disk/git | `completed/2026-08/` (only copy) |
 
-### ✅ Completed: Water Consumption Bugfix (~14x too high)
-- **Problem**: Simulation used `total_water_per_person_day = 50.0` (all-inclusive throughput figure) → 250 kg/day for 5 crew
-- **Root cause**: ECLSS formula `(crew × CREW_WATER_DAILY_KG) × (1 - efficiency)` was not implemented in simulation
-- **Fix**: Added ECLSS constants to `game_constants.rb` + updated simulation to use `WATER_UNRECOVERABLE_LOSS_PER_PERSON_DAY = 0.07` kg/person/day
-- **Before/After**: 250.0 kg/day → 0.35 kg/day (5 crew × 3.5kg × (1-0.98)) — matches NASA Bioastronautics spec exactly
-
-### ✅ Completed: PVU Mk1 Internal Unit Ports Regression Fix
-- **Problem**: `deploy_pve_unit` FAIL — "PVU Mk1 has no available internal_unit_ports (0 of 0 free)" — regression from 07-26 baseline (17/17 → 16/17)
-- **Root cause**: Known migration gap — PVU Mk1 blueprint (v1.2 template) had no `connection_schema` block; `LegacyPortAdapter` returned zero ports for everything
-- **Fix**: Added v1.4 `connection_schema` to PVU Mk1 blueprint with 2 mounting_slots, 2 utility_ports, 1 storage_bay
-- **Result**: `luna_mission:execute` → 17/17 PASS (was 16/17)
-
-### ⚠️ Remaining Blocker: ISRU Production Not Yet Added to Simulation
-- **Status**: NOW FIXED — see task above. ISRU production logic added and validated.
-- **Pre-existing test failures**: 2 unrelated (I-beam, water gate) — not caused by this work
+### ✅ Filed: Standalone audit task for remaining ~90 duplicates
+- Task: `2026-08-10-AUDIT-TASK-FILE-DUPLICATES.md` (backlog/phase05-luna-calibration/)
+- Scope: all non-review/ duplicates, excludes review/ folder
 
 ---
-
-## 🎯 Latest Completion (2026-08-07) — Manufacturing Service Duplicate Diagnosis
-
-### ✅ Completed: `2026-07-26-LOW-REFACTOR-MANUFACTURING-SERVICE-DUPLICATE.md` → completed/2026-08/
-- **Problem**: Two services doing the same job — `ManufacturingService` (live) and `Manufacturing::Service` (suspected dead duplicate)
-- **Diagnosis**: Confirmed `Manufacturing::Service` is safe to remove:
-  - Zero production callers (only spec file references it)
-  - Parallel-development origin, not migration (both created in same commit `53eeac63`, diverged independently)
-  - Different cost model than live version (construction-cost multiplier vs market-based pricing) — confirms competing implementations, neither formally adopted
-- **Follow-up**: Removal task already drafted (`2026-08-05-LOW-BUGFIX-DEAD-CODE-REMOVAL-MANUFACTURING-NAMESPACE.md`) — covers 3 dead services; not yet executed
-
-## 🎯 Latest Completion (2026-08-07) — Partial Dead Code Removal (Scope Correction)
-
-### ⚠️ Partially Completed: `2026-08-05-LOW-BUGFIX-DEAD-CODE-REMOVAL-MANUFACTURING-NAMESPACE.md`
-- **Action**: Deleted 2 of 3 scoped services + their specs (4 files total):
-  - `Manufacturing::Service` — confirmed dead, zero callers ✅
-  - `Manufacturing::UnitModuleAssembly` — confirmed dead, zero callers ✅
-  - `Manufacturing::MaterialRequestSystem` — **RETAINED** — has live caller in `manager.rb:266` (`fulfill_material_request` method) ❌
-- **Scope correction**: Task file incorrectly classified all 3 as dead. Stop condition triggered when grep found production caller for MaterialRequestSystem.
-- **Verification**: 197 manufacturing spec examples, 0 failures — no broken imports
-- **Task status**: NOT closed as complete — task file scope was wrong; needs follow-up correction note
 
 ## 🎯 Latest Completion (2026-08-06) — Duplicate Temperature Delegation Block Removal
 
@@ -271,17 +209,6 @@
 - **Synthesis report**: `summaries/2026-08-04-DIAGNOSIS-MANUFACTURING-SERVICE-DUPLICATE.md`
 
 ---
-
-## 🎯 Latest Completion (2026-08-09) — Manufacturing::Service Dead Code Removal
-
-### ✅ Completed: `2026-08-04-LOW-BUGFIX-REMOVE-MANUFACTURING-SERVICE-DEAD-CODE.md` → completed/2026-08/
-- **Finding**: All work already completed in a prior session — no new implementation needed
-- **Class removed**: `galaxy_game/app/services/manufacturing/service.rb` (Manufacturing::Service) — already deleted, only exists in `data/old-code/` backup
-- **Spec removed**: `spec/services/manufacturing/service_spec.rb` — already deleted, only exists in `data/old-code/` backup
-- **Doc corrected**: `CORE_CONCEPT_MAP.md` line 157 already lists `ManufacturingService` (top-level) as owner, not `Manufacturing::Service`
-- **Fresh grep**: Confirmed zero production callers across `app/`, `lib/`, `config/` — no new references added since 2026-08-04 investigation
-- **Synthesis report**: `summaries/2026-08-09-BUGFIX-REMOVE-MANUFACTURING-SERVICE-DEAD-CODE.md`
-
 
 ## 🎯 Latest Completion (2026-08-04) — InfrastructureCostCalculator Dead Code Removal
 
