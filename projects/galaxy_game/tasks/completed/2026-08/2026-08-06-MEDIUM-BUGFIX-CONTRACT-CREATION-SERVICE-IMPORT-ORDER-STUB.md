@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 priority: MEDIUM
 type: bugfix
 system_domain: AI_MANAGER | LOGISTICS
@@ -75,10 +75,29 @@ end
 - Task is complete when the method creates actual database records AND all related specs pass
 - If decision on model choice requires human input, stop and report findings
 
-## Completion Report Template
+## Completion Report
 
-After completion, fill in:
-- Model chosen (ImportOrder vs PlayerContract/MissionContract)
-- Files created/modified
-- Test results (examples/run failures)
-- Any design decisions made during implementation
+### Model Chosen: LogisticsContract (existing DB table, no model file)
+- **Key finding**: `LogisticsContract` had a DB table with all needed fields (from_settlement_id, to_settlement_id, material, quantity, shipping_cost, status, operational_data) but NO model file — Rails was using string-based table name magic
+- `ImportOrder` model NOT created — unnecessary new model when LogisticsContract already existed
+- `MissionContract` has no DB table (orphaned model)
+- `PlayerContract` exists with DB table but wrong semantics (player-facing contracts, not AI import orders)
+
+### Files Created/Modified
+1. **galaxy_game/app/models/logistics_contract.rb** (NEW) — ActiveRecord model with belongs_to associations to Settlement::BaseSettlement
+2. **galaxy_game/db/migrate/20260813000000_allow_null_from_settlement_for_logistics_contracts.rb** (NEW) — Migration allowing null from_settlement_id for Earth imports
+3. **galaxy_game/app/services/ai_manager/contract_creation_service.rb** (MODIFIED) — Replaced stub with real LogisticsContract.create! call
+4. **galaxy_game/spec/services/ai_manager/contract_creation_service_spec.rb** (NEW) — 4 examples, 0 failures
+
+### Test Results: 4 examples, 0 failures ✅
+- `.create_import_order creates a LogisticsContract record in the database` — PASS
+- `.create_import_order sets from_settlement_id to nil for Earth imports` — PASS
+- `.create_import_order logs the creation` — PASS
+- `.create_player_contract is still a stub (logs only, no DB write)` — PASS
+
+### Design Decisions
+1. **LogisticsContract over ImportOrder**: Existing table already had all needed fields; creating a new model would duplicate schema
+2. **from_settlement_id = nil**: Earth source not tracked in this call path; migration allows null (was previously NOT NULL)
+3. **status = 0 (pending)**: Matches existing logistics pipeline convention
+4. **operational_data stores import metadata**: {import_type: 'earth_import', currency: 'USD'} for traceability
+5. **create_player_contract left as stub**: Not in scope; would need separate task if GCC path is needed
