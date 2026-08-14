@@ -1,10 +1,11 @@
 ---
-status: backlog
+status: blocked
 priority: LOW
 type: refactor
 system_domain: MANUFACTURING
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
+requires_architecture_review: true
 ---
 
 # TASK: Purge Deprecated Manufacturing Services — Dead Code Removal
@@ -22,7 +23,7 @@ Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlo
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
   git mv projects/galaxy_game/tasks/backlog/phase05-luna-calibration/2026-08-08-LOW-REFACTOR-PURGE-DEPRECATED-MANUFACTURING-SERVICES.md \
          projects/galaxy_game/tasks/active/2026-08-08-LOW-REFACTOR-PURGE-DEPRECATED-MANUFACTURING-SERVICES.md
-  Then open the moved file and change: status: backlog → status: active
+  Then open the moved file and change: status: active → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
@@ -45,12 +46,41 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting a
 
 ## Context
 
-Three Manufacturing services were confirmed dead (zero live callers in app/lib) during the 2026-08-07 verification session. Two are safe to purge; one requires a hold condition pending review of `deployment_refinement.md`.
+**PRE-FLIGHT VERIFICATION FAILED (2026-08-14)** — The original premise that these services are dead code was incorrect.
 
-**Relevant Architecture Docs** — read before starting:
+### Finding 1: ConstructionManager — NOT DEAD (BLOCKS PURGE)
+
+`Manufacturing::Construction::ConstructionManager` has **4 live app-layer callers**:
+
+| Caller | File | Line | Method |
+|--------|------|------|--------|
+| `covering_service.rb` | `app/services/manufacturing/construction/` | 82 | `assign_builders` |
+| `covering_service.rb` | `app/services/manufacturing/construction/` | 97 | `complete?` |
+| `hangar_service.rb` | `app/services/manufacturing/construction/` | 81 | `assign_builders` |
+| `hangar_service.rb` | `app/services/manufacturing/construction/` | 97 | `complete?` |
+
+These are production callers in the app layer — dome/hangar construction workflows actively use this service. **Cannot purge without migrating these callers first.**
+
+### Finding 2: ProductionService — rake-only callers (no app-layer)
+
+`Manufacturing::ProductionService` has callers only in `lib/tasks/` rake files:
+
+| Caller | File | Lines |
+|--------|------|-------|
+| `isru_production_validation.rake` | `lib/tasks/` | 10, 122, 198, 200, 231 |
+| `lunar_base_with_isru_pipeline.rake` | `lib/tasks/` | 6, 7, 366, 401 |
+
+**Confidence level: lower than ConstructionManager.** No app-layer callers found — rake-only usage is test/validation scaffolding. Could be safe to purge but needs review to confirm these rake tasks aren't part of a live pipeline.
+
+### AssemblyService — still on hold (not yet reviewed)
+
+`deployment_refinement.md` integration plan not yet assessed.
+
+**Relevant Architecture Docs** — read before any future action:
 - `docs/developer/deployment_refinement.md` — AssemblyService hold condition (3 references)
-- `galaxy_game/app/services/manufacturing/construction/construction_manager.rb` — dead code target 1
-- `galaxy_game/app/services/manufacturing/production_service.rb` — dead code target 2
+- `galaxy_game/app/services/manufacturing/construction/construction_manager.rb` — **NOT dead, 4 callers**
+- `galaxy_game/app/services/manufacturing/production_service.rb` — rake-only callers
+- `galaxy_game/app/services/manufacturing/assembly_service.rb` — pending review
 
 ---
 
@@ -68,24 +98,19 @@ Three Manufacturing services were confirmed dead (zero live callers in app/lib) 
 - ✅ Right: Report failures and stop. This is a dead-code removal task, not a debugging task.
 - Why: Failures indicate the pre-flight verification was wrong — something unexpected depends on these services.
 
-### Confirmed Dead Code (Safe to Remove)
+### Current Status After Pre-Flight (2026-08-14)
 
-| Service | File Path | Live Callers | Status |
-|---------|-----------|-------------|--------|
-| `Manufacturing::ConstructionManager` | `galaxy_game/app/services/manufacturing/construction/construction_manager.rb` | **None** | ✅ Safe to delete |
-| `Manufacturing::ProductionService` | `galaxy_game/app/services/manufacturing/production_service.rb` | **None** | ✅ Safe to delete |
-
-### Hold Condition (Do NOT Remove Yet)
-
-| Service | File Path | Live Callers | Status |
-|---------|-----------|-------------|--------|
-| `Manufacturing::AssemblyService` | `galaxy_game/app/services/manufacturing/assembly_service.rb` | **None** | ⚠️ HOLD — see deployment_refinement.md |
+| Service | File Path | Callers | Status |
+|---------|-----------|---------|--------|
+| `Manufacturing::Construction::ConstructionManager` | `app/services/manufacturing/construction/construction_manager.rb` | **4 app-layer callers** | ❌ NOT DEAD — blocks purge |
+| `Manufacturing::ProductionService` | `app/services/manufacturing/production_service.rb` | rake-only (lib/tasks/) | ⚠️ Lower confidence — needs review |
+| `Manufacturing::AssemblyService` | `app/services/manufacturing/assembly_service.rb` | none (unconfirmed) | ⚠️ HOLD — deployment_refinement.md not yet reviewed |
 
 ---
 
 ## Problem Statement
 
-Three Manufacturing services have zero live callers in app/lib. Two are safe to purge immediately; one requires a hold condition review of `deployment_refinement.md` before removal.
+Three Manufacturing services were suspected dead (zero live callers). Pre-flight verification on 2026-08-14 disproved this for ConstructionManager (4 app-layer callers found) and ProductionService (rake-only callers). Task is blocked pending architecture review.
 
 ---
 
@@ -115,54 +140,23 @@ Three Manufacturing services have zero live callers in app/lib. Two are safe to 
 
 ---
 
-## Implementation Steps
+## Blocked — Architecture Review Required
 
-### Step 1 — Pre-flight Verification (MANDATORY)
+This task is blocked pending architecture review. Do NOT proceed with deletion until:
 
-Run these inside Docker to confirm zero production callers:
+### Blocker 1: ConstructionManager Migration Path
+- **4 app-layer callers** found in `covering_service.rb` and `hangar_service.rb`
+- Need decision: Should these callers be migrated off ConstructionManager, or is manual construction intentionally using this path?
+- If migration needed: plan the caller refactoring first, then revisit purge scope
 
-```bash
-docker exec web bash -c 'grep -rn "ConstructionManager" /home/galaxy_game/app/ /home/galaxy_game/lib/ | grep -v "class ConstructionManager"'
-docker exec web bash -c 'grep -rn "ProductionService" /home/galaxy_game/app/ /home/galaxy_game/lib/ | grep -v "class ProductionService"'
-```
+### Blocker 2: ProductionService rake-only usage
+- Callers exist only in `lib/tasks/` rake files (test/validation scaffolding)
+- Lower confidence than ConstructionManager — no app-layer callers
+- Need review: confirm these rake tasks aren't part of a live pipeline before purging
 
-Both should return **no results** (excluding the class definition lines themselves). If any production caller is found, STOP and report it. Do not proceed with removal.
-
-### Step 2 — Delete Dead Code Files
-
-Delete these 4 files:
-
-```bash
-docker exec web bash -c 'rm /home/galaxy_game/app/services/manufacturing/construction/construction_manager.rb'
-docker exec web bash -c 'rm /home/galaxy_game/spec/services/manufacturing/construction/construction_manager_spec.rb'
-docker exec web bash -c 'rm /home/galaxy_game/app/services/manufacturing/production_service.rb'
-docker exec web bash -c 'rm /home/galaxy_game/spec/services/manufacturing/production_service_spec.rb'
-```
-
-### Step 3 — Verify No Broken Imports
-
-Run the manufacturing spec suite to confirm no broken imports:
-
-> CRITICAL EXECUTION MANDATE: All RSpec commands must use the Docker wrapper below.
-> The container working directory is already /home/galaxy_game — do NOT add cd /home/galaxy_game.
-
-```bash
-docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/manufacturing/ --format progress' 2>&1 | tail -5
-```
-
-Report the result. If any failures, STOP and report them — do not attempt to fix.
-
-### Step 4 — Review AssemblyService Hold Condition
-
-Read `docs/developer/deployment_refinement.md` (on host):
-
-```bash
-grep -n "AssemblyService" /Users/tam0013/Documents/git/galaxyGame/docs/developer/deployment_refinement.md
-```
-
-Report the 3 references found. Determine:
-- Is the integration plan still current? → Leave `Manufacturing::AssemblyService` intact, report why in your notes.
-- Is it superseded? → Delete `assembly_service.rb` + its spec file too, note the supersession in commit message.
+### Blocker 3: AssemblyService hold condition
+- `deployment_refinement.md` integration plan not yet reviewed
+- Pending separate assessment
 
 ---
 
@@ -176,9 +170,37 @@ Report the 3 references found. Determine:
 ---
 
 ## Stop Conditions — escalate to user immediately if:
-- Any production caller is found for ConstructionManager or ProductionService — report the caller and stop
+- Any production caller is found for ConstructionManager or ProductionService — report the caller and stop ✅ DONE (4 callers found)
 - Specs fail after deletion — report failures and stop. Do not attempt to fix
 - AssemblyService hold condition cannot be resolved from deployment_refinement.md alone — flag for manual review
+
+## Completion Report
+*Filled in by the implementing agent after completion*
+
+**Completed by**: Implementation Agent (pre-flight only)
+**Completion date**: 2026-08-14
+**Final spec result**: N/A — task blocked before implementation
+
+### What was changed
+- Pre-flight verification disproved dead-code premise for ConstructionManager (4 app-layer callers found)
+- ProductionService confirmed rake-only usage (no app-layer callers)
+- Task moved to active/deferred-cleanup/ with blocked status
+
+### Issues discovered
+- **ConstructionManager is NOT dead**: 4 live callers in covering_service.rb and hangar_service.rb
+- **ProductionService has rake-only callers**: lower confidence for purge, needs pipeline review
+- Original task file's core assumption (zero live callers) was incorrect
+
+### Follow-up tasks needed
+- Architecture decision on ConstructionManager migration path (should dome/hangar services migrate off it?)
+- Review ProductionService rake callers to confirm they're not part of a live pipeline
+- Assess AssemblyService hold condition in deployment_refinement.md
+- Consider splitting this into separate tasks per service with different confidence levels
+
+### Lessons learned
+- Pre-flight grep must use fully-qualified class names (e.g., `Manufacturing::Construction::ConstructionManager`) to avoid false negatives from bare class name matches
+- "Zero callers" claims need verification on every task — assumptions about dead code can be stale
+- rake-only usage is a distinct case from app-layer production callers and should be treated separately
 
 ---
 
