@@ -3,7 +3,7 @@ name: "Migrate CO2 Oxygen Production Data Schema and Fix Stoichiometry"
 priority: LOW
 phase: phase6+
 created: 2026-06-21
-status: backlog
+status: completed
 type: data
 relocated_from: reorganization_attempt_3
 relocated_reason: "Life support needed for lava-tube base verification loop in phase6+"
@@ -25,10 +25,10 @@ relocated_reason: "Life support needed for lava-tube base verification loop in p
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/review/2026-04-03-LOW-DATA-CO2-OXYGEN-PRODUCTION-UNIT-SCHEMA-AND-STOICHIOMETRY.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/phase06-lava-tube-base/2026-04-03-LOW-DATA-CO2-OXYGEN-PRODUCTION-UNIT-SCHEMA-AND-STOICHIOMETRY.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/review/2026-04-03-LOW-DATA-CO2-OXYGEN-PRODUCTION-UNIT-SCHEMA-AND-STOICHIOMETRY.md \
+  git mv projects/galaxy_game/tasks/phase06-lava-tube-base/2026-04-03-LOW-DATA-CO2-OXYGEN-PRODUCTION-UNIT-SCHEMA-AND-STOICHIOMETRY.md \
          projects/galaxy_game/tasks/active/2026-04-03-LOW-DATA-CO2-OXYGEN-PRODUCTION-UNIT-SCHEMA-AND-STOICHIOMETRY.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
