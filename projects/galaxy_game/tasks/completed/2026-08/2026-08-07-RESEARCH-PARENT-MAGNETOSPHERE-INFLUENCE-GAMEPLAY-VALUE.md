@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 priority: MEDIUM
 type: architecture
 system_domain: BIOME_RENDERING | TERRA_SIM

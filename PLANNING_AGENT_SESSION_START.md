@@ -81,6 +81,23 @@ folders (not legacy cruft) — `current/` for phase-agnostic work,
 Only `phase10+` through `phase16+` are the genuinely unmigrated legacy
 scheme this step is checking.
 
+## Step 3.7 — Verify status.md's own claims before reporting or building on them
+
+Before writing a new status.md entry or handoff, or relying on a prior
+entry to decide what's already done, independently re-check the specific
+claims rather than carrying them forward as fact:
+- "Pushed" / "all commits pushed" → run `git log origin/main..HEAD` (or
+  equivalent) yourself, don't trust the prior entry's wording
+- "active/ is empty" / task location claims → `ls` it directly
+- "tests pass" / a specific pass-fail count → only report a count you
+  ran yourself this session; don't repeat a stale count as current
+- A prior handoff's summary of state → treat it as a lead to verify,
+  not a confirmed fact, especially if it's more than one session old
+
+A written status.md/handoff entry can go stale the moment conditions
+change after it's written — a live check taken this session always
+outranks a written claim, no matter how recent.
+
 ## Step 4 — Do the work
 
 Standard Planning Agent duties: triage, review, draft task files (using
@@ -92,7 +109,19 @@ escalation-trigger list.
 
 ## Step 5 — End of session
 
-- Update `status.md` with what got done
+- Update `status.md` with what got done today, **and condense as you
+  go — this is ongoing maintenance, not a one-time cleanup**:
+  - Session completion-line entries are appended by design during the
+    session (don't suppress them) — but before ending the session, fold
+    entries older than roughly the last week into a short 2-4 line
+    summary block, keeping only the most recent window verbose.
+  - When condensing, preserve: what shipped (commit hashes), any
+    still-open blocker or follow-up, and standing guardrails/lessons —
+    drop routine step-by-step narration once it's no longer actionable.
+  - If status.md is growing large enough that condensing a session's
+    worth doesn't keep it manageable, archive the older condensed
+    history to `status_archive_YYYY-MM.md` (or similar) in the same
+    project folder and leave a one-line pointer in status.md.
 - Leave `NEEDS_REVIEW.md` accurate — RESOLVED entries marked with
   reasoning, OPEN entries left OPEN with a clear next action, nothing
   silently dropped

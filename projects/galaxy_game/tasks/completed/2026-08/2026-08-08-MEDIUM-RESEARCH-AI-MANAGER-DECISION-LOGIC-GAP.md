@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: MEDIUM
 type: research
 system_domain: AI_MANAGER

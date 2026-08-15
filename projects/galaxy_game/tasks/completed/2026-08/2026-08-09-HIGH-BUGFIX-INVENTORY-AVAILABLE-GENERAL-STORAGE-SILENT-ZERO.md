@@ -1,12 +1,12 @@
 ---
-status: backlog
+status: blocked
 priority: HIGH
 type: bug-fix
 system_domain: UNITS | LOGISTICS
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 created: 2026-08-09
-blocker_for: []
+blocked_by: Architecture decision on general-storage unit identification
 ---
 
 # TASK: Fix Inventory#available_general_storage — silent-zero due to missing storage_type attribute
@@ -146,3 +146,96 @@ Complete a synthesis report documenting the current state:
 **STOP and escalate if:**
 - Fix requires adding a new column to BaseUnit (migration scope — needs review)
 - More than 10 specs need mock removals (scope may be larger than expected)
+
+---
+
+## BLOCKED: No Consistent Identifying Mechanism Exists
+
+**Date blocked:** 2026-08-14  
+**Blocker:** The codebase has NO consistent mechanism for identifying general-storage units. This is a design question, not a bug fix.
+
+### Caller Analysis (Permanent Record)
+
+#### Callers of `available_general_storage`
+
+| Location | Usage |
+|---|---|
+| `inventory.rb:52` | Passed to capacity check in `add_item` |
+| `inventory.rb:74` | Private `can_store?`: `available_general_storage >= amount` |
+
+Only **two callers**, both internal to `Inventory`. No external service callers.
+
+#### All code checking `u.storage_type` on units
+
+| Location | Pattern | Status |
+|---|---|---|
+| `has_storage.rb:26` | `unit.storage_type \|\| 'general'` | ✅ Correct — defaults nil to general |
+| `has_storage.rb:108` | `unit.storage_type == material_type_to_storage(...)` | ⚠️ Same nil-vs-'general_storage' gap |
+| `inventory.rb:155` (original) | `u.storage_type == 'general'` | ❌ BUG — nil != 'general' |
+| `base_unit.rb:237` | `def storage_type; operational_data&.dig('storage', 'type')` | The derived method itself |
+
+### Broadened Grep: Every unit_type with a `'storage'` key in operational_data
+
+#### From JSON data files (`data/json-data/operational_data/units/storage/`)
+
+| File | `storage` structure | Has `type`? |
+|---|---|---|
+| `storage_unit_data.json` | `{ "capacity": 250.0, "current_level": 0.0 }` | ❌ **No `type` key at all** |
+| `lox_storage_tank_mk1_data.json` | `{ "capacity": 10000, "current_level": 0 }` | ❌ **No `type` key at all** |
+| `multi_purpose_cryogenic_storage_mk1_data.json` | `operational_properties.storage.type = "multi"` | ✅ But nested under `operational_properties`, NOT top-level `storage` |
+| `inflatable_gas_storage_data.json` | `resource_management.storage.gas_m3.capacity` | ❌ **Completely different key path** |
+
+#### From factories (`spec/factories/units/units.rb`)
+
+| Factory/Trait | `unit_type` | `operational_data['storage']['type']` |
+|---|---|---|
+| `:gas_storage` trait | `"gas_storage"` | Not set (nil) |
+| `:storage` trait | `"storage_unit"` | Not set (nil) |
+| `:lox_tank` trait | `"lox_tank"` | `'liquid'` (but at top-level, not under `storage`) |
+| `:methane_tank` trait | `"methane_tank"` | `'liquid'` (same issue) |
+| `storage_unit` factory | `"storage_unit"` | `'general'` ✅ |
+
+#### From specs (`spec/models/units/base_unit_spec.rb`)
+
+| Variable | `unit_type` | `operational_data['storage']['type']` |
+|---|---|---|
+| `storage_tank` | `"storage_tank"` | `'general'` ✅ |
+| `storage_unit` | `"storage"` | `'general'` ✅ |
+| `lox_tank` | `"lox_tank"` | `'liquid'` ✅ |
+
+#### From app code
+
+| Location | `unit_type` check | Storage access pattern |
+|---|---|---|
+| `orbital_structure.rb:36` | `where(unit_type: 'storage')` | `.dig('storage', 'capacity')` |
+| `base_craft.rb:438` | `where(unit_type: ['cargo_bay', 'storage_module'])` | — |
+| `base_craft.rb:522` | `unit.unit_type == 'storage'` | — |
+| `ai_base_building.rake:446` | `['Inflatable Pressure Tank', 'Inflatable Cryogenic Tank']` | `.dig('storage_capacity')` (different key!) |
+
+### Why This Is a Design Question, Not a Bug Fix
+
+The codebase has three competing approaches to identifying general storage:
+
+1. **`storage_type == 'general'`** (the original buggy check) — only matches units that explicitly set type to 'general'
+2. **`storage_type.nil?`** (my attempted fix) — matches units with no type constraint, but this is an assumption, not a confirmed pattern
+3. **`unit_type` values** (`'storage'`, `'storage_unit'`, `'storage_tank'`) — used in app code but inconsistent
+
+None of these is confirmed as THE correct mechanism. The stop condition applies:
+
+> **DO NOT proceed beyond synthesis if:**
+> - The identifying mechanism for general storage is unclear after reviewing BaseUnit and all unit subclasses
+
+**It IS unclear.** This requires an architecture decision from Tracy on what makes a unit's storage "general-purpose" — possibly a proper `storage_type`/`category` field set consistently at creation, replacing the current patchwork of `unit_type` strings, nested paths, and missing keys.
+
+### Actions Taken During Investigation
+
+1. ✅ Reverted `inventory.rb` to original state (no half-confirmed guesses left)
+2. ✅ Restored `can_store?` mocks in `shell_printing_service_spec.rb` (original workaround preserved)
+3. ✅ This blocker documentation added to task file as permanent record
+4. ❌ Did NOT commit `has_storage.rb` changes (same open question, same block)
+
+### Next Steps (Requires Tracy's Input)
+
+- Determine the canonical way to identify general-storage units
+- Consider whether a proper `storage_type`/`category` field should be added to BaseUnit
+- If a schema decision is made, this task can be unblocked and re-implemented with confidence

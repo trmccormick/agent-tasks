@@ -3,12 +3,11 @@ name: "PVE Operational Data Schema Fix + MaterialProcessingService Validation"
 priority: HIGH
 phase: phase6+
 created: 2026-04-04
-status: backlog
+status: completed
 type: bugfix/data
 relocated_from: review/
 relocated_reason: "Luna surface/ISRU work — belongs in Phase 6, not sim calibration"
 last_reviewed: 2026-07-28
----
 
 # TASK: PVE Operational Data Schema Fix + MaterialProcessingService Validation
 
@@ -26,10 +25,10 @@ last_reviewed: 2026-07-28
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase6+/2026-04-04-HIGH-BUGFIX-MATERIAL-PROCESSING-SERVICE-PVE-VOLATILES.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase06-lava-tube-base/2026-04-04-HIGH-BUGFIX-MATERIAL-PROCESSING-SERVICE-PVE-VOLATILES.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/phase6+/2026-04-04-HIGH-BUGFIX-MATERIAL-PROCESSING-SERVICE-PVE-VOLATILES.md \
+  git mv projects/galaxy_game/tasks/backlog/phase06-lava-tube-base/2026-04-04-HIGH-BUGFIX-MATERIAL-PROCESSING-SERVICE-PVE-VOLATILES.md \
          projects/galaxy_game/tasks/active/2026-04-04-HIGH-BUGFIX-MATERIAL-PROCESSING-SERVICE-PVE-VOLATILES.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
