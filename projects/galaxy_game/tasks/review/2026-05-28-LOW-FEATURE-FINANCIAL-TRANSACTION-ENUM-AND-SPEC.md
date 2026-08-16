@@ -1,19 +1,35 @@
 ---
-status: backlog
+status: superseded
 priority: LOW
 type: feature
 system_domain: CONTROLLERS
 mvp_alignment: SPEC_HEALTH
 local_worker_safe: true
+superseded_by: 2026-08-16-LOW-SPEC-DISTRIBUTE-CONSORTIUM-PROFITS.md
 ---
 
 # TASK: Extend Financial::Transaction Enum and Create Consortium Profit Spec
 
-**Status**: BACKLOG
+**Status**: SUPERSEDED (2026-08-16)
 **Priority**: LOW
 **Type**: feature
 **Created**: 2026-05-28
-**Last Updated**: 2026-05-28
+**Last Updated**: 2026-08-16
+
+---
+
+## Closure Note
+
+**Superseded by:** `2026-08-16-LOW-SPEC-DISTRIBUTE-CONSORTIUM-PROFITS.md` (spec-only follow-up, filed same session)
+
+**Why superseded:**
+1. `distribute_consortium_profits` was already implemented (base_organization.rb:114) without waiting for this task — the method exists and works with `transaction_type: :transfer`.
+2. No code anywhere filters, sums, or reports by transaction type — zero downstream dependency on distinguishing profit distributions from generic transfers.
+3. The 5 proposed enum types (`profit_distribution`, `transit_fee`, `maintenance_levy`, `import_payment`, `debt_repayment`) have zero references in the codebase — speculative additions, not driven by existing needs.
+4. The only remaining actionable gap is the missing spec for the existing method — covered by the superseding task above.
+
+**What was kept:** The spec-only follow-up task (2026-08-16-LOW-SPEC-DISTRIBUTE-CONSORTIUM-PROFITS.md) in phase09-sol-expansion/ backlog.
+**What was dropped:** Enum extension — no code change needed, no downstream dependency exists.
 
 ---
 
