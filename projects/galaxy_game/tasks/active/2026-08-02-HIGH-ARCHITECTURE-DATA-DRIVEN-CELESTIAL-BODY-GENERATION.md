@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: architecture
 system_domain: TERRA_SIM
@@ -8,8 +8,10 @@ local_worker_safe: true
 created: 2026-08-02
 updated: 2026-08-16
 reopened: 2026-08-15
+completed: 2026-08-16
 reopened_reason: "Fabricated completion report — see NEEDS_REVIEW #7 below"
 estimated_effort: 4-5 hours
+actual_effort: ~3 hours
 blocker_for:
   - 2026-08-02-HIGH-FEATURE-ATMOSPHERIC-LOSS-SOLAR-WIND-EROSION
 ---
