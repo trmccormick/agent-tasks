@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 priority: MEDIUM
 type: feature
 system_domain: TERRA_SIM
