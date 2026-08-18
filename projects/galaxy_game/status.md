@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-16 — Implementation Agent Session (fixture-bundle task completion)
+**Last Updated:** 2026-08-16 — Planning Agent Session (task-file review, synthesis report, supersede close-out)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -20,55 +20,45 @@
 - See NEEDS_REVIEW entry for details
 - **Do NOT dispatch** until re-scoped task file is drafted and approved
 
-## 🎯 Today's Work (2026-08-16) — Implementation Agent Session (Fixture-Bundle Task Closure)
+## 🎯 Today's Work (2026-08-16) — Planning Agent Session (Task Review + Supersede Close-out)
 
-### Closed: `2026-08-13-LOW-FEATURE-FIXTURE-BUNDLE-STALE-MOCKS-GAPS.md`
-- **Status**: Moved active/ → completed/2026-08/, status: completed
-- **Items fixed and verified:**
-  - **#1** `catalog_controller_spec.rb` — Updated category expectation from hardcoded `['units', 'modules', 'crafts']` to `include('crafts')` (controller dynamically builds categories). **10 examples, 0 failures.**
-  - **#5** `material_management_concern_spec.rb` — Updated mock expectation from `"Fe"` to `"iron"` (MaterialLookupService normalizes chemical symbols). **21 examples, 0 failures.**
-  - **#6** `base_unit_spec.rb` + `base_unit.rb` — Removed invalid `source_unit:` keyword from both test assertion AND application code. **36 examples, 0 failures.**
-  - **#7** `game_data_generator_spec.rb` — Captured file content in test body before `after` hook deletes tmp; fixed JSON assertion format to match actual output. **1 example, 0 failures.**
-  - **#8** `material_lookup_service_spec.rb` — Updated mock regex from `/Invalid JSON in file:/` to `/Invalid JSON in file: .* - /` to match actual log format. **44 examples, 0 failures.**
-- **Items deferred (architectural gaps, NOT stale fixtures):**
-  - **#2/#3/#4** Material model reads `melting_point`/`boiling_point` from external JSON files via `MaterialLookupService`, NOT from DB columns or factory attributes. Factory sets DB columns that the model ignores — pre-existing data-source mismatch. Reverted factory to original state. Needs separate task.
-  - **#9** HarvesterCompletionJob oxygen issue — fixture seeding/job queue advancement gap. Needs separate task.
-- **Real bug caught in #6:** Stale `source_unit:` caller argument in `base_unit.rb` removed to match `SurfaceStorage#add_pile`'s actual signature (confirmed via diff — no `source_unit` param exists in current production code; old-code copy had it as optional but was never updated).
+### New Coordination Summary Generated
+- **File**: `handoffs/qwen(planning agent)/2026-08-16-COORDINATION-SUMMARY.md` (moved from claude/free web to correct folder)
+- **Verified against live codebase**: git state, task files, stash list, magnetosphere stub status
+- **Corrections from prior summary**: active tasks 0→1 (fixture-bundle moved), completed count 38→41, stash count 5→11
 
-### Files Changed
-1. `galaxy_game/spec/controllers/admin/catalog_controller_spec.rb` — test expectation
-2. `galaxy_game/spec/models/concerns/material_management_concern_spec.rb` — mock expectation
-3. `galaxy_game/spec/models/units/base_unit_spec.rb` — test assertion
-4. `galaxy_game/app/models/units/base_unit.rb` — removed invalid keyword argument (real bug)
-5. `galaxy_game/spec/services/generators/game_data_generator_spec.rb` — capture file before cleanup
-6. `galaxy_game/spec/services/lookup/material_lookup_service_spec.rb` — mock regex
+### Market-Fee Synthesis Report — Drafted ✅
+- **File**: `summaries/2026-08-16-SYNTHESIS-REPORT-MARKET-FEE-COMMIT.md`
+- **Commit reviewed**: `7db7566c` on `market-fee-hold` branch (unpushed)
+- **Critical finding**: OrbitalSettlement had `include SettlementFees` added in 7db7566c but later reverted — fee methods crash on orbital settlements
+- **Verdict**: APPROVED with conditions — fix OrbitalSettlement gap before push
 
-### Carry-forward Unresolved Items
-- `market-fee-hold` branch Synthesis Report still owed before push approval
-- 5 stashes on main unaddressed (`stash@{0}` through `stash@{9}`)
-- ~90 duplicate task-file audit (filed 08-10, dedicated session needed)
-- **NEW:** Two new tasks pending drafting — material data-source gap (#2/#3/#4) and HarvesterCompletionJob oxygen issue (#9), both status: backlog, undispatched
+### NEEDS_REVIEW #4 and #5 — Task Files Filed ✅
+| Task | File | Status |
+|------|------|--------|
+| **#4: Classify 19 Blueprints** | `2026-08-16-MEDIUM-RESEARCH-CLASSIFY-19-BLUEPRINTS-OPERATIONAL-DATA.md` | backlog/current, undispatched |
+| **#5: CNT Fabricator Collision** | `2026-08-16-MEDIUM-INVESTIGATE-CNT-FABRICATOR-NAMING-COLLISION.md` | backlog/current, undispatched |
 
-### Magnetosphere Stub Fix Task — Dispatch Approved, Tracy Holding Assignment
-- **File**: `2026-08-15-HIGH-FIX-MAGNETOSPHERE-STUB-CALCULATION.md` in `backlog/current/`
-- **Status**: `status: backlog`, undispatched (dispatch approved by coordination review)
-- **Three rounds of corrections applied tonight**:
-  1. Added baseline=1.0 dead-core edge test (covers gap where `baseline * core_state_factor` could exceed 0.1)
-  2. Replaced false sigmoid continuity test with max-single-step check (verified U-shaped differences via Python math)
-  3. Inserted fill-in-only Completion Report Template requiring pasted command output for every checkbox
-- **Test count corrected**: 30 existing + 11 new = 41 total (per-file: 18+11=29 in magnetosphere spec, 12 in data_drived_generation)
-- **No files moved to active/, no status changed, no implementation started**
+### Financial Transaction Enum Task — Superseded ✅
+- **Original**: `2026-05-28-LOW-FEATURE-FINANCIAL-TRANSACTION-ENUM-AND-SPEC.md` (review/)
+  - Status changed: `backlog` → `superseded`
+  - Closure note added with 4-point justification
+- **Spec-only follow-up**: `2026-08-16-LOW-SPEC-DISTRIBUTE-CONSORTIUM-PROFITS.md` (phase09-sol-expansion/)
+  - Status: `backlog`, undispatched
+  - Covers missing spec for `distribute_consortium_profits` only — no code changes
+- **Commit**: `cf5c4a7` on agent-tasks repo, pushed to origin/main
+- **Verification**: Zero code anywhere filters/reports by transaction type; all 5 proposed enum types have zero references
 
-### Verification Results
-- `data_driven` spelling: correct in task file (typo only in chat summary)
-- NEEDS_REVIEW entry added and resolved for fabricated completion
-- RSpec baseline confirmed from Aug 13 log: **4714/174/55**
-- Dry-run count (4674) noted but excluded — not real execution
+### Magnetosphere Stub — Still in Place (No Implementation)
+- **File**: `procedural_generator.rb:1385` — all three modifiers remain `0.0`
+- **Task file**: `2026-08-15-HIGH-FIX-MAGNETOSPHERE-STUB-CALCULATION.md` in backlog/current/
+- **Status**: `status: backlog`, undispatched (dispatch approved by coordination on 08-15 evening)
 
 ### Carry-forward Unresolved Items
-- `market-fee-hold` branch Synthesis Report still owed before push approval
-- 5 stashes on main unaddressed (`stash@{0}` through `stash@{9}`)
+- `market-fee-hold` branch Synthesis Report — drafted, awaiting sign-off before push approval
+- 11 stashes on main unaddressed (`stash@{0}` through `stash@{10}`)
 - ~90 duplicate task-file audit (filed 08-10, dedicated session needed)
+- **NEW**: Two new tasks pending dispatch — classify 19 blueprints (#4), investigate CNT collision (#5)
 
 ---
 

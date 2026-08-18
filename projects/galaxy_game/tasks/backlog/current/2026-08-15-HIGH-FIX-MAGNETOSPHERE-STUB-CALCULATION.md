@@ -85,8 +85,9 @@ This just returns `baseline` clamped to [0.0, 1.0] — no mass/rotation/age phys
 - `galaxy_game/app/services/star_sim/procedural_generator.rb` (lines 1385-1405) — `calculate_magnetosphere_strength()` stub → real implementation
 
 **Tests to Write/Update**:
-- `spec/services/star_sim/procedural_generator_magnetosphere_spec.rb` — add missing 10 tests
-- `spec/services/star_sim/data_driven_generation_spec.rb` — verify existing 30 still pass
+- `spec/services/star_sim/procedural_generator_magnetosphere_spec.rb` — 18 existing, add 11 new (29 total)
+- `spec/services/star_sim/data_driven_generation_spec.rb` — 12 existing, verify all pass
+- **Grand total: 30 existing + 11 new = 41 examples**
 
 **Reference Data (DO NOT MODIFY)**:
 - `data/json-data/star_systems/sol-complete.json` — Earth=1.0, Venus=0.3, Mars=0.0 are correct ✅
@@ -211,12 +212,16 @@ describe '#calculate_magnetosphere_strength' do
       expect(large_dead).to be < 0.05
     end
     
-    it 'sigmoid transition is smooth (no step function)' do
-      ages = [3e9, 4e9, 4.5e9, 5e9, 6e9]
+    it 'dead-core bodies decay to ~0.0 even with maximum baseline (1.0)' do
+      strength = generator.send(:calculate_magnetosphere_strength, 1.0, 0.642e24, 24.6, 10e9)
+      expect(strength).to be < 0.1
+    end
+    
+    it 'transitions continuously with no discontinuous jumps' do
+      ages = (0..10).map { |i| i * 1e9 }
       strengths = ages.map { |age| generator.send(:calculate_magnetosphere_strength, 1.0, 5.972e24, 24, age) }
-      # Each step should be smaller than the previous (sigmoid property)
       diffs = strengths.each_cons(2).map { |a, b| (b - a).abs }
-      expect(diffs[1]).to be < diffs[0]  # Second interval has smaller change
+      expect(diffs.max).to be < 0.3  # no single 1-Gy step should swing more than 30%
     end
     
     it 'returns value in [0.0, 1.0] for all edge cases' do
@@ -247,7 +252,7 @@ docker-compose -f docker-compose.dev.yml exec -T web bundle exec rspec \
   --format documentation 2>&1 | tee /tmp/magnetosphere_test_results.txt
 ```
 
-**Expected**: 40/0 (30 existing + 10 new)
+**Expected**: 41/0 (30 existing + 11 new)
 
 ### Step 5: Manual Integration Test
 
@@ -299,10 +304,31 @@ git commit -m "fix: Replace magnetosphere stub with core-state/dynamo physics
 
 ## Completion Report Template
 
-```
-## Magnetosphere Stub Fix Completion Summary
+**Fill in with actual command output, not summarized claims. Paste real terminal output for every checked item.**
 
-### Changes Made
+### Test Results
+- [ ] Full spec run command used: `______`
+- [ ] Actual result: `___/___` examples, `___` failures (paste full RSpec summary line)
+- [ ] Confirm: 41 total examples (30 existing + 11 new) — if not 41, explain discrepancy
+
+### Core-State Gate Verification (paste actual rails runner output)
+- [ ] Mars-class dead core (mass=0.642e24, age=4.5e9): strength = `____`
+- [ ] Mars-class dead core, baseline=1.0, age=10e9 (worst case): strength = `____` — MUST be < 0.1
+- [ ] Earth-class young (age=1e9): strength = `____` — MUST be > 0.8
+- [ ] Earth-class old (age=8e9): strength = `____` — MUST be < 0.5
+
+### Data Integrity Check
+- [ ] `git diff sol-complete.json` — confirm NO changes (paste output, empty diff expected)
+- [ ] Earth/Venus/Mars values in sol-complete.json still 1.0/0.3/0.0: confirm via `grep`
+
+### Files Changed
+- [ ] `git diff --stat` output pasted here (exact files/line counts, not a description)
+
+### Honest Failure Disclosure
+- [ ] Any pre-existing unrelated failures observed during the run? List them, don't omit.
+- [ ] Anything in the Stop Conditions that came close to triggering, even if it didn't? Note it.
+
+**Do not check a box without pasting the command output it's based on. A description of what should have happened is not evidence of what did happen.**
 - [x] calculate_magnetosphere_strength() replaced with sigmoid-based core-state/dynamo gate
 - [x] Core-state factor ensures dead-core bodies decay to ~0.0 regardless of mass/rotation
 - [x] 10 new tests written (30→40 examples, 0 failures)

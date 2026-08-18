@@ -65,7 +65,7 @@ PARALLEL START (Once orbital infrastructure ready):
     ├─ Phase 9: Mars (orbital + surface settlement + terraforming)
     ├─ Phase 10: Venus (cloud cities + atmospheric operations + asteroid capture)
     ├─ Phase 11: Multi-world Logistics (coordinating Mars + Venus + others)
-    ├─ Phase 12: Optional Branches (Ceres/Titan-Saturn parallel expansion)
+    ├─ Phase 12: Optional Branches (Ceres belt mining + Titan/Saturn settlement — two separate paths, either/both optional)
     └─ Phase 13: Psyche + Coordinated Terraforming
 ```
 
@@ -82,14 +82,16 @@ Each world can progress at its own pace, with the AI Manager learning to priorit
 | **6** | `phase06-lava-tube-base/` | QUEUED | Surface-first bootstrap construction |
 | **7** | `phase07-depot-building/` | QUEUED | Orbital infrastructure (LEO/L1) |
 | **8** | `phase08-shipyards/` | QUEUED | Shipyard/craft validation + parallel support |
-| **9** | `phase09-sol-expansion/` | PLANNED | 🔁 PARALLEL with 10,11,12,13 — Mars/Venus/outer system |
-| **10** | `phase09-sol-expansion/` (Venus subfolder) | **PLANNED** | 🔁 **PARALLEL** with 9,11,12,13 | Venus: cloud cities + atmospheric + asteroid + AI training |
-| **11** | `phase09-sol-expansion/` (logistics subfolder) | **PLANNED** | 🔁 **PARALLEL** with 9,10,12,13 | Multi-world logistics coordination + AI training |
-| **12** | `phase09-sol-expansion/` (optional subfolder) | **PLANNED (optional)** | 🔁 **PARALLEL** with 9,10,11,13 | Optional branch expansion (Ceres/Titan) |
-| **13** | `phase09-sol-expansion/` (Psyche subfolder) | **PLANNED** | 🔁 **PARALLEL** with 9,10,11,12 | Psyche + coordinated terraforming + AI training |
+| **9** | `phase09-mars/` | PLANNED | 🔁 **PARALLEL** with 10,11,12,13 | Mars: orbital (tug/cycler-pair buildout, Phobos/Deimos) + surface settlement + terraforming |
+| **10** | `phase10-venus/` | **PLANNED** | 🔁 **PARALLEL** with 9,11,12,13 | Venus: same tug/cycler-pair pattern (belt-object capture) + cloud cities + atmospheric + AI training |
+| **11** | `phase11-logistics/` | **PLANNED** | 🔁 **PARALLEL** with 9,10,12,13 | Multi-world logistics: standing Earth→Mars→Venus cycler loop, docking/undocking infrastructure, coordination + AI training |
+| **12** | `phase12-optional-branches/` | **PLANNED (optional)** | 🔁 **PARALLEL** with 9,10,11,13 | Optional branch expansion — Ceres (belt mining) and Titan/Saturn (separate settlement path), either pursued independently |
+| **13** | `phase13-psyche/` | **PLANNED** | 🔁 **PARALLEL** with 9,10,11,12 | 16 Psyche + coordinated terraforming + AI training |
 | **14+** | TBD | **FUTURE** | Sequential gate | AI operational independence + Eden expansion |
 
 **🔁 Parallel Trigger**: Phase 7 completion triggers Phases 9-13 to begin simultaneously. All four world-expansion streams run concurrently, with Phase 11 coordinating logistics across them.
+
+**Folder note (2026-08-16):** Phases 9-13 are organized as flat, top-level folders (matching Phases 5-8's convention) rather than nested as subfolders inside a single `phase09-sol-expansion/` folder, as an earlier version of this table specified. That nested scheme was never actually built out in practice — real task filing has always used flat per-phase folders, and `phase09-sol-expansion/` had become a single flat dump for all of Phases 9-13's work with no internal separation. The folder-per-phase numbers below are organizational conveniences for task filing and AI-training-data structure — they do **not** imply sequential execution. Phases 9-13 remain fully parallel per the trigger above; a task can sit in `phase10-venus/` and be actively worked at the same time as tasks in `phase09-mars/`.
 
 **Why This Structure**:
 - **Phases 5-8**: Sequential foundation (can't build Mars infrastructure before orbital infrastructure exists)
@@ -206,13 +208,17 @@ Each world can progress at its own pace, with the AI Manager learning to priorit
 
 **Key Deliverables**:
 - Tug deployment and testing mission validation
-- Phobos/Deimos hollowing infrastructure mission profiles validated
+- Phobos/Deimos hollowing infrastructure mission profiles validated (tug uses slag propellant — hollowing generates slag, which is then used to reposition the body into stable orbit; tug can only move one body per trip, so Mars requires two full round-trips)
 - Moon repositioning mechanics tested
+- Depot-first conversion sequencing validated: depot (gas processing, docking, refueling, propellant/material storage) comes online before shipyard conversion completes — depot enables storage of propellant and conversion-generated materials while shipyard buildout is still in progress
+- 2-cycler initial buildout pair validated: first cycler delivers depot-conversion units, second delivers station/shipyard-conversion equipment; both return to Earth for a similar Venus-bound payload once Mars conversion is done, then roll into the standing cycler loop (same reassignment pattern as the tug)
 - Mars surface outpost establishment options validated
 - Mars surface resource infrastructure options tested
 - Mars worldhouse construction mission validation
 - Mars terraforming initiation options tested
 - First cycler return/resupply loop established
+
+**See [[tug-cycler-hollowing-operations]]** (design notes, chat-log-sourced) for full mechanic detail — slag storage inside the hollowed low-gravity cavity is an open design question, not yet resolved (Luna's surface-pile storage doesn't work without meaningful gravity).
 
 **Critical Note**: Mars has MULTIPLE settlement approaches in JSON mission profiles:
 - Orbital-first: Station on Phobos/Deimos, minimal surface
@@ -231,9 +237,6 @@ AI learns to evaluate these by real cost and pick the pattern that works best gi
 ---
 
 ### Phase 10 — Venus Cloud Cities & Adaptation: Testing & AI Training
-**Goal**: Test Venus settlement options (asteroid capture, orbital, surface); train AI on adaptation to moon-free environment.
-
-### Phase 10 — Venus Cloud Cities & Adaptation: Testing & AI Training
 **Goal**: Test Venus settlement options (cloud cities, atmospheric harvesting, asteroid capture); train AI on adaptation to moon-free environment. **Runs in parallel with Phases 9, 11, 12, 13.**
 
 **Scope**: Venus footholds including cloud cities, atmospheric operations, orbital infrastructure, and asteroid capture options
@@ -246,11 +249,13 @@ AI learns to evaluate these by real cost and pick the pattern that works best gi
 
 **Key Deliverables**:
 - Orbital depot establishment validated
+- Same tug/slag-propellant hollowing pattern applied to 2 belt-captured objects (tug departs Mars for the asteroid belt using leftover Mars slag, captures 2 similar objects, delivers to Venus orbit) — see [[tug-cycler-hollowing-operations]]
+- Depot-first conversion sequencing (same as Mars — depot online before shipyard conversion completes)
 - Cloud city habitation options tested
 - Atmospheric harvesting mission profiles validated
 - Industrial integration infrastructure tested
 - Asteroid relocation options tested (alternative to natural moons)
-- Parallel second cycler-tug pair construction validated
+- 2-cycler buildout pair repeats at Venus (same pair that finished Mars, now carrying Venus-bound depot/shipyard payloads) before rolling into the standing cycler loop
 - Terraforming pathways identified
 - Cost comparison: asteroid capture vs pure atmospheric operations vs cloud cities
 
@@ -272,7 +277,6 @@ AI learns to evaluate these by real cost and pick the pattern that works best gi
 ---
 
 ### Phase 11 — Multi-World Logistics Maturation: Testing & AI Training
-### Phase 11 — Multi-World Logistics Maturation: Testing & AI Training
 **Goal**: Test and validate cycler logistics, docking, cargo transfer across multiple worlds running simultaneously. **Runs in parallel with Phases 9, 10, 12, 13.**
 
 **Scope**: Earth-Mars-Venus cycler logistics validation and optimization, coordinating parallel world expansion
@@ -283,12 +287,15 @@ AI learns to evaluate these by real cost and pick the pattern that works best gi
 - **Phase 11d**: Multi-world logistics AI training (AI learns to coordinate multiple simultaneous operations, prioritize resources, handle conflicts)
 
 **Key Deliverables**:
-- Docking/undocking reliability across multiple footholds validated
+- Standing non-stop cycler loop validated: Earth → Mars → Venus → repeat, with shipyard stops only for upgrades/repairs (not routine)
+- Docking/undocking reliability across multiple footholds validated — cyclers function as mobile stations craft dock with directly (not just point-to-point transport); a craft can dock and stay attached for a multi-leg ride to its actual destination (e.g. a LOX tanker riding to the Mars depot)
 - Cargo transfer validation under realistic load scenarios with concurrent traffic
 - Heavy logistics stress testing with multiple simultaneous transits
 - Multi-route cycler scheduling and coordination patterns tested
 - Resource arbitrage patterns identified across multiple worlds
 - AI learns conflict resolution when multiple worlds compete for cycler capacity
+
+See [[tug-cycler-hollowing-operations]] for cycler docking-station mechanic detail.
 
 **Parallel Dependencies**:
 - Requires Phase 6 complete (orbital infrastructure ready)
@@ -301,7 +308,7 @@ AI learns to evaluate these by real cost and pick the pattern that works best gi
 ---
 
 ### Phase 12 — Optional Branch Expansion: Testing & AI Training
-**Goal**: Test optional branch settlement approaches (Ceres/Titan-Saturn) running in parallel with core worlds. **Runs in parallel with Phases 9, 10, 11, 13.**
+**Goal**: Test optional branch settlement approaches — Ceres belt mining and Titan/Saturn settlement are two separate paths, each independently optional, running in parallel with core worlds. **Runs in parallel with Phases 9, 10, 11, 13.**
 
 **Scope**: Belt mining infrastructure, gas giant moon settlement options, parallel to main expansion
 **Structure**:
@@ -316,10 +323,12 @@ AI learns to evaluate these by real cost and pick the pattern that works best gi
 - Parallel expansion patterns tested
 - AI learns resource allocation decisions between main worlds and branches
 
+**Critical Note**: Ceres and Titan/Saturn are two separate, independently-optional paths — pursuing one doesn't require the other. However, Ceres has an assumed working relationship with Mars specifically (early design intent: Mars + Ceres coordinate for belt extraction/logistics, Expanse-style belters — not a fully standalone branch the way Titan/Saturn is). This relationship isn't yet reflected in task-level detail; worth keeping in mind when Ceres tasks are drafted so Mars-Ceres logistics aren't treated as unrelated to Phase 9's Mars work.
+
 **Parallel Dependencies**:
 - **Runs concurrently with Phase 9** (Mars), **Phase 10** (Venus), **Phase 11** (logistics), **Phase 13** (Psyche)
 - Optional — AI can decide not to pursue branches if core world expansion is more economically viable
-- Doesn't block progression of main worlds or other parallel efforts
+- Doesn't block progression of main worlds or other parallel efforts (Titan/Saturn path is fully independent; Ceres has the Mars-relationship noted above, but still doesn't gate Phase 9's own progress)
 
 **Gate**: N/A (optional) — branches can be pursued independently or skipped based on AI economic evaluation; does not gate Phase 13 or other parallel efforts.
 
@@ -396,7 +405,12 @@ Everything in Phases 5–15 has been building the world-state players inherit at
 
 ---
 
-## Current Backlog State (as of 2026-06-28)
+## Current Backlog State (as of 2026-06-28) — SUPERSEDED, kept for history
+
+**This section is historical.** The folder names below (`phase13+`, `phase14+`, `phase15+`
+shorthand) predate the 2026-08-16 folder-naming correction in the "Current Backlog State —
+Parallel Execution Model" table above. Refer to that table, not this one, for current
+folder names. Kept here only as a record of the earlier sub-phase task-count breakdown.
 
 ### Key Process: Mission Validation → Settlement Option Testing → AI Training → Autonomous Decision Making
 

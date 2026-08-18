@@ -1,44 +1,85 @@
-[MOVED_FROM: projects/galaxy_game/tasks/backlog/phase5+/2026-05-27-HIGH-REFACTOR-AI-MANAGER-USE-SETTLEMENT-DEPLOYMENT-SERVICE.md]
-[RATIONALE: Old bugfix/superseded work — no longer actionable]
 ---
-status: active
+status: backlog
 priority: HIGH
 type: refactor
 system_domain: AI_MANAGER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
-local_worker_safe: false
-relocated_from: reorganization_attempt_3
-relocated_reason: "Luna simulation blocker — task_execution_engine_v2.rb:107 actively used in rake luna_mission:execute; bypasses SettlementDeploymentService"
-codebase_status_2026_06_22: "All 3 direct BaseSettlement.create! call sites confirmed present: manager.rb:235, system_architect.rb:377, task_execution_engine_v2.rb:107. All bypass SettlementDeploymentService and skip cargo verification/unit deployment. Requires refactoring to use establish_from_craft."
+local_worker_safe: true
+created: 2026-05-27
+updated: 2026-08-15
+---
+
+## ⚡ Minimal Handoff (Copy this to send to agent)
+
+```
+You are **Implementation Agent**.
+
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase05-luna-calibration/2026-05-27-HIGH-REFACTOR-AI-MANAGER-USE-SETTLEMENT-DEPLOYMENT-SERVICE.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/phase05-luna-calibration/2026-05-27-HIGH-REFACTOR-AI-MANAGER-USE-SETTLEMENT-DEPLOYMENT-SERVICE.md \
+         projects/galaxy_game/tasks/active/2026-05-27-HIGH-REFACTOR-AI-MANAGER-USE-SETTLEMENT-DEPLOYMENT-SERVICE.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-05-27-HIGH-REFACTOR-AI-MANAGER-USE-SETTLEMENT-DEPLOYMENT-SERVICE.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
+
 ---
 
 # TASK: Migrate Direct BaseSettlement.create! to SettlementDeploymentService
 
-**Status**: ACTIVE
+**Status**: BACKLOG
 **Priority**: HIGH
 **Type**: refactor
 **Created**: 2026-05-27
-**Last Updated**: 2026-05-27
+**Last Updated**: 2026-08-15
 
 ---
 
-## Local Worker Triage Report
+## Local Worker Triage Report (Optional — for backlog review only)
+*Filled in by local model during backlog review*
 
 - **Template Conformance**: PASS
 - **Docker Wrapper Check**: PASS
 - **MVP Alignment**: VALID — AI Manager must use shared deployment service for Luna settlement creation to ensure consistent manifest-driven deployment logic
 - **MVP Impact Note**: Direct BaseSettlement.create! in AI Manager bypasses cargo verification, unit deployment, and cargo transfer — Luna precursor deployment will be incomplete without this fix
-- **Action Line**: READY FOR CLOUD HANDOFF
+- **Action Line**: READY FOR LOCAL DISPATCH
 
 ---
 
-## Agent Assignment
+## Agent Assignment (Human-filled, not seen by agents)
 
-**Assigned To**: GPT-4.1 0x
+**Assigned To**: [TBD]
 **Why This Agent**: Targeted migration, 3 files, clear replacement pattern
+**Local attempts before cloud**: N/A
 **Supervision Level**: Watched carefully
 
 ---
+
+## Prerequisites — READ FIRST (Sequential Order)
+
+1. **Workflow**: `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/TASK_TEMPLATE.md` (EXECUTOR Role section)
+2. **Project Guide**: `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/README.md`
+3. **This Task File**: Everything below
+
+> Agent MUST read in this order. Do not skip. Synthesis report goes in chat BEFORE starting work.
 
 ## Context
 
@@ -55,6 +96,22 @@ def self.establish_from_craft(craft, location, manifest_name: 'precursor_craft_d
 **Relevant Architecture Docs** — read before starting:
 - `docs/new_agent/rules/DECISIONS.md` — locked architectural decisions
 - `docs/new_agent/rules/GUARDRAILS.md` — execution rules
+
+---
+
+## Critical Information for This Task
+
+### Architecture Gotchas (Critical to understand BEFORE starting)
+
+⚠️ **GOTCHA 1: All 3 call sites still present as of 2026-08-15 verification**
+- ❌ Wrong: Assume the migration was done by an intervening task or commit
+- ✅ Right: Verify each call site with grep before starting — all 3 confirmed present at manager.rb:235, system_architect.rb:377, task_execution_engine_v2.rb:107
+- Why: This task has been in backlog since May 27; intervening commits modified the files but did NOT touch the settlement creation call sites
+
+⚠️ **GOTCHA 2: `craft` variable availability varies by call site**
+- ❌ Wrong: Invent a craft object where none exists in scope
+- ✅ Right: At each call site, check what variables are available. If `craft` is not directly available, flag the gap and stop — do not fabricate.
+- Why: `manager.rb` creates from a lavatube plan (no craft), `system_architect.rb` deploys habitats (no craft), only `task_execution_engine_v2.rb` may have craft context
 
 ---
 
