@@ -1,5 +1,5 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-08-10
+**Last Updated:** 2026-08-19
 
 ---
 
@@ -14,14 +14,68 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 ---
 
 ## Current Status
-- **Status:** ✅ **SOFT LAUNCH READY & FULLY COMMITTED** — All GitHub issues fixed + all changes committed to branch + hyrax-webapp submodule clean
+- **Status:** ✅ **COMPLETE — Type facet + show_more fix DEPLOYED to hykudev**
 - **Active Branches:**
   - `main` — Stable; production-ready with full volume mount structure
-  - `fix/facet-links-and-hide-type-facet` — ✅ ALL FIXES COMPLETE & COMMITTED (GitHub issues #11, #13, #14 + facet label decorator)
+  - `fix/hide-type-facet-add-show-more-facets` — ✅ COMPLETE: All 5 issues fixed, 8 commits, deployed to hykudev (2026-08-19)
   - `clover-test` — Clover IIIF viewer integration (backlog)
   - `ollama_testing` — Ollama vision model for alt-text generation (backlog, experimental)
-- **Last Session:** 2026-08-10
-- **Last Update:** 2026-08-10 — ✅ ARCHITECTURE COMPLIANCE: Moved facet labels to decorator (not submodule), all changes committed, submodule clean
+- **Last Session:** 2026-08-19
+- **Last Update:** 2026-08-19 — ✅ COMPLETED: Type facet hidden, More links working, homepage facets limited to 5, deployed to VM
+
+---
+
+## ✅ 2026-08-19 — Type Facet & Homepage Facet Limiter FIX (COMPLETE & DEPLOYED)
+
+**All Issues Fixed**:
+1. ✅ Type facet (`generic_type_sim`) hidden from all views
+2. ✅ "More" links functional with correct `/catalog/facet/field_name` URLs
+3. ✅ Homepage facets limited to exactly 5 items with "More" link
+4. ✅ Facet labels readable (Creator, Subject, Location, etc.)
+5. ✅ Nagios health check comment added to homepage
+
+**Root Cause Findings**:
+- **Type facet issue**: `generic_type_sim` was defined in hyrax-webapp submodule but decorator wasn't removing it
+- **More links issue**: Old code used `search_action_url()` which generated wrong URL format
+- **Homepage facet limit issue**: `HomepageSearchBuilder` sends `facet.limit => -1` to Solr (unlimited); needed view-level limiting
+- **Wings::ModelRegistry NameError**: Old decorator file in wrong location causing Zeitwerk validation error
+
+**Implementation Details**:
+1. **Catalog Controller Decorator** (`app/controllers/catalog_controller_decorator.rb`):
+   - Deletes `generic_type_sim` facet field
+   - Sets `limit: 5` + `show_more: true` on all remaining facets
+   - Adds readable labels for each facet field
+
+2. **Homepage View Template** (`app/views/themes/wvu_home/hyrax/homepage/_facet_limit.html.erb`):
+   - Manually slices `display_facet.items` to first 5 items
+   - Shows "More" link only if additional items exist
+   - Uses `facet_catalog_path(id: facet_field.key)` for correct URLs
+
+3. **Homepage Controller Decorator** (`app/controllers/hyrax/homepage_controller_decorator.rb`):
+   - Injects custom `HomepageSearchBuilderWrapper`
+   - Prepend pattern to avoid superclass mismatch
+
+4. **Homepage Search Builder Wrapper** (`app/search_builders/hyrax/homepage_search_builder_wrapper.rb`):
+   - Extends `Hyrax::HomepageSearchBuilder`
+   - Overrides `build()` method to enforce facet limits in Solr params
+
+**Testing & Verification** (Local + VM):
+- ✅ Local: All 5 items fixed and tested with Rails restart
+- ✅ VM: Branch pulled, app UP, no Zeitwerk errors, application stable
+- ✅ Ready: For Jessica McMillen QA verification on hykudev
+
+**Branch Details**:
+- Branch: `fix/hide-type-facet-add-show-more-facets`
+- Commits: 8 total (all committed and pushed to origin)
+- Status: Deployed to hykudev (2026-08-19 20:45 UTC)
+
+**Deployment Command** (for reference):
+```bash
+cd /path/to/wvu_knapsack
+git fetch origin
+git pull origin fix/hide-type-facet-add-show-more-facets
+# Restart container
+```
 
 ---
 
