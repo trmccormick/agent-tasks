@@ -1,4 +1,10 @@
 # Task File Template
+
+# ⚠️ VALIDATION REQUIREMENT:
+# Every task file MUST include the "Agent Dispatch Interface" section immediately after YAML frontmatter.
+# If this section is missing or incomplete, the task is NOT READY FOR DISPATCH.
+# This is the critical contract between human and agent — it cannot be optional or skipped.
+
 # Copy this file, rename it to describe the task, fill in all sections.
 # Delete these instruction comments before saving.
 # Place in docs/new_agent/projects/{project name}/tasks/backlog/{YYYY-MM}/ or active/ as appropriate.
@@ -36,15 +42,22 @@
 # AGENT SELECTION RULE: Always assign to local Qwen (Copilot) first.
 # Only escalate to cloud after two genuine failures in fresh local sessions.
 #
-# HANDOFF STRATEGY:
-#   The HANDOFF MESSAGE should be minimal (2-4 lines) and ONLY point to this file.
-#   All critical information goes HERE in the task file:
-#     - Credentials (usernames, passwords, URLs)
-#     - Multi-step workflows (prerequisites, read order)
-#     - Architecture gotchas (what NOT to do, why)
-#     - Acceptance criteria (what "done" looks like)
-#     - Synthesis requirement (agent must report before starting work)
-#   DO NOT duplicate this info in the handoff. Keep handoff as minimal pointer.
+# DISPATCH INTERFACE STRATEGY (CRITICAL):
+#   The "Agent Dispatch Interface" section (immediately after YAML) is NOT optional scaffolding.
+#   It is the CONTRACT between human and agent.
+#   - Human fills it out completely BEFORE task is ready for dispatch
+#   - Agent receives this exact text as their startup instructions
+#   - If this section is missing or incomplete, the task is NOT READY
+#   - Human must complete readiness checklist (above) before sending this to any agent
+#   
+#   The dispatch interface is minimal (2-4 lines in the code block) and must contain:
+#     - Agent role and project name
+#     - Path to task file location
+#     - Step 0 instructions (move task to active/, update status)
+#     - Reference to synthesis report requirement
+#   DO NOT put implementation details in the dispatch interface.
+#   All that belongs in the task file sections below.
+#   The interface is ONLY the startup contract.
 
 ---
 status: backlog
@@ -55,7 +68,27 @@ mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT | ISRU_PRODUCTION | SPEC_HEALTH | OTHE
 local_worker_safe: true | false
 ---
 
-## ⚡ Minimal Handoff (Copy this to send to agent)
+## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
+
+**STOP. Do not send this task to an agent until ALL boxes are checked.**
+
+- [ ] Agent Dispatch Interface section below is complete and accurate (no placeholders)
+- [ ] All Step 0-N instructions are clear and actionable (not vague)
+- [ ] Synthesis report template is provided (copy/paste ready, not as example)
+- [ ] No placeholder text remains in Implementation Steps
+- [ ] All file paths are verified to exist
+- [ ] Architecture Gotchas are specific (not generic)
+- [ ] Acceptance Criteria are measurable
+- [ ] Dependencies and Blocked/Blocks relationships are clear
+
+**Task is NOT READY until all checkboxes are completed.**
+
+---
+
+## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
+
+**This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
+Agents receive this exact text as the startup contract. Every word matters.
 
 ```
 You are **Implementation Agent**.
@@ -85,7 +118,12 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting a
   Chat is for questions only — never paste synthesis into chat (formatting breaks).
 ```
 
-**That's it.** Everything else should be IN this task file, not duplicated in handoff.
+**IMPORTANT: Do not modify or abbreviate the text above.**
+Copy it exactly as-is when dispatching this task to an agent.
+This is the startup contract — every element is required.
+
+Everything else (details, gotchas, acceptance criteria, implementation steps) is in the sections below.
+The dispatch interface above is ONLY the bootstrap instructions.
 
 ---
 
