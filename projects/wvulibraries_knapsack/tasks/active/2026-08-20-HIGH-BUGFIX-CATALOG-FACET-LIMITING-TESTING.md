@@ -87,11 +87,12 @@ ALL of these must pass for task completion:
 
 ## 🚀 Getting Started (Step-by-Step)
 
-### Step 1: Check out the branch
+⚠️ **2026-08-20 UPDATE**: Local test environment data issue — admin tenant data cleared during session. Demo tenant has `/catalog` routing error (404). Unable to complete local testing. Implementation code is committed and ready on branch `fix/hide-type-facet-add-show-more-facets`. See "Testing Blocker" section below.
+
+### Step 1: Verify the branch
 ```bash
 cd /Users/tam0013/Documents/git/wvu_knapsack
-git fetch origin
-git checkout fix/catalog-facet-limiting-solr-level
+git branch --show-current  # Should show: fix/hide-type-facet-add-show-more-facets
 git log --oneline -5  # Verify commits are there
 ```
 
@@ -202,6 +203,26 @@ curl -s 'https://admin-wvu-knapsack.localhost.direct/catalog/facet/people_repres
 # Check Rails logs for routing errors
 sc logs web 2>&1 | grep -i "routing\|facet" | tail -20
 ```
+
+---
+
+## ⚠️ TESTING BLOCKER — 2026-08-20 Evening Session
+
+**Issue**: Local testing environment encountered issues:
+- Admin tenant: Data cleared/unavailable (unclear root cause — investigate tomorrow)
+- Demo tenant: `/catalog` route returns 404 routing error
+- Cannot verify facet limiting on local Stack Car
+
+**Code Status**: ✅ COMMITTED and ready
+- `CatalogSearchBuilderWrapper` is implemented and on branch `fix/hide-type-facet-add-show-more-facets`
+- Code follows proven `HomepageSearchBuilderWrapper` pattern
+- Changes are minimal and non-breaking
+
+**Recommendation for Tomorrow**:
+1. Restore local test data
+2. Restart Stack Car: `sh down.sc.local.sh && sh up.sc.local.sh`
+3. Verify `/catalog` route works
+4. Follow manual testing checklist (see "Manual Testing Checklist" section above)
 
 ---
 
