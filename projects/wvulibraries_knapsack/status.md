@@ -1,5 +1,5 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-08-19
+**Last Updated:** 2026-08-20
 
 ---
 
@@ -14,14 +14,82 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 ---
 
 ## Current Status
-- **Status:** ✅ **COMPLETE — Type facet + show_more fix DEPLOYED to hykudev**
+- **Status:** 🔄 **IN PROGRESS — Catalog facet limiting (CatalogSearchBuilderWrapper implementation)**
 - **Active Branches:**
   - `main` — Stable; production-ready with full volume mount structure
-  - `fix/hide-type-facet-add-show-more-facets` — ✅ COMPLETE: All 5 issues fixed, 8 commits, deployed to hykudev (2026-08-19)
+  - `fix/hide-type-facet-add-show-more-facets` — ✅ DEPLOYED to hykudev (2026-08-19); awaiting QA verification from Jessica
+  - `fix/catalog-facet-limiting-solr-level` — 🏗️ IN PROGRESS (2026-08-20): Implementation of search builder wrapper for catalog facets
   - `clover-test` — Clover IIIF viewer integration (backlog)
   - `ollama_testing` — Ollama vision model for alt-text generation (backlog, experimental)
-- **Last Session:** 2026-08-19
-- **Last Update:** 2026-08-19 — ✅ COMPLETED: Type facet hidden, More links working, homepage facets limited to 5, deployed to VM
+- **Last Session:** 2026-08-19 (Type facet + show_more fix)
+- **Current Session:** 2026-08-20 — Catalog facet limiting investigation & implementation (in progress)
+- **Next Handoff:** Qwen (local agent) for testing & verification
+
+---
+
+## 🔄 2026-08-20 — Catalog Facet Limiting Investigation & Implementation (IN PROGRESS)
+
+**Objective**: Limit catalog search facets to 5 items max (like homepage), with "More" link for additional values. Currently, People Represented shows 36 items locally and 100+ on production.
+
+**Investigation Phase** (COMPLETE):
+1. ✅ **Compared upstream implementations**: Reviewed PALNI/PALCI Knapsack repo for facet patterns
+   - Found: They use `limit: 5` + `show_more: true` in CatalogController facet config (like we do)
+   - Not enforcing at Solr request level (only at display level)
+   - Explanation: They don't have high-cardinality facets like "People Represented"
+
+2. ✅ **Identified root cause**: Blacklight's `limit: 5` config only controls UI display, NOT Solr request
+   - Solr returns all matching facet values (e.g., 36 items for People Represented)
+   - View shows only first 5 + "More" link, but Solr was queried for all values
+   - Real solution: Must enforce `facet.limit` parameter at Solr request level via search builder
+
+3. ✅ **Analyzed working patterns**:
+   - **Homepage**: Uses `HomepageSearchBuilderWrapper` which overrides `build()` to set facet limits in Solr params ✅ WORKING
+   - **Catalog**: Uses `AdvSearchBuilder` but was only relying on Blacklight config (not working)
+
+**Implementation Phase** (IN PROGRESS):
+1. ✅ **Created CatalogSearchBuilderWrapper** (`app/search_builders/catalog_search_builder_wrapper.rb`)
+   - Extends `AdvSearchBuilder` (catalog's current search builder)
+   - Overrides `build(user_params)` to enforce facet.limit from Blacklight config
+   - Pattern: Identical to proven HomepageSearchBuilderWrapper
+
+2. ✅ **Updated CatalogController decorator** (`app/controllers/catalog_controller_decorator.rb`)
+   - Added `search_builder_class` method override to return `CatalogSearchBuilderWrapper`
+   - This injects our wrapper into the search pipeline
+
+3. ✅ **Removed non-working decorator approach** 
+   - Deleted `config/initializers/decorate_search_builders.rb` (prepend pattern didn't work for catalog)
+   - Reason: Decorator was applied but methods never invoked (different code path for catalog)
+
+4. ✅ **Committed changes to new branch**: `fix/catalog-facet-limiting-solr-level`
+   - Commit message: "fix: use CatalogSearchBuilderWrapper pattern (proven working) instead of decorator approach"
+
+**Testing Status** (BLOCKED - LOCAL ROUTING ISSUE):
+- ⚠️ Local Stack Car container routes not working (`/catalog` → 404 Routing Error)
+- Root cause: Multi-tenant setup requires full service initialization (not just web container)
+- Impact: Cannot verify facet limiting works locally yet
+- Next step: Qwen to test on local Stack Car when container routing is stable
+
+**Code Changes Summary**:
+- **NEW**: `app/search_builders/catalog_search_builder_wrapper.rb` (17 lines)
+- **MODIFIED**: `app/controllers/catalog_controller_decorator.rb` (added search_builder_class method override)
+- **DELETED**: `config/initializers/decorate_search_builders.rb` (non-working approach)
+- **Branch**: fix/catalog-facet-limiting-solr-level (3 commits)
+
+**Architectural Notes**:
+- Follows proven HomepageSearchBuilderWrapper pattern
+- Non-breaking: CatalogSearchBuilderWrapper extends AdvSearchBuilder, preserves all upstream behavior
+- Future deployment: Merge to main after local verification + production testing
+
+**Open Questions for Qwen**:
+1. Can catalog page load and display facets on local Stack Car?
+2. Does "People Represented" facet show max 5 items when expanded?
+3. Does "More" link appear when > 5 items exist?
+4. Do other facets (Creator, Subject, etc.) also respect the 5-item limit?
+
+**Estimated Effort for Completion**:
+- Testing: 30-45 min (if Stack Car routing fixed)
+- Bug fixes (if any): 15-30 min
+- Deployment prep: 15 min
 
 ---
 
