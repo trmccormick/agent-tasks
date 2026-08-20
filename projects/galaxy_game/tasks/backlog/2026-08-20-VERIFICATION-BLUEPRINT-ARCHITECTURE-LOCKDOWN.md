@@ -7,7 +7,27 @@ mvp_alignment: SPEC_HEALTH
 local_worker_safe: true
 ---
 
-## ⚡ Minimal Handoff (Copy this to send to agent)
+## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
+
+**STOP. Do not send this task to an agent until ALL boxes are checked.**
+
+- [x] Agent Dispatch Interface section below is complete and accurate
+- [x] All Step 0-N instructions are clear and actionable
+- [x] Synthesis report template is provided (copy/paste ready)
+- [x] No placeholder text remains in Implementation Steps
+- [x] All file paths are verified to exist
+- [x] Architecture Gotchas are specific (not generic)
+- [x] Acceptance Criteria are measurable
+- [x] Dependencies and Blocked/Blocks relationships are clear
+
+**READY FOR DISPATCH**
+
+---
+
+## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
+
+**This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
+Agents receive this exact text as the startup contract. Every word matters.
 
 ```
 You are **Verification Agent**.
@@ -36,7 +56,12 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting v
   Chat is for questions only — never paste synthesis into chat (formatting breaks).
 ```
 
-**That's it.** Everything else should be IN this task file, not duplicated in handoff.
+**IMPORTANT: Do not modify or abbreviate the text above.**
+Copy it exactly as-is when dispatching this task to an agent.
+This is the startup contract — every element is required.
+
+Everything else (details, gotchas, acceptance criteria, implementation steps) is in the sections below.
+The dispatch interface above is ONLY the bootstrap instructions.
 
 ---
 
