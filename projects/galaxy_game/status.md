@@ -1,11 +1,42 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-17 — Planning Agent Session (session closeout, coordination summary, carry-forward)
+**Last Updated:** 2026-08-20 — Planning Agent Session (architecture verification, remediation task creation)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 > 
 > **OLD ENTRIES ARCHIVED:** All entries from 2026-07-09 through 2026-08-02 archived to
 > `status_archive_2026-08.md`. See that file for full historical detail.
+
+---
+
+## 🚨 CRITICAL FINDING: Architecture Verification Uncovered Missing Material Blueprints (2026-08-20)
+
+**Verification Task Status**: `2026-08-20-VERIFICATION-BLUEPRINT-ARCHITECTURE-LOCKDOWN.md` → COMPLETE (moved to active/, report saved)
+
+### Verification Results Summary
+| Step | Result | Impact |
+|------|--------|--------|
+| **Step 1: PHASE_STRUCTURE.md** | ⚠️ ISSUES — mk2 cooling unlock not documented in authoritative arch doc | Blocks architecture lockdown |
+| **Step 2: JSON Blueprint Load Testing** | ✅ PASS — All 12 files parse without errors | No immediate issues |
+| **Step 3: Material Dependency Chain** | ❌ BLOCKER — 3 of 4 required materials don't exist | Cannot proceed with mk2/mk3 storage production |
+| **Step 4: Git Hygiene** | ✅ PASS — No JSON files in history | Clean state |
+
+### Blocker Details (GOTCHA 3 Repeated)
+Session created JSON blueprints assuming three materials existed, but:
+- ❌ `graphite` — NOT FOUND (needed for graphene_composite production)
+- ❌ `epoxy_resin` — NOT FOUND (needed for graphene_composite production)
+- ❌ `fabrication_plant` — NOT FOUND (needed to produce graphene_composite)
+- ✅ `graphene_composite` — EXISTS but cannot be produced
+
+**Root Cause**: JSON files simplified in isolation without cross-checking material availability. Architect doc (COMPLETE_PHASE_STRUCTURE.md) never updated with mk2 cooling unlock section (Foundation phases).
+
+### Remediation Tasks Created (4 files, backlog/, ready for dispatch)
+| Task | Priority | Status | Dispatch Ready |
+|------|----------|--------|-----------------|
+| `2026-08-20-HIGH-DATA-CREATE-GRAPHITE-BLUEPRINT` | HIGH | backlog | ✅ YES |
+| `2026-08-20-HIGH-DATA-CREATE-EPOXY-RESIN-BLUEPRINT` | HIGH | backlog | ✅ YES |
+| `2026-08-20-HIGH-DATA-CREATE-FABRICATION-PLANT-BLUEPRINT` | HIGH | backlog | ✅ YES |
+| `2026-08-20-MEDIUM-DOCUMENTATION-UPDATE-COMPLETE-PHASE-STRUCTURE-MK2-COOLING-SECTION` | MEDIUM | backlog | ✅ YES |
 
 ---
 
