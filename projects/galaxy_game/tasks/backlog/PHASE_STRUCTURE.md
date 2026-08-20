@@ -253,7 +253,7 @@ Phase 13: Psyche mining + coordinated terraforming
 - Slag used as propellant for repositioning operations
 - Tug leaves Mars fully fueled (slag tank) for 6+ month journey to asteroid belt
 - No Earth resupply needed between Mars and belt operations
-**BOIL-OFF ENFORCEMENT NOTE**: Phase 9 does NOT require boil-off code implementation yet. Early Mars supply comes from Earth (3-day transit, minimal loss even without cooling enforcement). Boil-off enforcement and skimmer infrastructure are deferred to Phase 11+ when Venus long-haul cycler operations begin.
+**BOIL-OFF ENFORCEMENT NOTE**: Phase 9 does NOT require boil-off code implementation yet. Early Mars supply comes from Earth via direct tanker runs or initial cycler legs. Boil-off enforcement and skimmer infrastructure are deferred to Phase 11+ when Venus long-haul cycler operations begin.
 **Parallel Dependencies**: 
 - Requires Phase 8 complete (tug built at L1 shipyard)
 - Phase 9 must complete before Phase 10 (tug must be positioned at Mars ready for belt departure)
@@ -296,7 +296,9 @@ Phase 13: Psyche mining + coordinated terraforming
 - **Requires Phase 9 COMPLETE** (tug must depart Mars fueled with slag propellant)
 - **Requires Phase 8** (cycler for Venus payloads built at L1)
 - Tug cannot arrive at Venus orbit with captured asteroids before completing Mars operations
-**BOIL-OFF ENFORCEMENT NOTE**: Phase 10 does NOT require boil-off code implementation yet. Early Venus supply comes from Earth (cycler is Earth-supplied initially). Boil-off enforcement activates in Phase 11+ when Venus skimmer operations begin and cycler transits carry volatile resources with long transit times.
+
+**BOIL-OFF ENFORCEMENT NOTE**: Phase 10 does NOT require boil-off code implementation yet. Early Venus supply comes from Earth via the cycler. Boil-off enforcement activates in Phase 11+ when Venus skimmer operations begin and cycler transits carry volatile resources with longer transit times.
+
 **Gate**: Venus footholds established with captured asteroids in orbit, cloud city infrastructure beginning, cycler positioned for Venus supply chain. Phase 11 triggered (standing Earth→Mars→Venus cycler loop now ready to begin).
 
 ---
