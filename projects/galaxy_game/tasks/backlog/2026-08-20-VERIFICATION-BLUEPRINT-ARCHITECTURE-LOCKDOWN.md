@@ -7,6 +7,39 @@ mvp_alignment: SPEC_HEALTH
 local_worker_safe: true
 ---
 
+## ⚡ Minimal Handoff (Copy this to send to agent)
+
+```
+You are **Verification Agent**.
+
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/2026-08-20-VERIFICATION-BLUEPRINT-ARCHITECTURE-LOCKDOWN.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  cd /Users/tam0013/Documents/git/agent-tasks
+  git mv projects/galaxy_game/tasks/backlog/2026-08-20-VERIFICATION-BLUEPRINT-ARCHITECTURE-LOCKDOWN.md \
+         projects/galaxy_game/tasks/active/2026-08-20-VERIFICATION-BLUEPRINT-ARCHITECTURE-LOCKDOWN.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-08-20-VERIFICATION-BLUEPRINT-ARCHITECTURE-LOCKDOWN.md"
+    Only ONE result should exist at active/. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, verification steps, gotchas, and completion report template.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting verification.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+  Filename pattern: 2026-08-20-VERIFICATION-BLUEPRINT-ARCHITECTURE.md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**That's it.** Everything else should be IN this task file, not duplicated in handoff.
+
+---
+
 # TASK: Verify Blueprint Loading + PHASE_STRUCTURE.md Architecture Lockdown
 
 **Status**: BACKLOG
