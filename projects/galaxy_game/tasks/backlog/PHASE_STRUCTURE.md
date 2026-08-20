@@ -97,6 +97,40 @@ Phase 13: Psyche mining + coordinated terraforming
 
 ---
 
+## CRITICAL PREREQUISITE: mk2 Cooling Technology for Early Harvesters (Phase 0)
+
+**mk2 cooling technology must unlock during Foundation Phases (1-4)** to enable Phase 0 Earth launches of HLT harvesters to Venus and Titan. This is a **technology tree research**, not a Luna-produced component.
+
+**Why mk2 Cooling is Critical:**
+- Early HLT harvesters leave Earth Phase 0 (Month 5 for Venus, Month 18 for Titan)
+- Return transit is 8-10 months (Venus) carrying mixed atmospheric gases
+- Without mk2 cooling (0.15% daily boil-off vs mk1's 0.3%), losses during return exceed 20-30% of cargo
+- With mk2 cooling, losses are acceptable (~12-15% for 8-month transit)
+
+**mk2 Technology Progression:**
+```
+Foundation Phases (1-4): mk2 Cooling Technology Researched
+    ↓
+Phase 0: Earth Manufactures mk2 Storage Tanks
+    ├─ HLT harvesters equipped with mk2 storage before launch
+    └─ Venus/Titan harvesters depart with cold-storage capability
+    ↓
+Phase 10: Venus Harvesters Return to Luna
+    ├─ Volatile cargo cooled to 0.15% daily loss rate
+    └─ Arrives with economically viable resource loads
+    ↓
+Phase 11+: Stationary Skimmers Deployed (Different Craft)
+    ├─ Permanent Venus/Titan skimmers use Luna/L1-produced mk2/mk3 storage
+    ├─ Boil-off enforcement activated for cycler transits
+    └─ Multi-world supply chain validated
+```
+
+**Key Distinction:**
+- **Early HLT Harvesters (Phase 0)**: Mobile HLT craft with limited onboard processing, equipped from Earth with mk2 tanks, return cargo to Luna
+- **Phase 11+ Stationary Skimmers**: Permanently deployed atmospheric processors at destination worlds, receive resupply from cyclers, use Luna/L1-produced advanced storage
+
+---
+
 ## Current Backlog State — Tug/Cycler Deployment Sequence
 
 | Phase | Structure | Status | Deployment Role | Purpose |
@@ -135,6 +169,19 @@ Phase 13: Psyche mining + coordinated terraforming
 **Status**: ✅ Complete — System A AI Manager Service Integration
 - CostAnalyzer, ManifestGenerator, ShortageDetector, ImportRequestGenerator
 - These form the base decision logic for all subsequent phases
+
+**TECHNOLOGY UNLOCK: mk2 Cryogenic Cooling Systems (Phase 1-4)**
+- **Timing**: Available immediately at game start (before Phase 0 harvester launches)
+- **Why**: Venus/Titan harvesters launch from Earth in Phase 0 (Month 5+ timeline) with mk2 storage tanks equipped
+- **Function**: mk2 cooling reduces boil-off from 0.3% to 0.15% daily, enabling viable long-haul return transits (8-10 months) from Venus/Titan back to Luna base without unacceptable resource loss
+- **Technology Chain**: 
+  - Graphite extraction (Phase 10+) + Epoxy resin (importable) → Graphene composite (produced Phase 11+)
+  - BUT mk2 storage blueprints producible with standard materials (stainless_steel, insulation, thermal_coating, electronics, sensors) for Phase 0-8 operations
+  - Graphene composite optimization available later (Phase 11+) for mk3 tier advancement
+- **Distinction**: 
+  - **Phase 0 Harvesters** (Venus/Titan): Mobile cyclers departing Earth with mk2 cooling, returning to Luna with harvested resources
+  - **Phase 11 Skimmers** (Venus/Titan): Stationary harvesters deployed at destination planets, operating under boil-off enforcement on cycler transits
+  - Both use mk2+ cooling but serve different mission profiles at different times
 
 ### Phase 5 — Luna: Mission Validation & AI Training
 **Goal**: Validate Luna settlement mission profiles and train AI Manager on proven patterns.
@@ -297,34 +344,59 @@ Phase 13: Psyche mining + coordinated terraforming
 - **Requires Phase 8** (cycler for Venus payloads built at L1)
 - Tug cannot arrive at Venus orbit with captured asteroids before completing Mars operations
 
-**BOIL-OFF ENFORCEMENT NOTE**: Phase 10 does NOT require boil-off code implementation yet. Early Venus supply comes from Earth via the cycler. Boil-off enforcement activates in Phase 11+ when Venus skimmer operations begin and cycler transits carry volatile resources with longer transit times.
+**BOIL-OFF ENFORCEMENT NOTE**: Phase 10 does NOT require boil-off code implementation yet. 
+
+**Early Venus Harvester Returns**: HLT harvesters launched from Earth in Phase 0 are equipped with mk2 cooling tanks from Earth production. They return Phase 10 with volatile cargo (mixed Venus atmosphere) already cooled during the 8-10 month transit. This cargo arrives at Luna with acceptable boil-off losses (~12-15% for transit) because the mk2 cooling systems equipped at Earth launch prevent further degradation.
+
+**Early Earth Supply Chain**: Direct Earth tanker runs or initial cycler legs continue to supply Luna with other critical imports. No boil-off enforcement code needed yet because these are staged imports, not multi-leg cycler transits with loss calculation.
+
+**Phase 11+ Transition**: Stationary Venus/Titan skimmers (permanently deployed at destinations) operate under boil-off enforcement rules on cycler return transits. This is a different operational model from the mobile HLT harvesters.
+
+**GRAPHITE SOURCING NOTE**: Graphite extraction (carbonaceous asteroid mining or local crustal deposits) becomes available during Phase 10. Early-phase requirements may lean on Earth imports or specialized carbon processing until planetary/asteroid loops are fully established. Graphite + epoxy resin → graphene_composite production chain is validated during Phase 11 and feeds into mk2/mk3 cooling system supply chains.
 
 **Gate**: Venus footholds established with captured asteroids in orbit, cloud city infrastructure beginning, cycler positioned for Venus supply chain. Phase 11 triggered (standing Earth→Mars→Venus cycler loop now ready to begin).
 
 ---
 
-### Phase 11 — Multi-World Logistics & Skimmer Activation: Testing & AI Training
-**Goal**: Test and validate cycler logistics, docking, cargo transfer across Mars and Venus now both operational. Activate skimmer resource harvesting at Venus (CH4/H2) and enforce boil-off loss on cycler transits. Sequential gate: Phases 9-10 must complete first (both worlds must be equipped).
+### Phase 11 — Multi-World Logistics & Stationary Skimmer Activation: Testing & AI Training
+**Goal**: Test and validate cycler logistics, docking, cargo transfer across Mars and Venus now both operational. **Activate stationary skimmer resource harvesting at Venus (CH4/H2) and Titan (O2/LOX)** and enforce boil-off loss on cycler transits. Sequential gate: Phases 9-10 must complete first (both worlds must be equipped with depot/shipyard infrastructure).
 
-**Scope**: Earth-Mars-Venus cycler logistics + Venus skimmer operations + boil-off enforcement validation
+**Scope**: Earth-Mars-Venus cycler logistics + **stationary** Venus/Titan skimmer operations + boil-off enforcement validation
 **Structure**:
 - **Phase 11a**: Cycler docking mission validation (cycler-world pairs: Earth-Mars, Mars-Venus, Venus-Earth)
 - **Phase 11b**: Cargo transfer mission validation (docking, undocking, cargo movement protocols across multiple worlds)
-- **Phase 11c**: Venus skimmer proof-of-concept activation (mk2 cooling assumed active; harvest CH4 or H2 from Venus atmosphere -> orbital depot -> cycler integration)
-- **Phase 11d**: Boil-off enforcement on cycler transits (apply loss rates to Earth->Venus->Mars->Earth legs; validate supply chain economics with mk2 cooling)
+- **Phase 11c**: **Stationary** Venus skimmer proof-of-concept activation (mk2 cooling assumed active; harvest CH4 or H2 from Venus atmosphere via permanent depot infrastructure -> accumulate in orbital storage -> transfer to cycler)
+- **Phase 11d**: Boil-off enforcement on cycler transits (apply loss rates to Earth->Venus->Mars->Earth legs carrying volatile cargo cooled by onboard mk2/mk3 systems)
 - **Phase 11e**: Standing cycler loop stress testing mission validation (Earth->Mars->Venus->Earth repeating cycle, concurrent traffic, resource flow tracking)
 - **Phase 11f**: Multi-world logistics AI training (AI learns to coordinate multiple simultaneous operations, prioritize resources, manage resource arbitrage between worlds)
 
-**Skimmer Resource Targets** (Activated Phase 11+):
-- **Venus**: Harvest CH4 (methane) or H2 (hydrogen) from atmosphere via stationary depot-based skimmers -> accumulate in orbital storage -> transfer to cycler -> transport to Earth/Mars/Luna (mk2 cooling manages boil-off on cycler transits)
+**CLARIFICATION — Mobile HLT Harvesters vs. Stationary Skimmers**:
+
+**Mobile HLT Harvesters (Phase 0, returned Phase 10)**:
+- Launched from Earth with limited onboard processing + mk2 cooling equipped from Earth production
+- Return voyage is self-cooled via mk2 tanks (8-10 months, ~12-15% boil-off acceptable)
+- Deliver mixed volatile cargo to Luna for processing
+- Not stationary—return to Earth for refueling and re-deployment
+
+**Stationary Skimmers (Phase 11+)**:
+- Permanently deployed at Venus/Titan atmosphere collection sites
+- Ground-based or orbital-depot-based infrastructure at destination worlds
+- Collect resources continuously and transfer to cycler on cycler arrival
+- Different cooling requirements: use mk2/mk3 storage produced at Luna/L1, resupplied via cycler
+- Boil-off enforcement applies to their cycler return transits
+
+**Skimmer Resource Targets & Cooling Technology** (Activated Phase 11+):
+- **Venus**: **Stationary** skimmers harvest CH4 or H2 from atmosphere -> accumulate in orbital storage (mk2 cryogenic tanks, 0.15% daily boil-off) -> transfer to cycler -> transport to Earth/Mars/Luna
+- **Cooling Chain**: Graphite (extracted from asteroids) + Epoxy Resin (imported) → Graphene Composite (produced at Luna/L1 fabrication facility, 8-hour cycle) → mk2 storage tanks (0.15% boil-off, 250-500 kg graphene_composite per tank) and mk3 storage tanks (0.07% boil-off, Phase 12+ advancement)
+- **Boil-off Enforcement**: Applied to cycler transits carrying volatile cargo (CH4, H2, LOX); loss rates modeled as function of transit duration and cooling tier active on cycler equipment
 
 **Key Deliverables**:
 - Standing non-stop cycler loop validated: Earth -> Mars -> Venus -> repeat
 - Docking/undocking reliability across both footholds validated
 - Cycler functions as mobile station: craft dock directly (not point-to-point transport only); craft can dock and ride multi-leg journeys
-- **Venus skimmer operations validated** (atmospheric harvesting proof-of-concept at planetary scale)
-- **Boil-off loss enforcement validated** (settlement daily tick + cycler transit loss calculations implemented and active)
-- Cargo transfer validation under realistic load scenarios with concurrent traffic AND resource loss (boil-off)
+- **Stationary Venus skimmer operations validated** (atmospheric harvesting proof-of-concept at planetary scale via permanent infrastructure)
+- **Boil-off loss enforcement validated** (settlement daily tick + cycler transit loss calculations implemented and active for volatile cargo)
+- Cargo transfer validation under realistic load scenarios with concurrent traffic AND resource loss (boil-off on transits)
 - Resource arbitrage patterns identified across all three worlds (accounting for boil-off cost)
 - AI learns conflict resolution when both worlds compete for cycler capacity
 - First complete tri-world logistics cycle proven with realistic supply chain constraints
