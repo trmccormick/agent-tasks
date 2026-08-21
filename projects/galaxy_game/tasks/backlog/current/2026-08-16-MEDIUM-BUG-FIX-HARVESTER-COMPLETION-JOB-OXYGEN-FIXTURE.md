@@ -2,300 +2,238 @@
 status: backlog
 priority: MEDIUM
 type: bug-fix
-system_domain: OTHER
+system_domain: AI_MANAGER
 mvp_alignment: ISRU_PRODUCTION
-local_worker_safe: false
+local_worker_safe: true
+created: 2026-08-16
+updated: 2026-08-21
+estimated_effort: 2-3 hours
+blocker_for: []
+depends_on: []
+---
+
+# TASK: Luna Oxygen Production — Diagnose Broken Pathway
+
+## 🔍 Diagnostic Task (Primary Deliverable: Identify Which Oxygen Source Is Failing)
+
+**Status:** Ready for dispatch. Task requires diagnostic-first approach before implementation.
+
+**Context:** Fixture-bundle task item #9 flagged an "oxygen issue" on Luna, but oxygen production has **7+ distinct pathways**. Cannot assume HarvesterCompletionJob is the culprit.
+
+---
+
+## Oxygen Production Pathways (Full Taxonomy)
+
+Luna can produce oxygen through:
+
+| Pathway | System | Method |
+|---------|--------|--------|
+| **Mining** | Water Ice Extraction | H2O from PSR craters → electrolysis → O2 |
+| **Extraction** | Regolith Processing | Water in regolith → extraction → O2 |
+| **PVE Processing** | Oxide Reduction | Regolith oxides → reduction → O2 |
+| **Smelting** | Ore Smelting | Ore smelting byproducts → O2 |
+| **CO2 Processing** | Carbon Reduction | CO2 → CO2 reduction cycle → O2 + CH4 |
+| **Biological** | Greenhouse | Plant photosynthesis → O2 |
+| **Biological** | Bioreactor | Biological CO2 reduction → O2 |
+
+**Problem:** Fixture-bundle says "oxygen issue" but doesn't specify which pathway. Must diagnose.
+
+---
+
+## Critical Distinction: Harvester Scope
+
+**HarvesterCompletionJob only handles MINING/EXTRACTION pathways:**
+- Surface robot harvesters deployed by `AIManager::EscalationService`
+- Completes orders for water ice mining, regolith extraction, etc.
+- Does NOT handle: greenhouses, bioreactors, PVE, smelting, CO2 processing
+
+**Greenhouses, bioreactors, and PVE use different systems entirely.**
+
+---
+
+## Diagnostic Steps (What Agent Must Do First)
+
+### Step 1: Run fixture tests and identify which oxygen source is failing
+- Execute rspec on fixture-bundle task #9 (oxygen-related spec)
+- Observe: Is oxygen NOT being produced at all? Or is it produced but not stored/accessible?
+- Log which oxygen pathway's test is failing
+
+### Step 2: Trace the failing pathway
+- If mining/extraction fails → trace HarvesterCompletionJob
+- If greenhouse fails → trace greenhouse production system
+- If bioreactor fails → trace bioreactor system
+- If PVE/smelting/CO2 fails → trace those systems
+
+### Step 3: Identify the real bug
+- Could be: order dispatch issue
+- Could be: inventory key mismatch (oxygen vs O2)
+- Could be: fixture mocking issue
+- Could be: system not wired to settlement inventory at all
+
+### Step 4: Fix that specific bug
+- Only after diagnosis, implement the fix
+
+### Step 5: Write test coverage
+- Add unit or integration tests to prevent regression
+
+---
+
+## Potential Gotchas
+
+**Inventory Key Normalization:**
+- Different oxygen sources might normalize keys differently
+- `'oxygen'` vs `'O2'` vs other formats could cause cross-system failures
+- Fixture might seed under wrong key
+
+**Multiple Oxygen Sources:**
+- Settlement might have multiple oxygen sources active simultaneously
+- If only one fails, others might mask the issue
+- Need to test each pathway in isolation
+
+**Cross-Cutting Inventory Routing:**
+- Settlement inventory might have wrong configuration
+- Recipes/consumers might look for key that oxygen sources don't provide
+
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
 
 ```
-You are **Implementation Agent**.
+You are **Implementation Agent** (Diagnostic Phase).
 
 Project: galaxy_game
 Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  cd /Users/tam0013/Documents/git/agent-tasks
   git mv projects/galaxy_game/tasks/backlog/current/2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md \
          projects/galaxy_game/tasks/active/2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md
+  
   Then open the moved file and change: status: backlog → status: active
-  Paste the output of both commands in chat before proceeding.
-  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+  Commit: git add . && git commit -m "Move oxygen diagnostic task to active"
+  
+  Paste the output of find command before proceeding:
+  find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks -name "2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md"
+  (Should return ONLY ONE result. If multiple exist, cleanup before proceeding.)
 
-LIFECYCLE: backlog → active → completed
-  - Tracked file: git mv (never cp or plain mv)
-  - New/untracked file: mv then git add the final path
-  - Never leave stale copies in the source folder
-  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md"
-    Only ONE result should exist. Paste this output before committing.
-
-READ FIRST (after Step 0): Task file contains all prerequisites, gotchas, and verification steps.
+READ FIRST (after Step 0): Task file contains all diagnostic steps and gotchas.
 
 CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
   Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
-  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
-  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+  Filename pattern: 2026-08-21-DIAGNOSTIC-OXYGEN-PATHWAYS-LUNA.md
+  Chat is for questions only — never paste synthesis into chat.
+
+RETURN TO CHAT WITH:
+  1. Synthesis report (findings from diagnostic steps)
+  2. Which oxygen pathway is broken (mining, greenhouse, bioreactor, PVE, smelting, CO2 processing?)
+  3. The actual bug (code location, root cause, not just "oxygen issue")
+  4. Revised task scope for implementation phase
+  Do NOT attempt implementation until strategist confirms bug diagnosis.
 ```
 
-**That's it.** Everything else should be IN this task file, not duplicated in handoff.
+**That's it.** Everything else is IN this task file.
 
 ---
 
-# TASK: HarvesterCompletionJob — Oxygen/Fixture Seeding Investigation
-**Status**: BACKLOG
-**Priority**: MEDIUM
-**Type**: bug-fix
-**Created**: 2026-08-16
-**Last Updated**: 2026-08-16
+## Diagnostic Steps (Your Actual Work)
 
----
+### Phase 1: Identify Which Oxygen Source Is Failing
 
-## Local Worker Triage Report (Optional — for backlog review only)
-
-- **Template Conformance**: PASS (structurally) — but see MVP Impact Note, Problem Statement is intentionally incomplete
-- **Docker Wrapper Check**: N/A — no specs identified yet
-- **MVP Alignment**: VALID (assumed — HarvesterCompletionJob implies ISRU/resource-production relevance) but unconfirmed
-- **MVP Impact Note**: **This task file is a placeholder.** The originating chat summary did not include enough detail — what specifically fails, what the fixture currently seeds, what "oxygen issue" means concretely — for a real Problem Statement to be written at Claude's architecture tier. First step must be pulling real detail from the 2026-08-13 fixture-bundle task's synthesis report/completion notes before this can be scoped like a normal task.
-- **Action Line**: NEEDS MANUAL REVIEW — do not dispatch for implementation until Problem Statement below is filled in with real detail.
-
----
-
-## Agent Assignment (Human-filled, not seen by agents)
-
-**Assigned To**: TBD — not ready for dispatch
-**Why This Agent**: N/A
-**Local attempts before cloud**: N/A
-**Supervision Level**: N/A — task not yet real enough to dispatch
-
----
-
-## Prerequisites — READ FIRST (Sequential Order)
-
-1. **Workflow**: `/Users/tam0013/Documents/git/agent-tasks/README.md` (EXECUTOR Role section)
-2. **Project Guide**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/README.md`
-3. **This Task File**: Everything below
-4. **Prior context**: `summaries/2026-08-16-TEST-FIXTURE-BUNDLE.md` (or equivalent synthesis/completion report from the 2026-08-13 fixture-bundle task's close-out) — **read this before anything else on this task; it may contain the detail this file is currently missing.**
-
-> Agent MUST read in this order. Do not skip. Synthesis report goes in chat BEFORE starting work — but see Problem Statement below; a real synthesis may not be possible until prerequisite #4 is read.
-
----
-
-## Context
-
-While closing out the 2026-08-13 fixture-bundle task, the implementing agent flagged a new item (#9, not part of the original enumerated fixture list) involving `HarvesterCompletionJob` and an oxygen-related discrepancy, described only as needing "investigation of fixture seeding and job queue advancement." This was correctly stopped and escalated rather than fixed inline, since it was out of scope for a LOW-priority stale-fixture cleanup task.
-
-**Relevant Architecture Docs** — read before starting:
-- `docs/new_agent/rules/DECISIONS.md` — locked architectural decisions
-- `docs/new_agent/rules/GUARDRAILS.md` — execution rules
-
-> If a doc doesn't exist for this area, do not create one during this task.
-> Flag the gap in your completion report instead.
-
----
-
-## Critical Information for This Task
-
-### Credentials
-N/A
-
-### Architecture Gotchas (Critical to understand BEFORE starting)
-
-⚠️ **GOTCHA 1**: Don't skip straight to a fix.
-- ❌ Wrong: attempting a code change based on the vague "oxygen issue" description alone.
-- ✅ Right: first pass is pure diagnosis — read the fixture-bundle synthesis report, reproduce the actual failure, and write a real Problem Statement before touching any code.
-- Why: this task file was drafted without enough detail to know what's actually broken; guessing at a fix risks solving the wrong problem.
-
-⚠️ **GOTCHA 2**: Watch for overlap with recently-completed PVE oxygen-output work.
-- ❌ Wrong: assuming this is fully isolated from other oxygen-producing code paths.
-- ✅ Right: check whether this connects to the PVE Mk2/Mk3 output_resources fix (2026-08-15, commit `9568d152`) before proceeding — the project's ISRU chain (TEU/PVE) actively produces oxygen as a tracked output, and this may be the same resource-output path surfacing differently.
-- Why: two independent fixes to the same underlying resource-output logic could conflict or duplicate work.
-
-### Multi-Domain / Multi-Tenant Routing
-N/A
-
----
-
-## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
-
-Before navigating to any URLs, running any commands, or modifying any files, you MUST create and post a **synthesis report** in chat. This report demonstrates you understand the task before executing.
-
-**Synthesis Report Template** (save as MD file, do NOT paste in chat):
-```markdown
-## STATUS SYNTHESIS REPORT
-
-**Task**: HarvesterCompletionJob — Oxygen/Fixture Seeding Investigation
-**Status**: backlog → active → completed
-**Date**: YYYY-MM-DD
-
-### What I'm About to Do
-[State clearly: this first pass is diagnosis only. Describe how you will reproduce the actual failure and what you expect to find.]
-
-### Files I'll Reference
-| File | Purpose | Status |
-|---|---|---|
-| `path/to/file` | [description] | [not started / pending / done] |
-
-### Prerequisites Completed
-- ✅ Step 0: Task file moved to active/ with git mv (find output pasted in chat)
-- ✅ Step 0: YAML status updated from backlog → active
-- ✅ Read prior fixture-bundle synthesis report for original context on item #9
-- ✅ Read README.md EXECUTOR section
-- ✅ Read project guide
-- ✅ Read this task file
-
-### Expected Outcomes
-[This first pass: a real, specific Problem Statement — not a fix.]
-
-### Critical Gotchas I Will Avoid
-- ❌ Attempting a fix before diagnosis is complete — instead ✅ diagnose first, write up findings
-- ❌ Assuming isolation from PVE oxygen-output work — instead ✅ explicitly check for overlap
-
----
-
-**SYNTHESIS COMPLETE.** Ready to proceed with diagnosis only.
-```
-
-**POST THIS TO CHAT BEFORE PROCEEDING.** Do not start actual work until synthesis is approved.
-
----
-
-## Problem Statement
-
-**[FILL IN — not yet known.]** The only information available: `HarvesterCompletionJob` has an "oxygen issue" connected to fixture seeding and job queue advancement, per a one-line flag from the 2026-08-13 fixture-bundle task's close-out. What specifically fails (wrong output amount? missing resource? job not advancing at all?), what the fixture currently seeds, and what the expected-vs-actual behavior is are all unconfirmed. **The first implementation pass on this task must be diagnosis: reproduce the failure, write a real Problem Statement, and stop there for review before attempting any fix** (see Stop Conditions).
-
-**Error output**: Not yet captured.
-**Current behavior**: Unknown — needs reproduction.
-**Expected behavior**: Unknown — needs to be determined once actual behavior is understood.
-
----
-
-## Files Involved
-
-**[FILL IN — Qwen/implementation agent to locate `HarvesterCompletionJob` and its associated spec/fixture files via terminal access, and confirm the actual failure mode before any fix is attempted. Claude has no filesystem access and cannot verify these directly.]**
-
-### Migration
-- [x] No migration needed (unconfirmed — revisit once root cause is known)
-
----
-
-## Implementation Steps
-
-> ⚠️ **BEFORE YOU START**: Complete Step 0 first. Then complete and post your STATUS SYNTHESIS REPORT.
-> Do not proceed to Step 1 until both are done and approved.
-
-### Step 0 — Move task file to active/ and update status (MANDATORY FIRST STEP)
-See Minimal Handoff block above for exact commands.
-
-### Step 1 — Read prior context
-Locate and read the 2026-08-13 fixture-bundle task's synthesis report / completion notes for whatever detail exists on item #9. If none exists beyond the one-line summary already captured here, note that explicitly.
-
-### Step 2 — Reproduce the actual failure
-Find `HarvesterCompletionJob` and its spec(s). Run the relevant specs and capture real failure output.
-
+**Step 1A: Find and run the fixture-bundle test**
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec [SPEC_PATH] 2>&1 | tail -20'
+cd /Users/tam0013/Documents/git/galaxyGame
+# Find tests tagged with fixture-bundle or oxygen-related tests
+grep -r "fixture.*bundle\|oxygen.*fixture" spec/ --include="*.rb" | head -20
+# Look for test #9 or related oxygen tests mentioned in fixture-bundle task
 ```
+- Find the specific test file and run it
+- Observe: Does oxygen production fail? Does inventory handling fail? Does settlement consumption fail?
+- **Record:** Which test fails? What's the assertion error?
 
-### Step 3 — Write a real Problem Statement
-Based on Steps 1-2, write up what's actually happening: current behavior, expected behavior, exact error output. **Stop here and report back — do not proceed to a fix in this same pass** (per Stop Conditions below).
+**Step 1B: Trace where oxygen is supposed to come from in the test**
+- Read the test file
+- What oxygen source is being tested? (water mining, greenhouse, bioreactor, PVE, etc.?)
+- Is it using HarvesterCompletionJob, or a different system entirely?
+- **Record:** Which system is being tested? Which job/service is responsible?
 
-### Step 4 — Synthesis Report (diagnosis findings, before any fix)
-
-```
-SYNTHESIS REPORT
-Spec: [file:line]
-Error: [exact message]
-Expected: [value]
-Got: [value]
-
-ROOT CAUSE
-[one paragraph — only if confidently identified; otherwise state what's still unknown]
-
-PROPOSED FIX
-[only if root cause is clear; otherwise leave for a follow-up task/session]
-
-RISK
-[note any connection to PVE oxygen-output work found during investigation]
-
-READY TO APPLY? — waiting for approval
-```
-
-Do not commit until the user explicitly approves.
-
----
-
-## Acceptance Criteria
-- [ ] Real Problem Statement written (current vs. expected behavior, exact error output)
-- [ ] Confirmed or ruled out: overlap with PVE Mk2/Mk3 oxygen-output fix (`9568d152`)
-- [ ] Root cause identified, OR explicitly reported as still unknown with findings documented
-- [ ] If a fix is confidently identified and approved: isolation run 0 failures, no regressions
-- [ ] Full suite run completed and logged if a fix was applied (human runs overnight — agent does not trigger)
-
----
-
-## Stop Conditions — escalate to user immediately if:
-- The first diagnosis pass does not produce a clear, specific Problem Statement — report findings and stop rather than guessing at a fix
-- Any overlap with the PVE oxygen-output fix (`9568d152`) is found — flag and stop rather than fixing both paths independently
-- Root cause touches a shared concern, base class, or factory used across many specs
-- Fix requires changing more files than a narrowly-scoped follow-up would justify
-- Any architectural decision is required
-
----
-
-## Commit Instructions
-Run git commands on **host only** — never inside the Docker container:
+**Step 1C: Check if multiple oxygen sources are configured**
 ```bash
-git add [specific files only — never git add .]
-git commit -m "[type]: HarvesterCompletionJob oxygen fixture — [brief description]"
-git push
+grep -r "oxygen" spec/fixtures --include="*.rb" -A 2 -B 2
+# See how oxygen is seeded in different fixture files
 ```
+- Are there multiple oxygen-producing systems active?
+- Does the test work for one source but fail for another?
+- **Record:** All oxygen pathways configured in fixture, which ones work/fail
 
-**Task file move on completion:**
+### Phase 2: Diagnose the Root Cause
+
+**Step 2A: If it's HarvesterCompletionJob**
+- Run the job isolation test (if it exists)
+- Check: Does material get added to inventory? Under what key?
+- Verify key format: `settlement.inventory.items.keys` — what keys exist?
+- **Record:** Actual inventory key (e.g., 'oxygen' vs 'O2' vs material ID)
+
+**Step 2B: If it's Greenhouse/Bioreactor/PVE**
+- Find the production system in code
+- Trace: Does it call `settlement.inventory.add_item()`? With what key?
+- Check: Is that system even wired to the settlement?
+- **Record:** Which system is broken, and how it's supposed to produce oxygen
+
+**Step 2C: Cross-Check Inventory Key Normalization**
 ```bash
-git mv projects/galaxy_game/tasks/active/2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md \
-       projects/galaxy_game/tasks/completed/2026-08/2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md
-git commit -m "chore: move 2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md to completed/"
+grep -r "current_storage_of\|add_item" galaxy_game/app/models/inventory.rb -A 3
+# How does inventory handle keys? Does it normalize them?
+grep -r "'oxygen'\|'O2'\|'H2O'" spec/ --include="*.rb" | head -20
+# What key format do tests expect?
 ```
+- **Record:** What key format does inventory expect?
 
-> If diagnosis-only and a real fix needs its own follow-up task instead: do NOT move to completed/. Report back to planning agent with findings so a properly-scoped follow-up task can be drafted.
+### Phase 3: Synthesize Findings
 
----
-
-## Documentation
-- [ ] No doc changes needed
-- [ ] Flag doc gap: [description] — do not create the doc, add to backlog instead
-
----
-
-## Dependencies
-**Blocked by**: none
-**Blocks**: none identified
-**Related tasks**: 2026-08-13-LOW-FEATURE-FIXTURE-BUNDLE-STALE-MOCKS-GAPS.md (completed/2026-08/ — this task is spun off from its item #9); possible overlap with PVE Mk2/Mk3 oxygen fix (`9568d152`, see Gotcha 2)
+Write a synthesis report with:
+1. **Broken Pathway:** Which oxygen source is failing? (harvester mining, greenhouse, bioreactor, PVE, CO2 reduction, etc.)
+2. **Root Cause:** What's actually broken?
+   - e.g., "HarvesterCompletionJob adds oxygen under 'oxygen' key but inventory lookups use 'O2'"
+   - OR: "Greenhouse system never wired to settlement inventory"
+   - OR: "Bioreactor fixture mocked but not configured in settlement"
+3. **Bug Location:** Exact file and method
+4. **Why Fixture Failed:** How this bug manifests in the test
+5. **Impact on Other Sources:** Does this break just this pathway, or all oxygen production?
 
 ---
 
-## Completion Report
-*Filled in by the implementing agent after completion*
+## Acceptance Criteria (Diagnostic Phase)
 
-**Completed by**: [agent name]
-**Completion date**: YYYY-MM-DD
-**Final test result**: X examples, Y failures
+- [ ] **Identified failing pathway:** Which oxygen source (harvester mining, greenhouse, bioreactor, PVE, smelting, CO2, or combination) doesn't work
+- [ ] **Found root cause:** Specific code bug, not "vague oxygen issue"
+- [ ] **Verified scope:** Is this a single-system bug, or does it affect multiple oxygen pathways?
+- [ ] **Synthesis report written:** Full findings documented in summaries folder
+- [ ] **Ready for implementation:** Strategist reviews diagnosis and approves scope for fix phase
 
-### What was changed
-- `[file]` — [description of change, or "diagnosis only, no fix applied" if that's as far as this pass got]
-
-### Issues discovered
-[Any problems found during implementation that weren't in the original task]
-
-### Follow-up tasks needed
-[Any new backlog items identified — do not create the files, just list them here]
-
-### Lessons learned
-[What worked, what didn't, what future tasks in this area should know]
+**Success Signal:** Strategist reads synthesis report and says "Yes, that's the real bug — proceed to implementation" or "That's not it, investigate X instead."
 
 ---
 
-## Handoff Summary
-*Filled in at end of session — one scannable line for next agent*
+## Gotchas & Traps
 
-HANDOFF SUMMARY: [files updated] | [structural changes] | [next action needed]
+1. **Trap — Wrong Assumption About HarvesterCompletionJob:**
+   - Don't assume the bug is in this job just because fixture mentions it
+   - The bug could be in greenhouse, bioreactor, PVE, or cross-cutting inventory handling
+   - **Verify:** Actually run the test and see which assertion fails
+
+2. **Trap — Multiple Oxygen Sources Mask Each Other:**
+   - Settlement might have 3+ oxygen sources configured
+   - If one breaks but others work, the test might pass
+   - **Diagnose:** Test each pathway in isolation if possible
+
+3. **Trap — Inventory Key Format Variations:**
+   - Different sources might use different key formats (string symbols vs material IDs)
+   - `'oxygen'`, `'O2'`, material ID 123, or something else?
+   - **Verify:** Check actual inventory.items.keys after production completes
+
+4. **Trap — Fixture Mocking Can Hide Real Issues:**
+   - Test might mock a system that isn't actually integrated
+   - Real game flow might not use that mocked system at all
+   - **Check:** Does fixture test match real production flow?
+
+---
