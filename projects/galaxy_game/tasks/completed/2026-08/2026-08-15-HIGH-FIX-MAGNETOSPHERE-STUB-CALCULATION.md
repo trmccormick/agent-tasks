@@ -1,12 +1,12 @@
 ---
-status: backlog
+status: completed
 priority: HIGH
 type: architecture-fix
 system_domain: TERRA_SIM
 mvp_alignment: OTHER
 local_worker_safe: true
 created: 2026-08-15
-updated: 2026-08-15
+updated: 2026-08-21
 estimated_effort: 3-4 hours
 blocker_for:
   - 2026-08-02-HIGH-FEATURE-ATMOSPHERIC-LOSS-SOLAR-WIND-EROSION
@@ -16,18 +16,35 @@ depends_on:
 
 # Task: Implement Real Magnetosphere Calculation — Replace Stub with Core-State/Dynamo Physics
 
-## ⚡ Minimal Handoff (Copy this to send to agent)
+## ✅ COMPLETED (2026-08-17)
 
-```
-You are **Implementation Agent**.
+**Status:** Completed via commits `dbc5c254` + `65b8f48a` on galaxyGame main.
+**Note:** Task file was never formally closed despite implementation being done — coordination summaries from 08-16/17 noted completion but the file remained in backlog/current/. This is a workflow gap, not an implementation gap.
 
-Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-08-15-HIGH-FIX-MAGNETOSPHERE-STUB-CALCULATION.md
+### What Was Implemented
+- **Commit `dbc5c254`:** Replaced all-zero stub with sigmoid core-state/dynamo gate + physics modifiers
+  - Core-state gate: dead cores (low mass + old age) decay to ~0.0 via sigmoid
+  - Mass factor: `mass_ratio**0.33`
+  - Rotation factor: `24h / rotation_period`, capped at 3x
+  - Age factor: `exp(-age_years / 9e9)` (half-life ~5 Gy)
+- **Commit `65b8f48a`:** Parent magnetosphere influence bonus for moons (Option B)
+  - Moons orbiting parents with magnetosphere > 0.1 receive +30% bonus, capped at 1.0
 
-STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  mv projects/galaxy_game/tasks/backlog/current/2026-08-15-HIGH-FIX-MAGNETOSPHERE-STUB-CALCULATION.md \
-     projects/galaxy_game/tasks/active/
-  Then open the moved file and change: status: backlog → status: active
+### Files Changed
+- `galaxy_game/app/services/star_sim/procedural_generator.rb` (+92/-29 lines)
+- 3 spec files (+200/+229 lines)
+
+### Verification
+- Code verified via file read at `procedural_generator.rb:1404` — full physics implementation present
+- Tests: 22 examples, 0 failures (parent influence spec); magnetosphere spec suite passes
+- sol-complete.json values unchanged (Earth=1.0, Venus=0.3, Mars=0.0)
+
+### Current State
+- Both commits are on main but **unpushed** — Tracy holding for batch push with market-fee-hold branch
+- This task file is being moved to completed/2026-08/ now (workflow correction)
+- The atmospheric-loss task still depends on these commits being pushed first
+
+---
 
 LIFECYCLE: backlog → active → completed
   - Tracked file: mv then git add the final path
