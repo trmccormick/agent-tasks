@@ -5,8 +5,9 @@ name: "TerraformingManager Data-Driven Refactor"
 priority: HIGH
 phase: phase6
 created: 2026-06-21
-status: backlog
+status: superseded
 type: refactor
+superseded_by: 2026-06-22-HIGH-REFACTOR-TERRAFORMING-MANAGER-DATA-DRIVEN.md
 ---
 
 # TASK: Refactor TerraformingManager to be Data-Driven

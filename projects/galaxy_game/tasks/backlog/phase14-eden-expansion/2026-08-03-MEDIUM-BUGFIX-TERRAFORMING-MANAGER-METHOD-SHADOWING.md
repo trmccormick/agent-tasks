@@ -1,11 +1,12 @@
 ---
-status: backlog
+status: superseded
 priority: MEDIUM
 category: BUGFIX
 created: 2026-08-03
 updated: 2026-08-03
 estimated_effort: 1-2 hours
 blocker_for: []
+superseded_by: 2026-08-03-HIGH-BUGFIX-TERRAFORMING-MANAGER-METHOD-SHADOWING.md
 ---
 
 # Task: Resolve Private/Public Method Shadowing in TerraformingManager

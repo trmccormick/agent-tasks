@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: superseded
 priority: HIGH
 type: architecture
 system_domain: ECONOMICS
@@ -7,6 +7,7 @@ mvp_alignment: ISRU_PRODUCTION
 local_worker_safe: true
 created: 2026-04-16
 last_updated: 2026-07-29
+superseded_by: 2026-06-21-HIGH-ARCHITECTURE-RAW-RESOURCE-EXTRACTION-PRICING.md
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
