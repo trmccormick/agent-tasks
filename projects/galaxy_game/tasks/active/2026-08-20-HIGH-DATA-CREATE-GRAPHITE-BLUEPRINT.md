@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: data
 system_domain: MANUFACTURING
@@ -33,11 +33,11 @@ Agents receive this exact text as the startup contract. Every word matters.
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/2026-08-20-HIGH-DATA-CREATE-GRAPHITE-BLUEPRINT.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/phase10-venus/2026-08-20-HIGH-DATA-CREATE-GRAPHITE-BLUEPRINT.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
   cd /Users/tam0013/Documents/git/agent-tasks
-  git mv projects/galaxy_game/tasks/backlog/2026-08-20-HIGH-DATA-CREATE-GRAPHITE-BLUEPRINT.md \
+  git mv projects/galaxy_game/tasks/backlog/phase10-venus/2026-08-20-HIGH-DATA-CREATE-GRAPHITE-BLUEPRINT.md \
          projects/galaxy_game/tasks/active/2026-08-20-HIGH-DATA-CREATE-GRAPHITE-BLUEPRINT.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
