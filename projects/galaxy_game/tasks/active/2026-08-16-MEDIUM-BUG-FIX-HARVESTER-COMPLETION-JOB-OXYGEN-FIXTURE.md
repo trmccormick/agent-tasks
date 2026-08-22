@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: MEDIUM
 type: bug-fix
 system_domain: AI_MANAGER
