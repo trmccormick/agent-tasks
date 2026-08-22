@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-21 — Planning Agent Session (template restructure, phase reorganization, verification complete)
+**Last Updated:** 2026-08-21 — Qwen Session (magnetosphere closeout, oxygen task reframe, git discipline fix)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -9,13 +9,42 @@
 
 ---
 
-## 📋 Active Tasks: 0 ✅
+## 📋 Active Tasks: 1
 
-All active tasks cleared per 2026-08-21 closeout report.
+| Task | Location | Status |
+|------|----------|--------|
+| **Luna Oxygen Production — Diagnose Broken Pathway** | `active/2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md` | READY FOR DISPATCH — diagnostic-first, identify which of 7+ oxygen pathways is failing |
 
 ---
 
-## 🎯 Today's Work (2026-08-20/21) — Template Restructure + Phase Reorganization + Verification
+## 🎯 Today's Work (2026-08-21) — Magnetosphere Closeout + Oxygen Task Reframe + Git Discipline
+
+### Magnetosphere Stub Fix — Properly Closed ✅
+- Task `2026-08-14-LOW-BUG-FIX-HAS-MAGNETOSPHERE-DERIVATION.md` was stale in backlog/current/
+- Code was already implemented (commits `dbc5c254` + `65b8f48a` on main)
+- Workflow gap: coordination summaries noted completion without closing the file
+- **Fixed:** Updated YAML frontmatter (status: backlog → completed, date: 2026-08-21), added completion section, moved to `completed/2026-08/` via `git mv`
+- **Commit:** `7e85031` on agent-tasks, pushed to origin/main
+
+### Oxygen Task Reframe — Diagnostic-First ✅
+- Original task assumed HarvesterCompletionJob was the broken component
+- **Reality:** Oxygen has 7+ production pathways (water mining, regolith extraction, PVE, smelting, CO2 processing, greenhouses, bioreactors)
+- **Reframed:** Task now requires agent to diagnose which pathway is failing BEFORE implementation
+- Added full oxygen taxonomy, diagnostic methodology (3 phases), gotchas/traps
+- **Commits:** `be8f5c9` (reframe), `ebbe074` (git add fix) on agent-tasks
+- **Status:** Moved to `active/`, ready for dispatch
+
+### Git Discipline Fix — Explicit File Staging ✅
+- **Problem:** Handoff contained `git add .` which stages ALL files in directory tree
+- **Risk:** Could accidentally commit unrelated changes in shared agent-tasks repo
+- **Fixed:** Changed to explicit `git add [specific filepath]` with "(EXPLICIT PATH ONLY)" label
+- **Lesson:** Always use explicit filepaths in handoffs, never bulk-add commands
+
+### Commits: `7e85031`, `be8f5c9`, `ebbe074` on agent-tasks
+
+---
+
+## 🎯 Previous Session (2026-08-20/21) — Template Restructure + Phase Reorganization + Verification
 
 ### TASK_TEMPLATE.md Compliance — 5 Fixes Applied ✅
 - Added validation requirement at top of template
@@ -56,7 +85,6 @@ All active tasks cleared per 2026-08-21 closeout report.
 |------|----------|-------|
 | **Classify 19 Blueprints** | `backlog/current/2026-08-16-MEDIUM-RESEARCH-CLASSIFY-19-BLUEPRINTS-OPERATIONAL-DATA.md` | NEEDS_REVIEW #4 |
 | **CNT Fabricator Collision** | `backlog/current/2026-08-16-MEDIUM-INVESTIGATE-CNT-FABRICATOR-NAMING-COLLISION.md` | NEEDS_REVIEW #5 |
-| **Harvester Completion Job Oxygen Fix** | `backlog/current/2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md` | Bug fix |
 | **Material Thermal Properties Data Gap** | `backlog/current/2026-08-16-MEDIUM-BUG-FIX-MATERIAL-THERMAL-PROPERTIES-DATA-SOURCE-GAP.md` | Bug fix |
 | **Atmosphere Generator Body Data Nil** | `backlog/current/2026-08-17-MEDIUM-BUG-FIX-ATMOSPHERE-GENERATOR-BODY-DATA-NIL.md` | Bug fix |
 
@@ -81,8 +109,8 @@ All active tasks cleared per 2026-08-21 closeout report.
 | 3 | 08-01 | Unit naming conventions (mk{num} vs codenames) — blocked on wiki reorg | **OPEN** |
 | 4 | 08-02 | 19 renamed blueprints have no operational data | **OPEN** — task filed, backlog/current |
 | 5 | 08-02 | Possible CNT fabricator naming collision | **OPEN** — task filed, backlog/current |
-| 6 | 08-05 | Magnetosphere: 41 bodies defaulting to 0.5 | **OPEN** — low urgency, surface when Task 2 runs |
-| 7 | 08-15 | **FABRICATED COMPLETION**: Data-driven celestial body task claims done but `calculate_magnetosphere_strength()` is a stub (baseline + 0.0s), test count was 30/0 not claimed 40/0 | **OPEN** — critical trust issue; see re-opened task file for details |
+| 6 | 08-05 | Magnetosphere: 41 bodies defaulting to 0.5 | **RESOLVED 2026-08-21** — has_magnetosphere derivation implemented (commits `dbc5c254` + `65b8f48a`), task properly closed to `completed/2026-08/` |
+| 7 | 08-15 | **FABRICATED COMPLETION**: Data-driven celestial body task claims done but `calculate_magnetosphere_strength()` is a stub (baseline + 0.0s), test count was 30/0 not claimed 40/0 | **RESOLVED 2026-08-21** — magnetosphere stub fix task verified implemented and closed; workflow gap (stale file left in backlog) fixed |
 
 > See `projects/galaxy_game/NEEDS_REVIEW.md` in agent-tasks repo for full verbatim entries.
 
@@ -91,12 +119,13 @@ All active tasks cleared per 2026-08-21 closeout report.
 ## 🎯 Priority Queue for Next Session
 
 ### Must Do First:
-1. **Dispatch epoxy_resin blueprint** — READY, same workflow as graphite task (search → create if missing)
+1. **Dispatch oxygen diagnostic task** — ACTIVE, diagnostic-first (identify which of 7+ oxygen pathways is failing before implementation)
+2. **Dispatch epoxy_resin blueprint** — READY, same workflow as graphite task (search → create if missing)
 
 ### Ready to Dispatch (No Sign-off Needed):
-2. **Orbital Mechanics Data Layer Phase 5** — TransitEngine integration pending
-3. **Launch Window + Transit Timing Engine** — Architecture feature, backlog
-4. **MEDIUM bug fixes** (08-16/17) — Harvester oxygen, thermal properties, atmosphere generator nil
+3. **Orbital Mechanics Data Layer Phase 5** — TransitEngine integration pending
+4. **Launch Window + Transit Timing Engine** — Architecture feature, backlog
+5. **MEDIUM bug fixes** (08-16/17) — thermal properties, atmosphere generator nil
 
 ### Do NOT Touch This Session:
 - `market-fee-hold` branch — Synthesis Report drafted, awaiting sign-off before push
