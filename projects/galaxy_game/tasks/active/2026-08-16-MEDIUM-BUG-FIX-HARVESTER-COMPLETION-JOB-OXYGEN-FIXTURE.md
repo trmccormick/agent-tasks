@@ -6,234 +6,222 @@ system_domain: AI_MANAGER
 mvp_alignment: ISRU_PRODUCTION
 local_worker_safe: true
 created: 2026-08-16
-updated: 2026-08-21
-estimated_effort: 2-3 hours
+updated: 2026-08-22
+estimated_effort: 30-45 min (test-only fix)
 blocker_for: []
 depends_on: []
 ---
 
-# TASK: Luna Oxygen Production — Diagnose Broken Pathway
+# TASK: Luna Oxygen Fixture — Fix Test Premise (Item #9)
 
-## 🔍 Diagnostic Task (Primary Deliverable: Identify Which Oxygen Source Is Failing)
+## ✅ Diagnosis Complete (2026-08-22)
 
-**Status:** Ready for dispatch. Task requires diagnostic-first approach before implementation.
+**Status:** Ready for implementation. Diagnostic research confirmed the root cause.
 
-**Context:** Fixture-bundle task item #9 flagged an "oxygen issue" on Luna, but oxygen production has **7+ distinct pathways**. Cannot assume HarvesterCompletionJob is the culprit.
+### Research Findings
 
----
+**Source:** `projects/galaxy_game/summaries/2026-08-15-TEST-FIXTURE-BUNDLE.md` (stops at item #8)
+**Item #9 reference:** 2026-08-13 handoff — *"HarvesterCompletionJob's fixture/seeding gap as the 9th item."*
 
-## Oxygen Production Pathways (Full Taxonomy)
+**Test file:** `galaxy_game/spec/integration/ai_manager/escalation_integration_spec.rb:251`
 
-Luna can produce oxygen through:
-
-| Pathway | System | Method |
-|---------|--------|--------|
-| **Mining** | Water Ice Extraction | H2O from PSR craters → electrolysis → O2 |
-| **Extraction** | Regolith Processing | Water in regolith → extraction → O2 |
-| **PVE Processing** | Oxide Reduction | Regolith oxides → reduction → O2 |
-| **Smelting** | Ore Smelting | Ore smelting byproducts → O2 |
-| **CO2 Processing** | Carbon Reduction | CO2 → CO2 reduction cycle → O2 + CH4 |
-| **Biological** | Greenhouse | Plant photosynthesis → O2 |
-| **Biological** | Bioreactor | Biological CO2 reduction → O2 |
-
-**Problem:** Fixture-bundle says "oxygen issue" but doesn't specify which pathway. Must diagnose.
-
----
-
-## Critical Distinction: Harvester Scope
-
-**HarvesterCompletionJob only handles MINING/EXTRACTION pathways:**
-- Surface robot harvesters deployed by `AIManager::EscalationService`
-- Completes orders for water ice mining, regolith extraction, etc.
-- Does NOT handle: greenhouses, bioreactors, PVE, smelting, CO2 processing
-
-**Greenhouses, bioreactors, and PVE use different systems entirely.**
-
----
-
-## Diagnostic Steps (What Agent Must Do First)
-
-### Step 1: Run fixture tests and identify which oxygen source is failing
-- Execute rspec on fixture-bundle task #9 (oxygen-related spec)
-- Observe: Is oxygen NOT being produced at all? Or is it produced but not stored/accessible?
-- Log which oxygen pathway's test is failing
-
-### Step 2: Trace the failing pathway
-- If mining/extraction fails → trace HarvesterCompletionJob
-- If greenhouse fails → trace greenhouse production system
-- If bioreactor fails → trace bioreactor system
-- If PVE/smelting/CO2 fails → trace those systems
-
-### Step 3: Identify the real bug
-- Could be: order dispatch issue
-- Could be: inventory key mismatch (oxygen vs O2)
-- Could be: fixture mocking issue
-- Could be: system not wired to settlement inventory at all
-
-### Step 4: Fix that specific bug
-- Only after diagnosis, implement the fix
-
-### Step 5: Write test coverage
-- Add unit or integration tests to prevent regression
-
----
-
-## Potential Gotchas
-
-**Inventory Key Normalization:**
-- Different oxygen sources might normalize keys differently
-- `'oxygen'` vs `'O2'` vs other formats could cause cross-system failures
-- Fixture might seed under wrong key
-
-**Multiple Oxygen Sources:**
-- Settlement might have multiple oxygen sources active simultaneously
-- If only one fails, others might mask the issue
-- Need to test each pathway in isolation
-
-**Cross-Cutting Inventory Routing:**
-- Settlement inventory might have wrong configuration
-- Recipes/consumers might look for key that oxygen sources don't provide
-
----
-
-## ⚡ Minimal Handoff (Copy this to send to agent)
-
-```
-You are **Implementation Agent** (Diagnostic Phase).
-
-Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md
-
-STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  cd /Users/tam0013/Documents/git/agent-tasks
-  git mv projects/galaxy_game/tasks/backlog/current/2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md \
-         projects/galaxy_game/tasks/active/2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md
-  
-  Then open the moved file and change: status: backlog → status: active
-  Commit: git add . && git commit -m "Move oxygen diagnostic task to active"
-  
-  Paste the output of find command before proceeding:
-  find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks -name "2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md"
-  (Should return ONLY ONE result. If multiple exist, cleanup before proceeding.)
-
-READ FIRST (after Step 0): Task file contains all diagnostic steps and gotchas.
-
-CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
-  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
-  Filename pattern: 2026-08-21-DIAGNOSTIC-OXYGEN-PATHWAYS-LUNA.md
-  Chat is for questions only — never paste synthesis into chat.
-
-RETURN TO CHAT WITH:
-  1. Synthesis report (findings from diagnostic steps)
-  2. Which oxygen pathway is broken (mining, greenhouse, bioreactor, PVE, smelting, CO2 processing?)
-  3. The actual bug (code location, root cause, not just "oxygen issue")
-  4. Revised task scope for implementation phase
-  Do NOT attempt implementation until strategist confirms bug diagnosis.
+**Failing assertion (line 261):**
+```ruby
+expect(settlement.inventory.current_storage_of('oxygen')).to be > 0
 ```
 
-**That's it.** Everything else is IN this task file.
+**Order resource (line ~224):** `resource: 'oxygen'`
+
+### Root Cause
+
+The test's premise is **physically wrong**: it treats oxygen as a directly-harvestable deposit. On Luna, there is no free O₂ to harvest. The realistic oxygen pathway is:
+
+1. Order for `raw_regolith` (ubiquitous on Luna)
+2. Escalation service routes to `:automated_harvesting` (verified at `escalation_service.rb:399`)
+3. Harvester deployed with `target_material: 'processed_regolith'`
+4. PVE/TEU processes regolith → oxide reduction → O₂
+
+The test orders `resource: 'oxygen'` which doesn't exist as a harvestable resource on Luna. The correct order is `raw_regolith`, which the escalation service already routes correctly.
+
+### Classification
+
+**Test-side fix (fixture/premise), NOT a production code bug.**
+- No changes needed to HarvesterCompletionJob
+- No changes needed to EscalationService routing logic
+- Only the test's order resource and assertion need correction
 
 ---
 
-## Diagnostic Steps (Your Actual Work)
+## Files Involved
 
-### Phase 1: Identify Which Oxygen Source Is Failing
+### Primary Files — you will edit these
+| File | Purpose | Key Method/Section |
+|---|---|---|
+| `galaxy_game/spec/integration/ai_manager/escalation_integration_spec.rb` | The failing test | `let(:oxygen_order)` line ~224; `it 'HarvesterCompletionJob fulfills order...'` lines 251–265 |
 
-**Step 1A: Find and run the fixture-bundle test**
+### Reference Files — read but do not edit
+| File | Why You Need It |
+|---|---|
+| `galaxy_game/app/services/ai_manager/escalation_service.rb` | Confirms `raw_regolith` routes to `:automated_harvesting` (line ~399) |
+| `galaxy_game/app/jobs/harvester_completion_job.rb` | Confirms job adds `order.resource` to inventory (no key transformation) |
+| `galaxy_game/spec/integration/ai_manager/escalation_integration_spec.rb` line 238 | The passing `processed_regolith` test — model for the correct pattern |
+
+### Migration
+- [ ] No migration needed
+
+---
+
+## Implementation Steps
+
+> ⚠️ **BEFORE YOU START**: Complete Step 0 first. Then complete and post your STATUS SYNTHESIS REPORT.
+> Do not proceed to Step 1 until both are done and approved.
+
+### Step 0 — Task file is already in active/ (verify only)
+
+The task file is already at `active/`. Verify only one copy exists:
+
 ```bash
-cd /Users/tam0013/Documents/git/galaxyGame
-# Find tests tagged with fixture-bundle or oxygen-related tests
-grep -r "fixture.*bundle\|oxygen.*fixture" spec/ --include="*.rb" | head -20
-# Look for test #9 or related oxygen tests mentioned in fixture-bundle task
+find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks \
+     -name "2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md"
 ```
-- Find the specific test file and run it
-- Observe: Does oxygen production fail? Does inventory handling fail? Does settlement consumption fail?
-- **Record:** Which test fails? What's the assertion error?
 
-**Step 1B: Trace where oxygen is supposed to come from in the test**
-- Read the test file
-- What oxygen source is being tested? (water mining, greenhouse, bioreactor, PVE, etc.?)
-- Is it using HarvesterCompletionJob, or a different system entirely?
-- **Record:** Which system is being tested? Which job/service is responsible?
+**Paste the output in chat before proceeding.** Expected: exactly one result at the `active/` path.
 
-**Step 1C: Check if multiple oxygen sources are configured**
+### Step 1 — Read the failing test and the passing regolith test
+
+Read `galaxy_game/spec/integration/ai_manager/escalation_integration_spec.rb`:
+- The `let(:oxygen_order)` block (line ~224) — note `resource: 'oxygen'`
+- The failing `it` block (lines 251–265)
+- The PASSING `processed_regolith` test (line ~238) — this is the correct pattern to mirror
+
+Confirm the exact resource key and assertion before editing.
+
+### Step 2 — Fix the order resource and assertion
+
+Change the order to request `raw_regolith` (a real, harvestable Luna resource) and assert on the regolith inventory key, matching the passing test at line 238.
+
+```ruby
+# before (line ~224)
+let(:oxygen_order) { ... resource: 'oxygen' ... }
+
+# after
+let(:oxygen_order) { ... resource: 'raw_regolith' ... }
+```
+
+```ruby
+# before (line 261)
+expect(settlement.inventory.current_storage_of('oxygen')).to be > 0
+
+# after — assert on the key the harvester actually deposits (mirror line 238)
+expect(settlement.inventory.current_storage_of('raw_regolith')).to be > 0
+```
+
+> ⚠️ **Verify the exact inventory key** the harvester deposits by reading the passing test at line 238 and `harvester_completion_job.rb#add_to_settlement_inventory`. Use the SAME key that test asserts. Do NOT guess between `'raw_regolith'` and `'processed_regolith'` — read the passing test and match it exactly.
+
+### Step 3 — Verify
+
+> CRITICAL EXECUTION MANDATE: All RSpec commands must use the Docker wrapper below.
+> The container working directory is already /home/galaxy_game — do NOT add cd /home/galaxy_game.
+> Never run bare local test commands. Never fabricate test results. Actually run the specs.
+
 ```bash
-grep -r "oxygen" spec/fixtures --include="*.rb" -A 2 -B 2
-# See how oxygen is seeded in different fixture files
+docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/integration/ai_manager/escalation_integration_spec.rb 2>&1 | tail -20'
 ```
-- Are there multiple oxygen-producing systems active?
-- Does the test work for one source but fail for another?
-- **Record:** All oxygen pathways configured in fixture, which ones work/fail
 
-### Phase 2: Diagnose the Root Cause
+Expected result: all examples in this spec pass, 0 failures.
 
-**Step 2A: If it's HarvesterCompletionJob**
-- Run the job isolation test (if it exists)
-- Check: Does material get added to inventory? Under what key?
-- Verify key format: `settlement.inventory.items.keys` — what keys exist?
-- **Record:** Actual inventory key (e.g., 'oxygen' vs 'O2' vs material ID)
+### Step 4 — Synthesis Report (before committing anything)
 
-**Step 2B: If it's Greenhouse/Bioreactor/PVE**
-- Find the production system in code
-- Trace: Does it call `settlement.inventory.add_item()`? With what key?
-- Check: Is that system even wired to the settlement?
-- **Record:** Which system is broken, and how it's supposed to produce oxygen
-
-**Step 2C: Cross-Check Inventory Key Normalization**
-```bash
-grep -r "current_storage_of\|add_item" galaxy_game/app/models/inventory.rb -A 3
-# How does inventory handle keys? Does it normalize them?
-grep -r "'oxygen'\|'O2'\|'H2O'" spec/ --include="*.rb" | head -20
-# What key format do tests expect?
 ```
-- **Record:** What key format does inventory expect?
+SYNTHESIS REPORT
+Spec: spec/integration/ai_manager/escalation_integration_spec.rb:251
+Error: current_storage_of('oxygen') returned 0.0
+Expected: > 0
+Got: 0.0
 
-### Phase 3: Synthesize Findings
+ROOT CAUSE
+Test ordered 'oxygen' as a directly-harvestable resource, which does not exist on
+Luna. The escalation service routes 'raw_regolith' to :automated_harvesting
+(escalation_service.rb:399), and the passing test at line 238 confirms the
+regolith pathway works. The test premise was physically wrong, not a production bug.
 
-Write a synthesis report with:
-1. **Broken Pathway:** Which oxygen source is failing? (harvester mining, greenhouse, bioreactor, PVE, CO2 reduction, etc.)
-2. **Root Cause:** What's actually broken?
-   - e.g., "HarvesterCompletionJob adds oxygen under 'oxygen' key but inventory lookups use 'O2'"
-   - OR: "Greenhouse system never wired to settlement inventory"
-   - OR: "Bioreactor fixture mocked but not configured in settlement"
-3. **Bug Location:** Exact file and method
-4. **Why Fixture Failed:** How this bug manifests in the test
-5. **Impact on Other Sources:** Does this break just this pathway, or all oxygen production?
+PROPOSED FIX
+Change order resource 'oxygen' → 'raw_regolith' and assert on the regolith
+inventory key (matching the passing test at line 238).
+
+RISK
+Test-only change. No production code touched. No shared concerns affected.
+
+READY TO APPLY? — waiting for approval
+```
+
+Do not commit until the user explicitly approves.
 
 ---
 
-## Acceptance Criteria (Diagnostic Phase)
+## Acceptance Criteria
 
-- [ ] **Identified failing pathway:** Which oxygen source (harvester mining, greenhouse, bioreactor, PVE, smelting, CO2, or combination) doesn't work
-- [ ] **Found root cause:** Specific code bug, not "vague oxygen issue"
-- [ ] **Verified scope:** Is this a single-system bug, or does it affect multiple oxygen pathways?
-- [ ] **Synthesis report written:** Full findings documented in summaries folder
-- [ ] **Ready for implementation:** Strategist reviews diagnosis and approves scope for fix phase
-
-**Success Signal:** Strategist reads synthesis report and says "Yes, that's the real bug — proceed to implementation" or "That's not it, investigate X instead."
+- [ ] Order resource changed from `'oxygen'` to `'raw_regolith'`
+- [ ] Assertion changed to the regolith inventory key (matching passing test at line 238)
+- [ ] Isolation run: `escalation_integration_spec.rb` — 0 failures
+- [ ] No regressions in related specs
+- [ ] No production code modified (test-only fix)
+- [ ] Full suite run completed and logged (human runs overnight — agent does not trigger)
 
 ---
 
 ## Gotchas & Traps
 
-1. **Trap — Wrong Assumption About HarvesterCompletionJob:**
-   - Don't assume the bug is in this job just because fixture mentions it
-   - The bug could be in greenhouse, bioreactor, PVE, or cross-cutting inventory handling
-   - **Verify:** Actually run the test and see which assertion fails
+1. **Trap — Guessing the inventory key:**
+   - Do NOT assume the key is `'raw_regolith'` vs `'processed_regolith'`
+   - **Verify:** Read the PASSING test at line 238 and `harvester_completion_job.rb#add_to_settlement_inventory`, then match that exact key
 
-2. **Trap — Multiple Oxygen Sources Mask Each Other:**
-   - Settlement might have 3+ oxygen sources configured
-   - If one breaks but others work, the test might pass
-   - **Diagnose:** Test each pathway in isolation if possible
+2. **Trap — "Fixing" production code to make the old assertion pass:**
+   - Do NOT add an `'oxygen'`/`'O2'` alias or a fake atmospheric-harvest path to satisfy the old assertion
+   - That would undo prior hardening and model a physically impossible scenario
+   - **Right:** Fix the test premise to use a real harvestable resource
 
-3. **Trap — Inventory Key Format Variations:**
-   - Different sources might use different key formats (string symbols vs material IDs)
-   - `'oxygen'`, `'O2'`, material ID 123, or something else?
-   - **Verify:** Check actual inventory.items.keys after production completes
-
-4. **Trap — Fixture Mocking Can Hide Real Issues:**
-   - Test might mock a system that isn't actually integrated
-   - Real game flow might not use that mocked system at all
-   - **Check:** Does fixture test match real production flow?
+3. **Trap — Scope creep into Mars:**
+   - Mars O2 handling (MOXIE-analog, capacity-scaling escalation) is a SEPARATE design task
+   - See `backlog/design/2026-08-21-DESIGN-MARS-MOXIE-ANALOG-ATMOSPHERIC-PROCESSING-UNIT.md`
+   - **Do NOT** fold Mars logic into this Luna test fix
 
 ---
+
+## Stop Conditions — escalate to user immediately if:
+- The passing test at line 238 does NOT use a regolith key (diagnosis may be incomplete)
+- Changing the key still leaves the assertion failing after two attempts
+- The fix requires touching production code (HarvesterCompletionJob or EscalationService)
+- Any architectural decision is required
+
+---
+
+## Commit Instructions
+Run git commands on **host only** — never inside the Docker container:
+```bash
+git add galaxy_game/spec/integration/ai_manager/escalation_integration_spec.rb
+git commit -m "fix: escalation_integration_spec item #9 — order raw_regolith (real Luna resource) instead of non-harvestable oxygen"
+git push
+```
+
+**Task file move on completion:**
+```bash
+git mv projects/galaxy_game/tasks/active/2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md \
+       projects/galaxy_game/tasks/completed/2026-08/2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md
+git add projects/galaxy_game/tasks/completed/2026-08/2026-08-16-MEDIUM-BUG-FIX-HARVESTER-COMPLETION-JOB-OXYGEN-FIXTURE.md
+git commit -m "chore: move oxygen fixture task to completed/"
+```
+
+---
+
+## Dependencies
+**Blocked by**: none
+**Blocks**: none
+**Related tasks**: `backlog/design/2026-08-21-DESIGN-MARS-MOXIE-ANALOG-ATMOSPHERIC-PROCESSING-UNIT.md` (Mars O2 — separate, do not fold in)
+
+---
+
+## Handoff Summary
+*Filled in at end of session — one scannable line for next agent*
+
+HANDOFF SUMMARY: [files updated] | [structural changes] | [next action needed]
