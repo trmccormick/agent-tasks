@@ -1,5 +1,5 @@
 ---
-status: completed
+status: active
 priority: MEDIUM
 type: bug-fix
 system_domain: OTHER
