@@ -14,6 +14,10 @@ Claude has no filesystem or terminal access to the actual repo — everything Cl
 2. **`status.md`** only if `NEEDS_REVIEW.md` references something needing more context, or Tracy asks about overall project state. Don't read it by default — it's a full log, not a briefing.
 3. **Individual task files / code / transcripts** only when `NEEDS_REVIEW.md`'s entry doesn't have enough detail to decide. Ask for the specific thing, not "paste the whole session."
 
+## Asset Generation Availability (Standing Rule)
+
+ChatGPT image-generation session time is a capped/limited resource — unlike Qwen (code) work, which can be done anytime, image-gen capacity is not always available on demand. When a session touches asset-pipeline work, check early what's actually feasible to generate that day rather than queuing up an open-ended asset list and assuming it'll all get done. Plan asset work around the available window, not the other way around.
+
 ## What Claude Should NOT Do
 
 - Don't ask Tracy to paste full terminal transcripts as a default — ask for the `NEEDS_REVIEW.md` entry first; only request more if that's insufficient.

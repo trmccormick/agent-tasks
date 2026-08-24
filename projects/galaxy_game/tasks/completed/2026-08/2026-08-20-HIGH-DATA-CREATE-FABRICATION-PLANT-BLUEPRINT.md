@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 priority: HIGH
 type: data
 system_domain: MANUFACTURING
