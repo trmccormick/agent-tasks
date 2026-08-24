@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 priority: MEDIUM
 type: bug-fix
 system_domain: OTHER
@@ -133,12 +133,30 @@ Known starting point (unconfirmed line numbers):
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**:
-**Completion date**:
-**Final test result**:
+**Completed by**: Implementation Agent (Qwen)
+**Completion date**: 2026-08-24
+**Final test result**: All specs pass — 51 procedural_generator + 22 magnetosphere + 12 data_driven_generation = 85 examples, 0 failures
 
 ### What was changed
 
+1. **Fixed argument swap in `procedural_generator.rb` line 29**:
+   - Before: `AtmosphereGeneratorService.new(material_lookup || Lookup::MaterialLookupService.new, {})`
+   - After: `AtmosphereGeneratorService.new({}, material_lookup || Lookup::MaterialLookupService.new)`
+   - The constructor expects `(celestial_body_data, material_lookup_service)` — arguments were reversed
+
+2. **Removed workaround in `procedural_generator_magnetosphere_spec.rb`**:
+   - Removed 3 lines that mocked `generate_composition_for_body` to return nil specifically to avoid triggering the @body_data bug
+   - The workaround is no longer needed since the root cause is fixed
+
 ### Issues discovered
 
+- **Root cause was a swapped argument order**, not just nil/missing data. When ProceduralGenerator created its own AtmosphereGeneratorService, `@body_data` became a MaterialLookupService instance (not a hash), and `@material_lookup` became an empty hash `{}`.
+- This meant `@body_data[:albedo]` called `[]` on a service object → nil
+- And `@material_lookup.find_material(...)` called `.find_material` on `{}` → NoMethodError
+- The bug was latent because the test in `data_driven_generation_spec.rb` passed `nil, nil` (which also fails but doesn't crash — just produces wrong results silently)
+
 ### Lessons learned
+
+- Always verify constructor argument order when calling services — swapped positional args are a silent failure mode
+- Workarounds that "make tests pass" should be tracked as technical debt and removed once root cause is fixed
+- Only 3 callers of `AtmosphereGeneratorService.new` across the codebase — not shared-code, so no Synthesis Report escalation needed
