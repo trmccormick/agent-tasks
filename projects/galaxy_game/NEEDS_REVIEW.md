@@ -78,6 +78,16 @@ Near-identical names, different directories — unclear if these represent the s
 **What happened**: During the NPC economy lifecycle documentation audit, confirmed that `AIManager::MarketStabilizationService` has three methods returning placeholder results instead of real implementation: `handle_unsold_goods`, `handle_production_shortages`, and `handle_import_shortages`. All return `{ action: :buyer_of_last_resort, status: :checked, purchases_made: 0 }` or equivalent stubs. The service's public `stabilize_market` method calls these but the fallback logic isn't actually executing — it's silently returning zero-effect results.
 **What I already checked**: Confirmed via direct source audit during documentation work. File: `app/services/ai_manager/market_stabilization_service.rb`. Stubbed methods return placeholder hashes with `status: :checked` and `purchases_made: 0`. The `ensure_new_player_essentials` method IS implemented (checks inventory levels, provides essentials). The private helper methods (`calculate_minimum_essential_level`, `provide_essential_item`, `settlement_has_production_capability?`) also exist but are only called from the essentials path.
 **What needs a second opinion**: Is this intentionally unfinished (planned feature not yet built) or did something regress? If it's a live fallback path that's supposed to be catching real market instability, a stub silently returning placeholder values means the fallback isn't actually protecting anything right now — new players might get essentials but established settlements have no buyer/producer/importer of last resort safety net.
+**Status**: OPEN
+
+### 2026-08-23 — can_harvest_locally? grants O2 credit without ISRU capability check
+**What happened**: `can_harvest_locally?` (app/services/ai_manager/escalation_service.rb:457-460) grants direct O2 credit purely from atmosphere-gas-presence, with zero check for whether a settlement has any ISRU/processing capability deployed. Confirmed via two independent diagnostics today (chain-trace + fixture-realism check).
+**What I already checked**: 
+- Source code: escalation_service.rb lines 457-460 show direct O2 credit from atmosphere gas presence
+- Chain-trace diagnostic confirmed no ISRU capability gate in the path
+- Fixture-realism check on escalation_integration_spec showed same issue with oxygen fixture
+**What needs a second opinion**: This needs a properly scoped task before anyone can pick it up — not yet filed. Flag it as needing Tracy's design input before task creation (touches unit-model and acquisition-routing architecture, not just a local fix).
+**Status**: OPEN — needs Tracy's design input before task creation
 **Status**: **RESOLVED (2026-08-06, confirmed always-stub from day one; follow-up research task filed as `2026-08-06-MEDIUM-RESEARCH-MARKET-STABILIZATION-SERVICE-HELPER-METHODS.md`)**
 
 ### 2026-08-02 — USD import order path incomplete
