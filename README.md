@@ -178,25 +178,62 @@ Every EXECUTOR task follows this mandatory pattern:
 
 When you finish implementing a task, follow this **exact sequence**:
 
-**Step 1: Move task from active/ → completed/**
+**Step 1: Move task from active/ → completed/** (using git mv, CRITICAL)
 ```bash
-cd /Users/tam0013/Documents/git/agent-tasks/projects/[project]/tasks/
-mv active/[TASKFILE].md completed/[TASKFILE].md
-# Update YAML header in the file: change status: active to status: completed
+cd /Users/tam0013/Documents/git/agent-tasks
+git mv projects/[project]/tasks/active/[TASKFILE].md \
+       projects/[project]/tasks/completed/[TASKFILE].md
 ```
+Then open the moved file and update YAML header: `status: active → status: completed`
 
-**Step 2: Commit task file move**
+**Step 2: Verify ONLY ONE copy exists** (prevent stale copies)
 ```bash
-git add completed/[TASKFILE].md
+find projects/[project]/tasks -name "[TASKFILE].md"
+```
+🛑 **STOP. This command must return ONLY ONE result in completed/. If you see duplicates in active/ or backlog/, delete them:**
+```bash
+rm -f projects/[project]/tasks/active/[TASKFILE].md projects/[project]/tasks/backlog/[TASKFILE].md
+```
+Post the find output to chat before proceeding.
+
+**Step 3: Update project status.md** (located in agent-tasks)
+File: `/Users/tam0013/Documents/git/agent-tasks/projects/[project]/status.md`
+- Add completed task summary (1-2 lines under appropriate section or ARCHIVE)
+- Update "Last Updated" timestamp to today's date
+- Note any deferred work or Phase 2 items
+
+**Step 4: Save synthesis report to summaries folder**
+File: `/Users/tam0013/Documents/git/agent-tasks/projects/[project]/summaries/YYYY-MM-DD-[TYPE]-[DESCRIPTION].md`
+- Contains detailed results of your testing/implementation
+- Do NOT paste full synthesis into chat (post path + 3-line summary instead)
+- This allows next agent to review your work
+
+**Step 5: Commit all changes**
+```bash
+cd /Users/tam0013/Documents/git/agent-tasks
+git add projects/[project]/tasks/completed/[TASKFILE].md
+git add projects/[project]/status.md
+git add projects/[project]/summaries/YYYY-MM-DD-[TYPE]-[DESCRIPTION].md
+git commit -m "complete: [TASKFILE] — [one-line summary of what was accomplished]"
 ```
 🛑 **STOP. Post the exact commit message and `git diff --stat` output to chat.
-Wait for explicit approval before running `git commit` or `git push`.**
+Wait for explicit approval before running `git push`.**
 
-**Step 3: Update project status.md** (located in the project repo, not agent-tasks)
-Navigate to: `[project_repo]/doc/status.md`
-- Add completed task summary
-- Update "Last Updated" timestamp
-- Note any deferred work or Phase 2 items
+**Step 6: Push to remote**
+```bash
+git push origin main
+```
+Post success confirmation to chat.
+
+---
+
+**Why each step is CRITICAL**:
+- ✅ `git mv` tracks file movement (prevents duplicates); plain `mv` leaves stale copies
+- ✅ `find` check prevents hidden duplicates in backlog/active/ (common agent mistake)
+- ✅ status.md update keeps project tracking current (essential for continuity)
+- ✅ Synthesis report saves detailed findings (lets next agent understand your work)
+- ✅ `git diff --stat` approval gate prevents incomplete or unintended commits
+- ✅ Chat confirmations create an audit trail of what was shipped
 
 **Step 4: Commit status.md update**
 ```bash

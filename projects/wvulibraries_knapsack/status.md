@@ -1,5 +1,5 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-08-20
+**Last Updated:** 2026-08-25
 
 ---
 
@@ -14,688 +14,134 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 ---
 
 ## Current Status
-- **Status:** 🔄 **IN PROGRESS — Catalog facet limiting (CatalogSearchBuilderWrapper implementation)**
+- **Status:** 🔄 **IN PROGRESS — Catalog facet limiting HTML validation (CatalogSearchBuilderWrapper testing)**
 - **Active Branches:**
   - `main` — Stable; production-ready with full volume mount structure
   - `fix/hide-type-facet-add-show-more-facets` — ✅ DEPLOYED to hykudev (2026-08-19); awaiting QA verification from Jessica
-  - `fix/catalog-facet-limiting-solr-level` — 🏗️ IN PROGRESS (2026-08-20): Implementation of search builder wrapper for catalog facets
+  - `fix/catalog-facet-limiting-solr-level` — 🏗️ IN PROGRESS: Code committed; Qwen testing facet display on HTML page (2026-08-25)
   - `clover-test` — Clover IIIF viewer integration (backlog)
   - `ollama_testing` — Ollama vision model for alt-text generation (backlog, experimental)
-- **Last Session:** 2026-08-19 (Type facet + show_more fix)
-- **Current Session:** 2026-08-20 — Catalog facet limiting investigation & implementation (in progress)
-- **Next Handoff:** Qwen (local agent) for testing & verification
+- **Last Session:** 2026-08-20 (Investigation complete)
+- **Current Session:** 2026-08-25 — Catalog facet limiting validation (Qwen testing task created)
+- **Next Handoff:** Qwen (local agent) tests HTML facet display & "More" links
 
 ---
 
-## 🔄 2026-08-20 — Catalog Facet Limiting Investigation & Implementation (IN PROGRESS)
+## 🔄 2026-08-25 — Catalog Facet Limiting HTML Validation (IN PROGRESS)
 
-**Objective**: Limit catalog search facets to 5 items max (like homepage), with "More" link for additional values. Currently, People Represented shows 36 items locally and 100+ on production.
+**Objective**: Confirm facet limiting works on actual HTML catalog page (not just code analysis).
 
-**Investigation Phase** (COMPLETE):
-1. ✅ **Compared upstream implementations**: Reviewed PALNI/PALCI Knapsack repo for facet patterns
-   - Found: They use `limit: 5` + `show_more: true` in CatalogController facet config (like we do)
-   - Not enforcing at Solr request level (only at display level)
-   - Explanation: They don't have high-cardinality facets like "People Represented"
+**Status**: 
+- ✅ Code implementation committed and ready
+- ✅ Task file created for Qwen: `2026-08-25-HIGH-BUGFIX-FACET-LIMITING-HTML-CATALOG-TEST.md` (in active/)
+- 🟡 **Awaiting Qwen execution**: Test HTML catalog page on local Stack Car
 
-2. ✅ **Identified root cause**: Blacklight's `limit: 5` config only controls UI display, NOT Solr request
-   - Solr returns all matching facet values (e.g., 36 items for People Represented)
-   - View shows only first 5 + "More" link, but Solr was queried for all values
-   - Real solution: Must enforce `facet.limit` parameter at Solr request level via search builder
+**What Qwen Will Test**:
+1. Switch to fix branch, update submodule to Kirk Wang's latest
+2. Rebuild Stack Car stack
+3. Load https://demo-wvu-knapsack.localhost.direct/catalog?locale=en
+4. Verify facets show max 5 items + "More" link
+5. Test "More" link functionality
 
-3. ✅ **Analyzed working patterns**:
-   - **Homepage**: Uses `HomepageSearchBuilderWrapper` which overrides `build()` to set facet limits in Solr params ✅ WORKING
-   - **Catalog**: Uses `AdvSearchBuilder` but was only relying on Blacklight config (not working)
+**Acceptance Criteria**:
+- Facets display exactly 5 items + "More" link when > 5 exist
+- No errors in browser console or Rails logs
+- "More" links navigate to full facet list
+- All facets (Creator, Subject, Location, etc.) respect limit
 
-**Implementation Phase** (IN PROGRESS):
-1. ✅ **Created CatalogSearchBuilderWrapper** (`app/search_builders/catalog_search_builder_wrapper.rb`)
-   - Extends `AdvSearchBuilder` (catalog's current search builder)
-   - Overrides `build(user_params)` to enforce facet.limit from Blacklight config
-   - Pattern: Identical to proven HomepageSearchBuilderWrapper
+**Code Ready for Testing**:
+- **CatalogSearchBuilderWrapper**: Adds Solr-level `f.{field_name}.facet.limit` params (17 lines)
+- **CatalogControllerDecorator**: Injects wrapper via `search_builder_class` override
+- **Initializer**: Ensures decorator applied at correct Rails initialization time (after_initialize)
+- **Pattern**: Proven working (HomepageSearchBuilderWrapper works on homepage)
 
-2. ✅ **Updated CatalogController decorator** (`app/controllers/catalog_controller_decorator.rb`)
-   - Added `search_builder_class` method override to return `CatalogSearchBuilderWrapper`
-   - This injects our wrapper into the search pipeline
+**Synthesis Report Location** (where Qwen will save results):
+`/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/summaries/2026-08-25-FACET-LIMITING-HTML-TEST-RESULTS.md`
 
-3. ✅ **Removed non-working decorator approach** 
-   - Deleted `config/initializers/decorate_search_builders.rb` (prepend pattern didn't work for catalog)
-   - Reason: Decorator was applied but methods never invoked (different code path for catalog)
+---
 
-4. ✅ **Committed changes to new branch**: `fix/catalog-facet-limiting-solr-level`
-   - Commit message: "fix: use CatalogSearchBuilderWrapper pattern (proven working) instead of decorator approach"
+## ✅ 2026-08-25 — Pagination Error Root Cause Investigation (COMPLETE)
 
-**Testing Status** (BLOCKED - LOCAL ROUTING ISSUE):
-- ⚠️ Local Stack Car container routes not working (`/catalog` → 404 Routing Error)
-- Root cause: Multi-tenant setup requires full service initialization (not just web container)
-- Impact: Cannot verify facet limiting works locally yet
-- Next step: Qwen to test on local Stack Car when container routing is stable
+**Issue**: `Kaminari::ZeroPerPageOperation` error on `/catalog.json` (JSON API)
 
-**Code Changes Summary**:
-- **NEW**: `app/search_builders/catalog_search_builder_wrapper.rb` (17 lines)
-- **MODIFIED**: `app/controllers/catalog_controller_decorator.rb` (added search_builder_class method override)
-- **DELETED**: `config/initializers/decorate_search_builders.rb` (non-working approach)
-- **Branch**: fix/catalog-facet-limiting-solr-level (3 commits)
+**Investigation Result**: 
+- ✅ **Root Cause Identified**: Blacklight 7.42.0 bug in `index.json.jbuilder` template
+- ✅ **Not Our Code**: CatalogSearchBuilderWrapper and decorator changes do NOT cause this error
+- ✅ **Impact Analysis**: JSON API broken; HTML catalog works fine (no error)
+- ✅ **Upstream Issue**: Bug exists in hyrax-webapp submodule, not in Knapsack customizations
 
-**Architectural Notes**:
-- Follows proven HomepageSearchBuilderWrapper pattern
-- Non-breaking: CatalogSearchBuilderWrapper extends AdvSearchBuilder, preserves all upstream behavior
-- Future deployment: Merge to main after local verification + production testing
+**Details**:
+- File affected: `hyrax-webapp/app/views/catalog/index.json.jbuilder`
+- Problem: Calls `.per(params[:per])` without safe default when `per` param is nil
+- Trigger: JSON requests don't send `per_page` → nil → Kaminari interprets as `.per(0)` → crash
+- Status: **Does not block HTML catalog development** (our primary UX)
 
-**Open Questions for Qwen**:
-1. Can catalog page load and display facets on local Stack Car?
-2. Does "People Represented" facet show max 5 items when expanded?
-3. Does "More" link appear when > 5 items exist?
-4. Do other facets (Creator, Subject, etc.) also respect the 5-item limit?
+**Action Taken**: 
+- Qwen investigated directly by testing JSON endpoint with curl
+- Documented finding in synthesis report
+- Cataloged as "upstream issue" (separate from facet limiting feature work)
 
-**Estimated Effort for Completion**:
-- Testing: 30-45 min (if Stack Car routing fixed)
-- Bug fixes (if any): 15-30 min
-- Deployment prep: 15 min
+**Next Step**: Consider reporting to Blacklight maintainers (lower priority; HTML works fine)
 
 ---
 
 ## ✅ 2026-08-19 — Type Facet & Homepage Facet Limiter FIX (COMPLETE & DEPLOYED)
 
-**All Issues Fixed**:
-1. ✅ Type facet (`generic_type_sim`) hidden from all views
-2. ✅ "More" links functional with correct `/catalog/facet/field_name` URLs
-3. ✅ Homepage facets limited to exactly 5 items with "More" link
-4. ✅ Facet labels readable (Creator, Subject, Location, etc.)
-5. ✅ Nagios health check comment added to homepage
+---
 
-**Root Cause Findings**:
-- **Type facet issue**: `generic_type_sim` was defined in hyrax-webapp submodule but decorator wasn't removing it
-- **More links issue**: Old code used `search_action_url()` which generated wrong URL format
-- **Homepage facet limit issue**: `HomepageSearchBuilder` sends `facet.limit => -1` to Solr (unlimited); needed view-level limiting
-- **Wings::ModelRegistry NameError**: Old decorator file in wrong location causing Zeitwerk validation error
+## ✅ 2026-08-19 — Type Facet & Homepage Facet Limiter (COMPLETE & DEPLOYED)
 
-**Implementation Details**:
-1. **Catalog Controller Decorator** (`app/controllers/catalog_controller_decorator.rb`):
-   - Deletes `generic_type_sim` facet field
-   - Sets `limit: 5` + `show_more: true` on all remaining facets
-   - Adds readable labels for each facet field
+**Status**: ✅ DEPLOYED to hykudev (2026-08-19); awaiting Jessica McMillen QA verification
 
-2. **Homepage View Template** (`app/views/themes/wvu_home/hyrax/homepage/_facet_limit.html.erb`):
-   - Manually slices `display_facet.items` to first 5 items
-   - Shows "More" link only if additional items exist
-   - Uses `facet_catalog_path(id: facet_field.key)` for correct URLs
+**Issues Fixed**:
+- ✅ Type facet (`generic_type_sim`) hidden from all views (Hyku #3072 workaround)
+- ✅ Homepage facets limited to 5 items + "More" links (CatalogControllerDecorator, HomepageSearchBuilderWrapper)
+- ✅ Facet labels readable (Creator, Subject, Location, etc.)
+- ✅ Navigation menu fixes (Issues #13, #14: Help hidden, Contact → LibAnswers)
 
-3. **Homepage Controller Decorator** (`app/controllers/hyrax/homepage_controller_decorator.rb`):
-   - Injects custom `HomepageSearchBuilderWrapper`
-   - Prepend pattern to avoid superclass mismatch
+**Key Files**:
+- CatalogControllerDecorator: Deletes generic_type_sim, sets limit/labels
+- HomepageSearchBuilderWrapper: Enforces Solr-level facet.limit
+- Homepage view partial: Manually slices to 5 items + "More" link
 
-4. **Homepage Search Builder Wrapper** (`app/search_builders/hyrax/homepage_search_builder_wrapper.rb`):
-   - Extends `Hyrax::HomepageSearchBuilder`
-   - Overrides `build()` method to enforce facet limits in Solr params
-
-**Testing & Verification** (Local + VM):
-- ✅ Local: All 5 items fixed and tested with Rails restart
-- ✅ VM: Branch pulled, app UP, no Zeitwerk errors, application stable
-- ✅ Ready: For Jessica McMillen QA verification on hykudev
-
-**Branch Details**:
-- Branch: `fix/hide-type-facet-add-show-more-facets`
-- Commits: 8 total (all committed and pushed to origin)
-- Status: Deployed to hykudev (2026-08-19 20:45 UTC)
-
-**Deployment Command** (for reference):
-```bash
-cd /path/to/wvu_knapsack
-git fetch origin
-git pull origin fix/hide-type-facet-add-show-more-facets
-# Restart container
-```
+**Branch**: `fix/hide-type-facet-add-show-more-facets` (8 commits, all pushed)
 
 ---
 
-## 🏗️ 2026-08-10 — Architecture Compliance: Facet Label Refactor (FINAL)
+## 🗂️ ARCHIVE — Older Sessions (2026-08-03 and earlier)
 
-**Objective**: Ensure all changes comply with architectural guidelines (no modifications to hyrax-webapp submodule).
+Historical work from 2026-08-03 and earlier has been archived to keep status.md concise. Key topics:
 
-**Issue Discovered**: After committing facet label fixes, found uncommitted changes in hyrax-webapp/app/controllers/catalog_controller.rb (modified facet field configuration)
-- **Why It Happened**: Previous session added labels directly to submodule (violates architecture guidelines)
-- **Root Cause**: Submodule should not be modified for local customizations
+**2026-08-03**: Architecture Compliance (facet label refactor, submodule management, 5-issue cascade from clean rebuild)
+**2026-08-04**: Facet display fix (i18n labels for "People Represented")
+**2026-07-29**: Build context optimization (.dockerignore: 14GB → ~400MB), storage isolation, submodule cleanup
+**2026-07-21**: VM deployment, logging configuration, Solr multi-tenant fixes (GitHub #8)
+**2026-07-15**: initialize_app exit code fix, db-migrate-seed.sh
+**2026-07-14**: Production smoke test, SOLR_URL fix, tenant creation verification
+**2026-07-13**: Valkyrie compatibility (delegated_attributes), decorator patterns, task tracking setup
 
-**Resolution Executed**:
-1. ✅ Reset hyrax-webapp submodule to clean state: `git checkout app/controllers/catalog_controller.rb`
-2. ✅ Moved facet label configuration from submodule → CatalogControllerDecorator in Knapsack repo
-3. ✅ Updated [app/controllers/catalog_controller_decorator.rb](app/controllers/catalog_controller_decorator.rb) with explicit labels:
-   - creator_sim → "Creator"
-   - keyword_sim → "Keyword"
-   - subject_sim → "Subject"
-   - language_sim → "Language"
-   - based_near_label_sim → "Location"
-   - publisher_sim → "Publisher"
-   - file_format_sim → "File Format"
-   - contributing_library_sim → "Contributing Library"
-4. ✅ Committed decorator changes: `758cfcf - refactor: move facet label configuration to decorator (not submodule)`
-5. ✅ Verified page reload picks up changes → All facet labels display correctly in browser
-6. ✅ Confirmed hyrax-webapp submodule is clean
-
-**Why This Approach Works**:
-- Decorators run during Rails initialization (via to_prepare hook)
-- CatalogController.configure_blacklight block executes after submodule config
-- Labels override Blacklight's auto-generated field names
-- Keeps all customizations in Knapsack repo (not submodule)
-- Follows multi-tenant Hyku best practices
-
-**Verification**:
-- Git status: No uncommitted changes in submodule
-- Branch ahead by 8 commits (7 original + 1 decorator refactor)
-- Homepage displays correct facet labels: Resource Type, Creator, Subject, Collection, Date Created, Location, People Represented
-- All "More" facet links work correctly (issue #11)
-- Help link removed and Contact link updated (issues #13, #14)
-
-**Status**: ✅ COMPLETE — All changes committed, architecture-compliant, ready for merge/deployment
-
----
-
-## 🔧 2026-08-04 — Facet Display Fix
-
-**Issue**: Demo VM showing "blacklight.search.fields.show.people_represented_tesim" in facet UI instead of "People Represented"
-- **Root Cause**: `people_represented_sim` facet auto-generated by Hyku's flexible schema from M3 profile but no i18n translation provided
-- **Initial Wrong Solution**: Manual facet field configuration → caused duplicate field error (Hyku already generates this facet)
-- **Correct Solution**: Created locale translation file [config/locales/blacklight.en.yml](config/locales/blacklight.en.yml) with facet labels
-- **Why It Works**: Blacklight's facet label resolution chain: config label → i18n key → field name. With i18n key provided, displays "People Represented"
-- **Status**: ✅ VERIFIED WORKING on dev VM (facet now displays "People Represented" instead of untranslated key)
+**Access archived notes**: See full file history or ask for specific session details.
 
 **Key Files Created/Modified**:
 1. `config/locales/blacklight.en.yml` — NEW: Provides i18n translations for Blacklight facet and search field labels
 2. `app/controllers/catalog_controller_decorator.rb` — Decorator for facet config (hides 'generic_type_sim', adds labels)
-3. `config/initializers/account_settings_type_fix.rb` — Handles JSON deserialization edge case for Account.settings column
-4. `app/views/_controls.html.erb` — Navigation menu override (removes Help link, updates Contact link to LibAnswers)
-5. `app/views/hyrax/homepage/_facet_limit.html.erb` — Override homepage facet rendering to fix "more" links routing
+---
 
-**Branch**: `fix/facet-links-and-hide-type-facet` with all fixes committed and architecture-compliant
+## Backlog & Prototypes
+
+**Experimental Branches**:
+- `clover-test` — Clover IIIF viewer integration (CSS/view debugging needed)
+- `ollama_testing` — Ollama vision for alt-text (Valkyrie rewrite required)
+
+**Pending Considerations**:
+1. JSON API fix: Report Blacklight 7.42.0 bug to maintainers (lower priority; HTML works)
+2. Production deployment: After HTML facet limiting verified
+3. Clover IIIF: If needed for future releases
 
 ---
 
-## 🏗️ ARCHITECTURAL PRINCIPLES & OPERATIONAL GUIDELINES (2026-08-03)
-
-**Dependency Stack** (changes flow downward only):
-```
-Hyrax (gem) — Owns base tables, core workflows, foundational models
-    ↓ (depends on)
-Hyku (submodule in hyrax-webapp) — Multi-tenant Hyrax, can extend upstream
-    ↓ (depends on)
-Knapsack (this repo) — WVU-specific customizations, local experimentation
-```
-
-**What Knapsack CAN Do**:
-- ✅ View overrides (create custom templates in `app/views/`)
-- ✅ Decorators (extend models without modifying submodule)
-- ✅ Initializers (defensive code patches, edge-case handling)
-- ✅ CSS/styling customizations
-- ✅ Configuration changes
-- ✅ Local experiments in prototype branches
-
-**What Knapsack CANNOT Do**:
-- ❌ Modify hyrax-webapp submodule code (even for fixes)
-- ❌ Add migrations for Hyku/Hyrax tables (accounts, workflows, etc.)
-- ❌ Change upstream database schema
-- ❌ Ship breaking changes without approval
-
-**If Something Breaks or Needs Fixing**:
-1. **Is it Hyku/Hyrax code?** → Propose to upstream, coordinate release
-2. **Is it Knapsack-specific?** → Fix via override/decorator/initializer (stays local)
-3. **Is it a database issue?** → Check if it's upstream table → escalate to Hyku/Hyrax
-
-**Release Process**:
-- Code changes undergo approval before soft launch
-- Infrastructure changes (migrations, schema) require coordination
-- Valuable customizations can be submitted upstream for inclusion
-- All changes must be tested for stability before deployment
-
-**2026-08-03 Learning**: Attempted to add a migration for `accounts` table settings column conversion. This was incorrect because:
-- `accounts` table is owned by Hyku/Hyrax, not Knapsack
-- Migrations in downstream layers break multi-instance deployments
-- Proper solution: Defensive code (initializer patch) instead of schema change
-- Lesson: Ask "who owns this table?" before adding migrations
-
----
-
-## ✅ RESOLVED — GitHub Issues #11, #13, #14 + Infrastructure Cascade (2026-08-03)
-
-**GitHub Issues Fixed**:
-1. **Issue #11 — Homepage Facet Links Broken**
-   - ✅ Created override: [app/views/hyrax/homepage/_facet_limit.html.erb](app/views/hyrax/homepage/_facet_limit.html.erb)
-   - ✅ Uses `search_action_url(id: facet_field.key)` instead of broken `main_app.facet_catalog_path()`
-   - ✅ Prevents broken "more" links on homepage facets
-   - ✅ Tested: Works correctly (verified pre-rebuild)
-
-2. **Issue #13 — Help Link Should Be Hidden**
-   - ✅ Created override: [app/views/_controls.html.erb](app/views/_controls.html.erb)
-   - ✅ Completely removed Help `<li>` navigation block
-   - ✅ Affects demo-wvu-knapsack tenant (wvu_home theme)
-   - ✅ Tested: Help link no longer appears in menu
-
-3. **Issue #14 — Contact Link to External LibAnswers URL**
-   - ✅ Created override: [app/views/_controls.html.erb](app/views/_controls.html.erb)
-   - ✅ Changed contact link from internal Hyku route to: `https://westvirginia.libanswers.com/wvrhc`
-   - ✅ Added `target: '_blank'` and `rel: 'noopener noreferrer'` for security
-   - ✅ Tested: Link opens LibAnswers in new tab
-
-**Infrastructure Cascade — 5 Hidden Issues Exposed by Clean Rebuild**
-
-When a clean rebuild (`sh up.sc.local.sh`) was run, it exposed a cascade of 5 infrastructure issues that had been hidden by container caching:
-
-### Issue 1: Bundle Volume Not Persisting 🔴 **CRITICAL — ROOT CAUSE**
-- **Problem**: `initialize_app` container installs 463 gems to ephemeral `/usr/local/bundle`, then exits
-- **Impact**: Web/worker containers mount empty `./data/bundle:/usr/local/bundle` → **all gems gone**
-- **Result**: `bundler: command not found: puma` / `bundler: command not found: good_job` crashes both containers
-- **Fix Applied**: Added `./data/bundle:/usr/local/bundle:cached` to docker-compose.yml volumes
-- **Commit**: Infrastructure fix (persistent bundle)
-- **Why Hidden Before**: Previous runs used cached containers with gems already installed
-
-### Issue 2: Wings::ModelRegistry NameError 🔴
-- **Problem**: hyrax-webapp's `lib/wings.rb` initializer called `Wings::ModelRegistry.reverse_lookup()` without proper module scope
-- **Impact**: Crashed on first request with `NameError (uninitialized constant Wings::ModelRegistry)`
-- **Only Hit After**: Bundle fix allowed app to boot far enough to reach this error
-- **Fix Applied**: Created [config/initializers/valkyrie_resource_resolver_override.rb](config/initializers/valkyrie_resource_resolver_override.rb)
-  - Overrides Valkyrie's resource_class_resolver lambda with proper guards
-  - Catches NameError/NoMethodError and falls back gracefully
-- **Commit**: 5 infrastructure fixes in chain
-- **Why Hidden Before**: Schema/asset caches prevented the app from trying to load Account records
-
-### Issue 3: Sprockets Asset Pipeline Errors 🔴
-- **Problem**: hyrax-webapp's `application.js` and `application.css` require `blacklight_advanced_search` gem assets that don't exist
-- **Impact**: 500 errors on every page load (asset compilation fails)
-- **Only Hit After**: Wings error fixed; app can now try to render pages
-- **Fix Applied**: Created [config/initializers/sprockets_directive_patch.rb](config/initializers/sprockets_directive_patch.rb)
-  - Registers Sprockets preprocessors that strip missing `blacklight_advanced_search` requires before compilation
-  - Created placeholder files: `app/assets/javascripts/blacklight_advanced_search.js` and `.css`
-- **Commits**: 23edd83 (preprocessor) + b68b99c/90492eb/5c13f37 (other fixes)
-- **Why Hidden Before**: Asset cache from previous builds persisted
-
-### Issue 4: Render Constraints Stack Level Too Deep 🔴
-- **Problem**: [lib/blacklight_advanced_search/render_constraints_override_decorator.rb](lib/blacklight_advanced_search/render_constraints_override_decorator.rb) used `__method__` with `Module.prepend`, creating infinite recursion
-- **Impact**: Search result pages crashed with "stack level too deep" error
-- **Only Hit After**: Asset pipeline fixed; app can now render search pages
-- **Fix Applied**: Changed decorator to use `super()` pattern
-- **Commit**: Part of fix chain
-- **Why Hidden Before**: Search pages were never rendered during quick cache-based tests
-
-### Issue 5: Account Settings TypeError 🔴
-- **Problem**: Settings column converted from JSONB to TEXT, but PostgreSQL sometimes returned Hash
-- **Error**: `TypeError (no implicit conversion of Hash into String)` in JSON coder
-- **Impact**: Any page requiring Account.settings (dashboard, admin) failed
-- **Only Hit After**: All previous errors fixed; app can now try to load Account records
-- **Fix Applied** (Two-part):
-  1. Created [db/migrate/20260803_change_accounts_settings_to_text.rb](db/migrate/20260803_change_accounts_settings_to_text.rb) to convert column type
-  2. Created [config/initializers/account_settings_type_fix.rb](config/initializers/account_settings_type_fix.rb) with JSONCoderWithHashFallback monkey-patch
-  3. Used `Rails.configuration.to_prepare` hook (more reliable than `after_initialize`)
-- **Commits**: 90492eb (migration) + 5c13f37 (improved patch)
-- **Why Hidden Before**: DB queries were never fully executed in cache-based tests
-
-**Why These Were All Hidden**
-
-```
-Clean rebuild → Bundle missing → App crashes immediately
-                                   ↓ (was never reached)
-                            Wings error unreachable
-                                   ↓ (was never reached)
-                        Sprockets error unreachable
-                                   ↓ (was never reached)
-                      Render constraints error unreachable
-                                   ↓ (was never reached)
-                          Settings TypeError unreachable
-```
-
-Every layer was hidden by the previous failure. Previous runs used cached containers, so:
-- Gems were already installed (bundle not needed)
-- Schema cache existed (Wings errors not triggered)
-- Asset cache existed (Sprockets not rebuilding)
-- Search pages were never rendered during quick tests
-- Settings rarely accessed (TypeError never surfaced)
-
-**Final Branch Status**:
-- **Commits on fix/facet-links-and-hide-type-facet** (most recent first):
-  1. 5c13f37 — fix: use to_prepare hook for JSON coder patch
-  2. 90492eb — db: migrate accounts.settings from jsonb to text
-  3. b68b99c — fix: patch JSON coder to handle Hash values from TEXT column
-  4. a40ce36 — fix: recreate _controls.html.erb override (Issues #13 & #14)
-  5. 23edd83 — fix: register preprocessor to strip blacklight_advanced_search requires
-- **All 3 GitHub issues verified working** (menu changes visible on demo tenant)
-- **All 5 infrastructure issues resolved** (app boots cleanly, no errors)
-
-**Fragility Warning for Soft Launch** ⚠️
-
-This cascade reveals potential fragility:
-1. **Clean rebuilds are rare** — Most testing uses cached containers; production uses fresh builds
-2. **Dependency timing** — Each layer depends on previous layers working correctly
-3. **Initialization order matters** — Rails initializers, migration runners, and cache clearing must all execute correctly
-4. **Multi-source problems** — Issues came from 3 different layers (knapsack, hyrax-webapp, database)
-
-**Recommendations for Soft Launch**:
-- ✅ Keep `.dockerignore` optimizations (they prevent rebuild slowness)
-- ✅ Keep bundle persistence fix (critical for container stability)
-- ✅ Monitor boot logs carefully on first production deploys (this cascade may return)
-- ✅ Have rollback plan ready (if clean rebuild fails in production, be prepared to revert)
-- ✅ Test clean rebuilds regularly in staging (don't wait for production)
-
----
-
-## ✅ RESOLVED — Symlink Deletion on Dev VM (2026-07-21)
-
-**Issue**: Every `./up.sh` run on dev VM deleted `./data` symlink to mounted volume
-- **Root Cause**: Recent commits consolidated volume mounts in `docker-compose.production.yml`, removing `./data/tmp`, `./data/storage/*`, and `./google-analytics.json`
-- **Why It Broke**: Without full volume structure defined, Docker doesn't properly handle symlinks pointing to mounted volumes
-- **Fix Applied**: 
-  - Restored `docker-compose.production.yml` from main branch (full volume mount list)
-  - Preserved logging configuration (100MB max, 3-file rotation for worker/web)
-  - Updated `docker-compose.local.yml` to match production config exactly
-- **Testing**: ✅ **VERIFIED** — Created symlink `data -> data_volume`, ran full `sh up.prod.local.sh`, symlink persisted through entire initialization
-- **Status**: Production and local configs now synchronized; ready for hykudev deployment
-- **Details**: See [VM_BUILD_OPTIMIZATION_ANALYSIS_2026-07-21.md](./VM_BUILD_OPTIMIZATION_ANALYSIS_2026-07-21.md)
-
----
-
-## ⏳ ACTIVE — VM Build Time Optimization Analysis (2026-07-21)
-
-**Objective**: Reduce ~20 minute build time on production VM
-- **Analysis Complete**: Build context is 1.3GB; primary bottleneck is `COPY . /app/samvera`
-- **Optimization Opportunities**:
-  - `.dockerignore` creation: **8-10 min savings** (40-50% reduction) — Low risk
-  - BuildKit re-enablement: **3-5 min savings** (15-25% reduction) — Medium risk
-  - Dockerfile layer reordering: **2-3 min savings** (10% reduction) — Low risk
-- **Recommended Next**: Implement `.dockerignore` to exclude `data/`, `node_modules/`, `.git/`, `public/uploads/` (~10x context reduction)
-- **Status**: Analysis complete, recommendations documented, awaiting approval for implementation
-- **Details**: See [VM_BUILD_OPTIMIZATION_ANALYSIS_2026-07-21.md](./VM_BUILD_OPTIMIZATION_ANALYSIS_2026-07-21.md)
-
----
-
-## ⏳ ACTIVE — VM Deployment (initialize_app exit code)
-
-**Issue**: initialize_app container exiting with code 1 on VM, blocking web/worker startup
-- **Root Cause**: `bin/db-migrate-seed.sh` script was missing explicit `exit 0` at end
-  - Script prints "all migrations have been run" but no explicit exit
-  - Ruby leaves exit code undefined → Docker sees exit 1
-  - Blocks web and worker from starting (they depend on initialize_app completing successfully)
-- **Fix**: Add `exit 0` at end of `db-migrate-seed.sh`
-  - Commit: `b3c1351`
-  - Pushed to: `fix/facet-links-and-hide-type-facet` branch
-- **Testing**: Ready for VM redeployment
-
----
-
-## ✅ RESOLVED — Logging Issue + Multi-Tenant Solr (GitHub #8)
-
-**GitHub Issue**: https://github.com/wvulibraries/wvu_knapsack/issues/8
-
-**Problems Solved**:
-1. ✅ **Logging Not Captured** — Dual logging now working for dev & production
-2. ✅ **Tenant Creation Failure** — Fixed Solr multi-tenant collection URL construction
-
-**Status**:
-- ✅ Investigation COMPLETE 
-- ✅ Implementation COMPLETE — All fixes committed and tested
-- ✅ Local Smoke Testing COMPLETE — Both issues verified fixed
-- ⏳ Production VM deployment — Ready for HykuDev + production validation
-
-**Root Causes & Fixes**:
-
-### Issue 1: Logging Not Captured
-- **Root Cause**: Local dev runs `RAILS_ENV=development`, so `config/environments/production.rb` never loads
-- **Solution**: DualIO logger wrapper in both `development.rb` and `production.rb`
-  - Logs to file + STDOUT simultaneously
-  - Dev logs: `./hyrax-webapp/log/development.log`
-  - Production logs: `./data/logs/rails/production.log`
-
-### Issue 2: Tenant Creation Fails with Solr 404
-- **Root Cause**: `SOLR_URL` in `.env.production` pointed to `/solr/hydra-production` (with collection name)
-  - When creating tenant, system appended UUID → `hydra-production/62546bdd-...` (invalid path)
-- **Solution**: Changed `SOLR_URL` to `/solr/` (root only)
-  - Now tenant URLs correctly build as `/solr/<tenant-uuid>`
-  - Commit: Configuration only (no code changes needed)
-
-**Testing Verification** (2026-07-14):
-- ✅ Stack startup: All services healthy, migrations passed
-- ✅ Admin tenant: Accessible at `https://admin-wvu-knapsack.lvh.me`
-- ✅ Tenant creation: Successfully created "testing" tenant
-- ✅ Tenant login: Able to login to new tenant
-- ✅ Solr collection: Tenant-specific collection created and working
-- ✅ Logging: Production.log capturing all Rails activity correctly
-
-**Next Steps**:
-1. Deploy `fix/facet-links-and-hide-type-facet` to VM/HykuDev
-2. Verify logs appear at expected locations on production
-3. Verify tenant creation works on production environment
-4. Merge to main
-
-**Fixes Committed**:
-- Root: `config/environments/production.rb` — DualIO logger
-- Submodule: `hyrax-webapp/config/environments/production.rb` — DualIO logger  
-- Config: `.env.production` — SOLR_URL corrected
-- No breaking changes; fully backward compatible
-
----
-
-## 🔴 CRITICAL BLOCKER — Production Logging Issue
-
-**GitHub Issue**: https://github.com/wvulibraries/wvu_knapsack/issues/8
-
-**Problem**: "Not seeing any logs other than some solr logs outside of the containers. We need to figure out how to map logs outside the containers so we can analyze what went wrong if a container fails to start, etc."
-
-**Status**: ✅ FULLY RESOLVED
-
----
-
-## ✅ RESOLVED — Build Context Optimization (2026-07-29)
-
-**Objective**: Reduce 20-minute VM builds caused by bloated Docker build context
-
-**Analysis Complete** (via Claude analysis):
-- **Build context bloat**: 14GB+ total (mostly hyrax-webapp)
-  - `hyrax-webapp/tmp/` — 7.56GB (runtime cache)
-  - `hyrax-webapp/storage/` — 3.76GB (Active Storage files)
-  - `hyrax-webapp/spec/` — test specs
-  - `hyrax-webapp/docs/` — documentation
-- **Root cause**: These are runtime/generated directories that should be bind-mounted, not baked into image
-
-**Fix Applied** ✅
-- Added 4 exclusions to `.dockerignore`:
-  ```
-  ./hyrax-webapp/tmp/
-  ./hyrax-webapp/storage/
-  ./hyrax-webapp/spec/
-  ./hyrax-webapp/docs/
-  ```
-- **Result**: hyrax-webapp reduced from ~12GB → ~60-70MB (actual code only)
-- **Total context**: 14GB+ → ~300-500MB (~97% reduction)
-- **Build speed impact**: Should see significant improvement in `docker build` time
-
-**Secondary Fix** ✅
-- Removed overly broad `solr/` exclusion (prevented security.json from being copied)
-- Since solr/ is only ~84KB (config files), it's safe to include for Dockerfile COPY
-
-**Testing**: Ready for next VM build to measure actual speedup
-**Status**: ✅ COMPLETE — Change committed to `.dockerignore`
-
----
-
-## ✅ RESOLVED — Storage Isolation & Submodule Cleanup (2026-07-29)
-
-**Objective**: Ensure data never accumulates in hyrax-webapp submodule; keep knapsack clean for git operations
-
-**Changes Made**:
-
-1. **Storage Directory Setup** ✅
-   - Cleared `hyrax-webapp/storage/files/` (mistakenly had data from testing)
-   - Created `./data/storage/` directory for proper bind mounting
-   - Docker mounts `./data/storage` → `/app/samvera/hyrax-webapp/storage`
-   - All generated data stays in knapsack root, not in pulled submodule
-
-2. **Initialize_app Enforcement** ✅
-   - Updated `docker-compose.yml`, `docker-compose.local.yml`, `docker-compose.production.yml`
-   - Added `rm -rf /app/samvera/hyrax-webapp/storage/files` to initialize_app command
-   - Ensures every startup cleans leftover storage data from submodule
-   - Prevents accidental commits of generated data to hyrax-webapp
-
-3. **Git Cleanliness** ✅
-   - Added `google-analytics.json` to `.gitignore` (sensitive credentials file)
-   - Discarded `hyrax-webapp/Gemfile.lock` changes (file is submodule's responsibility)
-   - Submodule now shows clean with no pending changes
-
-4. **Submodule Management Documentation** ✅
-   - **Three-layer dependency chain**:
-     - **Hyrax** = single-instance base framework
-     - **Hyku** = multi-tenant Hyrax instance (less customization)
-     - **Knapsack** = WVU customized Hyku (CSS overrides, M3 profiles, experimental fixes)
-   - **Workflow**: Never modify hyrax-webapp locally for pushing; fix issues in Hyku repo, then update submodule reference
-   - **Upstream strategy**: Fixes go to Hyku/Hyrax if community accepts; keep working in Knapsack while upstream review happens
-
-**Files Changed**:
-- `docker-compose.yml` — Added storage cleanup to initialize_app
-- `docker-compose.local.yml` — Added storage cleanup to initialize_app
-- `docker-compose.production.yml` — Added storage cleanup to initialize_app
-- `.gitignore` — Added `google-analytics.json`
-- `hyrax-webapp/` — Discarded local Gemfile.lock changes
-
-**Status**: ✅ COMPLETE — Knapsack is now clean for git operations; storage isolation enforced
-
----
-
-## Completed This Session
-
-### Session 2026-08-03 (Current - GitHub Issues + Architecture Alignment)
-- 🔍 Implemented 3 GitHub issues (#11, #13, #14) with view overrides
-- ✅ Verified all fixes working on demo tenant (facet links, help removed, contact link)
-- 🔍 Discovered clean rebuild exposed 5 infrastructure issues (asset pipeline, Wings, JSON deserialization, etc.)
-- ✅ Created defensive initializer for Account settings JSON edge case (no schema changes)
-- ✅ Demo tenant theme restored to wvu_home (visible in UI)
-- ⚠️ **ARCHITECTURAL CORRECTION**: Removed database migration for `accounts` table
-  - Reason: `accounts` table owned by Hyku/Hyrax, not Knapsack
-  - Migrations in downstream layers break multi-instance deployments
-  - Proper solution: Code-level defensive patch (initializer), not schema change
-  - Lesson: "Who owns this table?" check before adding migrations
-- ✅ Established clear operational guidelines (see section above)
-- ✅ Updated status.md with architectural principles for future development
-- ✅ Branch now contains ONLY proper Knapsack customizations:
-  - View overrides (GitHub issues #11, #13, #14)
-  - Defensive initializer (JSON deserialization edge case)
-  - NO submodule modifications
-  - NO upstream table changes
-- ✅ Branch ready for approval/soft launch
-- ✅ Documented why migration was wrong for future reference
-
-### Session 2026-07-29 (Previous - Build Optimization + Storage/Submodule Cleanup)
-- 🔍 Investigated why storage data was in hyrax-webapp/storage instead of ./data/storage
-- ✅ Cleared mistaken data from hyrax-webapp/storage/files
-- ✅ Created ./data/storage directory for proper bind mounting
-- ✅ Added storage cleanup step to all docker-compose initialize_app commands
-- ✅ Added google-analytics.json to .gitignore (sensitive credentials)
-- ✅ Discarded Gemfile.lock changes in hyrax-webapp submodule
-- ✅ Documented three-layer architecture (Hyrax → Hyku → Knapsack)
-- ✅ Documented submodule management and upstream contribution workflow
-- 🔍 Identified 14GB+ bloated Docker build context (hyrax-webapp runtime dirs)
-- ✅ Analyzed root cause: tmp/, storage/, spec/, docs/ not needed in production image
-- ✅ Applied `.dockerignore` exclusions: 4 directories targeting ~11GB waste
-- ✅ Reduced build context from 14GB+ to ~300-500MB (~97% reduction)
-- 🔍 Caught secondary issue: blanket `solr/` exclusion blocking security.json copy
-- ✅ Fixed `.dockerignore`: Removed overly broad `solr/` exclusion (only 84KB, config needed)
-- ✅ Pushed all changes to GitHub for Steve (2 commits)
-
-### Session 2026-07-15 (Previous - VM Deployment Issue)
-- 🔍 Investigated initialize_app container failure on VM
-- ✅ Root cause identified: Missing `exit 0` in db-migrate-seed.sh script
-- ✅ Created fix: Added explicit `exit 0` to script
-- ✅ Committed and pushed fix to `fix/facet-links-and-hide-type-facet` branch (commit: b3c1351)
-- ⏳ Next: Redeploy to VM and verify initialize_app completes successfully
-
-### Session 2026-07-14 (Previous - Production Smoke Test)
-- ✅ Identified secondary issue: SOLR_URL including collection name breaks multi-tenant creation
-- ✅ Fixed SOLR_URL in `.env.production`: Changed to `/solr/` (root only)
-- ✅ Restarted production stack with fix
-- ✅ **VERIFIED**: Admin tenant accessible and functional
-- ✅ **VERIFIED**: Created new tenant ("testing") successfully
-- ✅ **VERIFIED**: Logged into new tenant without errors
-- ✅ **VERIFIED**: Tenant Solr collections created correctly
-- ✅ **VERIFIED**: Logging working correctly in production
-- ✅ All fixes ready for VM deployment
-- ✅ Updated agent-tasks status.md with comprehensive notes
-- ✅ Marked task as completed
-
-### Session 2026-07-13 (Previous)
-- ✅ Added delegated_attributes method to Document model (Valkyrie compatibility)
-- ✅ Moved all changes from hyrax-webapp to knapsack (decorator pattern)
-- ✅ Created comprehensive task tracking structure in agent-tasks repo
-
----
-
-## Backlog
-
-### Experimental / Lower Priority
-1. **2026-06-17-MEDIUM-FEATURE-COMPLETE-OLLAMA-VISION-ALT-TEXT.md** (Backlog)
-   - Rewrite AiMetadataBehavior for Valkyrie (ActiveFedora → Valkyrie migration)
-   - Integrate vision service with Bulkrax importer
-   - Backfill existing FileSet objects with alt-text
-   - Status: Experimental; LLM not planned for core products
-   - Decision: Hold pending new AI product discussion
-
-### Clover IIIF Viewer (Testing Complete)
-1. **2026-06-17-HIGH-FEATURE-COMPLETE-CLOVER-TEST-BRANCH.md** (Completed)
-   - Clover test work committed to clover-test branch (2026-07-07)
-   - Task moved to completed folder (2026-07-08)
-   - Status: Ready for future refinement if needed
-
----
-
-## Prototype Branches Overview
-
-**clover-test**: Clover IIIF Viewer integration
-- Feature flag: `Flipflop.enabled?(:clover_viewer)`
-- Per-tenant control: Admin dashboard → Features tab
-- Status: Infrastructure ready; CSS/view debugging needed
-
-**ollama_testing**: Ollama Vision for Alt-Text
-- Model: moondream via Ollama (POST /api/generate)
-- Feature: Auto-generate archival alt-text (125 chars) for images/PDFs
-- Blocker: AiMetadataBehavior needs Valkyrie rewrite (currently uses deprecated ActiveFedora)
-- Integration: Bulkrax importer post-import hook
-
-**alt-text-views-only**: (TBD)
-- Purpose: To be documented
-
----
-
-## Task Order & Priority Notes
-
-1. **HIGH** - Clover-test: Fix featured collections grid layout first (blocking UI presentation)
-2. **MEDIUM** - Ollama_testing: Valkyrie rewrite (longer task, experimental feature)
-
-All task management lives in `/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/`
-
----
-
-## Special Warnings & Conventions
-
-- **Knapsack Pattern**: NEVER modify files in `hyrax-webapp/` directly. Use decorators in knapsack `app/`, `lib/`, or `config/initializers/`.
-- **Valkyrie Mode**: HYRAX_FLEXIBLE=true — Use Valkyrie query service for file metadata, not ActiveFedora API.
-- **Flipflop Integration**: Feature flags gracefully handle missing definitions (rescue StandardError).
-- **Asset Pipeline**: After CSS changes, restart stack with `sh down.sc.local.sh && sh up.sc.local.sh` (rebuilds images).
-
----
-
-## Session Notes
-
-### 2026-07-17 Session — Architecture Correction
-- ✅ Identified hyrax-webapp submodule was incorrectly modified with logging config
-- ✅ Reverted hyrax-webapp to original state (9fbe830d tag: v7.1.0)
-- ✅ Verified logging config is properly in main repo: `config/environments/production.rb`
-- ✅ Applied legitimate environment fixes: Solr M1/arm64 platform support, permission improvements
-- ✅ Final branch state: Facet fixes + Logging fixes + Exit code fixes + Environment improvements
-- Key lesson: hyrax-webapp is vendored gem (via submodule); customizations belong ONLY in main repo
-
-### 2026-07-08 Session
-- Verified both facet fixes on real data (testing tenant with 35 works indexed)
-- All search catalog bugs resolved (Hyku #3072)
-- Code quality: Single clean commit with 3 files changed (46 lines added)
-- Testing credentials documented in project README
-- Task management cleaned up: Clover → completed, Ollama → backlog
-- Branch `fix/facet-links-and-hide-type-facet` ready for merge to main
-
-### 2026-06-17 Session
-- Comprehensive task tracking initialized
-- Two prototype branches with detailed task specs created for local agent assignment
-- Main branch validated with pagination + featured collections features
-- Ready for distributed work via local agents
-- See projects/wvulibraries_knapsack/README.md for domain context
+## Key References
+
+- **Project README**: [/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/README.md](/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/README.md) — Domain context, setup, credentials
+- **Task Files**: [/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/](/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/) — Active, backlog, completed tasks
+- **Synthesis Reports**: [/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/summaries/](/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/summaries/) — Session results & findings
