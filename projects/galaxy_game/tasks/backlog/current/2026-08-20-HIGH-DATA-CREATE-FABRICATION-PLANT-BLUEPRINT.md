@@ -1,10 +1,11 @@
 ---
-status: completed
+status: backlog
 priority: HIGH
 type: data
 system_domain: MANUFACTURING
 mvp_alignment: SPEC_HEALTH
 local_worker_safe: true
+notes: "blueprint drafted but premature — correctly deferred to Phase 11+ per [[boil-off-mktier-storage]], git tracking violated a standing convention and was reverted, do not re-dispatch until Phase 11+ work begins."
 ---
 
 ## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
