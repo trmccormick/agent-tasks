@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: MEDIUM
 type: bug-fix
 system_domain: AI_MANAGER
@@ -35,11 +35,11 @@ the diagnosis is confirmed and reported back.
 
 # TASK: Hydrosphere composition schema inconsistency in sol-complete.json and sol.json (Titan vs Earth)
 
-**Status**: BACKLOG
+**Status**: ACTIVE
 **Priority**: MEDIUM
 **Type**: bug-fix
 **Created**: 2026-08-23
-**Last Updated**: 2026-08-23
+**Last Updated**: 2026-08-24
 
 ---
 

@@ -1,12 +1,12 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: refactor
 system_domain: AI_MANAGER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 created: 2026-05-27
-updated: 2026-08-15
+updated: 2026-08-24
 ---
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
