@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 priority: MEDIUM
 type: bug-fix
 system_domain: AI_MANAGER
