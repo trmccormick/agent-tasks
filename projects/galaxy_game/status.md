@@ -1,8 +1,33 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-24 — Implementation Agent Session (atmosphere generator bug fixed)
+**Last Updated:** 2026-08-25 — .gitignore negation-pattern fix + fabrication_plant task reversion
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🔴 Critical Fix (2026-08-25) — .gitignore Negation Pattern Purge + fabrication_plant Reversion
+
+### Issue: Agent-added negation patterns bypassed `/data/` gitignore rule
+- **Root cause**: Commit `13d7d7fd` added `!/data/json-data/blueprints/` and `!/data/json-data/schemas/` to `.gitignore`, intentionally bypassing the `/data/` exclusion rule that was designed to keep all data files out of git (backed up via Time Machine instead)
+- **Impact**: 18 blueprint JSON files were incorrectly tracked in git for months
+
+### Fix Applied:
+- Removed both negation patterns from `.gitignore`
+- Purged all 17 blueprint files + `galaxy_game_tileset.json` from git index (files remain on disk)
+- Reverted fabrication_plant blueprint commit (`cc1d5cb3` → `9cafcc34`) — it was committed via `git add -f` which violated the standing convention
+- Moved fabrication_plant task file from `completed/` back to `backlog/current/` with status=backlog and notes documenting why it's deferred
+
+### Commits:
+- `fc1a50c3` (galaxyGame): fix: remove all data/ files from git tracking, restore correct .gitignore
+- `588de210` (galaxyGame): fix: remove galaxy_game_tileset.json from git tracking
+- `7191168` (agent-tasks): Revert fabrication_plant task to backlog
+
+### Verification:
+- `git ls-files --cached data/` → **0 files** (was 18)
+- `.gitignore` now correctly excludes all of `./data/` with no negation patterns
+
+---
 > 
 > **ARCHIVED:** All entries from 2026-07-09 through 2026-08-02 moved to
 > `status_archive/` folder.
@@ -84,7 +109,7 @@ All active tasks cleared. Two completions today:
 | Task | Location | Notes |
 |------|----------|-------|
 | **Epoxy Resin Blueprint** | `backlog/phase10-venus/2026-08-20-HIGH-DATA-CREATE-EPOXY-RESIN-BLUEPRINT.md` | READY — next dispatch item |
-| **Fabrication Plant Blueprint** | `backlog/current/2026-08-20-HIGH-DATA-CREATE-FABRICATION-PLANT-BLUEPRINT.md` | DEFERRED (Phase 11+) |
+| **Fabrication Plant Blueprint** | `backlog/current/2026-08-20-HIGH-DATA-CREATE-FABRICATION-PLANT-BLUEPRINT.md` | DEFERRED (Phase 11+) — blueprint drafted but premature; git tracking violated standing convention and was reverted; do not re-dispatch until Phase 11+ work begins |
 | **Orbital Mechanics Data Layer** | `backlog/current/2026-08-19-HIGH-FEATURE-ORBITAL-MECHANICS-DATA-LAYER.md` | Phase 1-4 complete, Phase 5 pending |
 | **Launch Window + Transit Timing Engine** | `backlog/current/2026-08-18-HIGH-FEATURE-LAUNCH-WINDOW-TRANSIT-TIMING-ENGINE.md` | Architecture feature |
 
