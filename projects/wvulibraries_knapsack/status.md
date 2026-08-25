@@ -139,3 +139,4 @@ Historical work from 2026-08-03 and earlier has been archived to keep status.md 
 - **Project README**: [/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/README.md](/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/README.md) — Domain context, setup, credentials
 - **Task Files**: [/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/](/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/) — Active, backlog, completed tasks
 - **Synthesis Reports**: [/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/summaries/](/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/summaries/) — Session results & findings
+✅ Facet limiting on filtered results verified — all 6 facets show max 5 items when filters applied (confirmed via HTML rendering analysis)
