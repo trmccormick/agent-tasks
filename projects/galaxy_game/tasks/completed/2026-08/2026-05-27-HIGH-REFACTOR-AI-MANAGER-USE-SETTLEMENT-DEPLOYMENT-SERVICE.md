@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: refactor
 system_domain: AI_MANAGER
@@ -255,14 +255,32 @@ git push
 ---
 
 ## Completion Report
-**Completed by**:
-**Completion date**:
-**Final test result**:
+**Completed by**: Implementation Agent (synthesis analysis)
+**Completion date**: 2026-08-24
+**Final test result**: N/A — no code changes made
 
 ### What was changed
+None. The task premise was architecturally incorrect.
+
 ### Issues discovered
+The original task assumed all 3 `BaseSettlement.create!` call sites should use `SettlementDeploymentService.establish_from_craft`. Analysis confirmed:
+
+1. **manager.rb** — lava tube exploration plan creates settlement from lavatube + plan (no craft in scope). This is a distinct pre-deployment flow.
+2. **system_architect.rb** — direct habitat deployment on celestial body (no craft in scope). This is a bootstrap operation.
+3. **task_execution_engine_v2.rb** — temporary settlement + location creation from scratch (no craft in scope). This is a test/bootstrap pattern.
+
+`SettlementDeploymentService.establish_from_craft` is correctly scoped to craft-based deployment only (landing craft arrives with cargo → verify → create settlement → deploy units → transfer cargo). None of the 3 sites have a craft object in scope.
+
+The task's acceptance criteria ("All 3 replaced with establish_from_craft") cannot be met because it would require fabricating craft objects where none exist.
+
 ### Follow-up tasks needed
+None filed per instructions. If additional settlement creation primitives are needed (e.g., `establish_from_plan`, `establish_direct`), they should be scoped and dispatched separately.
+
 ### Lessons learned
+- Architecture docs can define a "canonical" primitive that doesn't cover all use cases — always verify variable availability at each call site before assuming replacement is possible.
+- The stop condition "craft or location not available at call site — do not fabricate, flag and stop" was the correct guardrail. This task should have been closed during synthesis rather than proceeding to implementation.
+
+Full evidence: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/2026-08-24-SYNTHESIS-AI-MANAGER-SETTLEMENT-DEPLOYMENT.md`
 
 ---
 
