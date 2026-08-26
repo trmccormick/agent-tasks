@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-25 — .gitignore negation-pattern fix + fabrication_plant task reversion
+**Last Updated:** 2026-08-25 — .gitignore negation-pattern fix + fabrication_plant reversion + hydrosphere research completion
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -26,6 +26,18 @@
 ### Verification:
 - `git ls-files --cached data/` → **0 files** (was 18)
 - `.gitignore` now correctly excludes all of `./data/` with no negation patterns
+
+---
+
+## ✅ Just Completed (2026-08-25)
+
+### Hydrosphere Composition Schema Consistency Research ✅
+- **Finding**: No bug — `system_builder_service.rb` normalizer (lines 537-542) already handles both array-of-objects and flat-object composition shapes at load time
+- **Inventory**: 30 bodies across sol-complete.json (20) and sol.json (10); only Earth uses array format, all others use flat object or empty `{}`
+- **Mars confirmed**: No `hydrosphere_attributes` field at all — water data is in geosphere, outside this schema's scope
+- **Synthesis report**: `projects/galaxy_game/summaries/2026-08-23-RESEARCH-HYDROSPHERE-COMPOSITION-SCHEMA.md`
+- **Task file**: moved to completed/2026-08/ in agent-tasks repo
+- **Commits**: `df3ca76` (agent-tasks)
 
 ---
 > 
