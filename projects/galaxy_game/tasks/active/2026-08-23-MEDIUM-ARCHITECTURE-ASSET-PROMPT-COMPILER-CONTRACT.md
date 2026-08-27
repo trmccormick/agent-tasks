@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 priority: MEDIUM
 type: architecture
 system_domain: ASSET_PIPELINE
@@ -147,5 +147,8 @@ NOT a v1 requirement (depends on version tracking, which is v2). Note as future 
 - component_blueprint.json gap: confirmed no instances exist; contract establishes the pattern
 - Contract committed as docs/reference/asset-generation/ASSET_PROMPT_COMPILER_CONTRACT.md (commit 01b53665)
 
+**Git-hygiene note**: The task file's status change (backlog → active) was bundled inside commit `5ee70c1` labeled "Complete fabrication_plant blueprint task" — a different task's commit message. File state is correct; only the commit label is misleading. No action needed (rewriting history carries more risk than the cosmetic issue is worth).
+
 ## Handoff Summary
+Task closed. Contract drafted and committed (01b53665). Ready for strategist review before v1 implementation task is filed.
 Contract drafted and committed. Ready for strategist review before v1 implementation task is filed.
