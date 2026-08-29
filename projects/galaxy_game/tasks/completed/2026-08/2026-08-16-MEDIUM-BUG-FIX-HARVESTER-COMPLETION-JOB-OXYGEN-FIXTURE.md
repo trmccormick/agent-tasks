@@ -1,12 +1,12 @@
 ---
-status: active
+status: completed
 priority: MEDIUM
 type: bug-fix
 system_domain: AI_MANAGER
 mvp_alignment: ISRU_PRODUCTION
 local_worker_safe: true
 created: 2026-08-16
-updated: 2026-08-23
+updated: 2026-08-27
 estimated_effort: 30-45 min (test-only fix)
 blocker_for: []
 depends_on: []
@@ -26,21 +26,18 @@ depends_on: []
 
 **Test Result:** ✅ 20 examples, 0 failures (no regressions)
 
-### What Remains Open — Priority #1: Oxygen Chain-Tracing
+### ✅ Priority #1 RESOLVED (2026-08-27)
 
-**This task is NOT fully resolved.** The fixture bug was a test-side issue that masked a deeper architectural question:
+**Resolution:** The structural gap in `can_harvest_locally?` was fixed by task `2026-08-24-MEDIUM-FIX-CAN-HARVEST-LOCALLY.md`.
 
-> **Does raw_regolith ever route through TEU → PVE to produce O2 for an oxygen-triggered escalation order?**
+The fix adds:
+1. **CO2 atmospheric case** — Mars's ~95% CO2 atmosphere is now trivially harvestable (parallel to N2)
+2. **O2 ISRU gate** — For bodies without atmospheric O2 (Luna, Mars), O2 credit now requires deployed TEU/PVE units
 
-Per the synthesis report (`summaries/2026-08-22-BUG-FIX-OXYGEN-FIXTURE-ITEM-9.md`):
-> "This fix confirms a harvester can deliver raw_regolith to a settlement with adequate storage. It does NOT confirm that raw_regolith is ever routed through TEU → PVE to produce O2 for an oxygen-triggered escalation order. That question is still open and is NOT resolved by this task. Do not mark Priority #1 (oxygen chain-tracing) as closed based on this fix."
+**Synthesis report:** `summaries/2026-08-27-SYNTHESIS-CAN-HARVEST-LOCALLY-FIX.md`
+**Test results:** 49 examples, 0 failures (all existing + 5 new specs pass)
 
-**Ryzen diagnostic findings:**
-- `HarvesterCompletionJob` has no TEU/PVE routing — it only adds `order.resource` to inventory
-- `EscalationService.can_harvest_locally?` grants direct O2 credit purely from atmosphere gas presence with no ISRU-infrastructure check
-- The oxygen pathway (regolith → PVE → O2) is never actually wired through the escalation system
-
-**Next action:** Separate task needed to trace whether EscalationService correctly routes oxygen-shortage orders through ISRU production (PVE/TEU) or incorrectly credits atmosphere gas as available oxygen.
+The oxygen-fixture task is now fully resolved. Both the fixture bug (Item #9) and Priority #1 (oxygen chain-tracing via ISRU gate) are closed.
 
 ---
 
