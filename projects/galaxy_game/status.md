@@ -1,43 +1,24 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-25 — .gitignore negation-pattern fix + fabrication_plant reversion + hydrosphere research completion
+**Last Updated:** 2026-08-28 — can_harvest_locally? fix (CO2 case + ISRU gate) + cleanup pass
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🔴 Critical Fix (2026-08-25) — .gitignore Negation Pattern Purge + fabrication_plant Reversion
+## 🔴 Cleanup Pass (2026-08-28)
 
-### Issue: Agent-added negation patterns bypassed `/data/` gitignore rule
-- **Root cause**: Commit `13d7d7fd` added `!/data/json-data/blueprints/` and `!/data/json-data/schemas/` to `.gitignore`, intentionally bypassing the `/data/` exclusion rule that was designed to keep all data files out of git (backed up via Time Machine instead)
-- **Impact**: 18 blueprint JSON files were incorrectly tracked in git for months
+### Stale File Purge
+- Deleted stale fabrication_plant task file from active/ (already reverted to backlog/current/ in 2026-08-25)
+- Moved completed Asset Prompt Compiler Contract from active/ → completed/ (status was corrected but file never moved)
+- Moved oxygen-fixture task from active/ → completed/ (Priority #1 resolved by can_harvest_locally fix)
 
-### Fix Applied:
-- Removed both negation patterns from `.gitignore`
-- Purged all 17 blueprint files + `galaxy_game_tileset.json` from git index (files remain on disk)
-- Reverted fabrication_plant blueprint commit (`cc1d5cb3` → `9cafcc34`) — it was committed via `git add -f` which violated the standing convention
-- Moved fabrication_plant task file from `completed/` back to `backlog/current/` with status=backlog and notes documenting why it's deferred
-
-### Commits:
-- `fc1a50c3` (galaxyGame): fix: remove all data/ files from git tracking, restore correct .gitignore
-- `588de210` (galaxyGame): fix: remove galaxy_game_tileset.json from git tracking
-- `7191168` (agent-tasks): Revert fabrication_plant task to backlog
-
-### Verification:
-- `git ls-files --cached data/` → **0 files** (was 18)
-- `.gitignore` now correctly excludes all of `./data/` with no negation patterns
-
----
-
-## ✅ Just Completed (2026-08-25)
-
-### Hydrosphere Composition Schema Consistency Research ✅
-- **Finding**: No bug — `system_builder_service.rb` normalizer (lines 537-542) already handles both array-of-objects and flat-object composition shapes at load time
-- **Inventory**: 30 bodies across sol-complete.json (20) and sol.json (10); only Earth uses array format, all others use flat object or empty `{}`
-- **Mars confirmed**: No `hydrosphere_attributes` field at all — water data is in geosphere, outside this schema's scope
-- **Synthesis report**: `projects/galaxy_game/summaries/2026-08-23-RESEARCH-HYDROSPHERE-COMPOSITION-SCHEMA.md`
-- **Task file**: moved to completed/2026-08/ in agent-tasks repo
-- **Commits**: `df3ca76` (agent-tasks)
+### can_harvest_locally? Fix — COMPLETED ✅
+- **CO2 case**: Added as trivially-harvestable atmospheric case (parallel to N2)
+- **O2 ISRU gate**: For bodies without atmospheric O2, now requires deployed TEU/PVE units before granting credit
+- **Specs**: 49 examples, 0 failures (5 new + 44 existing)
+- **Synthesis report**: `projects/galaxy_game/summaries/2026-08-27-SYNTHESIS-CAN-HARVEST-LOCALLY-FIX.md`
+- **Commits**: `c2eba47`, `d1e1100`, `5d0122e` (agent-tasks)
 
 ---
 > 
@@ -46,11 +27,30 @@
 
 ---
 
-## 📋 Active Tasks: 0 ✅
+## 📋 Active Tasks: 1 ⚠️
 
-All active tasks cleared. Two completions today:
-1. Luna oxygen fixture test (material type lookup fix)
-2. Material thermal properties data gap (stale backup removal)
+| Task | Location | Notes |
+|------|----------|-------|
+| **Lookup Service Caching Pattern** | `tasks/active/2026-07-30-MEDIUM-REFACTOR-LOOKUP-SERVICE-CACHING-PATTERN.md` | Sitting since 2026-07-30 — needs review/dispatch or defer |
+
+> **Note**: All oxygen-fixture, can_harvest_locally, fabrication_plant, and asset-prompt-contract tasks are now correctly in completed/.
+
+---
+
+## ✅ Just Completed (2026-08-28)
+
+### can_harvest_locally? Fix — CO2 Case + ISRU Gate for O2 ✅
+- **CO2**: Added as trivially-harvestable atmospheric case (parallel to N2)
+- **O2**: Now requires deployed TEU/PVE units on bodies without atmospheric O2
+- **Specs**: 49 examples, 0 failures
+- **Task file**: moved to completed/2026-08/
+- **Commits**: `c2eba47`, `d1e1100`, `5d0122e` (agent-tasks)
+
+### Oxygen-Fixture Task — Fully Closed ✅
+- Priority #1 (oxygen chain-tracing) resolved by can_harvest_locally? fix above
+- Fixture bug (Item #9) was fixed in 34542440
+- **Task file**: moved to completed/2026-08/
+- **Commits**: `d1e1100`, `5d0122e` (agent-tasks)
 
 ---
 
