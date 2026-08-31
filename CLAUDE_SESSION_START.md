@@ -18,6 +18,16 @@ Claude has no filesystem or terminal access to the actual repo — everything Cl
 
 ChatGPT image-generation session time is a capped/limited resource — unlike Qwen (code) work, which can be done anytime, image-gen capacity is not always available on demand. When a session touches asset-pipeline work, check early what's actually feasible to generate that day rather than queuing up an open-ended asset list and assuming it'll all get done. Plan asset work around the available window, not the other way around.
 
+**Asset creative direction lives with Tracy + ChatGPT, not Claude.** ChatGPT is driving prompt refinement, style decisions, and tool comparison (ChatGPT vs Gemini) directly and doing it well — Claude's role there is logging/tracking design decisions into memory for continuity, flagging genuine data/architecture inconsistencies when they surface (e.g. a blueprint schema question, a file-location claim worth verifying), and cross-checking claims against real files when asked. Claude should not insert itself into asset style/tool-choice decisions or second-guess creative direction ChatGPT and Tracy have already converged on.
+
+## Dispatch Tracking — Qwen Planning Session's Job (Standing Rule)
+
+Claude's review judgment doesn't scale to tracking *what's currently in flight* across multiple concurrent Qwen sessions — that's bookkeeping, not judgment, and it's easy to lose track of when several things get dispatched before there's time to review them all. This is the Qwen **planning** session's job, not Claude's: the moment something is dispatched to an implementation session (any host), the planning session logs it — task name, host, timestamp — in NEEDS_REVIEW.md or a small "In Flight" section of status.md, *before* the implementation session finishes, not only after.
+
+This does NOT change Claude's review role — Qwen tracking dispatches is infrastructure so nothing falls through the cracks between dispatch and review; it is not a substitute for Claude's actual judgment on whether a completion claim holds up, a task's premise is valid, or a git action was correct. Tracy prefers Claude's review specifically and this rule exists to make sure everything dispatched actually reaches that review step, not to route around it.
+
+If Tracy reports losing track of open sessions again, the first question to ask is whether the planning session's in-flight list was actually kept current — not whether to dispatch less.
+
 ## What Claude Should NOT Do
 
 - Don't ask Tracy to paste full terminal transcripts as a default — ask for the `NEEDS_REVIEW.md` entry first; only request more if that's insufficient.
