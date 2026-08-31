@@ -113,3 +113,13 @@ Near-identical names, different directories — unclear if these represent the s
 **What I already checked**: Verified stub code at `procedural_generator.rb:1385-1402`, confirmed 18+12=30 examples across both spec files via dry-run RSpec, zero Topaz hits in app/, sol-complete.json values confirmed correct. No missing test recovery possible (git history shows specs were created in commits d59613a0/7d0b2309/2cbabf41 with no 40-example version).
 **What needs a second opinion**: Resolved — re-scoped task `2026-08-15-HIGH-FIX-MAGNETOSPHERE-STUB-CALCULATION.md` drafted with real sigmoid implementation, 11 new tests (including baseline=1.0 edge case), corrected continuity test, and fill-in-only completion report template requiring pasted command output. Dispatch approved by coordination review; Tracy holding assignment for later session.
 **Status**: **RESOLVED (2026-08-15, re-scoped task drafted and dispatch-approved)**
+
+### 2026-08-30 — IN FLIGHT: Live Game-Loop Reality Check (dispatched)
+**Task**: `2026-08-29-HIGH-ARCHITECTURE-LIVE-GAME-LOOP-REALITY-CHECK.md`
+**Dispatched to**: Qwen local (Copilot) — per task file Agent Assignment
+**Dispatched at**: 2026-08-30 (confirmed by Tracy + Claude)
+**Status**: ACTIVE — executing agent has completed Step 0 (file moved to `active/`, status updated)
+**Scope**: Read-only research — 6 questions about whether a real live game-loop mechanism exists (Game#advance_by_days side effects, scheduled jobs, craft transit state machine, asset wiring for precursor/GCC-sat/Venus-skimmer, PSR ice mining, raw-vs-processed gas storage)
+**Blocks**: Event log / admin UI game-status view; ice-mining/PSR mine fixes; Venus skimmer mechanics work (all deliberately held pending this task's findings)
+**Expected output**: Findings doc in `projects/galaxy_game/summaries/` with file:line evidence for all 6 questions; NO code changes
+**Review gate**: Claude to review findings before any follow-on work is scoped
