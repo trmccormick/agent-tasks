@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: testing
 system_domain: OTHER

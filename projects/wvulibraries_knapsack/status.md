@@ -27,27 +27,21 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 
 ---
 
-## 🔄 2026-08-25 — Catalog Facet Limiting HTML Validation (IN PROGRESS)
+## ✅ 2026-08-25 — Catalog Facet Limiting HTML Validation (COMPLETE)
 
 **Objective**: Confirm facet limiting works on actual HTML catalog page (not just code analysis).
 
 **Status**: 
 - ✅ Code implementation committed and ready
-- ✅ Task file created for Qwen: `2026-08-25-HIGH-BUGFIX-FACET-LIMITING-HTML-CATALOG-TEST.md` (in active/)
-- 🟡 **Awaiting Qwen execution**: Test HTML catalog page on local Stack Car
+- ✅ Task file created for Qwen: `2026-08-25-HIGH-BUGFIX-FACET-LIMITING-HTML-CATALOG-TEST.md` (in completed/)
+- ✅ **Qwen execution complete** — All tests passed on local Stack Car
 
-**What Qwen Will Test**:
-1. Switch to fix branch, update submodule to Kirk Wang's latest
-2. Rebuild Stack Car stack
-3. Load https://demo-wvu-knapsack.localhost.direct/catalog?locale=en
-4. Verify facets show max 5 items + "More" link
-5. Test "More" link functionality
-
-**Acceptance Criteria**:
-- Facets display exactly 5 items + "More" link when > 5 exist
-- No errors in browser console or Rails logs
-- "More" links navigate to full facet list
-- All facets (Creator, Subject, Location, etc.) respect limit
+## Results from Qwen Testing:
+1. ✅ Facets display exactly 5 items with "More" link where >5 exist
+2. ✅ No errors in browser or Rails logs
+3. ✅ "More" links present and functional for Creator & Subject facets
+4. ✅ All 6 facet fields respect the `limit: 5` configuration
+5. ✅ Facet limiting enforced at Solr request level (not just display)
 
 **Code Ready for Testing**:
 - **CatalogSearchBuilderWrapper**: Adds Solr-level `f.{field_name}.facet.limit` params (17 lines)
@@ -55,12 +49,12 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 - **Initializer**: Ensures decorator applied at correct Rails initialization time (after_initialize)
 - **Pattern**: Proven working (HomepageSearchBuilderWrapper works on homepage)
 
-**Synthesis Report Location** (where Qwen will save results):
-`/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/summaries/2026-08-25-FACET-LIMITING-HTML-TEST-RESULTS.md`
+**Synthesis Report**: 
+`projects/wvulibraries_knapsack/summaries/2026-08-25-FACET-LIMITING-HTML-TEST-RESULTS.md`
 
 ---
 
-## ✅ 2026-08-25 — Pagination Error Root Cause Investigation (COMPLETE)
+## ✅ 2026-08-25 — Catalog Facet Limiting HTML Validation (COMPLETE)
 
 **Issue**: `Kaminari::ZeroPerPageOperation` error on `/catalog.json` (JSON API)
 
@@ -145,3 +139,4 @@ Historical work from 2026-08-03 and earlier has been archived to keep status.md 
 - **Project README**: [/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/README.md](/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/README.md) — Domain context, setup, credentials
 - **Task Files**: [/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/](/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/) — Active, backlog, completed tasks
 - **Synthesis Reports**: [/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/summaries/](/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/summaries/) — Session results & findings
+✅ Facet limiting on filtered results verified — all 6 facets show max 5 items when filters applied (confirmed via HTML rendering analysis)
