@@ -3,7 +3,7 @@ Session Handoff — Galaxy Game — 2026-07-28 (evening)
 ## Closed this session
 
 1. **TerraSim vs UI biome-classification investigation drafted and filed** — NEW TASK, not yet started.
-   Follow-up to the 2026-07-17 elevation-in-biome-classification research (which found `surface_view.js` computes biome client-side from raw lat/elevation, with no elevation adjustment). Review surfaced a deeper architectural question: is the client independently recomputing biome, or is it meant to render whatever TerraSim already decided? Filed as a trace-only research task (no code changes) to `backlog/research/2026-07-28-HIGH-RESEARCH-TERRASIM-UI-BIOME-DATAFLOW.md`. Explicitly blocks any future elevation-implementation task until it resolves which of two scenarios applies (duplicate logic vs. TerraSim never exported biome at all). **Correction note**: `backlog/` uses phase folders (`current`, `design`, `deferred-cleanup`, `drafts`, `procedural_generation`, `research`, `superseded`, `ui`, `ai-manager`), not month-dated folders — earlier draft of this task had a wrong `backlog/2026-07/` path, corrected before handoff.
+   Follow-up to the 2026-07-17 elevation-in-biome-classification research (which found `surface_view.js` computes biome client-side from raw lat/elevation, with no elevation adjustment). Review surfaced a deeper architectural question: is the client independently recomputing biome, or is it meant to render whatever TerraSim already decided? Filed as a trace-only research task (no code changes) to `backlog/research/2026-07-28-HIGH-RESEARCH-TERRASIM-UI-BIOME-DATAFLOW.md`. Explicitly blocks any future elevation-implementation task until it resolves which of two scenarios applies (duplicate logic vs. TerraSim never exported biome at all). **Correction note**: `backlog/` uses phase folders (`current`, `design`, `deferred-cleanup`, `drafts`, `procedural_generation`, `research`, `superseded`, `ui`), not month-dated folders — earlier draft of this task had a wrong `backlog/2026-07/` path, corrected before handoff.
 
 2. **Elevation-in-biome-classification research task (2026-07-17) closed properly.**
    Was left stranded in `active/` after completion — moved to `completed/2026-07/` this session, verified single copy via `find`.
@@ -37,7 +37,7 @@ Session Handoff — Galaxy Game — 2026-07-28 (evening)
 
 ## New standing facts from this session
 
-- `backlog/` folder structure is phase-based (`current`, `design`, `deferred-cleanup`, `drafts`, `procedural_generation`, `research`, `superseded`, `ui`, `ai-manager`), not month-dated. Filed to memory to avoid repeating the wrong-path mistake.
+- `backlog/` folder structure is phase-based (`current`, `design`, `deferred-cleanup`, `drafts`, `procedural_generation`, `research`, `superseded`, `ui`), not month-dated. Filed to memory to avoid repeating the wrong-path mistake.
 - ChatGPT session time for asset-generation work is a limited resource — plan the highest-value thing to do before the session starts, don't design speculative future systems live (Render/Material Profiles were correctly deferred for this reason).
 - Cross-repo doc moves (agent-tasks ↔ galaxyGame) don't preserve git history — treat as delete-in-one/add-in-other with a provenance note in both commit messages, not a `git mv`.
 

@@ -182,6 +182,19 @@ Every task follows this exact path:
 backlog/ → active/ → (work happens) → completed/
 ```
 
+**Backlog Subfolders** — Tasks are organized by phase/purpose, NOT date:
+- `current` — Active backlog queue for current development cycle
+- `design` — Architectural design tasks and system-level decisions
+- `deferred-cleanup` — Non-critical tech debt and cleanup work
+- `drafts` — Task concepts under initial drafting (not yet ready)
+- `procedural_generation` — Terrain/content generation research and implementation
+- `research` — Investigation tasks (traces, audits, feasibility studies)
+- `superseded` — Tasks that are no longer valid (historical archive)
+- `ui` — User interface and front-end development work
+- `ai-manager` — AI Manager architecture and coordination (created 2026-09-01)
+
+**Note**: This list is deliberately maintained. New subfolders may be added for distinct work domains, but `backlog/` does NOT use date-based folders.
+
 **Moving task files — use the correct method based on tracking status:**
 
 ```bash
