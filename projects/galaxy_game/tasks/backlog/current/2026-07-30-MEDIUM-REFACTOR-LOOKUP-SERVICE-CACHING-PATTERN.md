@@ -1,12 +1,13 @@
 ---
-status: active
+status: backlog
 priority: MEDIUM
 type: refactor
 system_domain: AI_MANAGER | MANUFACTURING | TERRA_SIM | OTHER
 mvp_alignment: SPEC_HEALTH | OTHER
 local_worker_safe: true
 created: 2026-07-30
-last_updated: 2026-08-08
+last_updated: 2026-09-02
+# Deferred 2026-09-02: moved back from active/ (untouched since 08-08, no urgency, enough in flight).
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
 
