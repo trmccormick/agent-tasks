@@ -1,8 +1,30 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-08-28 — can_harvest_locally? fix (CO2 case + ISRU gate) + cleanup pass
+**Last Updated:** 2026-09-02 — I-beam blueprint task superseded (already existed) + live-game-loop reality check moved to completed + material sourcing convention documented
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🔴 Recent Closures (2026-09-01–02)
+
+### I-beam Mk1 Blueprint Task — SUPERSEDED ✅
+- **Task**: `2026-08-24-MEDIUM-DATA-FIRST-COMPONENT-BLUEPRINT-LUNAR-IBEAM-MK1.md`
+- **Reason**: Premise was stale — Mk1–Mk5 blueprints already existed on disk (Apr 27 / May 4 timestamps) before this task was drafted. No new blueprint created.
+- **Action**: Moved to `tasks/superseded/`, status field updated, completion report filled with superseded explanation + verified file list
+- **Existing files intact**: `3d_printed_ibeam_mk1_bp.json` through `mk5_bp.json` (all unmodified, gitignored under `/data/`)
+- **Commit**: `251fcd4` (agent-tasks)
+
+### Live Game Loop Reality Check — COMPLETED ✅
+- **Task**: `2026-08-29-HIGH-ARCHITECTURE-LIVE-GAME-LOOP-REALITY-CHECK.md`
+- **Status**: Research findings documented in summaries/
+- **Action**: Moved to `tasks/completed/2026-08/`
+- **Commit**: (via agent-tasks)
+
+### Material Sourcing Convention — DOCUMENTED ✅
+- **Convention**: Material JSON files must keep sourcing/production info generic — no hardcoded "Earth import" or specific origin chains
+- **Why**: Materials can be sourced from any settlement that produces them later; supply chain provenance belongs in logistics/ordering layer, not material definition
+- **Documented in**: `/memories/repo/material_sourcing_convention.md`
 
 ---
 
@@ -116,6 +138,12 @@
 ---
 
 ## 📋 Current Backlog — Ready for Dispatch
+
+### 🆕 Asset/UI Workstream (2026-09-01) — HELD / READY FOR REVIEW
+| Task | Location | Notes |
+|------|----------|-------|
+| **Asset/UI Tasks A1–A6, B1–B3, C1–C5, D1–D3** (17 files) | `backlog/current/2026-08-31-*-ASSET-UI-*.md` | Created, content-verified, prerequisite gaps fixed. Undispatched. A1 is the natural starting point. |
+
 
 ### HIGH Priority
 | Task | Location | Notes |
