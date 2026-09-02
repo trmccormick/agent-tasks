@@ -1,10 +1,11 @@
 ---
-status: backlog
+status: superseded
 priority: MEDIUM
 type: data
 system_domain: ASSET_PIPELINE
 mvp_alignment: OTHER
 local_worker_safe: true
+superseded_reason: "component_blueprint.json instances for the Lunar I-Beam (Mk1-Mk5) already existed as of the 2026-08-24 filesystem audit, prior to this task being drafted"
 ---
 
 ## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
@@ -204,7 +205,18 @@ RISK: [anything uncertain]
 ---
 
 ## Completion Report
-*Filled in by the implementing agent after completion*
+**Status**: SUPERSEDED (closed 2026-09-01)
+
+Superseded — component_blueprint.json instances for the Lunar I-Beam (Mk1-Mk5) already existed as of the 2026-08-24 filesystem audit, prior to this task being drafted. This task's "zero instances exist" premise was incorrect. No new blueprint was created. See the 2026-08-24 audit for the existing files' actual state (some real data gaps noted there — Mk3 broken waste_products, Mk1-3 missing physical dimensions — but that's a separate follow-up, not this task).
+
+**Existing files verified intact (2026-09-01)**:
+- `data/json-data/blueprints/components/structural/3d_printed_ibeam_mk1_bp.json` (2385 bytes, Apr 27)
+- `data/json-data/blueprints/components/structural/3d_printed_ibeam_mk2_bp.json` (2903 bytes, Apr 27)
+- `data/json-data/blueprints/components/structural/3d_printed_ibeam_mk3_bp.json` (3069 bytes, Apr 27)
+- `data/json-data/blueprints/components/structural/3d_printed_ibeam_mk4_bp.json` (1744 bytes, May 4)
+- `data/json-data/blueprints/components/structural/3d_printed_ibeam_mk5_bp.json` (2017 bytes, May 4)
+
+All five files are unmodified (git status clean; files are gitignored under `/data/`). Step 0's git mv only affected this task file in the agent-tasks repo — no galaxyGame data files were touched.
 
 ## Handoff Summary
-*Filled in at end of session*
+HANDOFF SUMMARY: Task closed as SUPERSEDED | I-beam Mk1-Mk5 blueprints already existed (verified intact) | No new blueprint created | Follow-up: audit existing files for noted data gaps (Mk3 waste_products, Mk1-3 dimensions)
