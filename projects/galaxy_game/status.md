@@ -155,7 +155,8 @@
 ### HIGH Priority
 | Task | Location | Notes |
 |------|----------|-------|
-| ~~**Epoxy Resin Blueprint**~~ | `completed/2026-08/2026-08-20-HIGH-DATA-CREATE-EPOXY-RESIN-BLUEPRINT.md` | ✅ COMPLETED (blueprint created) — but sourcing is a flat single-source string + empty production block; **rework task filed** → `backlog/current/2026-09-02-HIGH-DATA-REWORK-EPOXY-RESIN-SOURCING-STRUCTURE.md` (HELD for review) |
+| ~~**Epoxy Resin Blueprint**~~ | `completed/2026-08/2026-08-20-HIGH-DATA-CREATE-EPOXY-RESIN-BLUEPRINT.md` | ✅ COMPLETED (blueprint created) — sourcing structure insufficient; see rework task below |
+| **Epoxy Resin Sourcing Rework** | `backlog/current/2026-09-02-HIGH-DATA-REWORK-EPOXY-RESIN-SOURCING-STRUCTURE.md` | 🆕 HELD for review — rework flat-string sourcing to per-location structure + add production path placeholder; follows existing `regolith_composite.json` pattern |
 | **Fabrication Plant Blueprint** | `backlog/current/2026-08-20-HIGH-DATA-CREATE-FABRICATION-PLANT-BLUEPRINT.md` | DEFERRED (Phase 11+) — blueprint drafted but premature; git tracking violated standing convention and was reverted; do not re-dispatch until Phase 11+ work begins |
 | **Orbital Mechanics Data Layer** | `backlog/current/2026-08-19-HIGH-FEATURE-ORBITAL-MECHANICS-DATA-LAYER.md` | Phase 1-4 complete, Phase 5 pending |
 | **Launch Window + Transit Timing Engine** | `backlog/current/2026-08-18-HIGH-FEATURE-LAUNCH-WINDOW-TRANSIT-TIMING-ENGINE.md` | Architecture feature |
@@ -199,11 +200,11 @@
 ## 🎯 Priority Queue for Next Session
 
 ### Must Do First:
-1. ~~**Dispatch epoxy_resin blueprint**~~ — ✅ COMPLETED
+1. ~~**Dispatch epoxy_resin blueprint**~~ — ✅ COMPLETED (blueprint created) — **rework task filed** (sourcing structure insufficient), HELD for review
 
 ### Ready to Dispatch (No Sign-off Needed):
-2. **Orbital Mechanics Data Layer Phase 5** — TransitEngine integration pending
-3. **Launch Window + Transit Timing Engine** — Architecture feature, backlog
+2. **Orbital Mechanics Data Layer Phase 5** — TransitEngine integration pending (needs verification pass first — see task file)
+3. **Launch Window + Transit Timing Engine** — Architecture feature, backlog (must complete before Orbital Phase 5)
 4. **MEDIUM bug fixes** (08-16/17) — Atmosphere generator nil
 
 ### Do NOT Touch This Session:
