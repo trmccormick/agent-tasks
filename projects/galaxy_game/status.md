@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-02 — I-beam blueprint task superseded (already existed) + live-game-loop reality check moved to completed + material sourcing convention documented
+**Last Updated:** 2026-09-02 — I-beam task superseded + live-game-loop moved to completed + material sourcing convention documented + backlog folder structure canonicalized in GUARDRAILS.md
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -25,6 +25,13 @@
 - **Convention**: Material JSON files must keep sourcing/production info generic — no hardcoded "Earth import" or specific origin chains
 - **Why**: Materials can be sourced from any settlement that produces them later; supply chain provenance belongs in logistics/ordering layer, not material definition
 - **Documented in**: `/memories/repo/material_sourcing_convention.md`
+
+### Backlog Folder Structure — CANONICALIZED ✅
+- **Work**: Added canonical list of backlog subfolders to GUARDRAILS.md Rule 12
+- **Folders**: `current`, `design`, `deferred-cleanup`, `drafts`, `procedural_generation`, `research`, `superseded`, `ui`, `ai-manager`
+- **Note**: List is deliberately maintained; NOT date-based. New subfolders added for distinct work domains as needed.
+- **ai-manager context**: Coordination lane for AI Manager architecture/design (created 2026-09-01)
+- **Commit**: `a28afbf` (agent-tasks) — also reverted 2026-07-28-EVENING-HANDOFF.md to historical state (no retroactive additions)
 
 ---
 
