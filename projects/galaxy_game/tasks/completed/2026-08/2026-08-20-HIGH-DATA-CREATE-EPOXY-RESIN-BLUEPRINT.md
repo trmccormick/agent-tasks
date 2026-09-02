@@ -1,10 +1,13 @@
 ---
-status: backlog
+status: completed
 priority: HIGH
 type: data
 system_domain: MANUFACTURING
 mvp_alignment: SPEC_HEALTH
 local_worker_safe: true
+completed: 2026-08-20
+# NOTE: Blueprint created but sourcing structure is a flat single-source string.
+# Rework task filed: 2026-09-02-HIGH-DATA-REWORK-EPOXY-RESIN-SOURCING-STRUCTURE.md
 ---
 
 ## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)

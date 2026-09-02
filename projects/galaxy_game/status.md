@@ -155,7 +155,7 @@
 ### HIGH Priority
 | Task | Location | Notes |
 |------|----------|-------|
-| ~~**Epoxy Resin Blueprint**~~ | ~~`backlog/phase10-venus/2026-08-20-HIGH-DATA-CREATE-EPOXY-RESIN-BLUEPRINT.md`~~ | ✅ COMPLETED — blueprint created, aligned with graphene_composite inputs |
+| ~~**Epoxy Resin Blueprint**~~ | `completed/2026-08/2026-08-20-HIGH-DATA-CREATE-EPOXY-RESIN-BLUEPRINT.md` | ✅ COMPLETED (blueprint created) — but sourcing is a flat single-source string + empty production block; **rework task filed** → `backlog/current/2026-09-02-HIGH-DATA-REWORK-EPOXY-RESIN-SOURCING-STRUCTURE.md` (HELD for review) |
 | **Fabrication Plant Blueprint** | `backlog/current/2026-08-20-HIGH-DATA-CREATE-FABRICATION-PLANT-BLUEPRINT.md` | DEFERRED (Phase 11+) — blueprint drafted but premature; git tracking violated standing convention and was reverted; do not re-dispatch until Phase 11+ work begins |
 | **Orbital Mechanics Data Layer** | `backlog/current/2026-08-19-HIGH-FEATURE-ORBITAL-MECHANICS-DATA-LAYER.md` | Phase 1-4 complete, Phase 5 pending |
 | **Launch Window + Transit Timing Engine** | `backlog/current/2026-08-18-HIGH-FEATURE-LAUNCH-WINDOW-TRANSIT-TIMING-ENGINE.md` | Architecture feature |
