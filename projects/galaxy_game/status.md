@@ -1,8 +1,31 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-03 — Epoxy_resin.json sourcing refactored + AI Manager acquisition logic defined + Material sourcing architecture refined for market-first routing
+**Last Updated:** 2026-09-03 — Lookup Service Caching confirmed completed + backlog/current sweep + 14 folder cleanup tasks created
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🔴 Recent Closures (2026-09-03)
+
+### Lookup Service Caching Pattern — CONFIRMED COMPLETED ✅
+- **Task**: `2026-07-30-MEDIUM-REFACTOR-LOOKUP-SERVICE-CACHING-PATTERN.md`
+- **Finding**: Work was already done 2026-08-08 (all 6 services converted: Blueprint, Craft, Item, Module, Structure, Unit). Task was moved to `completed/2026-08/` but status header was left as `active`. A stale duplicate was recreated in `backlog/current/` on 2026-09-02.
+- **Root cause**: Agent created a new file (`A`) instead of moving the existing one (`R`) — the "cp instead of git mv" failure mode the updated template now forbids.
+- **Action**: Removed stale duplicate, corrected `completed/` copy status to `completed`, documented the 08-08 commits in the header.
+- **Commits**: `d955888` (agent-tasks)
+
+### Backlog/current Sweep — 2 Issues Fixed ✅
+- **Scope**: 26 files in `backlog/current/`
+- **Duplicates**: 0 found
+- **Fixed**: `ORBITAL-MECHANICS` status `active` → `backlog`; `STARSIM-HYDROSPHERE` added missing YAML frontmatter
+- **Commit**: `0236904` (agent-tasks)
+
+### 14 Backlog Folder Cleanup Tasks Created ✅
+- **Scope**: One LOW-priority documentation task per backlog subfolder (excluding `current/` and `superseded/`)
+- **Folders covered**: act02-local-bubble-expansion (1), ai-manager (7), deferred-cleanup (17), design (13), phase05 (1), phase06 (16), phase07 (19), phase08 (29), phase09 (7), phase10 (2), phase11 (1), phase13 (1), phase14 (14), phase15 (3)
+- **Each task checks**: duplicates, status mismatches, missing YAML frontmatter, completed work
+- **Commit**: `1bbd303` (agent-tasks)
 
 ---
 
@@ -86,12 +109,11 @@
 
 ---
 
-## 📋 Active Tasks: 1 ⚠️
+## 📋 Active Tasks: 0
 
-| Task | Location | Notes |
-|------|----------|-------|
-| **Lookup Service Caching Pattern** | `tasks/active/2026-07-30-MEDIUM-REFACTOR-LOOKUP-SERVICE-CACHING-PATTERN.md` | Sitting since 2026-07-30 — needs review/dispatch or defer |
-
+> No tasks currently in `active/`. Lookup Service Caching Pattern was confirmed
+> completed 2026-09-03 (work done 08-08, stale duplicate removed, status corrected).
+>
 > **Note**: All oxygen-fixture, can_harvest_locally, fabrication_plant, and asset-prompt-contract tasks are now correctly in completed/.
 
 ---
@@ -176,6 +198,16 @@
 
 ## 📋 Current Backlog — Ready for Dispatch
 
+### 🆕 Backlog Folder Cleanup Sweeps (2026-09-03) — LOW PRIORITY, DO SLOWLY
+| Task | Folder | Files |
+|------|--------|-------|
+| `2026-09-03-LOW-DOCUMENTATION-CLEANUP-*.md` (14 tasks) | one per backlog subfolder | 1–29 each |
+
+> One task per folder (excluding `current/` and `superseded/`). Each checks for
+> duplicates, status mismatches, missing YAML frontmatter, and completed work.
+> Created after the Lookup Service Caching duplicate incident. Work through
+> slowly alongside Phase 05 — not urgent.
+
 ### 🆕 Asset/UI Workstream (2026-09-01) — HELD / READY FOR REVIEW
 | Task | Location | Notes |
 |------|----------|-------|
@@ -246,3 +278,37 @@
 ## 📝 Notes from Previous Sessions
 - Agent commits use Tracy's git identity by default — commit authorship is not evidence of independent human verification.
 - Green tests are not sufficient sign-off for shared/global code changes — Synthesis Report + approval required before committing, not after.
+
+---
+
+## 🔴 Pending Handoff to Grok (AI Manager Development Lead)
+
+**Session 2026-09-03 — Review pass + task reorganization:**
+
+### Material Sourcing Convention (Pass to Grok)
+- **Issue**: Material JSON had hardcoded location keys (`lunar/martian/earth`) — doesn't scale to procedural worlds
+- **Fix applied**: epoxy_resin.json refactored to facility-based + market-driven pattern (not committed, local Time Machine backup)
+- **Convention documented**: `/memories/repo/material_sourcing_convention.md` — materials carry recipes/pricing, NOT sourcing options; routing is runtime AI Manager decision
+- **Handoff file**: `agent-tasks/projects/galaxy_game/tasks/backlog/ai-manager/2026-09-03-ADJUSTMENT-MATERIAL-SOURCING-AND-ACQUISITION-LOGIC.md` (commit c0620a7)
+
+### AI Manager Acquisition Logic (Pass to Grok)
+- **Decision tree**: market scan → depot check → cost comparison → present options
+- **Key constraint**: Travel time + transport cost drive ISRU-first strategy
+- **Integration point**: ProcurementService or equivalent when AI Manager needs material
+- **Scope**: Requires runtime implementation; architecture defined, not yet coded
+
+### Multi-System Resource Coordination (Pass to Grok)
+- **Task moved**: `backlog/ai-manager/2026-06-07-MEDIUM-FEATURE-MULTI-SYSTEM-RESOURCE-COORDINATION.md`
+- **Status**: Legitimate Phase 9+ feature, depends on foothold establishment + wormhole topology (both in progress)
+- **Proposes**: `ResourceCoordinator` service for cross-settlement optimization once multiple settlements exist
+- **Ties into**: Resource First Foothold Planner task (currently active) — both are AI Manager work Grok is handling
+
+### Review Pass Summary (2026-09-03)
+| Task | Result | Action |
+|------|--------|--------|
+| GuaranteedMarketSale integration | Already implemented in trade_execution_service.rb:26-34 | Archived to `tasks/archive/` |
+| Wormhole Easter Egg Integration | System already exists in WorldKnowledgeService | Archived to `tasks/archive/` |
+| Wormhole Model Validation | Model stable, 23 specs passing | Archived to `tasks/archive/` |
+| Multi-System Resource Coordination | Not implemented, legitimate future feature | Moved to `backlog/ai-manager/` for Grok review |
+
+**Grok needs to incorporate**: Material sourcing convention + acquisition logic into his Foothold Planner work. The multi-system coordination task is deferred but should be reviewed when footholds are established.
