@@ -1,8 +1,38 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-02 — I-beam task superseded + live-game-loop moved to completed + material sourcing convention documented + backlog folder structure canonicalized in GUARDRAILS.md
+**Last Updated:** 2026-09-03 — Epoxy_resin.json sourcing refactored + AI Manager acquisition logic defined + Material sourcing architecture refined for market-first routing
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🔴 Recent Closures (2026-09-01–03)
+
+### Material Sourcing Architecture Refined — DOCUMENTED ✅
+- **Issue**: `regolith_composite.json` sourcing block had hardcoded location keys (`lunar/martian/earth`) — doesn't scale to procedurally generated worlds or unknown settlements
+- **Resolution**: Refactored sourcing pattern to be facility-based + market-driven, not location-enumerated
+- **epoxy_resin.json Updated**:
+  - Removed: `sourcing` block with location keys
+  - Added: `production.facility_type: "chemical_synthesis_plant"` (location-agnostic)
+  - Added: Real inputs (hydrocarbon_feedstock, chlorine, sodium_hydroxide)
+  - Added: Earth baseline price (10,000 USD/kg) + local production cost (7,500 USD/kg when facility exists)
+  - Pattern: Scales to Sol (Luna, Mars) → Eden systems → procedurally generated worlds without modification
+  - **File**: `/data/json-data/resources/materials/processed/polymers/epoxy_resin.json` (valid JSON, local Time Machine backup, not committed to git per your preference)
+- **Documented in**: `/memories/repo/material_sourcing_convention.md` (updated 2026-09-03)
+
+### AI Manager Acquisition Logic — DEFINED ✅
+- **Decision tree for base needing material**:
+  1. **Market check**: For each celestial body (Luna, Mars, Depot L1, etc.), scan settlement markets for material listings
+  2. **Depot availability**: Check depot systems (L1, LEO, asteroid belts) for stockpiled inventory
+  3. **Travel + cost routing**: Calculate transport time + fuel cost via cycler network or direct routes
+  4. **Decision fork**:
+     - Urgent need → Earth fallback (highest cost, fastest available)
+     - Normal resupply → Lowest total cost (production cost + transport cost)
+     - Stockpile strategy → Local ISRU beats all imports (key incentive)
+  5. **Present options**: AI Manager shows base commander 2–3 acquisition routes with cost/time trade-offs
+- **Key constraint**: Travel time + transport cost are the real blockers — this drives ISRU-first strategy
+- **Scope**: Requires runtime implementation in procurement/logistics layer (not in material JSON)
+- **Status**: Architecture defined; implementation deferred (higher priority: Resource First Foothold Planner task)
 
 ---
 
