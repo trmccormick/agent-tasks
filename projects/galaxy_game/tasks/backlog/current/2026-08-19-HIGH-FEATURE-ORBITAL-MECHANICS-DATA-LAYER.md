@@ -1,12 +1,13 @@
 ---
-status: active
+status: backlog
 priority: HIGH
 type: feature
 system_domain: OTHER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 created: 2026-08-19
-last_updated: 2026-09-02
+last_updated: 2026-09-03
+# 2026-09-03: status corrected active → backlog (was in backlog/current/ with stale "active" header)
 phase_status: "Phases 1-4 COMPLETE (commits c9d44ca4, 1f8df564, 683327b5). Phase 5 (TransitEngine integration) PENDING."
 # DISPATCH ORDERING — do not dispatch a task whose depends_on is not yet completed.
 # Phase 5 extends Mission::TransitEngine, which is created by the Transit Timing Engine task.

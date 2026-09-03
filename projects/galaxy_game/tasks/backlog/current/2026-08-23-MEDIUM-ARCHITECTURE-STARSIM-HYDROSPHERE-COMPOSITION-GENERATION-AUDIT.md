@@ -1,5 +1,15 @@
 
 ---
+status: backlog
+priority: MEDIUM
+type: architecture
+system_domain: TERRA_SIM
+mvp_alignment: OTHER
+local_worker_safe: true
+created: 2026-08-23
+last_updated: 2026-09-03
+# 2026-09-03: YAML frontmatter added (was empty --- block with no fields)
+---
 
 # TASK: Audit how StarSim (importer + procedural generation) produces hydrosphere composition data
 
