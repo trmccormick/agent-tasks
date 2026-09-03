@@ -1,12 +1,16 @@
 ---
-status: active
+status: completed
 priority: MEDIUM
 type: refactor
 system_domain: AI_MANAGER | MANUFACTURING | TERRA_SIM | OTHER
 mvp_alignment: SPEC_HEALTH | OTHER
 local_worker_safe: true
 created: 2026-07-30
-last_updated: 2026-08-08
+last_updated: 2026-09-03
+# Completed 2026-08-08: all 6 lookup services converted to class-level caching
+# (commits 38495042, b97897c2, 65dda1a0, f3118850, 47ab5138, 2f76fa52).
+# Status header corrected 2026-09-03: was left as "active" when moved to
+# completed/ on 08-08; stale duplicate in backlog/current/ removed.
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
 
