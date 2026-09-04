@@ -18,7 +18,7 @@
   - 🟡 Power/battery arithmetic discrepancy discovered but NOT resolved here (spun off to research task)
 - **Test Status**: 2 examples, 0 failures (PASSING)
 - **Commits**: 04a1fd88–856dad36 (12 commits across spec build, account setup, RSpec syntax, stale instance fixes)
-- **Follow-up**: Power/battery investigation spun off to `2026-09-03-MEDIUM-RESEARCH-GCC-SAT-POWER-BATTERY-DISCREPANCY.md` (backlog/ai-manager)
+- **Follow-up**: Power/battery investigation spun off to `2026-09-03-MEDIUM-RESEARCH-GCC-SAT-POWER-BATTERY-DISCREPANCY.md` (backlog/current)
 - **Action**: Task moved to `tasks/completed/2026-09/`, status updated
 
 ---
