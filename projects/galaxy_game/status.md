@@ -1,8 +1,25 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-03 — Lookup Service Caching confirmed completed + backlog/current sweep + 14 folder cleanup tasks created
+**Last Updated:** 2026-09-03 — Real Game Loop Integration Test COMPLETED (craft-dispatch verified + power/battery research task created)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🟢 Recent Closures (2026-09-03)
+
+### Real Game Loop Integration Test — COMPLETED ✅
+- **Task**: `2026-08-31-HIGH-FEATURE-REAL-LOOP-INTEGRATION-TEST.md`
+- **Completion Report**: Craft-dispatch integration verified with real service invocation, real job execution, observable side effects (game_state.day 246→306, account 0.0→100.0 GCC)
+- **Findings**:
+  - ✅ GameSimulationJob invoked via Sidekiq.Testing.inline! (verified by [LOOP] tags)
+  - ✅ satellite.mine_gcc dispatched in parallel (verified by [CRAFT] tags, 100.0 GCC deposit tick 1)
+  - ✅ Account delegation working via method dispatch (satellite.account → owner.account)
+  - 🟡 Power/battery arithmetic discrepancy discovered but NOT resolved here (spun off to research task)
+- **Test Status**: 2 examples, 0 failures (PASSING)
+- **Commits**: 04a1fd88–856dad36 (12 commits across spec build, account setup, RSpec syntax, stale instance fixes)
+- **Follow-up**: Power/battery investigation spun off to `2026-09-03-MEDIUM-RESEARCH-GCC-SAT-POWER-BATTERY-DISCREPANCY.md` (backlog/ai-manager)
+- **Action**: Task moved to `tasks/completed/2026-09/`, status updated
 
 ---
 

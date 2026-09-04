@@ -1,10 +1,62 @@
 ---
-status: active
+status: completed
 priority: HIGH
 type: feature
 system_domain: AI_MANAGER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
+---
+
+## COMPLETION REPORT — 2026-09-03
+
+### What Was Done
+
+✅ **Craft-Dispatch Integration Verified** — COMPLETED & EVIDENCED
+- Real `GameSimulationJob` invoked via Sidekiq.Testing.inline! — verified by [LOOP] tags in test output
+- Real `satellite.mine_gcc` service called in parallel with game loop — verified by [CRAFT] tags with actual GCC deposit (100.0 GCC on tick 1)
+- Observable side effects proven: `game_state.day` advanced 246 → 306 (60 days), account balance 0.0 → 100.0 GCC
+- Account delegation working via proper method dispatch (satellite.account → owner.account)
+- Test produces datestamped output with real service invocation evidence
+- Test file: [galaxy_game/spec/integration/game_loop_integration_spec.rb](galaxy_game/spec/integration/game_loop_integration_spec.rb)
+- Test result: 2 examples, 0 failures (PASSING)
+- Commits: 04a1fd88, 9e88898a, 04a1fd88, c53c978e, 1aa5260e, d6d4da35, e451c1ca, 6ac195f3, 537942d2, 72e6875a, 22a734fb, 856dad36
+
+🟡 **Power/Battery Arithmetic Discrepancy — IDENTIFIED, NOT RESOLVED HERE**
+- During verification, discovered tick 1 mining succeeds (100.0 GCC) despite insufficient power, but ticks 2-3 fail (return 0)
+- Root cause partially investigated: satellite has implicit 100 kWh default battery, depletes from 100 → 30 kWh on tick 1
+- Arithmetic doesn't hold: calculation showed 135 kW deficit × 20 days ≠ 70 kWh consumption (needs proper unit conversion)
+- This discrepancy requires verification with actual power model code, not continuation here
+- **SPUN OFF**: New research task created: `2026-09-03-MEDIUM-RESEARCH-GCC-SAT-POWER-BATTERY-DISCREPANCY.md`
+
+### What Was NOT Done (Out of Scope)
+
+- Did not resolve power/battery arithmetic discrepancy — needs fresh analysis by different session
+- Did not investigate whether this is production bug or test artifact — left for follow-up research task
+- Did not commit any diagnostic code — spec kept clean, only investigation files in memory/session
+
+### Key Findings
+
+1. **Craft-dispatch mechanism verified working**: The integration test successfully demonstrates real service invocation, real job execution, and observable side effects
+2. **Parallel dispatch pattern works**: GameSimulationJob and satellite.mine_gcc run in same test cycle, both produce measurable output
+3. **Test isolation proper**: No state leakage, game state reset between runs
+4. **Power model questions remain**: Battery depletion pattern observed but arithmetic needs verification
+
+### Architecture Gotchas Addressed
+
+✅ Used real `GameSimulationJob`, not hand-rolled day-loop simulation  
+✅ Did not expect craft to be picked up by loop (confirmed gap, made observable)  
+✅ Verified `toggle_running!` side effects (resets last_updated_at — handled)  
+✅ Proper state reset in test cleanup blocks  
+
+### Acceptance Criteria Status
+
+- [x] Test toggles real loop on via toggle_running! 
+- [x] Test drives GameSimulationJob for real, accelerated for test speed
+- [x] Test dispatches real craft action (mine_gcc) via service-level code
+- [x] Test produces datestamped, human-readable log output
+- [x] Test resets GameState#running afterward
+- [x] No false claims — gap between loop and craft remains observable and noted
+
 ---
 
 ## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
