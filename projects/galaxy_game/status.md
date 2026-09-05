@@ -1,8 +1,13 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-03 — Real Game Loop Integration Test COMPLETED (craft-dispatch verified + power/battery research task created)
+**Last Updated:** 2026-09-05 — FootholdPlanner architecture landed (b3d5b191 + limits doc 2efc1933), task moved to completed/
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🟢 Recent Closures (2026-09-05)
+- **FootholdPlanner architecture landed** — `b3d5b191` (thin skeleton + design note) + `2efc1933` (skeleton-limits doc). Task moved to `tasks/completed/2026-09/`, status → completed.
 
 ---
 
