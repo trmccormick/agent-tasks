@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: MEDIUM
 type: feature
 system_domain: EVE_ONLINE_INTEGRATION

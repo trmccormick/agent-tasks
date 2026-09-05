@@ -1,6 +1,6 @@
 # EVE Dashboard — Project Status & Task Tracking
 
-**Last Updated**: 2026-09-04 — 6-Phase Task System Complete, Ready for Local Model Dispatch
+**Last Updated**: 2026-09-05 — Phase 2 Part 1 COMPLETE ✅ / Part 2 Ready for Qwen Dispatch
 
 > **Phase Evolution**: Originally forked for homefront tracking compatibility.
 > Now expanding to multi-activity dashboard (mining, trading) while preserving original functionality.
@@ -16,8 +16,8 @@
 
 | Phase | Status | File | Blocked By |
 |-------|--------|------|-----------|
-| 2: OAuth + ESI | 🟢 READY | 2026-09-04-MEDIUM-FUNCTIONAL-TEST-EVE-OAUTH-AND-MINING-CONFIG.md | Nothing |
-| 3: Mining + Market | 🔴 BACKLOG | 2026-09-04-HIGH-FEATURE-PHASE3-MINING-AND-MARKET-SALES.md | Phase 2 PASS |
+| 2: OAuth + ESI | ✅ Part 1 COMPLETE / Part 2 READY | 2026-09-04-MEDIUM-FUNCTIONAL-TEST-EVE-OAUTH-AND-MINING-CONFIG.md | None — Ready for Qwen |
+| 3: Mining + Market | 🔴 BACKLOG | 2026-09-04-HIGH-FEATURE-PHASE3-MINING-AND-MARKET-SALES.md | Phase 2 Part 2 PASS |
 | 3B: Price Tracking | 🔴 BACKLOG | 2026-09-04-HIGH-FEATURE-PHASE3B-PRICE-TRACKING.md | Phase 3 PASS |
 | 4: Inventory | 🔴 BACKLOG | 2026-09-04-HIGH-FEATURE-PHASE4-INVENTORY-MANAGEMENT.md | Phase 3 PASS |
 | 4B: Logistics | 🔴 BACKLOG | 2026-09-04-HIGH-FEATURE-PHASE4B-LOGISTICS-OPTIMIZATION.md | Phase 4 PASS |
@@ -82,6 +82,13 @@
 - **Request Limits**: `MAX_UPLOAD_SIZE = 10MB` prevents DoS attacks on file uploads
 - **Standardized Errors**: `_error_response()` helper ensures consistent `{"error": message}` format across all endpoints
 
+### Phase 2 Part 1: OAuth Infrastructure Verification ✅ (2026-09-04)
+- **Status**: COMPLETE — All automated infrastructure checks passed
+- **Verified**: OAuth credentials configured, database initialized (WAL mode), logging configured, app healthy
+- **Results**: 5/5 automated tests passed; infrastructure ready for manual Phase 2 Part 2 testing
+- **Synthesis Report**: [2026-09-04-PHASE2-INFRASTRUCTURE-SYNTHESIS.md](summaries/2026-09-04-PHASE2-INFRASTRUCTURE-SYNTHESIS.md)
+- **Blocker Status**: None — ready for user manual OAuth testing (7 accounts x 11 characters)
+
 ### Docker Containerization ✅
 - **Dockerfile**: Python 3.11-slim with curl health checks, minimal footprint (~450MB)
 - **docker-compose.yml**: Resource limits (2 CPUs, 512MB RAM), health checks, volume mounts
@@ -91,10 +98,26 @@
 ### Documentation & Automation ✅
 - **README.docker.md**: User-friendly Docker setup guide with prerequisites and common commands
 - **README.raspberrypi.md**: ~500-line complete guide for Pi 3+/4/5 24/7 deployment
-- **setup-raspberrypi.sh**: One-command automated Pi setup (Docker verification, image build, systemd install)
-- **eve-dashboard.service**: Systemd service for auto-start/restart on Pi
+- **Setup Automation**: One-command Docker setup with compose, health checks
 - **DEVELOPMENT.md**: Development workflow and dependency isolation explanation
 - **test-quality.sh**: Comprehensive test suite (27 tests, all passing)
+
+### Phase 2 Part 1: OAuth Debugging & Configuration ✅ (2026-09-05)
+- **Diagnosed**: OAuth scope mismatch was root cause (app requested 32 scopes, only 6 enabled in EVE dev app)
+- **Fixed**: User enabled all 32 required scopes in EVE developer application
+- **Verified**: Character data now syncs perfectly
+  - Test character "Neon Red" populated with real data:
+    - ISK: 9,997,477,923.7
+    - Total SP: 151,823,438
+    - Asset Value: 52,202,950,156 ISK
+    - 11 asset locations fully populated
+  - Sync logs show "Successfully synced character Neon Red"
+- **Key Discovery**: EVE OAuth 24-char refresh tokens are VALID standard, not corrupted
+- **Code Updates**:
+  - `/app/config.py`: Updated SCOPES to all 32 required scopes (working)
+  - `/app/sso.py`: Added debug logging for token inspection (harmless)
+  - `/app/sync.py`: Added sync flow logging (harmless)
+- **Result**: Phase 2 Part 1 COMPLETE — Infrastructure fully validated, manual testing ready
 
 ### Code Quality Validation ✅
 - **Test Suite**: 27/27 static tests pass
