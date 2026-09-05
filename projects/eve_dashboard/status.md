@@ -1,19 +1,74 @@
 # EVE Dashboard — Project Status & Task Tracking
 
-**Last Updated**: 2026-09-04 — Initial Setup Session (GitHub Copilot Implementation Agent)
+**Last Updated**: 2026-09-04 — 6-Phase Task System Complete, Ready for Local Model Dispatch
 
-> **NOTE**: This is the first official entry in agent-tasks system.
-> Prior work was tracked in conversation-summary format; now using standardized status tracking.
+> **Phase Evolution**: Originally forked for homefront tracking compatibility.
+> Now expanding to multi-activity dashboard (mining, trading) while preserving original functionality.
+> Using agent-based task system for functional testing and feature development.
 
 ---
 
-## 📋 Active Tasks: 0 ✅
+## 📋 Active Tasks: 6 🚀
 
-All critical path items complete. Project is production-ready for containerized deployment.
+**System**: 6-phase implementation task queue created with full templating and dispatch guide.
+**Ready Now**: Phase 2 (OAuth validation) — can dispatch immediately to Qwen.
+**After Phase 2 PASSES**: Phase 3 → Phase 3B+4 (parallel) → 4B → 5 → 6
+
+| Phase | Status | File | Blocked By |
+|-------|--------|------|-----------|
+| 2: OAuth + ESI | 🟢 READY | 2026-09-04-MEDIUM-FUNCTIONAL-TEST-EVE-OAUTH-AND-MINING-CONFIG.md | Nothing |
+| 3: Mining + Market | 🔴 BACKLOG | 2026-09-04-HIGH-FEATURE-PHASE3-MINING-AND-MARKET-SALES.md | Phase 2 PASS |
+| 3B: Price Tracking | 🔴 BACKLOG | 2026-09-04-HIGH-FEATURE-PHASE3B-PRICE-TRACKING.md | Phase 3 PASS |
+| 4: Inventory | 🔴 BACKLOG | 2026-09-04-HIGH-FEATURE-PHASE4-INVENTORY-MANAGEMENT.md | Phase 3 PASS |
+| 4B: Logistics | 🔴 BACKLOG | 2026-09-04-HIGH-FEATURE-PHASE4B-LOGISTICS-OPTIMIZATION.md | Phase 4 PASS |
+| 5: Efficiency | 🔴 BACKLOG | 2026-09-04-MEDIUM-FEATURE-PHASE5-PRODUCTION-EFFICIENCY.md | Phase 4B PASS |
+| 6: Supply Chain | 🔴 BACKLOG | 2026-09-04-MEDIUM-FEATURE-PHASE6-SUPPLY-CHAIN.md | Phase 5 PASS |
+
+**Dispatch Guide**: `DISPATCH_README.md` — Complete instructions for Planning Agent to dispatch and verify all phases.
 
 ---
 
 ## ✅ Completed Achievements (2026-09-04)
+
+### Phase 0: Task System Architecture & Templating ✅ (TODAY)
+- **Created**: 6 implementation task files with consistent template structure
+  - Phase 2: OAuth Integration & Functional Testing (2026-09-04-MEDIUM-FUNCTIONAL-TEST-EVE-OAUTH-AND-MINING-CONFIG.md)
+  - Phase 3: Mining Ledger & Market Sales Tracking
+  - Phase 3B: Price Tracking & Market Analysis
+  - Phase 4: Inventory Management & Asset Tracking
+  - Phase 4B: Logistics Optimization & Hauling Scheduler
+  - Phase 5: Production Efficiency Metrics
+  - Phase 6: Supply Chain & Profitability Analysis
+
+- **All Task Files Include**:
+  - YAML frontmatter (status, priority, type, system_domain, mvp_alignment)
+  - Agent Dispatch Interface (Step 0 startup contract for agent execution)
+  - Handoff sections (what previous phase accomplished, why this phase is next)
+  - Prerequisites & Reading Order
+  - Context & User Operation Description
+  - Critical Information & OAuth Credentials (Phase 2)
+  - Architecture Gotchas (❌ Wrong / ✅ Right examples)
+  - Implementation Steps (10-15 numbered, actionable steps)
+  - Acceptance Criteria (measurable, checkboxes)
+  - Synthesis Report Templates (copy/paste ready for agent output)
+
+- **Created**: DISPATCH_README.md
+  - Phase dispatch sequence with dependencies
+  - Step 0 verification process (git mv + status update)
+  - Synthesis report verification checklists for each phase
+  - Cost optimization guidelines (16% premium usage, read syntheses not re-run tests)
+  - Troubleshooting guide for common issues
+  - File location reference
+  - Handoff template for between planning sessions
+
+- **Task Folder Structure**:
+  - tasks/active/ (currently executing work)
+  - tasks/backlog/ (work queue)
+  - tasks/archive/ (historical reference)
+  - tasks/review/ (QA pending)
+  - tasks/testing/ (validation phase)
+
+- **Result**: Complete 6-phase implementation roadmap ready for local model dispatch. Phase 2 ready NOW.
 
 ### Phase 1: Logging Infrastructure & Error Handling ✅
 - **Created**: `app/logging_config.py` with rotating file handlers to `data/logs/dashboard.log`
@@ -88,10 +143,12 @@ All critical path items complete. Project is production-ready for containerized 
 - ✅ Thread-safe credential handling
 
 ### What Needs Testing (Functional)
-- ⏳ End-to-end with real EVE Online credentials
-- ⏳ ESI API connectivity under load
-- ⏳ Wallet sync with real player account
-- ⏳ PI system with real Upwell data
+- ⏳ OAuth 2.0 login with real EVE Online account
+- ⏳ ESI API connectivity (character data retrieval)
+- ⏳ Multi-activity tracking (homefront + mining + trading config)
+- ⏳ Mining ledger retrieval and aggregation
+- ⏳ Asset tracking with ore/refined materials
+- ⏳ Market price data from ESI public endpoints
 
 ### What's Optional (Nice-to-Have)
 - ⏸ Rate-limit retry logic for ESI 420 errors (currently logs and moves on)
@@ -173,11 +230,34 @@ All critical path items complete. Project is production-ready for containerized 
 
 ---
 
+---
+
+## 🚦 Next Steps (Immediate)
+
+1. **Planning Agent**: Read `DISPATCH_README.md` for dispatch workflow
+2. **Planning Agent**: Dispatch Phase 2 task file to Qwen
+   - Preamble: "You are the Implementation Agent. Read the full task file below. Follow Agent Dispatch Interface exactly."
+   - Include: Entire 2026-09-04-MEDIUM-FUNCTIONAL-TEST-EVE-OAUTH-AND-MINING-CONFIG.md file
+3. **Qwen**: Execute Phase 2 (Step 0 git mv, then implementation steps)
+4. **Qwen**: Generate synthesis report at summaries/2026-09-04-FUNCTIONAL-TEST-SYNTHESIS.md
+5. **Planning Agent**: Read synthesis report, verify against acceptance criteria
+6. **On PASS**: Dispatch Phase 3
+7. **On FAIL**: Debug with Qwen, re-dispatch Phase 2
+
+---
+
+## ⚠️ Cost Optimization (16% Premium Used in 4 Days)
+
+**Problem**: Currently burning premium at 4% per day — not sustainable for month.
+
+**Solution**: Minimize Planning Agent token usage:
+- Read synthesis reports (1-2 tokens) instead of re-running tests (100+ tokens)
+- Use checklists (don't custom verify)
+- Batch parallel phases (3B + 4 together)
+- Keep planning sessions to 1 decision: ✅ PASS / ❌ FAIL
+
+---
+
 ## ✋ Blocking Issues: NONE
 
-All critical blocking issues resolved. Project is ready for:
-1. Functional testing with real credentials
-2. Raspberry Pi deployment
-3. Additional feature development
-
-Next session can focus on any of those areas without prerequisites.
+All Phase 1 technical work complete. Ready for functional testing via Phase 2 dispatch.
