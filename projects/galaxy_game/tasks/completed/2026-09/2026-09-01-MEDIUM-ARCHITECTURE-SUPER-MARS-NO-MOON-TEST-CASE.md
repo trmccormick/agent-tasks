@@ -1,10 +1,11 @@
 ---
-status: active
+status: completed
 priority: MEDIUM
 type: architecture
 system_domain: AI_MANAGER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
+completed: 2026-09-05
 ---
 
 ## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
@@ -51,11 +52,11 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting a
 ---
 
 # TASK: Formalize Super-Mars (No Moons) as Foothold Planner Test Case
-**Status**: BACKLOG  
+**Status**: COMPLETED  
 **Priority**: MEDIUM  
 **Type**: architecture  
 **Created**: 2026-09-01  
-**Last Updated**: 2026-09-01  
+**Last Updated**: 2026-09-05  
 
 ---
 
@@ -97,10 +98,10 @@ The Super-Mars no-moon case is currently tribal knowledge. It should be a concre
 
 ## Acceptance Criteria
 
-- [ ] Scenario is written down clearly
-- [ ] Expected planner behavior class is stated
-- [ ] Explicitly marked as a test case for resource-first planning
-- [ ] Does not attempt full Super-Mars implementation
+- [x] Scenario is written down clearly
+- [x] Expected planner behavior class is stated
+- [x] Explicitly marked as a test case for resource-first planning
+- [x] Does not attempt full Super-Mars implementation
 
 ---
 
@@ -109,3 +110,22 @@ The Super-Mars no-moon case is currently tribal knowledge. It should be a concre
 **Blocked by**: Ideally the Resource-First Foothold Planner architecture task (can be drafted in parallel)  
 **Blocks**: Nothing critical  
 **Related**: Resource-First Foothold Planner
+
+---
+
+## Completion Note (2026-09-05)
+
+**Deliverables:**
+- `galaxy_game/spec/services/ai_manager/foothold_planner_spec.rb` — the Super-Mars no-moon test case (10 examples, all pass)
+- `docs/architecture/ai_manager/SUPER_MARS_NO_MOON_TEST_CASE.md` — scenario definition + expected reasoning class + known discrepancy + bugs surfaced
+- Synthesis: `projects/galaxy_game/summaries/2026-09-01-ARCHITECTURE-SUPER-MARS-NO-MOON-TEST-CASE.md`
+
+**galaxyGame commit**: `766f1c07`
+
+**Bugs surfaced & fixed** (the planner had never been executed — no spec existed):
+1. `has_regolith?` was private but called by the planner → made public
+2. `can_extract_water?` was private but called by the planner → made public
+3. `evaluate_hybrid` called with 0 args but needs 1 → pass `patterns`
+4. `plan` sorted `opt.score` but options are Hashes → use `opt[:score]`
+
+**Verification**: `foothold_planner_spec.rb` 10/10 pass; `precursor_capability_service_spec.rb` 18/18 pass (no regressions).
