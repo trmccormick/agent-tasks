@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-05 — FootholdPlanner architecture landed (b3d5b191 + limits doc 2efc1933), task moved to completed/
+**Last Updated:** 2026-09-05 — Super-Mars no-moon foothold planner test case landed (galaxyGame `766f1c07`), task moved to completed/
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -7,6 +7,12 @@
 ---
 
 ## 🟢 Recent Closures (2026-09-05)
+- **Super-Mars (No Moons) Foothold Planner Test Case — COMPLETED ✅**
+  - **Task**: `2026-09-01-MEDIUM-ARCHITECTURE-SUPER-MARS-NO-MOON-TEST-CASE.md` → `tasks/completed/2026-09/`
+  - **Deliverables**: `spec/services/ai_manager/foothold_planner_spec.rb` (10 examples, all pass) + `docs/architecture/ai_manager/SUPER_MARS_NO_MOON_TEST_CASE.md` (scenario + expected reasoning class)
+  - **Bugs surfaced & fixed** (planner had never been executed — no spec existed): `has_regolith?`/`can_extract_water?` made public; `evaluate_hybrid` arg; `plan` Hash-vs-object sort.
+  - **Verification**: foothold_planner_spec 10/10; precursor_capability_service_spec 18/18 (no regressions).
+  - **galaxyGame commit**: `766f1c07`
 - **FootholdPlanner architecture landed** — `b3d5b191` (thin skeleton + design note) + `2efc1933` (skeleton-limits doc). Task moved to `tasks/completed/2026-09/`, status → completed.
 
 ---
@@ -252,7 +258,6 @@
 |------|----------|-------|
 | **Classify 19 Blueprints** | `backlog/current/2026-08-16-MEDIUM-RESEARCH-CLASSIFY-19-BLUEPRINTS-OPERATIONAL-DATA.md` | NEEDS_REVIEW #4 |
 | **CNT Fabricator Collision** | `backlog/current/2026-08-16-MEDIUM-INVESTIGATE-CNT-FABRICATOR-NAMING-COLLISION.md` | NEEDS_REVIEW #5 |
-| **Material Thermal Properties Data Gap** | `backlog/current/2026-08-16-MEDIUM-BUG-FIX-MATERIAL-THERMAL-PROPERTIES-DATA-SOURCE-GAP.md` | ✅ COMPLETED (moved to completed/) |
 
 ### LOW Priority
 | Task | Location | Notes |
@@ -325,7 +330,7 @@
 - **Task moved**: `backlog/ai-manager/2026-06-07-MEDIUM-FEATURE-MULTI-SYSTEM-RESOURCE-COORDINATION.md`
 - **Status**: Legitimate Phase 9+ feature, depends on foothold establishment + wormhole topology (both in progress)
 - **Proposes**: `ResourceCoordinator` service for cross-settlement optimization once multiple settlements exist
-- **Ties into**: Resource First Foothold Planner task (currently active) — both are AI Manager work Grok is handling
+- **Ties into**: Resource First Foothold Planner task (completed 2026-09-05; Super-Mars no-moon test case landed) — both are AI Manager work Grok is handling
 
 ### Review Pass Summary (2026-09-03)
 | Task | Result | Action |
