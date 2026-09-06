@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 priority: MEDIUM
 type: research
 system_domain: OTHER
@@ -268,6 +268,30 @@ git commit -m "chore: move CNT fabricator naming collision research to completed
 ---
 
 ## Completion Report
+
+  Naming collision confirmed and resolved:
+  - Root cause: app/data/blueprints/units/industrial/cnt_fabricator_unit_mk1_bp.json
+    and the production-tier Mk1 blueprint shared the identical id
+    "cnt_fabricator_unit_mk1". Production tier (mk1/mk2/mk3 + operational_data)
+    is the real owner of this id — confirmed via mk2's required_materials
+    dependency and the operational_data file's own id/name match.
+  - Fix: industrial file renamed (plain `mv`, not `git mv` — data/ is
+    gitignored) to cnt_industrial_weaver_mk1_bp.json, internal "id" field
+    updated to match. Production tier's id left unchanged.
+  - Verification: full-repo grep (app/, data/, spec/) confirms zero
+    remaining references to the old id outside the two known legitimate
+    production-family files. Renamed blueprint JSON confirmed valid via
+    `ruby -rjson JSON.parse`. market_stabilization_service.rb correctly
+    unmodified (type-based check, unaffected).
+  - Separate finding, NOT fixed in this task: mission_profile_analyzer.rb's
+    `/cnt_fabricator/i` regex matches against `name`, but no blueprint's
+    actual name field contains that substring — has_cnt_fabricator may
+    always evaluate false. Flagging as a candidate follow-up task.
+  - Separate finding, NOT fixed in this task: no spec files exist for
+    either market_stabilization_service.rb or mission_profile_analyzer.rb
+    (confirmed via find, not a path error) — no test coverage gap was
+    introduced by this change, but none existed to verify against either.
+
 *Filled in by the implementing agent after completion*
 
 **Completed by**:

@@ -6,14 +6,14 @@
 
 ---
 
-## 🟢 Recent Closures (2026-09-05)
-- **Super-Mars (No Moons) Foothold Planner Test Case — COMPLETED ✅**
-  - **Task**: `2026-09-01-MEDIUM-ARCHITECTURE-SUPER-MARS-NO-MOON-TEST-CASE.md` → `tasks/completed/2026-09/`
-  - **Deliverables**: `spec/services/ai_manager/foothold_planner_spec.rb` (10 examples, all pass) + `docs/architecture/ai_manager/SUPER_MARS_NO_MOON_TEST_CASE.md` (scenario + expected reasoning class)
-  - **Bugs surfaced & fixed** (planner had never been executed — no spec existed): `has_regolith?`/`can_extract_water?` made public; `evaluate_hybrid` arg; `plan` Hash-vs-object sort.
-  - **Verification**: foothold_planner_spec 10/10; precursor_capability_service_spec 18/18 (no regressions).
-  - **galaxyGame commit**: `766f1c07`
-- **FootholdPlanner architecture landed** — `b3d5b191` (thin skeleton + design note) + `2efc1933` (skeleton-limits doc). Task moved to `tasks/completed/2026-09/`, status → completed.
+## 🟢 Recent Closures (2026-09-06)
+- **CNT Fabricator Naming Collision Investigation — COMPLETED ✅**
+  - **Task**: `2026-08-16-MEDIUM-INVESTIGATE-CNT-FABRICATOR-NAMING-COLLISION.md` → `tasks/completed/2026-08/`
+  - **Findings**: Confirmed ID collision between industrial and production-tier blueprints.
+  - **Fix**: Renamed industrial blueprint to `cnt_industrial_weaver_mk1_bp.json` and updated internal ID to `cnt_industrial_weaver_mk1`.
+  - **Verification**: Full-repo grep confirms no remaining references to the old ID.
+  - **Follow-up**: Flagged potential regex mismatch in `mission_profile_analyzer.rb` as a new research task.
+
 
 ---
 
