@@ -1,5 +1,5 @@
 # Operational Guardrails
-**Last Updated**: 2026-07-05
+**Last Updated**: 2026-09-03
 **Maintained By**: Session Strategist (Claude)
 
 > Read before every task. These rules are non-negotiable.
@@ -519,10 +519,14 @@ Workflow presenting commit+push as a routine checklist step with no gate.
 README.md has been corrected; this rule is the canonical statement going
 forward regardless of what any task-specific workflow text says.
 
-### Rule 27 — Stale Active Task Protocol
+### Rule 29 — Stale Active Task Protocol
 **Applies to all agents, all roles, all supervision tiers.**
 
-When encountering tasks in `active/` that have no agent actively working on them, you MUST:
+**Before applying this protocol to any task in `active/`, confirm it actually belongs to your current dispatch or is genuinely unowned.** A task sitting in `active/` may belong to a different agent's currently-running session (Grok's AI Manager lane, ChatGPT's UI lane, a parallel Qwen session) — its mere presence in `active/` is not evidence of abandonment now that multiple agents work simultaneously. If a task file was not explicitly named in your dispatch, and you have no clear evidence it's genuinely stale (no recent commits, no synthesis report, task age far exceeds any reasonable working session), **report it to the human rather than applying this protocol unilaterally.**
+
+**Confirmed violation, 2026-09-03**: an agent doing an unrelated status.md cleanup moved a different lane's actively-in-progress task file into `completed/` during a self-initiated "final sweep," mistaking parallel ownership for staleness.
+
+When you have confirmed a task in `active/` is genuinely stale (per the check above), you MUST:
 1. Review each task file's Completion Report section for any work done
 2. Check the summaries/ folder for synthesis reports or completion notes
 3. Verify code changes via git log since the task was placed in active/
