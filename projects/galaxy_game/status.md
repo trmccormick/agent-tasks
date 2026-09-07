@@ -1,25 +1,33 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-06 — CNT Fabricator Naming Collision Investigation completed (galaxyGame `[COMMIT_HASH]`), task moved to completed/
+**Last Updated:** 2026-09-07 — AI Manager Acquisition Surface Inventory COMPLETED + Canonical-Path decision DRAFT (Path B recommended, awaiting Tracy)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🟢 Recent Closures (2026-09-06)
-- **CNT Fabricator Naming Collision Investigation — COMPLETED ✅**
-  - **Task**: `2026-08-16-MEDIUM-INVESTIGATE-CNT-FABRICATOR-NAMING-COLLISION.md` → `tasks/completed/2026-08/`
-  - **Findings**: Confirmed ID collision between industrial and production-tier blueprints.
-  - **Fix**: Renamed industrial blueprint to `cnt_industrial_weaver_mk1_bp.json` and updated internal ID to `cnt_industrial_weaver_mk1`.
-  - **Verification**: Full-repo grep confirms no remaining references to the old ID.
-  - **Follow-up**: Flagged potential regex mismatch in `mission_profile_analyzer.rb` as a new research task.
+## 🟢 Recent Closures (2026-09-07)
 
+### AI Manager Acquisition Surface Inventory — COMPLETED ✅
+- **Task**: `2026-09-01-LOW-RESEARCH-AI-MANAGER-SERVICE-INVENTORY-AND-GAPS.md`
+- **Synthesis Report**: `summaries/2026-09-07-RESEARCH-AI-MANAGER-SERVICE-INVENTORY-AND-GAPS.md`
+- **Findings**: Four acquisition services confirmed (EscalationService 627L, ProcurementService 112L, ResourceAcquisitionService 148L, ResourceFulfillmentService 33L). Two parallel paths in manager loop (OperationalManager→ProcurementService vs ResourcePlanner→ResourceAcquisitionService). Placeholder pricing in ProcurementService is reachable but non-functional. No single canonical path — runtime trace required.
+- **Gaps**: EAP enforcement placeholder, no excess-listing-after-self-harvest, cycler preference only in EscalationService emergency fork, no unified "can afford" logic.
+- **Recommendation**: Extend existing spine; do not create parallel architecture. Clarify canonical path before implementing gaps.
+- **Commits**: `6b3dbf1` (move to active), `f8d8a49` (synthesis report), closing commit below
+
+### Acquisition Canonical Path — DECISION DRAFT (awaiting Tracy) ⏸️
+- **Decision doc**: `summaries/2026-09-07-ARCHITECTURE-DECISION-ACQUISITION-CANONICAL-PATH.md` (DRAFT, not a task file, not dispatched)
+- **Recommendation**: Make **Path B** (`ResourcePlanner` → `ResourceAcquisitionService` → `ResourceFulfillmentService` → `MaterialRequestService`) the canonical live-loop acquisition path — it already uses real NPC pricing + real contract creation.
+- **Path A** (`OperationalManager` → `ProcurementService`): keep the ISRU/`can_produce_locally?` check; deprecate the no-op placeholder-pricing market path.
+- **Boundary**: EscalationService = shortage/emergency/strategy/expired-orders/cycler preference; Path B = procurement execution + real pricing; ProcurementService = local-capability check only (not a second acquisition owner).
+- **Gaps to close on Path B**: EAP enforcement (replace `player_sell_orders_exceed_eap?` hard-coded `false`), cycler/resupply preference, excess-listing-after-self-harvest, unified "can afford", remove placeholder `base_prices`.
+- **Blocks**: Material Sourcing & Acquisition Architecture task (`backlog/ai-manager/2026-09-03-...`) — remains DRAFT until Tracy advances this decision.
+- **⚠️ Inconsistency**: that task's YAML header still reads `status: backlog` (not `draft`) — content was updated 2026-09-07 but the header was not. Needs a status-field fix before dispatch.
 
 ---
 
-## 🟢 Recent Closures (2026-09-03)
-- A1 — Asset Registry Reality Check (Research: confirmed registry is spec-only, no implementation exists; identified mapping gap with Visual Definition)
-- A1 — Asset Registry Reality Check (Research: confirmed registry is spec-only, no implementation exists; identified mapping gap with Visual Definition)
+## 🔴 Recent Closures (2026-09-03)
 
 ### Real Game Loop Integration Test — COMPLETED ✅
 - **Task**: `2026-08-31-HIGH-FEATURE-REAL-LOOP-INTEGRATION-TEST.md`
@@ -258,6 +266,7 @@
 |------|----------|-------|
 | **Classify 19 Blueprints** | `backlog/current/2026-08-16-MEDIUM-RESEARCH-CLASSIFY-19-BLUEPRINTS-OPERATIONAL-DATA.md` | NEEDS_REVIEW #4 |
 | **CNT Fabricator Collision** | `backlog/current/2026-08-16-MEDIUM-INVESTIGATE-CNT-FABRICATOR-NAMING-COLLISION.md` | NEEDS_REVIEW #5 |
+| **Material Thermal Properties Data Gap** | `backlog/current/2026-08-16-MEDIUM-BUG-FIX-MATERIAL-THERMAL-PROPERTIES-DATA-SOURCE-GAP.md` | ✅ COMPLETED (moved to completed/) |
 
 ### LOW Priority
 | Task | Location | Notes |
@@ -330,7 +339,7 @@
 - **Task moved**: `backlog/ai-manager/2026-06-07-MEDIUM-FEATURE-MULTI-SYSTEM-RESOURCE-COORDINATION.md`
 - **Status**: Legitimate Phase 9+ feature, depends on foothold establishment + wormhole topology (both in progress)
 - **Proposes**: `ResourceCoordinator` service for cross-settlement optimization once multiple settlements exist
-- **Ties into**: Resource First Foothold Planner task (completed 2026-09-05; Super-Mars no-moon test case landed) — both are AI Manager work Grok is handling
+- **Ties into**: Resource First Foothold Planner task (currently active) — both are AI Manager work Grok is handling
 
 ### Review Pass Summary (2026-09-03)
 | Task | Result | Action |
