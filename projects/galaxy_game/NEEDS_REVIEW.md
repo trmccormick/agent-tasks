@@ -72,7 +72,7 @@ this file should stay small. Full history stays in status.md.
 Near-identical names, different directories — unclear if these represent the same unit with two deployment profiles, true duplicates, or two genuinely distinct things that happen to share a name.
 **What I already checked**: Confirmed both files exist independently, different content/directory, no direct reference between them found.
 **What needs a second opinion**: Tracy already flagged general "CNT overlap" concern independently — this may be the same question. Needs a side-by-side comparison of the two families before deciding whether to consolidate, rename one for clarity, or confirm they're intentionally distinct.
-**Status**: OPEN
+**Status**: RESOLVED — industrial variant renamed to cnt_industrial_weaver_mk1, see completed/2026-08/2026-08-16-MEDIUM-INVESTIGATE-CNT-FABRICATOR-NAMING-COLLISION.md
 
 ### 2026-08-02 — MarketStabilizationService actions partially stubbed (byproduct of NPC Economy Lifecycle docs audit)
 **What happened**: During the NPC economy lifecycle documentation audit, confirmed that `AIManager::MarketStabilizationService` has three methods returning placeholder results instead of real implementation: `handle_unsold_goods`, `handle_production_shortages`, and `handle_import_shortages`. All return `{ action: :buyer_of_last_resort, status: :checked, purchases_made: 0 }` or equivalent stubs. The service's public `stabilize_market` method calls these but the fallback logic isn't actually executing — it's silently returning zero-effect results.
