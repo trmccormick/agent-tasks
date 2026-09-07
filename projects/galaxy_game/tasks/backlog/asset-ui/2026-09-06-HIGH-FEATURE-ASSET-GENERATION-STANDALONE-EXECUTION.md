@@ -11,7 +11,7 @@ local_worker_safe: true
 
 **STOP. Do not send this task to an agent until ALL boxes are checked.**
 
-- [x] Agent Dispatch Interface section below is complete and accurate — **EXCEPT** `[project]`/`[SUBFOLDER]`; fill in before dispatch (expected: galaxy_game / current, per this session's convention)
+- [x] Agent Dispatch Interface section below is complete and accurate
 - [x] All Step 0-N instructions are clear and actionable
 - [x] Synthesis report template provided
 - [ ] All file paths are verified to exist — **NOT DONE**, Claude has no filesystem access; Step 1 is exactly that verification
@@ -26,29 +26,29 @@ local_worker_safe: true
 ## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
 
 ```
-You are **Implementation Agent**.
+You are Implementation Agent.
 
-Project: [FILL IN — project folder name under agent-tasks/projects/]
+Project: galaxy_game
 Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/asset-ui/2026-09-06-HIGH-FEATURE-ASSET-GENERATION-STANDALONE-EXECUTION.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  Confirm whether this file is tracked in git first (`git ls-files <path>`) —
-  if tracked, use `git mv`; if untracked, use `mv` then `git add` the final
-  path. Then open the moved file and change: status: backlog → status: active
-  Paste the output of both commands in chat before proceeding.
-  Do NOT read the task file content, run any commands, or start synthesis
-  until this is done.
+Confirm whether this file is tracked in git first (git ls-files <path>) —
+if tracked, use git mv; if untracked, use mv then git add the final
+path. Then open the moved file and change: status: backlog → status: active
+Paste the output of both commands in chat before proceeding.
+Do NOT read the task file content, run any commands, or start synthesis
+until this is done.
 
 LIFECYCLE: backlog → active → completed
-  Verify with: find agent-tasks/projects/[project]/tasks -name "2026-09-06-HIGH-FEATURE-ASSET-GENERATION-STANDALONE-EXECUTION.md"
-    Only ONE result should exist. Paste this output before committing.
+Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-09-06-HIGH-FEATURE-ASSET-GENERATION-STANDALONE-EXECUTION.md"
+Only ONE result should exist. Paste this output before committing.
 
 READ FIRST (after Step 0): Task file contains all prerequisites, gotchas, and verification steps.
 
 CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
-  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/[project]/summaries/
-  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
-  Chat is for questions only — never paste synthesis into chat.
+Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+Chat is for questions only — never paste synthesis into chat.
 ```
 
 **IMPORTANT: Do not modify or abbreviate the text above.**

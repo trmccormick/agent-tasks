@@ -16,10 +16,10 @@ Agents receive this exact text as the startup contract. Every word matters.
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/current/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md \
+  git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md \
          projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
@@ -211,7 +211,7 @@ Determine how generated static assets are currently stored, named, referenced, a
 ### Step 0 — Move task file to active/ and update status (MANDATORY FIRST STEP)
 
 ```bash
-git mv projects/galaxy_game/tasks/backlog/current/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md \
+git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md \
        projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md
 ```
 

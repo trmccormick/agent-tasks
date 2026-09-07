@@ -1,6 +1,6 @@
 ---
 status: backlog
-priority: MEDIUM
+priority: HIGH
 type: research
 system_domain: OTHER
 mvp_alignment: SPEC_HEALTH
@@ -16,11 +16,11 @@ Agents receive this exact text as the startup contract. Every word matters.
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-08-31-MEDIUM-RESEARCH-ASSET-UI-A6-icon-bible-dependency-research.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/current/2026-08-31-MEDIUM-RESEARCH-ASSET-UI-A6-icon-bible-dependency-research.md \
-         projects/galaxy_game/tasks/active/2026-08-31-MEDIUM-RESEARCH-ASSET-UI-A6-icon-bible-dependency-research.md
+  git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md \
+         projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
@@ -29,7 +29,7 @@ LIFECYCLE: backlog → active → completed
   - Tracked file: git mv (never cp or plain mv)
   - New/untracked file: mv then git add the final path
   - Never leave stale copies in the source folder
-  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-08-31-MEDIUM-RESEARCH-ASSET-UI-A6-icon-bible-dependency-research.md"
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md"
     Only ONE result should exist. Paste this output before committing.
 
 READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
@@ -64,9 +64,9 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 ---
 
-# TASK: A6 — Icon Bible Dependency Research
+# TASK: A5 — Surface Sprite Consumption Research
 **Status**: BACKLOG
-**Priority**: MEDIUM
+**Priority**: HIGH
 **Type**: research
 **Created**: 2026-08-31
 **Last Updated**: 2026-08-31
@@ -77,8 +77,8 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 - **Template Conformance**: PASS
 - **Docker Wrapper Check**: N/A — research task, no RSpec execution required.
-- **MVP Alignment**: VALID — Icon Bible status affects B2's catalog presentation contract and C3/C4's UI implementation.
-- **MVP Impact Note**: If the Icon Bible is a blocking dependency, it must be flagged before catalog icon work proceeds.
+- **MVP Alignment**: VALID — surface asset integration (C5/D3) depends on knowing how sprites are currently consumed.
+- **MVP Impact Note**: Surface representation is a separate consumer from catalog presentation; this task must stay precise about which RH-400 asset it means (surface sprite, not catalog render).
 - **Action Line**: READY FOR LOCAL DISPATCH
 
 ---
@@ -86,7 +86,7 @@ The dispatch interface above is ONLY the bootstrap instructions.
 ## Agent Assignment (Human-filled, not seen by agents)
 
 **Assigned To**: Qwen local via Copilot (primary)
-**Why This Agent**: Repository inspection to locate references and assess blocking status.
+**Why This Agent**: Repository inspection and implementation access.
 **Local attempts before cloud**: N/A
 **Supervision Level**: watched carefully
 
@@ -102,7 +102,7 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 ## Context
 
-Determine whether the referenced Icon Bible is a blocking dependency for catalog/inventory icon work or a documentation gap that can remain unresolved. Several canonical documents reference an Icon Bible, but its absence has been reported. We need evidence before allowing it to shape B2. Do not create the missing Icon Bible. Do not invent icon rules. If the catalog can proceed from existing canonical fields, say so with evidence.
+Determine how the surface renderer currently consumes transparent sprites and animation frames, specifically for the RH-400 surface representation. Surface assets have a different consumer and technical contract from catalog renders — they must eventually work in Civ4/FreeCiv-style layers and TerrainForge/SimCity-style views. Inspect the surface sprite and animation representations only. Do not design the catalog contract here.
 
 **Relevant Architecture Docs** — read before starting:
 - `docs/new_agent/rules/DECISIONS.md` — locked architectural decisions.
@@ -120,15 +120,15 @@ None required.
 
 ### Architecture Gotchas (Critical to understand BEFORE starting)
 
-⚠️ **GOTCHA 1**: Do not create the missing Icon Bible.
-- ❌ Wrong: Generate icon rules or create an Icon Bible document as part of this task.
-- ✅ Right: Document what exists, flag the gap, and assess whether existing canonical fields are sufficient for catalog work.
-- Why: This is a research/assessment task, not a documentation creation task.
+⚠️ **GOTCHA 1**: Surface sprites are transparent-background gameplay assets.
+- ❌ Wrong: Introduce baked terrain backgrounds into generated surface images or treat them as catalog renders.
+- ✅ Right: Keep surface sprites as transparent PNGs; background/composition is the renderer's responsibility.
+- Why: The surface renderer composes assets dynamically based on terrain, lighting, and game state.
 
-⚠️ **GOTCHA 2**: Do not invent icon rules from thin air.
-- ❌ Wrong: Propose icon design rules or standards without evidence from existing specifications.
-- ✅ Right: Search for any existing icon rules in canonical documents; if none exist, report that the gap is unresolvable without a product decision.
-- Why: Icon rules are a product/design decision, not an implementation detail.
+⚠️ **GOTCHA 2**: Catalog renders and surface sprites have fundamentally different consumers.
+- ❌ Wrong: Use catalog render as surface sprite or vice versa; assume they are interchangeable.
+- ✅ Right: Treat them as separate representations with separate paths, formats, and consumers.
+- Why: Catalog renders have backgrounds for documentation/UI; surface sprites are transparent for game rendering.
 
 ### Multi-Domain / Multi-Tenant Routing (if applicable)
 Not applicable — this is a repository inspection task.
@@ -141,18 +141,19 @@ Not applicable — this is a repository inspection task.
 ```markdown
 ## STATUS SYNTHESIS REPORT
 
-**Task**: A6 — Icon Bible Dependency Research
+**Task**: A5 — Surface Sprite Consumption Research
 **Status**: backlog → active → completed
 **Date**: YYYY-MM-DD
 
 ### What I'm About to Do
-Determine whether the Icon Bible is a blocking dependency for catalog/inventory icon work or a documentation gap. Classify as blocking, non-blocking, or stale-reference documentation gap.
+Determine how the surface renderer currently consumes transparent sprites and animation frames for the RH-400 surface representation. Stay precise about surface sprite (not catalog render). Identify integration gaps without implementing them.
 
 ### Files I'll Reference
 | File | Purpose | Status |
 |---|---|---|
-| Documents referencing "Icon Bible" | Reference locations | pending |
-| Existing icon/asset specifications | Substitute rules evidence | pending |
+| Surface-layer/rendering services | Sprite consumer code | pending |
+| RH-400 surface sprite file | Actual asset path and format | pending |
+| Animation frame files (if any) | State representation evidence | pending |
 
 ### Prerequisites Completed
 - ✅ Step 0: Task file moved to active/ with git mv (find output pasted in chat)
@@ -163,11 +164,12 @@ Determine whether the Icon Bible is a blocking dependency for catalog/inventory 
 - ✅ Understand architecture gotchas above
 
 ### Expected Outcomes
-Icon Bible references identified; existing substitute rules checked; blocking status explicitly classified (blocking/non-blocking/stale-reference); no documentation created.
+Surface sprite consumer identified; sprite lookup path documented; animation-state handling documented; integration gaps identified without implementing them.
 
 ### Critical Gotchas I Will Avoid
-- ❌ Creating the Icon Bible or inventing icon rules — instead ✅ Documenting what exists and flagging the gap
-- ❌ Allowing the Icon Bible to block B2 without evidence — instead ✅ Assessing whether existing canonical fields suffice
+- ❌ Using catalog render as surface sprite — instead ✅ Keeping them separate with distinct paths and consumers
+- ❌ Introducing baked terrain backgrounds — instead ✅ Documenting existing renderer behavior
+- ❌ Designing the catalog contract here — instead ✅ Focusing only on surface rendering
 
 ---
 
@@ -178,10 +180,10 @@ Icon Bible references identified; existing substitute rules checked; blocking st
 
 ## Problem Statement
 
-Determine whether the referenced Icon Bible is a blocking dependency for catalog/inventory icon work or a documentation gap that can remain unresolved.
+Determine how the surface renderer currently consumes transparent sprites and animation frames, specifically for the RH-400 surface representation.
 
-**Current behavior**: Several canonical documents reference an Icon Bible, but its absence has been reported. We need evidence before allowing it to shape B2.
-**Expected behavior**: Classify the Icon Bible as blocking, non-blocking, or stale-reference documentation gap with evidence. Do not create documentation.
+**Current behavior**: Repository state must be established by evidence; do not assume the planned architecture exists in code.
+**Expected behavior**: Produce only the evidence result explicitly requested — identify sprite consumer, lookup path, animation handling, and integration gaps without implementing anything.
 
 ---
 
@@ -190,14 +192,15 @@ Determine whether the referenced Icon Bible is a blocking dependency for catalog
 ### Primary Files — inspect or edit only as specified by this task
 | File | Purpose | Key Method/Section |
 |---|---|---|
-| Documents referencing "Icon Bible" | Reference locations | N/A (read-only) |
-| Existing icon/asset specifications | Substitute rules evidence | N/A (read-only) |
+| Surface-layer/rendering services | Sprite consumer code | N/A (read-only) |
+| RH-400 surface sprite file | Actual asset path and format | N/A (read-only) |
+| Animation frame files (if any) | State representation evidence | N/A (read-only) |
 
 ### Reference Files — read but do not edit
 | File | Why You Need It |
 |---|---|
-| A2 (Static asset storage research) | Catalog render/icon paths |
-| A3 (RH-400 asset family mapping) | Icon representation in asset family |
+| Existing asset-generation specifications in `docs/` | Establish canonical surface sprite format requirements |
+| A3 (RH-400 asset family mapping) | Distinguish surface sprite from catalog render |
 
 ### Migration
 - [x] No migration needed
@@ -211,8 +214,8 @@ Determine whether the referenced Icon Bible is a blocking dependency for catalog
 ### Step 0 — Move task file to active/ and update status (MANDATORY FIRST STEP)
 
 ```bash
-git mv projects/galaxy_game/tasks/backlog/current/2026-08-31-MEDIUM-RESEARCH-ASSET-UI-A6-icon-bible-dependency-research.md \
-       projects/galaxy_game/tasks/active/2026-08-31-MEDIUM-RESEARCH-ASSET-UI-A6-icon-bible-dependency-research.md
+git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md \
+       projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md
 ```
 
 Then open the moved file and change: `status: backlog → status: active`
@@ -220,55 +223,56 @@ Then open the moved file and change: `status: backlog → status: active`
 Verify only one copy exists:
 ```bash
 find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks \
-     -name "2026-08-31-MEDIUM-RESEARCH-ASSET-UI-A6-icon-bible-dependency-research.md"
+     -name "2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md"
 ```
 
 **Paste the output in chat before proceeding.** Expected: exactly one result at `active/` path.
 
-### Step 1 — Search references
+### Step 1 — Locate surface rendering code
 
-Find every current reference to the Icon Bible and the expected location/name. Search for:
-- "Icon Bible" or "icon_bible" or "icon-bible" in all docs and code
-- Any document that specifies icon design rules or standards
-- The expected file path or format of the Icon Bible
+Find the surface-layer/rendering services and sprite consumers. Search for:
+- Surface rendering services or controllers
+- Sprite loading/consumption logic
+- Any Civ4/FreeCiv-style layer rendering code
 
-### Step 2 — Search for replacement rules
+### Step 2 — Trace asset lookup
 
-Determine whether icon rules exist elsewhere. Specifically:
-- Do Visual Profiles contain icon specifications?
-- Do asset-generation specs define icon rules?
-- Are there any existing icon images with implicit rules?
+Determine how a sprite path/identifier reaches the renderer. Specifically:
+- What is the RH-400 surface sprite file path?
+- How does the renderer resolve sprite paths?
+- Is there an asset registry or direct path reference?
 
-### Step 3 — Assess blocking status
+### Step 3 — Inspect animation handling
 
-Identify exactly which planned catalog behavior would depend on the missing document. Classify as:
-- **Blocking**: Catalog icon work cannot proceed without Icon Bible rules
-- **Non-blocking**: Existing canonical fields are sufficient for catalog icon work
-- **Stale-reference documentation gap**: The Icon Bible was planned but is no longer relevant
+Determine whether idle/moving/harvesting/damage states have an existing representation. Specifically:
+- Are animation frames generated for RH-400?
+- How are they named/stored?
+- Does the renderer support state-based sprite switching?
 
 ### Step 4 — Report
 
-Classify the Icon Bible status with evidence. The report should answer:
-1. Where is the Icon Bible referenced (file:line)?
-2. What icon rules exist elsewhere (if any)?
-3. Is it blocking, non-blocking, or a stale reference?
-4. What does B2 need to know about this gap?
+Identify the smallest missing integration contract without implementing it. The report should answer:
+1. What surface sprite consumer exists?
+2. How does sprite lookup work?
+3. What animation states are supported (if any)?
+4. What is the smallest gap C5 must address?
 
 ---
 
 ## Acceptance Criteria
-- [ ] Icon Bible references identified with file:line evidence
-- [ ] Existing substitute rules checked and documented
-- [ ] Blocking status explicitly classified (blocking/non-blocking/stale-reference)
-- [ ] No documentation created (no Icon Bible generated)
+- [ ] Surface sprite consumer identified with file:line evidence
+- [ ] Sprite lookup path documented
+- [ ] Animation-state handling documented (or confirmed absent)
+- [ ] Integration gaps identified without implementing them
+- [ ] No code/assets modified
 - [ ] Synthesis report posted to chat before any work began
 
 ---
 
 ## Stop Conditions — escalate to user immediately if:
-- References conflict materially with existing icon behavior
-- A product decision is required to define icon rules (beyond research scope)
-- The Icon Bible reference cannot be located anywhere in the repository
+- Surface rendering depends on a shared asset system that does not yet exist
+- Sprite transparency/format assumptions conflict with existing renderer behavior
+- The RH-400 surface sprite cannot be located or identified
 
 ---
 
@@ -283,9 +287,9 @@ No commit is authorized by this task unless explicitly stated in the task steps.
 ---
 
 ## Dependencies
-**Blocked by**: none
-**Blocks**: B2
-**Related tasks**: A2 (static asset storage — icon paths)
+**Blocked by**: A3
+**Blocks**: B3, C5
+**Related tasks**: Civ4/FreeCiv/TerrainForge surface layers
 
 ---
 
@@ -311,4 +315,4 @@ Research/design findings only unless implementation is explicitly authorized.
 ---
 
 ## Handoff Summary
-HANDOFF SUMMARY: A6 | [result] | [next action]
+HANDOFF SUMMARY: A5 | [result] | [next action]

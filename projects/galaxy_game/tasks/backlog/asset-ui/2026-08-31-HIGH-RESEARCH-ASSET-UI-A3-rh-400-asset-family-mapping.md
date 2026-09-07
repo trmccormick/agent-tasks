@@ -16,11 +16,11 @@ Agents receive this exact text as the startup contract. Every word matters.
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A3-rh-400-asset-family-mapping.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/current/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md \
-         projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md
+  git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A3-rh-400-asset-family-mapping.md \
+         projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A3-rh-400-asset-family-mapping.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
@@ -29,7 +29,7 @@ LIFECYCLE: backlog → active → completed
   - Tracked file: git mv (never cp or plain mv)
   - New/untracked file: mv then git add the final path
   - Never leave stale copies in the source folder
-  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md"
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-08-31-HIGH-RESEARCH-ASSET-UI-A3-rh-400-asset-family-mapping.md"
     Only ONE result should exist. Paste this output before committing.
 
 READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
@@ -64,7 +64,7 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 ---
 
-# TASK: A5 — Surface Sprite Consumption Research
+# TASK: A3 — RH-400 Asset Family Mapping
 **Status**: BACKLOG
 **Priority**: HIGH
 **Type**: research
@@ -77,8 +77,8 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 - **Template Conformance**: PASS
 - **Docker Wrapper Check**: N/A — research task, no RSpec execution required.
-- **MVP Alignment**: VALID — surface asset integration (C5/D3) depends on knowing how sprites are currently consumed.
-- **MVP Impact Note**: Surface representation is a separate consumer from catalog presentation; this task must stay precise about which RH-400 asset it means (surface sprite, not catalog render).
+- **MVP Alignment**: VALID — catalog presentation depends on knowing which asset in the RH-400 family to use.
+- **MVP Impact Note**: Asset/UI foundation for the Luna + Earth-import MVP; distinguishing catalog from surface assets is critical.
 - **Action Line**: READY FOR LOCAL DISPATCH
 
 ---
@@ -102,7 +102,7 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 ## Context
 
-Determine how the surface renderer currently consumes transparent sprites and animation frames, specifically for the RH-400 surface representation. Surface assets have a different consumer and technical contract from catalog renders — they must eventually work in Civ4/FreeCiv-style layers and TerrainForge/SimCity-style views. Inspect the surface sprite and animation representations only. Do not design the catalog contract here.
+Map each RH-400 asset-family representation to its intended consumer and distinguish catalog/presentation assets from surface-render assets. The RH-400 family includes: inventory icon, catalog render, encyclopedia render, blueprint, exploded view, surface sprite, animation frames, wrecked sprite, and thumbnail representations. Each has a different consumer and technical contract.
 
 **Relevant Architecture Docs** — read before starting:
 - `docs/new_agent/rules/DECISIONS.md` — locked architectural decisions.
@@ -120,15 +120,15 @@ None required.
 
 ### Architecture Gotchas (Critical to understand BEFORE starting)
 
-⚠️ **GOTCHA 1**: Surface sprites are transparent-background gameplay assets.
-- ❌ Wrong: Introduce baked terrain backgrounds into generated surface images or treat them as catalog renders.
+⚠️ **GOTCHA 1**: A catalog render is not a surface sprite.
+- ❌ Wrong: Use the surface sprite in place of the catalog render, or vice versa.
+- ✅ Right: Catalog renders have backgrounds and are for documentation/UI; surface sprites are transparent-background gameplay assets.
+- Why: They serve fundamentally different consumers — catalog UI vs. game rendering engine.
+
+⚠️ **GOTCHA 2**: Surface sprites must remain transparent-background gameplay assets.
+- ❌ Wrong: Introduce baked terrain backgrounds into generated surface images.
 - ✅ Right: Keep surface sprites as transparent PNGs; background/composition is the renderer's responsibility.
 - Why: The surface renderer composes assets dynamically based on terrain, lighting, and game state.
-
-⚠️ **GOTCHA 2**: Catalog renders and surface sprites have fundamentally different consumers.
-- ❌ Wrong: Use catalog render as surface sprite or vice versa; assume they are interchangeable.
-- ✅ Right: Treat them as separate representations with separate paths, formats, and consumers.
-- Why: Catalog renders have backgrounds for documentation/UI; surface sprites are transparent for game rendering.
 
 ### Multi-Domain / Multi-Tenant Routing (if applicable)
 Not applicable — this is a repository inspection task.
@@ -141,19 +141,19 @@ Not applicable — this is a repository inspection task.
 ```markdown
 ## STATUS SYNTHESIS REPORT
 
-**Task**: A5 — Surface Sprite Consumption Research
+**Task**: A3 — RH-400 Asset Family Mapping
 **Status**: backlog → active → completed
 **Date**: YYYY-MM-DD
 
 ### What I'm About to Do
-Determine how the surface renderer currently consumes transparent sprites and animation frames for the RH-400 surface representation. Stay precise about surface sprite (not catalog render). Identify integration gaps without implementing them.
+Map each known RH-400 asset-family representation to its intended consumer and distinguish catalog/presentation assets from surface-render assets. Produce a compact mapping table with evidence.
 
 ### Files I'll Reference
 | File | Purpose | Status |
 |---|---|---|
-| Surface-layer/rendering services | Sprite consumer code | pending |
-| RH-400 surface sprite file | Actual asset path and format | pending |
-| Animation frame files (if any) | State representation evidence | pending |
+| RH-400 asset family specification | Canonical definition | pending |
+| Generated asset files | Actual file paths and naming | pending |
+| Code/spec references | Consumer identification | pending |
 
 ### Prerequisites Completed
 - ✅ Step 0: Task file moved to active/ with git mv (find output pasted in chat)
@@ -164,12 +164,11 @@ Determine how the surface renderer currently consumes transparent sprites and an
 - ✅ Understand architecture gotchas above
 
 ### Expected Outcomes
-Surface sprite consumer identified; sprite lookup path documented; animation-state handling documented; integration gaps identified without implementing them.
+All known RH-400 representations accounted for; catalog vs. surface consumers explicit; missing/ambiguous representations listed; no files modified.
 
 ### Critical Gotchas I Will Avoid
-- ❌ Using catalog render as surface sprite — instead ✅ Keeping them separate with distinct paths and consumers
-- ❌ Introducing baked terrain backgrounds — instead ✅ Documenting existing renderer behavior
-- ❌ Designing the catalog contract here — instead ✅ Focusing only on surface rendering
+- ❌ Collapsing all RH-400 representations into one generic image field — instead ✅ Separately identifying each representation with its consumer
+- ❌ Using surface sprite as catalog render — instead ✅ Keeping them separate with distinct paths and consumers
 
 ---
 
@@ -180,10 +179,10 @@ Surface sprite consumer identified; sprite lookup path documented; animation-sta
 
 ## Problem Statement
 
-Determine how the surface renderer currently consumes transparent sprites and animation frames, specifically for the RH-400 surface representation.
+Map each RH-400 asset-family representation to its intended consumer and distinguish catalog/presentation assets from surface-render assets.
 
 **Current behavior**: Repository state must be established by evidence; do not assume the planned architecture exists in code.
-**Expected behavior**: Produce only the evidence result explicitly requested — identify sprite consumer, lookup path, animation handling, and integration gaps without implementing anything.
+**Expected behavior**: Produce only the evidence/design result explicitly requested — a compact mapping table with file:line evidence for each known representation.
 
 ---
 
@@ -192,15 +191,15 @@ Determine how the surface renderer currently consumes transparent sprites and an
 ### Primary Files — inspect or edit only as specified by this task
 | File | Purpose | Key Method/Section |
 |---|---|---|
-| Surface-layer/rendering services | Sprite consumer code | N/A (read-only) |
-| RH-400 surface sprite file | Actual asset path and format | N/A (read-only) |
-| Animation frame files (if any) | State representation evidence | N/A (read-only) |
+| RH-400 asset family specification | Canonical definition | N/A (read-only) |
+| Generated asset files | Actual file paths and naming | N/A (read-only) |
+| Code/spec references | Consumer identification | N/A (read-only) |
 
 ### Reference Files — read but do not edit
 | File | Why You Need It |
 |---|---|
-| Existing asset-generation specifications in `docs/` | Establish canonical surface sprite format requirements |
-| A3 (RH-400 asset family mapping) | Distinguish surface sprite from catalog render |
+| Existing asset-generation specifications in `docs/` | Establish canonical asset roles and naming conventions |
+| Blueprint/Operational Data examples for RH-400 | Establish canonical game-data relationship |
 
 ### Migration
 - [x] No migration needed
@@ -214,8 +213,8 @@ Determine how the surface renderer currently consumes transparent sprites and an
 ### Step 0 — Move task file to active/ and update status (MANDATORY FIRST STEP)
 
 ```bash
-git mv projects/galaxy_game/tasks/backlog/current/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md \
-       projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md
+git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A3-rh-400-asset-family-mapping.md \
+       projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A3-rh-400-asset-family-mapping.md
 ```
 
 Then open the moved file and change: `status: backlog → status: active`
@@ -223,56 +222,61 @@ Then open the moved file and change: `status: backlog → status: active`
 Verify only one copy exists:
 ```bash
 find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks \
-     -name "2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md"
+     -name "2026-08-31-HIGH-RESEARCH-ASSET-UI-A3-rh-400-asset-family-mapping.md"
 ```
 
 **Paste the output in chat before proceeding.** Expected: exactly one result at `active/` path.
 
-### Step 1 — Locate surface rendering code
+### Step 1 — Locate the RH-400 family specification
 
-Find the surface-layer/rendering services and sprite consumers. Search for:
-- Surface rendering services or controllers
-- Sprite loading/consumption logic
-- Any Civ4/FreeCiv-style layer rendering code
+Find the canonical asset-family definition and generated files. Search for:
+- "RH-400" in asset-generation documentation
+- Generated asset directories containing RH-400 files
+- Any schema or configuration defining the asset family
 
-### Step 2 — Trace asset lookup
+### Step 2 — Build the mapping
 
-Determine how a sprite path/identifier reaches the renderer. Specifically:
-- What is the RH-400 surface sprite file path?
-- How does the renderer resolve sprite paths?
-- Is there an asset registry or direct path reference?
+For each known representation, record intended consumer and current file/path. The known representations are:
+1. Inventory icon — [consumer?] — [path?]
+2. Catalog render — [consumer?] — [path?]
+3. Encyclopedia render — [consumer?] — [path?]
+4. Blueprint — [consumer?] — [path?]
+5. Exploded view — [consumer?] — [path?]
+6. Surface sprite — [consumer?] — [path?]
+7. Animation frames (idle/moving/harvesting/damage) — [consumer?] — [path?]
+8. Wrecked sprite — [consumer?] — [path?]
+9. Thumbnail — [consumer?] — [path?]
 
-### Step 3 — Inspect animation handling
+### Step 3 — Identify gaps
 
-Determine whether idle/moving/harvesting/damage states have an existing representation. Specifically:
-- Are animation frames generated for RH-400?
-- How are they named/stored?
-- Does the renderer support state-based sprite switching?
+Flag missing files, ambiguous roles, naming inconsistencies, or stale references. Specifically:
+- Are any representations missing from the generated assets?
+- Do any files have ambiguous names (could be catalog render OR surface sprite)?
+- Are there naming inconsistencies across the family?
 
 ### Step 4 — Report
 
-Identify the smallest missing integration contract without implementing it. The report should answer:
-1. What surface sprite consumer exists?
-2. How does sprite lookup work?
-3. What animation states are supported (if any)?
-4. What is the smallest gap C5 must address?
+Produce a compact mapping table with evidence. Do not modify assets or code. The report should answer:
+1. What representations exist and where?
+2. What is each representation's intended consumer?
+3. What gaps or ambiguities exist?
+4. What is the smallest question B2/B3 must resolve?
 
 ---
 
 ## Acceptance Criteria
-- [ ] Surface sprite consumer identified with file:line evidence
-- [ ] Sprite lookup path documented
-- [ ] Animation-state handling documented (or confirmed absent)
-- [ ] Integration gaps identified without implementing them
-- [ ] No code/assets modified
+- [ ] All known RH-400 representations are accounted for with file paths
+- [ ] Catalog vs. surface consumers are explicit and separated
+- [ ] Missing/ambiguous representations are listed
+- [ ] No files modified
 - [ ] Synthesis report posted to chat before any work began
 
 ---
 
 ## Stop Conditions — escalate to user immediately if:
-- Surface rendering depends on a shared asset system that does not yet exist
-- Sprite transparency/format assumptions conflict with existing renderer behavior
-- The RH-400 surface sprite cannot be located or identified
+- Canonical sources disagree on an asset role requiring architectural approval
+- A representation is used by multiple consumers in a way that needs architectural approval
+- The canonical asset-family definition cannot be located
 
 ---
 
@@ -287,9 +291,9 @@ No commit is authorized by this task unless explicitly stated in the task steps.
 ---
 
 ## Dependencies
-**Blocked by**: A3
-**Blocks**: B3, C5
-**Related tasks**: Civ4/FreeCiv/TerrainForge surface layers
+**Blocked by**: A2
+**Blocks**: A4, A5, B2, B3
+**Related tasks**: RH-400 Run 03–06 evaluations
 
 ---
 
@@ -315,4 +319,4 @@ Research/design findings only unless implementation is explicitly authorized.
 ---
 
 ## Handoff Summary
-HANDOFF SUMMARY: A5 | [result] | [next action]
+HANDOFF SUMMARY: A3 | [result] | [next action]
