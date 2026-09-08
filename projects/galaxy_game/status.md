@@ -129,8 +129,8 @@ Building acquisition logic that assumes flat EAP, ignores CapEx hardware imports
 ### MEDIUM Priority
 | Task | Location | Notes |
 |------|----------|-------|
-| **Classify 19 Blueprints** | `active/2026-08-16-MEDIUM-RESEARCH-CLASSIFY-19-BLUEPRINTS-OPERATIONAL-DATA.md` | NEEDS_REVIEW #4 — Moved to active 2026-09-07 for dispatch |
-| **19-Blueprint Operational Data Writing** | backlog (to be created) | Follow-up: for blueprints classified as "active" in task above |
+| **Classify 19 Blueprints** | `completed/2026-08/2026-08-16-MEDIUM-RESEARCH-CLASSIFY-19-BLUEPRINTS-OPERATIONAL-DATA.md` | ✅ COMPLETED — classified 23 mk1 blueprints (scope expanded from 19), ALL are active deployable units, none referenced in app/spec. Follow-up task needed for operational data writing. |
+| **19-Blueprint Operational Data Writing** | backlog (to be created) | Follow-up: for blueprints classified as "active" in task above — 23 files to write |
 
 ### LOW Priority
 | Task | Location | Notes |
@@ -165,7 +165,7 @@ Building acquisition logic that assumes flat EAP, ignores CapEx hardware imports
 ## 🎯 Priority Queue for Next Session
 
 ### Must Do First:
-1. **Dispatch Classify 19 Blueprints task** — moved to active/ 2026-09-07, ready for agent assignment
+1. **Create operational data writing task** — 23 active blueprints need operational data files (see summaries/)
 
 ### Ready to Dispatch (No Sign-off Needed):
 2. **Orbital Mechanics Data Layer Phase 5** — TransitEngine integration pending (needs verification pass first)

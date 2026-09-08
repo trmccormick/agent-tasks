@@ -63,7 +63,7 @@ this file should stay small. Full history stays in status.md.
 **What happened**: The v1→mk1 rename audit (19 files across propulsion, sensors, electronics, specialized, storage, industrial, mechanical, life_support, infrastructure, power_generation) found that NONE of the 19 blueprints have a matching operational_data file. Per Tracy's rule — active/deployable units need operational data, components used in construction of other things don't — this needs a classification pass.
 **What I already checked**: Confirmed via direct search during the rename audit — zero operational_data files found for any of the 19 IDs post-rename.
 **What needs a second opinion**: For each of the 19, is it an active deployable unit (needs operational data written) or a component/subunit (doesn't need one)? Likely a mixed bag given the range of categories (e.g. mining_drone/construction_drone sound like active units; asteroid_attachment_clamp sounds more like a component).
-**Status**: OPEN
+**Status**: **RESOLVED (2026-09-07)** — Classification task completed. Found 23 mk1 blueprints missing operational data (scope expanded from 19 as codebase grew). ALL 23 are active deployable units (none appear in other blueprints' required_materials). None are referenced in app/spec code (orphaned definitions). Follow-up task needed to write operational data for all 23. See summaries/2026-08-16-RESEARCH-CLASSIFY-19-BLUEPRINTS-OPERATIONAL-DATA.md for full classification table and follow-up list.
 
 ### 2026-08-02 — Possible CNT fabricator naming collision
 **What happened**: The rename audit surfaced two separate CNT fabricator blueprint families in different folders:
