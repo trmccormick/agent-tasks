@@ -37,25 +37,29 @@ Path through the code:
 - **Blocks**: Material Sourcing & Acquisition Architecture task (`backlog/ai-manager/2026-09-03-...`) — remains DRAFT until Tracy advances this.
 
 ### 🆕 Economy Subsystem Refactor — PLANNING STAGE (Gemini lead) — **BLOCKER FOR GROK**
+**⚠️ CRITICAL CONTEXT**: EAP (Earth Anchor Price) was **only designed as Luna bootstrap**, not a long-term solution. It must be replaced with extraction-based pricing (TCO/break-even floor) before expanding to other planets. Building acquisition logic on EAP assumptions = throwaway code when EAP is deprecated.
+
 **WHY THIS MATTERS**: Without valid pricing formulas, acquisition logic cannot make correct decisions. The dependency chain:
 1. Economy layer computes reference price (NpcPriceCalculator.cost_based_bid)
 2. AI Manager uses price in cost comparisons (CostAnalyzer.compare_costs)
 3. Acquisition decides: buy local? import? escalate? → All depend on accurate pricing
 4. **If pricing is wrong, escalation fails, import decisions fail, budgets blow**
+5. **If pricing is EAP-based, system breaks when moving beyond Luna**
 
-**Scope**: Transition from EAP (Earth Anchor Price) bootstrap to TCO/Amortized CapEx model for local extraction
+**Scope**: Transition from EAP (temporary Luna bootstrap) to extraction break-even model (permanent, multi-planet solution)
 - Extract break-even pricing formula: `(fuel+depreciation+energy+risk)/total_kg` per material type
 - Fix per-location fee parity bug: BaseSettlement has SettlementFees concern; OrbitalSettlement missing
 - Refactor NpcPriceCalculator.cost_based_bid to enforce new extraction floors
 - Document settlement fee structure and cost multipliers
+- **Delete or deprecate EAP-specific code** when extraction floors are ready
 
 **Integration points** (these MUST work before Grok can implement acquisition gaps):
-- `app/services/market/npc_price_calculator.rb` — acquisition calls this; being refactored
-- `app/services/market/tier1_price_modeler.rb` — EAP logic → new formula
-- `app/services/settlements/cost_analyzer.rb` — shortage detection depends on accurate pricing
-- `app/services/ai_manager/escalation_service.rb` — escalation thresholds from pricing
+- `app/services/market/npc_price_calculator.rb` — acquisition calls this; being refactored (EAP → extraction-floor)
+- `app/services/market/tier1_price_modeler.rb` — EAP logic replaced with extraction-based formula
+- `app/services/settlements/cost_analyzer.rb` — shortage detection depends on accurate pricing (not EAP assumptions)
+- `app/services/ai_manager/escalation_service.rb` — escalation thresholds computed from real pricing (not Earth import cost)
 
-**Critical constraint** (Grok's requirement): Acquisition must NOT embed pricing logic. It calls NpcPriceCalculator/CostAnalyzer and remains agnostic to formula (EAP/TCO/extraction-floor). When Gemini's formula changes, acquisition auto-integrates.
+**Critical constraint** (Grok's requirement): Acquisition must NOT embed pricing logic or EAP assumptions. It calls NpcPriceCalculator/CostAnalyzer and remains agnostic to formula (EAP/TCO/extraction-floor). When Gemini replaces EAP with extraction floors, acquisition auto-integrates.
 
 **Status**: Audit + planning docs completed 2026-09-07 at `summaries/2026-09-07-RESEARCH-MARKET-*.md`
 **Pricing priority order** (locked, not changing): atmospheric gases → regolith → mining+ISRU → imports
