@@ -37,35 +37,42 @@ Path through the code:
 - **Blocks**: Material Sourcing & Acquisition Architecture task (`backlog/ai-manager/2026-09-03-...`) — remains DRAFT until Tracy advances this.
 
 ### 🆕 Economy Subsystem Refactor — PLANNING STAGE (Gemini lead) — **BLOCKER FOR GROK**
-**⚠️ CRITICAL CONTEXT**: EAP (Earth Anchor Price) is **Luna's Earth-import pricing model** — it remains the permanent mechanism for pricing Earth imports to Luna. Extraction-based pricing (break-even floors) is required for local resources on ALL planets (Luna + Mars + Venus + etc.). The system must support both:
-- **EAP**: Earth import pricing for Luna (continues permanently)
-- **Extraction-floor**: Local resource pricing on any planet (Luna, Mars, Venus, etc.)
+**⚠️ CRITICAL CONTEXT**: EAP (Earth Anchor Price) is **location-specific pricing** = Earth Cost + Transport Cost to that location. Transport costs vary by destination (Luna $100M, Mars $150M, Ceres $180M, Titan $300M+, etc.) and orbital mechanics (synodic windows cause price spikes/scarcity). Extraction-based pricing (break-even floors per location) competes with EAP, capped at Transport Anchor × 0.9 moat price. 
 
-Building acquisition logic that assumes EAP is only for Luna bootstrap = breaking when system needs to handle multi-planet local extraction alongside ongoing Earth imports.
+**BREAKTHROUGH (Gemini's work today)**: Never ship **consumables** (LOX, water, CO2) across deep space — shipping costs are astronomical and uneconomical. Instead, ship **factories/hardware** (electrolysis units, atmospheric harvesters, power systems) that can produce thousands of tons locally. CapEx amortization model: hardware import cost ÷ operational lifespan = effective per-ton production cost near-zero once online. This means:
+- Luna: Ship consumables (EAP model still works)
+- Mars/Venus/deep-space: Ship the factories, then local extraction replaces imports instantly
+- AI Manager must model THREE pricing strategies simultaneously: consumable imports (EAP), hardware imports (CapEx amortization), and local extraction (near-zero after hardware online)
 
-**WHY THIS MATTERS**: Without support for both pricing models, acquisition logic cannot make correct decisions. The dependency chain:
-1. Economy layer computes reference price (NpcPriceCalculator.cost_based_bid)
-2. AI Manager uses price in cost comparisons (CostAnalyzer.compare_costs)
-3. Acquisition decides: buy local? import from Earth? escalate? → All depend on accurate pricing
-4. **If pricing doesn't distinguish EAP (Earth imports) from extraction-floor (local), cost comparisons fail**
-5. **If pricing is EAP-only, system breaks when local resources are extracted on any planet**
+The system must support location-aware triple-model pricing: consumable EAP (per location) + hardware CapEx amortization (per equipment type) + extraction-floor (per location after hardware deployed).
 
-**Scope**: Keep EAP for Earth imports; implement extraction break-even model for local resources on all planets
-- EAP remains: Permanent pricing for Earth imports to Luna
-- Extract break-even pricing formula: `(fuel+depreciation+energy+risk)/total_kg` per material type (for all local extraction)
+Building acquisition logic that assumes flat EAP, ignores CapEx hardware imports, or assumes location-independent pricing = breaking when deep-space expansion requires bootstrap hardware shipping or multi-planet trade.
+
+**WHY THIS MATTERS**: Without location-aware multi-model pricing, acquisition logic cannot make correct decisions. The dependency chain:
+1. Economy layer computes location-specific AND strategy-specific prices (consumable EAP vs hardware CapEx vs local extraction)
+2. AI Manager uses location+strategy prices in cost comparisons (CostAnalyzer.compare_costs: should we ship the factory or the consumable?)
+3. Acquisition decides: import consumables to Luna? import hardware to Mars? enable local extraction? → All depend on correct pricing MODEL
+4. **If pricing doesn't distinguish consumable EAP from hardware CapEx from extraction-floor, import decisions fail**
+5. **If pricing is flat/global and single-model, system breaks when moving from Luna bootstrap to deep-space multi-planet scenarios**
+
+**Scope**: Implement location-aware triple-model pricing (consumable EAP per location + hardware CapEx amortization + extraction-floor per location)
+- **EAP per location**: Earth Cost + Transport Cost to that specific location (Luna $100M, Mars $150M, Venus $200M, Ceres $180M, Titan $300M+, etc.) — used for consumables
+- **Hardware CapEx amortization**: Equipment import cost ÷ operational lifespan (e.g., $50M electrolysis plant ÷ 5 years = cost basis for effective local production) — used for factory/capabilities
+- **Extraction-floor per location**: Transport Anchor × 0.9 moat price (each location calculates its own moat ceiling once hardware is online) — competes with consumable EAP after bootstrap
+- **Bootstrap behavior**: New locations evaluate: "cheaper to import consumables (EAP) or import the factory (hardware CapEx)?" → AI Manager makes strategic choice based on amortization math
 - Fix per-location fee parity bug: BaseSettlement has SettlementFees concern; OrbitalSettlement missing
-- Refactor NpcPriceCalculator.cost_based_bid to support both EAP (Earth imports) and extraction-floor (local resources on any planet)
-- Document settlement fee structure and cost multipliers
+- Refactor NpcPriceCalculator.cost_based_bid to support three strategies and location awareness (not flat global prices)
+- Document settlement fee structure, location-specific cost multipliers, transport anchors, hardware CapEx examples, and bootstrap decision logic
 
 **Integration points** (these MUST work before Grok can implement acquisition gaps):
-- `app/services/market/npc_price_calculator.rb` — acquisition calls this; being refactored to support both EAP (Earth imports) and extraction-floor (local resources)
-- `app/services/market/tier1_price_modeler.rb` — EAP logic for Earth imports preserved; extraction-based formula added for local resources
-- `app/services/settlements/cost_analyzer.rb` — shortage detection depends on accurate pricing (EAP for Earth imports, extraction-floor for local)
-- `app/services/ai_manager/escalation_service.rb` — escalation thresholds must work for both Earth imports (EAP) and local extraction (extraction-floor)
+- `app/services/market/npc_price_calculator.rb` — acquisition calls this; being refactored for location-aware triple-model (consumable EAP per location + hardware CapEx + extraction-floor per location)
+- `app/services/market/tier1_price_modeler.rb` — EAP logic must calculate per location; CapEx amortization logic for hardware added
+- `app/services/settlements/cost_analyzer.rb` — shortage detection must be location-aware AND strategy-aware (compare local extraction vs consumable import vs hardware import TO THIS LOCATION)
+- `app/services/ai_manager/escalation_service.rb` — escalation thresholds must work per location and per strategy (synodic windows, transport costs, hardware payback period, availability changes)
 
-**Critical constraint** (Grok's requirement): Acquisition must NOT hard-code EAP assumptions or assume Earth imports are the only source. It calls NpcPriceCalculator/CostAnalyzer and remains agnostic to which pricing model applies. When Gemini adds extraction-floor support for local resources, acquisition auto-adapts.
+**Critical constraint** (Grok's requirement): Acquisition must NOT assume flat pricing, location-independent costs, or single-model (consumable-only) logic. It calls NpcPriceCalculator/CostAnalyzer with location AND strategy context and remains agnostic to calculation method. When Gemini implements location-aware triple-model, acquisition auto-adapts to any location, any transport scenario, and any bootstrap strategy (consumable-heavy vs hardware-heavy).
 
-**Status**: Audit + planning docs completed 2026-09-07 at `summaries/2026-09-07-RESEARCH-MARKET-*.md`
+**Status**: Audit + planning docs completed 2026-09-07 at `summaries/2026-09-07-RESEARCH-MARKET-*.md`; location-aware matrix, CapEx amortization math, and bootstrap decision logic documented by Gemini/Tracy sample
 **Pricing priority order** (locked, not changing): atmospheric gases → regolith → mining+ISRU → imports
 
 ---
