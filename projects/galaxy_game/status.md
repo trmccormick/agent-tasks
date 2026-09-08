@@ -37,29 +37,29 @@ Path through the code:
 - **Blocks**: Material Sourcing & Acquisition Architecture task (`backlog/ai-manager/2026-09-03-...`) — remains DRAFT until Tracy advances this.
 
 ### 🆕 Economy Subsystem Refactor — PLANNING STAGE (Gemini lead) — **BLOCKER FOR GROK**
-**⚠️ CRITICAL CONTEXT**: EAP (Earth Anchor Price) was **only designed as Luna bootstrap**, not a long-term solution. It must be replaced with extraction-based pricing (TCO/break-even floor) before expanding to other planets. Building acquisition logic on EAP assumptions = throwaway code when EAP is deprecated.
+**⚠️ CRITICAL CONTEXT**: EAP (Earth Anchor Price) is **the Luna bootstrap mechanism** — it's kept for Luna initialization but is NOT the long-term solution for scaling to other planets. Extraction-based pricing (break-even floors) is required for multi-planet systems. Building acquisition logic that assumes EAP works everywhere = breaking when expanding beyond Luna.
 
-**WHY THIS MATTERS**: Without valid pricing formulas, acquisition logic cannot make correct decisions. The dependency chain:
+**WHY THIS MATTERS**: Without valid pricing formulas for multi-planet scenarios, acquisition logic cannot make correct decisions. The dependency chain:
 1. Economy layer computes reference price (NpcPriceCalculator.cost_based_bid)
 2. AI Manager uses price in cost comparisons (CostAnalyzer.compare_costs)
 3. Acquisition decides: buy local? import? escalate? → All depend on accurate pricing
 4. **If pricing is wrong, escalation fails, import decisions fail, budgets blow**
-5. **If pricing is EAP-based, system breaks when moving beyond Luna**
+5. **If pricing is EAP-only, system breaks when expanding to Mars, Venus, etc.**
 
-**Scope**: Transition from EAP (temporary Luna bootstrap) to extraction break-even model (permanent, multi-planet solution)
-- Extract break-even pricing formula: `(fuel+depreciation+energy+risk)/total_kg` per material type
+**Scope**: Keep EAP for Luna bootstrap; implement extraction break-even model for multi-planet scalability
+- EAP remains: Luna market initialization mechanism
+- Extract break-even pricing formula: `(fuel+depreciation+energy+risk)/total_kg` per material type (for other planets)
 - Fix per-location fee parity bug: BaseSettlement has SettlementFees concern; OrbitalSettlement missing
-- Refactor NpcPriceCalculator.cost_based_bid to enforce new extraction floors
+- Refactor NpcPriceCalculator.cost_based_bid to support both EAP (Luna) and extraction-floor (other planets)
 - Document settlement fee structure and cost multipliers
-- **Delete or deprecate EAP-specific code** when extraction floors are ready
 
 **Integration points** (these MUST work before Grok can implement acquisition gaps):
-- `app/services/market/npc_price_calculator.rb` — acquisition calls this; being refactored (EAP → extraction-floor)
-- `app/services/market/tier1_price_modeler.rb` — EAP logic replaced with extraction-based formula
-- `app/services/settlements/cost_analyzer.rb` — shortage detection depends on accurate pricing (not EAP assumptions)
-- `app/services/ai_manager/escalation_service.rb` — escalation thresholds computed from real pricing (not Earth import cost)
+- `app/services/market/npc_price_calculator.rb` — acquisition calls this; being refactored to support both EAP (Luna) and extraction-floor (multi-planet)
+- `app/services/market/tier1_price_modeler.rb` — EAP logic for Luna preserved; extraction-based formula added for other planets
+- `app/services/settlements/cost_analyzer.rb` — shortage detection depends on accurate pricing (EAP for Luna, extraction floors for others)
+- `app/services/ai_manager/escalation_service.rb` — escalation thresholds must work for both Luna (EAP) and other planets (extraction-floor)
 
-**Critical constraint** (Grok's requirement): Acquisition must NOT embed pricing logic or EAP assumptions. It calls NpcPriceCalculator/CostAnalyzer and remains agnostic to formula (EAP/TCO/extraction-floor). When Gemini replaces EAP with extraction floors, acquisition auto-integrates.
+**Critical constraint** (Grok's requirement): Acquisition must NOT hard-code EAP assumptions or assume it's the only pricing model. It calls NpcPriceCalculator/CostAnalyzer and remains agnostic to formula (EAP for Luna, extraction-floor for multi-planet). When Gemini adds extraction-floor support, acquisition auto-adapts.
 
 **Status**: Audit + planning docs completed 2026-09-07 at `summaries/2026-09-07-RESEARCH-MARKET-*.md`
 **Pricing priority order** (locked, not changing): atmospheric gases → regolith → mining+ISRU → imports
