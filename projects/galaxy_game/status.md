@@ -24,6 +24,14 @@
 - **Gaps to close**: EAP enforcement, cycler/resupply preference, excess-listing-after-self-harvest, unified "can afford", remove placeholder `base_prices`.
 - **Blocks**: Material Sourcing & Acquisition Architecture task (`backlog/ai-manager/2026-09-03-...`) — remains DRAFT until Tracy advances this.
 
+### 🆕 Economy Subsystem Refactor — PLANNING STAGE (Gemini lead)
+- **Status**: Audit + planning documents completed 2026-09-07
+- **Scope**: Transition from EAP (Earth Anchor Price) bootstrap to TCO/Amortized CapEx model for local extraction
+- **Documents**: `summaries/2026-09-07-RESEARCH-MARKET-ECONOMY-PRICING-BACKLOG-AUDIT.md` + `backlog/economy/2026-09-07-PLANNING-OVERVIEW-ECONOMIC-SUBSYSTEM.md`
+- **Key work**: Extraction break-even pricing formula, per-location fee parity fix (OrbitalSettlement), NpcPriceCalculator refactor
+- **Cross-check needed**: When Gemini advances pricing floors, validate against Grok's Path B acquisition assumptions
+- **Pricing priority order** (locked, not changing): atmospheric gases → regolith → mining+ISRU → imports
+
 ---
 
 ## 📋 Active Tasks: 0
@@ -113,6 +121,13 @@
 
 ## 🔴 Pending Handoff to Grok (AI Manager Development Lead)
 
+### ⚠️ CROSS-AGENT COORDINATION: Gemini Economy Work
+- **Important**: Gemini is refactoring pricing floors (extraction break-even model) in parallel with Grok's AI Manager work
+- **Impact on Path B**: Pricing assumptions in Acquisition Canonical Path decision may change when Gemini's extraction floors are implemented
+- **Action**: When Grok reviews Path B, note that `NpcPriceCalculator.cost_based_bid` floor for harvested resources will be `(fuel+depreciation+energy+risk)/kg`, not Earth import cost
+- **Coordination point**: Current `ImportRequestGenerator` cost comparisons (used in shortage detection) will need validation against new extraction pricing
+- **Timeline**: Gemini's work is in planning stage; audit + overview docs ready for review at `/summaries/2026-09-07-RESEARCH-MARKET-*.md`
+
 ### Material Sourcing Convention (Pass to Grok)
 - **Issue**: Material JSON had hardcoded location keys (`lunar/martian/earth`) — doesn't scale to procedural worlds
 - **Convention**: Materials carry recipes/pricing, NOT sourcing options; routing is runtime AI Manager decision
@@ -124,6 +139,7 @@
 - **Key constraint**: Travel time + transport cost drive ISRU-first strategy
 - **Scope**: Requires runtime implementation; architecture defined, not yet coded
 - **Integration point**: ProcurementService when AI Manager needs material
+- **Note**: When Gemini's extraction pricing lands, this cost comparison logic will use new floors automatically (via NpcPriceCalculator.cost_based_bid)
 
 ---
 
