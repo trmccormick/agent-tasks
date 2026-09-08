@@ -1,5 +1,5 @@
 # Operational Guardrails
-**Last Updated**: 2026-09-03
+**Last Updated**: 2026-09-06
 **Maintained By**: Session Strategist (Claude)
 
 > Read before every task. These rules are non-negotiable.
@@ -160,14 +160,40 @@ For large suites redirect to a log file:
 docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec [spec] 2>&1 | tee /tmp/rspec_output.log && tail -30 /tmp/rspec_output.log'
 ```
 
-### Rule 10 — Host vs Docker Paths
-The host path and Docker path are different:
-- **Host**: `~/Documents/git/galaxyGame/galaxy_game/app/models/...`
-- **Docker**: `/home/galaxy_game/app/models/...` (working directory root)
-Always use the correct path context for commands and file references.
-Task files use Docker paths for commands, host paths for git operations.
-Do NOT include `/home/galaxy_game` prefix in docker exec commands — it is the
-container working directory and is already active.
+### Rule 10 — Host vs. Container Path Prefixes
+**Applies to all agents on all projects.**
+
+Any project using Docker volume mounts will have paths that look different
+depending on where a command runs — the same file can appear at one prefix
+on the host and a different prefix inside a container. Neither prefix is
+"wrong"; they're relative to different vantage points, and mixing them in
+the same command, or citing one context's path while running in the other,
+is a common agent error (and a specific source of confusion when a
+project's `docker-compose.yml` mounts a data directory into the container
+under a DIFFERENT name than it has on the host — see below).
+
+**Before citing or acting on any file path:**
+1. Confirm which context you're actually in — a host shell, or
+   `docker exec`/`docker compose exec` into a specific container.
+2. Check that project's path-mapping reference (each project's own
+   session-start doc, e.g. `CLAUDE_SESSION_START.md`) for its actual
+   host↔container mount table before assuming a path is missing.
+3. Use that context's prefix consistently for the rest of the command —
+   don't blend host-relative and container-relative segments.
+4. Task files generally use container paths for commands (matching the
+   working directory a command actually executes in) and host paths for
+   git operations (since git runs on the host regardless of container
+   state) — check the specific project's convention if unsure.
+
+**If a search/grep/find comes back empty**, consider whether you're
+searching the wrong prefix for your current context before concluding a
+file doesn't exist.
+
+**Why this matters**: agents that assume one universal path convention
+report real files as missing, producing incorrect STATUS SYNTHESIS reports
+and wasted implementation cycles. This has happened on multiple projects —
+the fix is checking context each time, not memorizing one project's
+specific mapping into general habit.
 
 ---
 
@@ -468,35 +494,13 @@ If an agent cannot fix a file incrementally and wants to recreate it:
 The human may choose to provide a replacement file directly rather than
 authorizing the agent to recreate it.
 
-### Rule 27 — JSON Mission Data Path (Galaxy Game)
-**Applies to all agents working on galaxy_game mission/task/profile JSON files.**
-
-Galaxy Game has two data locations that agents consistently confuse:
-
-| Location | What lives there |
-|----------|-----------------|
-| `galaxy_game/app/` | Ruby source code, specs, initializers |
-| `data/json-data/` | ALL mission JSON files (tasks_v2, phases, profiles, manifests, blueprints) |
-
-**`data/json-data/` is at the repo root — NOT inside `galaxy_game/`.**
-
-```bash
-# Correct path to mission data:
-/Users/tam0013/Documents/git/galaxyGame/data/json-data/missions/tasks_v2/
-/Users/tam0013/Documents/git/galaxyGame/data/json-data/missions/luna_base_establishment/
-
-# Wrong — agents often search here and find nothing:
-/Users/tam0013/Documents/git/galaxyGame/galaxy_game/data/json-data/   # DOES NOT EXIST
-/Users/tam0013/Documents/git/galaxyGame/galaxy_game/app/data/         # DOES NOT EXIST
-```
-
-**When searching for JSON files, always search from repo root:**
-```bash
-find /Users/tam0013/Documents/git/galaxyGame/data -name "task_*.json" | head -20
-find /Users/tam0013/Documents/git/galaxyGame -name "luna_settlement_profile*.json" 2>/dev/null
-```
-
-**Why this matters**: Agents that only search inside `galaxy_game/` will report files as missing when they exist at the repo root. This has caused incorrect STATUS SYNTHESIS reports and wasted implementation cycles.
+### Rule 27 — MERGED INTO RULE 10
+This rule (formerly project-specific host/container path guidance) has been
+merged into **Rule 10 — Host vs. Container Path Prefixes** above, which
+states the general principle for all projects. Project-specific path
+mapping tables (e.g. Galaxy Game's `data/json-data/` ↔ `app/data/` mount)
+now live in that project's own `CLAUDE_SESSION_START.md`, not here — this
+file states the pattern, each project documents its own specifics.
 
 ---
 
@@ -535,13 +539,52 @@ When you have confirmed a task in `active/` is genuinely stale (per the check ab
 
 **Confirmed violation, 2026-07-08**: Planning Agent deleted 3 stale active tasks without reviewing them for completed work. One task (Monitor Canvas) had a fully implemented spec with 9 passing tests that was staged but never committed. The task file was lost until restored from Time Machine. This rule prevents loss of completed work and duplicate task creation by agents that recreate tasks instead of following the lifecycle protocol.
 
-### Rule 28 — Never Force-Add Anything Under `data/`
-**Applies to all agents, all roles, all supervision tiers.**
+### Rule 28 — Never Bypass a Gitignore Boundary
+**Applies to all agents, all roles, all supervision tiers, all projects.**
 
-The entire `data/` directory is intentionally gitignored (Time Machine-backed, not git-backed) because its contents — blueprints, images, tech_tree, operational_data, everything — are under active churn. `git add -f` on any file under this path is never correct, regardless of file type or how confident the change feels. If tracking a specific data file ever becomes genuinely necessary, that's a decision for Tracy to make explicitly, not something an agent decides mid-task by overriding the gitignore.
+Any directory a project has gitignored (commonly a `data/`-style path holding
+assets, blueprints, generated content, or anything under active churn) is
+gitignored **on purpose** — usually because it's backed by a different
+mechanism entirely (Time Machine, object storage, regeneration from source),
+not because nobody got around to tracking it. Treat every gitignore
+boundary as intentional until told otherwise by the human, never as an
+obstacle to route around.
 
-**Confirmed violations:**
-- **2026-07-31**: Agent force-added sprite images under `data/images/` after noticing gitignore during asset pipeline debugging. Treated gitignore as an obstacle to route around rather than a boundary to respect.
-- **2026-08-02**: Agent force-added blueprint JSON files under `data/json-data/` for the same reason — gitignore seen as something to override, not a signal to stop and ask.
+**This means, without exception, unless the human explicitly authorizes it
+for a specific file in the current session:**
+- Never `git add -f` (or any force-flag equivalent) on a gitignored path
+- Never `git mv` on an untracked file to "make the rename show up in git" —
+  gitignored files aren't tracked, so there's nothing for git to move; use
+  plain `mv`/`cp`/`rm` instead
+- Never edit or remove a project's `.gitignore` entry to bring a path into
+  tracking as a workaround
+- Never rationalize an exception ("this one file is important," "it's just
+  this once," "the change feels safe") — the importance or safety of a
+  specific change is exactly the kind of judgment call that belongs to the
+  human, not a reason to self-authorize an override
 
-**Two incidents in two days on two different file types (sprite images + blueprint JSON) from the same failure pattern:** an agent notices `data/` is gitignored, treats it as an obstacle rather than a boundary, and force-adds anyway. If an agent is about to force-add anything under `data/`, that instinct itself is the signal to stop and ask Tracy, not proceed.
+**If you notice yourself about to force a gitignored file into git in any
+form, that instinct itself is the signal to stop and ask the human — not
+a problem to solve by finding the right flag.** If tracking a specific file
+ever becomes genuinely necessary, that's a human decision made explicitly
+and deliberately, not something worked out mid-task.
+
+**Confirmed violations (Galaxy Game project, both `data/`):**
+- **2026-07-31**: Agent force-added sprite images under `data/images/` after
+  noticing gitignore during asset pipeline debugging. Treated gitignore as
+  an obstacle to route around rather than a boundary to respect.
+- **2026-08-02**: Agent force-added blueprint JSON files under
+  `data/json-data/` for the same reason — gitignore seen as something to
+  override, not a signal to stop and ask.
+- **2026-09-06**: Agent attempted `git mv` on an untracked file under a
+  gitignored data path during a rename task — not a force-add, but the
+  same underlying instinct to route a gitignored file through git rather
+  than treating the boundary as intentional.
+
+**Three incidents across two months, same underlying failure pattern**
+regardless of which specific git command was used to attempt it: an agent
+notices a gitignore boundary, treats it as incidental rather than
+intentional, and tries to work around it instead of stopping to ask. This
+pattern is not specific to one project — apply this rule on any project
+with a gitignored data path, and treat a recurrence on a new project as
+seriously as a repeat on this one.

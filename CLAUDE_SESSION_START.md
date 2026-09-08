@@ -14,6 +14,30 @@ Claude has no filesystem or terminal access to the actual repo — everything Cl
 2. **`status.md`** only if `NEEDS_REVIEW.md` references something needing more context, or Tracy asks about overall project state. Don't read it by default — it's a full log, not a briefing.
 3. **Individual task files / code / transcripts** only when `NEEDS_REVIEW.md`'s entry doesn't have enough detail to decide. Ask for the specific thing, not "paste the whole session."
 
+## Path Mapping (Galaxy Game)
+
+Per `docker-compose.dev.yml`, these host paths are volume-mounted into the
+`web` container at different prefixes — see GUARDRAILS.md Rule 10 for the
+general host/container path-context discipline this table supports.
+
+| Host | Container (`web`, cwd `/home/galaxy_game`) |
+|------|---------------------------------------------|
+| `data/json-data/` | `app/data/` |
+| `data/maps/` | `app/data/maps/` |
+| `data/tilesets/` | `app/data/tilesets/` |
+| `data/geotiff/` | `app/data/geotiff/` |
+| `data/images/` | `app/data/images/` |
+| `data/logs/` | `log/` |
+
+`data/json-data/` and `galaxy_game/app/` are BOTH at the repo root, not
+nested inside each other. `galaxy_game/data/json-data/` and
+`galaxy_game/app/data/` do not exist on the host — a search there will
+always come back empty; search from the repo root instead.
+
+The entire `data/` tree (either prefix) is gitignored — see GUARDRAILS.md
+Rule 28. Never `git mv`/`git add -f`/`git commit` anything under this path
+in either form; use plain `mv`/`cp`/`rm`.
+
 ## Asset Generation Availability (Standing Rule)
 
 ChatGPT image-generation session time is a capped/limited resource — unlike Qwen (code) work, which can be done anytime, image-gen capacity is not always available on demand. When a session touches asset-pipeline work, check early what's actually feasible to generate that day rather than queuing up an open-ended asset list and assuming it'll all get done. Plan asset work around the available window, not the other way around.
@@ -50,8 +74,8 @@ This keeps "make sure the task is well-specified" and "start the work" as two di
 
 ## What Claude Should Proactively Flag
 
-- **Data path bugs:** Watch for data files landing in tracked app directories vs gitignored data directories (e.g., `data/json-data/` top-level vs `<app>/data/json-data/`). This exact bug has recurred multiple times. Any task touching JSON data files needs this checked. AND for `git add -f` being used to force-track anything under `data/` that should stay untracked. Both are the same underlying failure: treating `data/`'s gitignore boundary as incidental rather than intentional.
-- **`git add -f` on anything under `data/json-data/`:** always wrong. That path is gitignored by design; forcing it into tracking is the bug, not a workaround.
+- **Data path bugs:** Watch for data files landing in tracked app directories vs gitignored data directories, or an agent confusing host and container path prefixes for the same file (see Path Mapping table above; general principle in GUARDRAILS.md Rule 10). This exact bug has recurred multiple times. Any task touching JSON data files needs this checked.
+- **Any attempt to route a gitignored file through git — `git add -f`, `git mv` on an untracked file, editing `.gitignore` itself:** always wrong regardless of which specific command is used. See GUARDRAILS.md Rule 28 (hardened 2026-09-06 after a third incident) — the gitignore boundary is intentional, not incidental, and no mid-task rationalization overrides it.
 - **Claims of "complete" without independent re-verification** in the same session — a fix that was reasoned about but never re-tested is not confirmed.
 - **Green tests are not sufficient verification for a live-behavior claim.** A service can have a fully passing RSpec suite while actively crashing in a real triggering run (e.g. a private-method-visibility bug that unit tests never exercised the way a live multi-call simulation did). When a fix touches runtime behavior — caching, cross-instance calls, anything order-dependent — ask whether it's been confirmed with an actual run, not just a green suite.
 - **Visual/asset claims validated only by non-visual tests** — RSpec passing on structure doesn't confirm a generated image, sprite, or rendered output actually looks right. Ask whether anyone looked at the output.
