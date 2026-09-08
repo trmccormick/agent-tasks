@@ -22,6 +22,7 @@
 - **Path A deprecation**: Keep ISRU/`can_produce_locally?` check; deprecate no-op market path.
 - **Service boundaries**: EscalationService = shortage/emergency/strategy; Path B = execution; ProcurementService = local-capability check only.
 - **Gaps to close**: EAP enforcement, cycler/resupply preference, excess-listing-after-self-harvest, unified "can afford", remove placeholder `base_prices`.
+- **CRITICAL CONSTRAINT** (Grok, 2026-09-07): DO NOT hard-code pricing multipliers or formulas in acquisition logic. Acquisition should call NpcPriceCalculator/CostAnalyzer for reference pricing and remain agnostic to exact formula (EAP/TCO/extraction-floor). Pricing formula is economy subsystem concern; acquisition only consumes the interface.
 - **Blocks**: Material Sourcing & Acquisition Architecture task (`backlog/ai-manager/2026-09-03-...`) — remains DRAFT until Tracy advances this.
 
 ### 🆕 Economy Subsystem Refactor — PLANNING STAGE (Gemini lead)
@@ -128,6 +129,21 @@
 - **Coordination point**: Current `ImportRequestGenerator` cost comparisons (used in shortage detection) will need validation against new extraction pricing
 - **Timeline**: Gemini's work is in planning stage; audit + overview docs ready for review at `/summaries/2026-09-07-RESEARCH-MARKET-*.md`
 
+### ⚠️ CRITICAL: Pricing Interface (Not Formula) — Grok's Guidance
+- **Grok's constraint** (2026-09-07): Acquisition logic must NOT hard-code pricing multipliers or assume EAP is permanent reference
+- **What acquisition needs**: A stable interface to "current reference price" — whatever economy subsystem provides (EAP, TCO, extraction-floor, etc.)
+- **What acquisition calls**: `NpcPriceCalculator.cost_based_bid`, `CostAnalyzer.compare_costs`, etc. — remains agnostic to the formula inside
+- **Stable behavior** (independent of pricing formula):
+  1. Maintain intentional stockpiles (proactive, not reactive)
+  2. Buy orders default (player-first) well before emergency
+  3. Local production only when market path fails or clearly inferior
+  4. List excess after self-production
+  5. Prefer cycler/resupply wait on normal shortages
+  6. Emergency escalates only when time demands it
+  7. Survival guaranteed when players absent
+  8. Material data stays facility-based; no location-keyed sourcing
+- **Implication**: When Gemini's pricing-floor refactor lands, acquisition logic automatically uses new formula (no rewiring needed) because it calls the interface, not the formula
+
 ### Material Sourcing Convention (Pass to Grok)
 - **Issue**: Material JSON had hardcoded location keys (`lunar/martian/earth`) — doesn't scale to procedural worlds
 - **Convention**: Materials carry recipes/pricing, NOT sourcing options; routing is runtime AI Manager decision
@@ -139,7 +155,7 @@
 - **Key constraint**: Travel time + transport cost drive ISRU-first strategy
 - **Scope**: Requires runtime implementation; architecture defined, not yet coded
 - **Integration point**: ProcurementService when AI Manager needs material
-- **Note**: When Gemini's extraction pricing lands, this cost comparison logic will use new floors automatically (via NpcPriceCalculator.cost_based_bid)
+- **Note**: Calls NpcPriceCalculator/CostAnalyzer interface (not embedded pricing logic) — remains stable as Gemini's formula evolves
 
 ---
 
