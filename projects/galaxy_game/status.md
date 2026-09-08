@@ -8,6 +8,17 @@
 
 ## 🟢 Current Work (2026-09-07)
 
+### ⚠️ CRITICAL INTEGRATION: Economy System ↔ AI Manager Acquisition
+**The economy subsystem is NOT optional to AI Manager work — it is foundational.**
+
+Path through the code:
+1. **Economy layer** (Gemini): Computes reference price via NpcPriceCalculator.cost_based_bid (formula = EAP → TCO → extraction-floor)
+2. **Cost comparison** (used by AI Manager): CostAnalyzer.compare_costs (local vs import), ImportRequestGenerator
+3. **Acquisition decisions** (Grok): Buy order pricing, escalation thresholds, import fallback decisions, excess-listing decisions
+4. **Result**: If pricing formula is wrong, acquisition strategy fails (wrong escalation point, wrong import decision, budget blown)
+
+**Gemini's work directly enables Grok's work.** No proper pricing floor → AI Manager cannot distinguish between "sane market price" and "price gouge" → escalation fails → resource crisis when it shouldn't happen.
+
 ### AI Manager Acquisition Surface Inventory — COMPLETED ✅
 - **Task**: `2026-09-01-LOW-RESEARCH-AI-MANAGER-SERVICE-INVENTORY-AND-GAPS.md`
 - **Synthesis Report**: `summaries/2026-09-07-RESEARCH-AI-MANAGER-SERVICE-INVENTORY-AND-GAPS.md`
@@ -25,13 +36,29 @@
 - **CRITICAL CONSTRAINT** (Grok, 2026-09-07): DO NOT hard-code pricing multipliers or formulas in acquisition logic. Acquisition should call NpcPriceCalculator/CostAnalyzer for reference pricing and remain agnostic to exact formula (EAP/TCO/extraction-floor). Pricing formula is economy subsystem concern; acquisition only consumes the interface.
 - **Blocks**: Material Sourcing & Acquisition Architecture task (`backlog/ai-manager/2026-09-03-...`) — remains DRAFT until Tracy advances this.
 
-### 🆕 Economy Subsystem Refactor — PLANNING STAGE (Gemini lead)
-- **Status**: Audit + planning documents completed 2026-09-07
-- **Scope**: Transition from EAP (Earth Anchor Price) bootstrap to TCO/Amortized CapEx model for local extraction
-- **Documents**: `summaries/2026-09-07-RESEARCH-MARKET-ECONOMY-PRICING-BACKLOG-AUDIT.md` + `backlog/economy/2026-09-07-PLANNING-OVERVIEW-ECONOMIC-SUBSYSTEM.md`
-- **Key work**: Extraction break-even pricing formula, per-location fee parity fix (OrbitalSettlement), NpcPriceCalculator refactor
-- **Cross-check needed**: When Gemini advances pricing floors, validate against Grok's Path B acquisition assumptions
-- **Pricing priority order** (locked, not changing): atmospheric gases → regolith → mining+ISRU → imports
+### 🆕 Economy Subsystem Refactor — PLANNING STAGE (Gemini lead) — **BLOCKER FOR GROK**
+**WHY THIS MATTERS**: Without valid pricing formulas, acquisition logic cannot make correct decisions. The dependency chain:
+1. Economy layer computes reference price (NpcPriceCalculator.cost_based_bid)
+2. AI Manager uses price in cost comparisons (CostAnalyzer.compare_costs)
+3. Acquisition decides: buy local? import? escalate? → All depend on accurate pricing
+4. **If pricing is wrong, escalation fails, import decisions fail, budgets blow**
+
+**Scope**: Transition from EAP (Earth Anchor Price) bootstrap to TCO/Amortized CapEx model for local extraction
+- Extract break-even pricing formula: `(fuel+depreciation+energy+risk)/total_kg` per material type
+- Fix per-location fee parity bug: BaseSettlement has SettlementFees concern; OrbitalSettlement missing
+- Refactor NpcPriceCalculator.cost_based_bid to enforce new extraction floors
+- Document settlement fee structure and cost multipliers
+
+**Integration points** (these MUST work before Grok can implement acquisition gaps):
+- `app/services/market/npc_price_calculator.rb` — acquisition calls this; being refactored
+- `app/services/market/tier1_price_modeler.rb` — EAP logic → new formula
+- `app/services/settlements/cost_analyzer.rb` — shortage detection depends on accurate pricing
+- `app/services/ai_manager/escalation_service.rb` — escalation thresholds from pricing
+
+**Critical constraint** (Grok's requirement): Acquisition must NOT embed pricing logic. It calls NpcPriceCalculator/CostAnalyzer and remains agnostic to formula (EAP/TCO/extraction-floor). When Gemini's formula changes, acquisition auto-integrates.
+
+**Status**: Audit + planning docs completed 2026-09-07 at `summaries/2026-09-07-RESEARCH-MARKET-*.md`
+**Pricing priority order** (locked, not changing): atmospheric gases → regolith → mining+ISRU → imports
 
 ---
 
