@@ -68,7 +68,29 @@ Path through the code:
 
 ---
 
-## 📋 Current Backlog — Ready for Dispatch
+## � PRIORITY SEQUENCING (Critical Blocker Ordering)
+
+**DO NOT dispatch additional AI Manager implementation work until Gemini's economy subsystem work advances.**
+
+**Sequence**:
+1. ✅ **PHASE 1** (Completed): AI Manager Acquisition Surface Inventory + Canonical Path Decision
+2. 🟡 **PHASE 2 (BLOCKING)**: Economy Subsystem Refactor (Gemini)
+   - Task location: `backlog/economy/2026-09-07-PLANNING-OVERVIEW-ECONOMIC-SUBSYSTEM.md`
+   - Must deliver: Extraction break-even pricing formula implemented in NpcPriceCalculator.cost_based_bid
+   - Must deliver: SettlementFees parity fix (OrbitalSettlement)
+   - Blocks: All of Phase 3
+3. 🔒 **PHASE 3 (Blocked)**: AI Manager Acquisition Implementation (Grok)
+   - Task location: Material Sourcing & Acquisition Architecture (in `backlog/ai-manager/`)
+   - Cannot proceed until: Gemini's pricing interface is stable and tested
+   - Depends on: Valid extraction break-even floors in NpcPriceCalculator
+
+**Why this matters**: Grok's acquisition logic will be broken if it's implemented against EAP-only pricing. The AI Manager must wait for Gemini's extraction floors before finalizing buy-order pricing, escalation thresholds, and import-fallback logic.
+
+**Next action**: Assign Gemini to Economy work; monitor for NpcPriceCalculator refactor commits; when complete, validate CostAnalyzer + ImportRequestGenerator against new pricing before proceeding with Grok's implementation.
+
+---
+
+## �📋 Current Backlog — Ready for Dispatch
 
 ### 🆕 Asset/UI Workstream (2026-09-01) — HELD / READY FOR REVIEW
 | Task | Location | Notes |
@@ -83,6 +105,11 @@ Path through the code:
 | **Fabrication Plant Blueprint** | `backlog/current/2026-08-20-HIGH-DATA-CREATE-FABRICATION-PLANT-BLUEPRINT.md` | DEFERRED (Phase 11+) — do not dispatch until Phase 11+ work begins |
 | **Orbital Mechanics Data Layer** | `backlog/current/2026-08-19-HIGH-FEATURE-ORBITAL-MECHANICS-DATA-LAYER.md` | Phase 1-4 complete, Phase 5 pending |
 | **Launch Window + Transit Timing Engine** | `backlog/current/2026-08-18-HIGH-FEATURE-LAUNCH-WINDOW-TRANSIT-TIMING-ENGINE.md` | Architecture feature |
+
+### 🔴 **BLOCKED** — Waiting for Economy Subsystem Work
+| Task | Location | Notes |
+|------|----------|-------|
+| **Material Sourcing & Acquisition Architecture** | `backlog/ai-manager/2026-09-03-ADJUSTMENT-MATERIAL-SOURCING-AND-ACQUISITION-LOGIC.md` | 🔒 **BLOCKED until Gemini completes NpcPriceCalculator refactor** — Grok cannot implement canonical path acquisition logic until pricing interface is stable |
 
 ### MEDIUM Priority
 | Task | Location | Notes |
