@@ -265,7 +265,7 @@
 | Task | Location | Notes |
 |------|----------|-------|
 | **Classify 19 Blueprints** | `backlog/current/2026-08-16-MEDIUM-RESEARCH-CLASSIFY-19-BLUEPRINTS-OPERATIONAL-DATA.md` | NEEDS_REVIEW #4 |
-| **CNT Fabricator Collision** | `backlog/current/2026-08-16-MEDIUM-INVESTIGATE-CNT-FABRICATOR-NAMING-COLLISION.md` | NEEDS_REVIEW #5 |
+| **CNT Fabricator Collision** | `completed/2026-08/2026-08-16-MEDIUM-INVESTIGATE-CNT-FABRICATOR-NAMING-COLLISION.md` | ✅ RESOLVED (commit `90b13fc`) |
 | **Material Thermal Properties Data Gap** | `backlog/current/2026-08-16-MEDIUM-BUG-FIX-MATERIAL-THERMAL-PROPERTIES-DATA-SOURCE-GAP.md` | ✅ COMPLETED (moved to completed/) |
 
 ### LOW Priority
@@ -288,7 +288,7 @@
 | 2 | 07-31 | Gemini Lava Tube Outpost specs review gaps | **OPEN** |
 | 3 | 08-01 | Unit naming conventions (mk{num} vs codenames) — blocked on wiki reorg | **OPEN** |
 | 4 | 08-02 | 19 renamed blueprints have no operational data | **OPEN** — task filed, backlog/current |
-| 5 | 08-02 | Possible CNT fabricator naming collision | **OPEN** — task filed, backlog/current |
+| 5 | 08-02 | Possible CNT fabricator naming collision | **RESOLVED** — industrial variant renamed to `cnt_industrial_weaver_mk1`; see completed/2026-08/2026-08-16-MEDIUM-INVESTIGATE-CNT-FABRICATOR-NAMING-COLLISION.md |
 | 6 | 08-05 | Magnetosphere: 41 bodies defaulting to 0.5 | **OPEN** — low urgency, surface when Task 2 runs |
 | 7 | 08-15 | **FABRICATED COMPLETION**: Data-driven celestial body task claims done but `calculate_magnetosphere_strength()` is a stub (baseline + 0.0s), test count was 30/0 not claimed 40/0 | **OPEN** — critical trust issue; see re-opened task file for details |
 | 8 | 08-22 | **Oxygen fixture chain-tracing**: Storage-bucket fix makes test pass but O2 may short-circuit real ISRU chain (TEU→PVE) | **OPEN** — Claude handoff #1A pending verification |
