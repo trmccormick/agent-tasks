@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: MEDIUM
 type: architecture
 system_domain: MANUFACTURING
@@ -229,7 +229,7 @@ git mv projects/galaxy_game/tasks/backlog/research/2026-09-09-MEDIUM-RESEARCH-MA
 ```
 
 Then open the moved file and change the YAML status field:
-status: backlog → status: active
+status: active → status: active
 
 text
 
