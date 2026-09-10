@@ -299,7 +299,8 @@
 ### 🆕 Asset/UI Workstream (2026-09-01) — HELD / READY FOR REVIEW
 | Task | Location | Notes |
 |------|----------|-------|
-| **Asset/UI Tasks A1–A6, B1–B3, C1–C5, D1–D3** (17 files) | `backlog/current/2026-08-31-*-ASSET-UI-*.md` | Created, content-verified, prerequisite gaps fixed. Undispatched. A1 is the natural starting point. |
+| **Asset/UI Tasks A1–A6, B1–B3, C1–C5, D1–D3** (17 files) | `backlog/asset-ui/2026-08-31-*-ASSET-UI-*.md` | Reorganized 2026-09-07 (commit `75f900f`) from `backlog/current/` → `backlog/asset-ui/`. All status: backlog. Undispatched. A1 is the natural starting point. |
+| **Asset Generation Standalone** (1 file) | `backlog/asset-ui/2026-09-06-HIGH-FEATURE-ASSET-GENERATION-STANDALONE-EXECUTION.md` | Sep 6 standalone task — status: backlog. Undispatched. |
 
 
 ### HIGH Priority
