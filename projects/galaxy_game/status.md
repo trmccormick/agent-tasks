@@ -41,13 +41,18 @@
   - All three files committed to agent-tasks repo (commit `734d82b`)
 - **Status**: Corrected but NOT yet dispatched — await human review before dispatch
 
-### RH-400 Blueprint Audit — Read-Only Findings ✅
-- **Finding**: Two separate blueprints for the same intended unit with conflicting data:
-  - `hrv_400_resource_harvester_mk1_bp.json` (id: `hrv_400_resource_harvester_mk1`) — stale dimensions 4.5×3.2×2.8m, 850kg
-  - `regolith_harvesting_rover_bp.json` (id: `regolith_harvester_rover`) — correct July-updated dimensions 6.80×3.30×2.65m, 22,800kg
-- **Visual Definition** `blueprint_ref` points to `regolith_harvester_rover` (the correct one)
-- **Operational data** exists at `data/json-data/operational_data/units/robots/resource/hrv_400_resource_harvester_mk1_data.json`
-- **No cross-references** between the two blueprints — safe to flag stale file for cleanup
+### RH-400 Visual Profile / Blueprint Contract Audit — COMPLETED ✅
+- **Task**: `2026-09-09-HIGH-RESEARCH-RH400-VISUAL-PROFILE-CONTRACT-AUDIT.md`
+- **Finding**: Two contract mismatches between PromptCompiler and actual RH-400 data artifacts:
+  - PromptCompiler expects blueprint to have `visual_profile` field — RH-400 blueprint has none
+  - PromptCompiler expects Visual Definition to be raw JSON — RH-400 VD is Markdown+YAML+embedded-JSON
+- **Root cause**: Phase 1 asset-generation migration assumptions never reconciled with actual data model
+- **No canonical schema exists** for blueprints, Visual Definitions, visual profiles, or render templates
+- **Deliverables**:
+  - `summaries/2026-09-09-SYNTHESIS-RH400-VISUAL-PROFILE-CONTRACT-AUDIT.md` (synthesis report)
+  - `summaries/2026-09-09-RH400-VISUAL-PROFILE-CONTRACT-AUDIT.md` (full research note, 853 lines)
+- **Recommendations**: Update PromptCompiler to handle Markdown-wrapped VDs + optional visual_profile; formalize Visual Definition contract from RH-400 pilot pattern
+- **Commits**: `858535b` (research note), `7c79ed3` (task file → completed/)
 - **Audit summary**: `summaries/2026-09-09-RH400-VISUAL-PROFILE-CONTRACT-AUDIT.md` (in agent-tasks)
 
 ---
