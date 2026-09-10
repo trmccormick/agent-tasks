@@ -22,6 +22,14 @@
   - agent-tasks: `8ca08df` "chore: move 2026-09-08-HIGH-ARCHITECTURE-NPC-PRICE-CALCULATOR-EVALUATE.md to completed/"
 - **Status**: Ready for AI Manager Phase 3 integration
 
+### Iron/Steel Production Chain Research — COMPLETED ✅
+- **Task**: `2026-09-09-MEDIUM-RESEARCH-MATERIAL-CHAIN-IRON-STEEL` — research-only, no code/data changes
+- **Deliverables**: 
+  - `summaries/2026-09-09-MATERIAL-CHAIN-IRON-STEEL.md` — real-world chain (5 stages), in-game material set (8 recommended), generalization pattern for Al/Cu/Ti/Ni/Si, 5 schema recommendations
+  - `summaries/2026-09-09-SYNTHESIS-MATERIAL-CHAIN-IRON-STEEL.md` — synthesis report
+- **Key findings**: Minimum viable chain = `iron_ore → iron_concentrate → pig_iron → steel`; frontier worlds need hydrogen DRI route; current template v1.6 needs `routes`, `credit`, `yield` fields for production chains
+- **Commits**: agent-tasks `9614366` (research + synthesis), `e4f524a` (task → completed/)
+
 ### Previous Session Debugging Context
 - Previous agent (Qwen) struggled for ~150+ messages with Ruby singleton class visibility issues
 - Root cause: Instance methods were inside `class << self` block (for class methods only)
