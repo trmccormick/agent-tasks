@@ -1,8 +1,26 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-10 — Missions v2 architecture validated, phase library integration + 14 JSON files created
+**Last Updated:** 2026-09-11 — Dead EAP calls removed; evaluate_strategy wired at all three call sites
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🟢 Recent Closures (2026-09-11)
+
+### Dead EAP Calls Removed + evaluate_strategy Wired — COMPLETED ✅
+- **Task**: `2026-09-11-HIGH-ARCHITECTURE-ACQUISITION-WIRE-EVALUATE-STRATEGY.md`
+- **Problem**: Three call sites invoked dead `NpcPriceCalculator.send(:calculate_eap_ceiling, ...)` — raises `NoMethodError` at runtime
+- **Fixes applied**:
+  - `resource_acquisition_service.rb:140` → `evaluate_strategy(material:, location:, context:)` with safe `&.reference_cost` guard
+  - `decision_tree.rb:284` → Same replacement in `create_special_missions_for_critical_needs`; added `next unless result&.reference_cost` guard
+  - `special_mission_service.rb:8` → Same replacement in `generate_critical_mission`; added `return nil unless result&.reference_cost` guard
+- **Specs**: Created `resource_acquisition_service_spec.rb` (3 examples); updated `special_mission_service_spec.rb` stubs (3 stubs)
+- **Test results**: 42 examples, 0 failures (3 + 11 + 28)
+- **Final grep**: Zero remaining `calculate_eap_ceiling` references in `app/services/`
+- **Commits**:
+  - galaxyGame: `1c684a37` "architecture(ai-manager): replace dead calculate_eap_ceiling calls with evaluate_strategy"
+  - agent-tasks: `bb8fa6c` (task → completed/2026-09/)
 
 ---
 
