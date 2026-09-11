@@ -1,5 +1,5 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-08-25
+**Last Updated:** 2026-09-11
 
 ---
 
@@ -14,16 +14,50 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 ---
 
 ## Current Status
-- **Status:** 🔄 **IN PROGRESS — Catalog facet limiting HTML validation (CatalogSearchBuilderWrapper testing)**
+- **Status:** 🔄 **IN PROGRESS — Catalog Facet Limiting with Dynamic Label Generation (Ready for Dev VM Testing)**
 - **Active Branches:**
   - `main` — Stable; production-ready with full volume mount structure
-  - `fix/hide-type-facet-add-show-more-facets` — ✅ DEPLOYED to hykudev (2026-08-19); awaiting QA verification from Jessica
-  - `fix/catalog-facet-limiting-solr-level` — 🏗️ IN PROGRESS: Code committed; Qwen testing facet display on HTML page (2026-08-25)
+  - `fix/hide-type-facet-add-show-more-facets` — 🔧 IMPROVED & MERGED (2026-09-11); includes latest from main; ready for dev VM QA
   - `clover-test` — Clover IIIF viewer integration (backlog)
   - `ollama_testing` — Ollama vision model for alt-text generation (backlog, experimental)
-- **Last Session:** 2026-08-20 (Investigation complete)
-- **Current Session:** 2026-08-25 — Catalog facet limiting validation (Qwen testing task created)
-- **Next Handoff:** Qwen (local agent) tests HTML facet display & "More" links
+- **Last Session:** 2026-08-25 (Qwen testing complete)
+- **Current Session:** 2026-09-11 — Branch improvement & merge with main
+- **Next Step:** Pull on dev VM & test facet truncation (Date Created, Location, People Represented)
+
+---
+
+## ✅ 2026-09-11 — CatalogControllerDecorator Refactor (COMPLETE)
+
+**Objective**: Improve facet limiting fix to be more flexible and remove hardcoded field mappings.
+
+**Issues with Previous Approach**:
+- Referenced missing `CatalogSearchBuilderWrapper` file (not on this branch)
+- Had hardcoded label mappings for 12+ field names (not maintainable)
+- Decorator prepend was at end of module but not applied to actual controller
+
+**Solution Implemented** (commit `26f060c`):
+- ✅ Removed reference to missing wrapper
+- ✅ Replaced hardcoded label case-statement with dynamic `humanize` logic
+  - Strips Solr suffixes (`_sim`, `_ssim`, `_tesim`, `_label`)
+  - Converts underscores to spaces
+  - Titleizes for human readability (e.g., `date_created_sim` → "Date Created")
+- ✅ Ensured `::CatalogController.prepend(CatalogControllerDecorator)` properly applies
+- ✅ Merged latest from `main` (commit `b5363cb`) into branch
+
+**Code Quality**:
+- More maintainable (works with any M3 profile facet automatically)
+- Better encapsulation (no external dependencies)
+- Cleaner git history
+
+**Status**: 🚀 **READY FOR DEV VM TESTING**
+
+**Testing on Dev VM**:
+1. `git pull` (on `fix/hide-type-facet-add-show-more-facets`)
+2. `docker compose -f docker-compose.production.yml restart web`
+3. Verify `/catalog?search_field=all_fields&q=`:
+   - Date Created: 5 items + "more" link ✓
+   - Location: 5 items + "more" link ✓
+   - People Represented: 5 items + "more" link ✓
 
 ---
 
