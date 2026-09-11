@@ -26,23 +26,25 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 
 ---
 
-## ✅ 2026-09-11 — Stack Car Compatibility Fix (COMPLETE)
+## ✅ 2026-09-11 — Stack Car Setup Simplified (COMPLETE)
 
-**Objective**: Resolve `rbenv: sc: command not found` errors when running `up.sc.local.sh`
+**Objective**: Fix `rbenv: sc: command not found` errors when running `up.sc.local.sh`
 
-**Root Cause**: 
-- System default Ruby (3.4.5) lacks Stack Car gem installation
-- Stack Car gem only exists in Ruby 3.3.0
-- Without `.ruby-version`, rbenv defaults to 3.4.5 → `sc` not found
+**Initial approach**: Add `.ruby-version` (from Hyku PR #3277)
+- Concern from Max Kadel: Repo-level Ruby constraint could affect production upgrades; not all devs use rbenv
 
-**Solution Implemented** (based on Hyku PR #3277):
-- ✅ Added `.ruby-version` file specifying `3.3.0`
-- ✅ rbenv auto-switches to 3.3.0 upon directory entry
-- ✅ Stack Car command available immediately
+**Final approach** (simpler, per Max's review):
+- ✅ Removed `.ruby-version` — no repo-level constraint
+- ✅ Use `gem install stack_car` in current Ruby version
+- ✅ Stack Car works with any Ruby 3.x (not just 3.3.0)
+- ✅ When upgrading Ruby locally: reinstall with `gem install stack_car`
+- ✅ Created CONTRIBUTING.md documenting this approach
 
-**Verification**: 
-- ✅ Ran `sc help` → displays commands without error
-- ✅ `rbenv version` confirms 3.3.0 is active
+**Benefits**:
+- Simpler for developers (no repo-level Ruby management)
+- No production implications
+- Works with any Ruby version manager (rbenv, asdf, rvm, etc.)
+- Clear documentation in CONTRIBUTING.md
 
 **Status**: 🚀 **COMPLETE**
 

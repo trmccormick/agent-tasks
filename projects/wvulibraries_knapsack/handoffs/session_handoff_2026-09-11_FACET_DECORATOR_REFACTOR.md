@@ -48,19 +48,24 @@ git merge origin/main --no-edit
 - ✅ Pushed improved decorator to `origin/fix/hide-type-facet-add-show-more-facets`
 - ✅ Pushed merge commit
 
-### 5. **Fixed Stack Car Compatibility** (commit `1c71677`)
+### 5. **Stack Car Setup Simplified** (commits `1c71677` → reverted, `3823512` final)
 **Issue**: `rbenv: sc: command not found` when running `up.sc.local.sh`
 
-**Root Cause**: 
-- System default Ruby version (3.4.5) doesn't have Stack Car gem installed
-- Stack Car only exists in Ruby 3.3.0
-- Without a `.ruby-version` file, rbenv defaulted to 3.4.5
+**Initial approach** (reverted): Added `.ruby-version` file specifying 3.3.0
+- Pro: Auto-switches for rbenv users
+- Con: Repo-level constraint; assumes rbenv; affects production upgrades
 
-**Solution** (from Hyku PR #3277):
-- ✅ Added `.ruby-version` file specifying `3.3.0`
-- ✅ rbenv now auto-switches to correct version when entering directory
-- ✅ `sc` command available without errors
-- ✅ Verified: `sc help` works ✓
+**Final approach** (per Max Kadel's review of Hyku PR #3277):
+- ✅ Remove `.ruby-version` — cleaner, no repo constraint
+- ✅ Use `gem install stack_car` in your current Ruby version
+- ✅ Stack Car works with any Ruby 3.x (doesn't require 3.3.0 only)
+- ✅ When you upgrade Ruby locally, just reinstall: `gem install stack_car`
+
+**Added CONTRIBUTING.md** documenting:
+- Stack Car setup as recommended local dev approach
+- `gem install stack_car` instructions
+- What to do after Ruby upgrades
+- Testing tiers (local, smoke test, full feature)
 
 ---
 
