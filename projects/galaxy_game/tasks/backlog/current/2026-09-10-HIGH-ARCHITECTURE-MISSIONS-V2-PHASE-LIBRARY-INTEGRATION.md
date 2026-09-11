@@ -30,28 +30,28 @@ blocks:
 
 ## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
 
-```
-You are **Implementation Agent**.
+You are Implementation Agent.
 
 Project: galaxy_game
 Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-09-10-HIGH-ARCHITECTURE-MISSIONS-V2-PHASE-LIBRARY-INTEGRATION.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/current/2026-09-10-HIGH-ARCHITECTURE-MISSIONS-V2-PHASE-LIBRARY-INTEGRATION.md \
-         projects/galaxy_game/tasks/active/2026-09-10-HIGH-ARCHITECTURE-MISSIONS-V2-PHASE-LIBRARY-INTEGRATION.md
-  Then open the moved file and change: status: backlog → status: active
-  Paste the output of both commands in chat before proceeding.
+git mv projects/galaxy_game/tasks/backlog/current/2026-09-10-HIGH-ARCHITECTURE-MISSIONS-V2-PHASE-LIBRARY-INTEGRATION.md
+projects/galaxy_game/tasks/active/2026-09-10-HIGH-ARCHITECTURE-MISSIONS-V2-PHASE-LIBRARY-INTEGRATION.md
+Then open the moved file and change: status: backlog → status: active
+Paste the output of both commands in chat before proceeding.
 
 LIFECYCLE: backlog → active → completed
-  - Tracked file: git mv (never cp or plain mv)
+
+Tracked file: git mv (never cp or plain mv)
 
 READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
 CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
-  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
-  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
-  Chat is for questions only — never paste synthesis into chat (formatting breaks).
-```
+Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+Chat is for questions only — never paste synthesis into chat (formatting breaks).
+
 
 ---
 
@@ -85,20 +85,21 @@ The precursor mission profile was updated (v1.0) with 8 phases, concurrent opera
 
 ### Architecture Pattern (Confirmed)
 
-```
 missions/tasks_v2/
-  ├── task_deploy_car_robots_v2.json (generic, parametrized)
-  └── ... (~100+ tasks)
+├── task_deploy_car_robots_v2.json (generic, parametrized)
+└── ... (~100+ tasks)
 
 missions_v2/phases/
-  ├── initial_hlt_landings_v2.json (references "task_ref": "tasks_v2/task_deploy_car_robots_v2.json")
-  └── ... (14 phase files)
+├── initial_hlt_landings_v2.json (references "task_ref": "tasks_v2/task_deploy_car_robots_v2.json")
+└── ... (14 phase files)
 
 missions_v2/profiles/
-  └── precursor_mission_profile_v1.json (sets target_body: "LUNA-01", passes to phases)
-```
+└── precursor_mission_profile_v1.json (sets target_body: "LUNA-01", passes to phases)
+
 
 **One library. One profile template. Location is a parameter.**
+
+**Note on task_ref format**: `task_ref` values are stored as `"tasks_v2/task_X.json"` — this resolves against `data/json-data/missions/tasks_v2/`, NOT `data/json-data/tasks_v2/` and NOT `data/json-data/missions_v2/tasks/`. The path-check script in Step 2 already accounts for this — do not "simplify" it.
 
 ### Gotchas
 
@@ -111,6 +112,11 @@ missions_v2/profiles/
 - ❌ Wrong: "JSON syntax is valid so they're production-ready"
 - ✅ Right: Run full mission simulation (rake task) to verify phases chain correctly
 - Why: Cross-file references (task_refs pointing to missions/tasks_v2) must be resolvable
+
+⚠️ **Gotcha 3**: The rake file was edited multiple times during the 2026-09-10 design session (Titan removal, timing fixes)
+- ❌ Wrong: Assume the current file state is fully committed and treat it as ground truth without checking
+- ✅ Right: Confirm via `git status`/`git diff` that all changes are committed before treating the file as the validated source of truth
+- Why: If uncommitted changes exist, they could be lost or overwritten. Do NOT discard or overwrite anything found uncommitted — flag it and stop for a decision.
 
 ---
 
@@ -138,7 +144,7 @@ missions_v2/profiles/
 | `data/json-data/missions/tasks_v2/*.json` | Generic task library (~100+ tasks) | Audit which are referenced by phases, validate parametrization |
 | `data/json-data/missions_v2/phases/*.json` | 14 phase definition files created today | Validate task_refs resolve, timeline is correct |
 | `data/json-data/missions_v2/profiles/precursor_mission_profile_v1.json` | Precursor profile with 8 phases | Verify all phases wired correctly |
-| `galaxy_game/lib/tasks/lunar_precursor_mission_validation.rake` | Rake validation (updated today) | Run full timing validation |
+| `galaxy_game/lib/tasks/lunar_precursor_mission_validation.rake` | Rake validation (updated today) | Confirm committed (Gotcha 3), then run full timing validation |
 | `docs/architecture/ai_manager/MISSIONS_V2_ARCHITECTURE.md` | NEW — document the pattern | Create architectural reference doc |
 
 ### Reference Files — read but do not edit
@@ -155,10 +161,21 @@ missions_v2/profiles/
 ### Step 0 — Move task file to active/
 (See Agent Dispatch Interface above)
 
-### Step 1: Run full timing validation rake task
+### Step 1: Confirm rake file is committed, then run full timing validation
+
+**First**, confirm the rake file has no uncommitted changes left over from the 2026-09-10 design session (see Gotcha 3):
 
 ```bash
 cd /Users/tam0013/Documents/git/galaxyGame
+git status --short galaxy_game/lib/tasks/lunar_precursor_mission_validation.rake
+git diff galaxy_game/lib/tasks/lunar_precursor_mission_validation.rake | head -50
+```
+
+If uncommitted changes exist: **stop and report them** — do not commit them yourself without confirming they're intentional, and do not discard them.
+
+**Then**, run the timing validation:
+
+```bash
 docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rake luna_mission:phase_timing 2>&1'
 ```
 
@@ -177,13 +194,25 @@ Count: How many unique task_refs are used across all phases?
 Then verify they all exist:
 ```bash
 for task in $(find data/json-data/missions_v2/phases -name "*.json" -exec grep -h '"task_ref"' {} \; | sed 's/.*"task_ref": "\([^"]*\)".*/\1/' | sort -u); do
-  if [ ! -f "data/json-data/$task" ]; then
+  if [ ! -f "data/json-data/missions/$task" ]; then
     echo "MISSING: $task"
   fi
 done
 ```
 
 **Capture results.** If any are missing, flag as blocker.
+
+**Secondary check** — flag non-`_v2` task variants referenced alongside `_v2` versions of the same task (possible stale reference drift):
+```bash
+find data/json-data/missions_v2/phases -name "*.json" -exec grep -h '"task_ref"' {} \; | sed 's/.*"task_ref": "\([^"]*\)".*/\1/' | sort -u | grep -v "_v2\.json$" | while read task; do
+  base=$(basename "$task" .json)
+  if find data/json-data/missions_v2/phases -name "*.json" -exec grep -l "\"${base}_v2.json\"" {} \; | grep -q .; then
+    echo "DRIFT: both $task and ${base}_v2.json are referenced — confirm this is intentional, not a stale reference"
+  fi
+done
+```
+
+If drift is found, report which phase files reference which variant — do not "fix" it by picking one yourself, this needs a decision.
 
 ### Step 3: Validate phase file structure
 
@@ -205,10 +234,12 @@ Create a summary table (paste into synthesis report, do NOT commit):
 
 **File:** `docs/architecture/ai_manager/MISSIONS_V2_ARCHITECTURE.md`
 
+(Confirm the `docs/architecture/ai_manager/` directory exists first — create it if not.)
+
 Content:
 - Overview: one library, one profile template, location as parameter
 - Phase structure: what each phase file contains
-- Task library audit results (from Step 2)
+- Task library audit results (from Step 2, including drift check results)
 - Parameter passing flow (profile → phases → tasks)
 - Validation checklist (what you verified in this task)
 - Future: how AI Manager will generate profiles dynamically
@@ -218,8 +249,9 @@ Save to git.
 ### Step 5: Synthesis Report
 
 Save to summaries folder covering:
+- Rake file commit status (clean / had uncommitted changes — describe)
 - Timing validation results (did rake pass?)
-- Task reference audit (how many unique tasks? any missing?)
+- Task reference audit (how many unique tasks? any missing? any non-_v2/_v2 drift found?)
 - Phase structure validation (all files conform?)
 - Architectural doc created? (yes/no)
 - Ready for AI Manager profile generation? (yes, with caveats / no, blockers are:)
@@ -228,9 +260,11 @@ Save to summaries folder covering:
 
 ## Acceptance Criteria
 
+- [ ] Rake file confirmed fully committed before validation (Gotcha 3)
 - [ ] Rake `luna_mission:phase_timing` runs without error
 - [ ] All 14 phase files have syntactically correct JSON
-- [ ] All task_refs in phases resolve to files in missions/tasks_v2/
+- [ ] All task_refs in phases resolve to files in `missions/tasks_v2/`
+- [ ] No unexplained non-_v2/_v2 task_ref duplicates (or, if found, confirmed intentional and documented)
 - [ ] Phase structure audit complete (table created)
 - [ ] Architectural reference doc created (MISSIONS_V2_ARCHITECTURE.md)
 - [ ] Synthesis report created with full audit results
@@ -240,8 +274,10 @@ Save to summaries folder covering:
 
 ## Stop Conditions — escalate immediately if:
 
+- Rake file has uncommitted changes from the prior session (Gotcha 3) — do not proceed until resolved
 - Rake task fails at a specific phase (need to debug which phase broke)
 - Task refs point to files that don't exist (library gap identified)
+- Non-_v2/_v2 duplicate task_ref drift is found (needs a decision, not a unilateral fix)
 - Phase files have inconsistent structure (need to standardize)
 - Profile doesn't wire all 8 phases correctly (wiring issue)
 - Any architectural question about how AI Manager will use this data
@@ -286,8 +322,10 @@ git commit -m "chore: move missions_v2 integration validation to completed"
 **Completion date**: YYYY-MM-DD
 
 ### What was validated
+- Rake file commit status: [clean / had uncommitted changes — describe what was found]
 - Rake timing validation: [pass/fail — attach output]
 - Task reference audit: [N unique task_refs, all resolvable/X missing]
+- Non-_v2/_v2 drift check: [none found / N instances found — list]
 - Phase structure: [all conform/description of deviations]
 - Architectural doc: [created/location]
 
