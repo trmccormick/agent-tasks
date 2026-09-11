@@ -1,8 +1,35 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-10 — Market::NpcPriceCalculator.evaluate_strategy implemented + 28 tests passing
+**Last Updated:** 2026-09-10 — Missions v2 architecture validated, phase library integration + 14 JSON files created
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🟢 Recent Closures (2026-09-10 — Missions v2 Architecture Session)
+
+### Missions v2 Architecture Discovery & Phase Library Design — IN PROGRESS 🔄
+- **Session work (2026-09-10)**: Complete architecture exploration and 14 JSON data files created
+- **Findings**:
+  - Confirmed correct pattern: missions/tasks_v2 (complete generic parametrized library) → missions_v2/phases (reference tasks) → missions_v2/profiles (set parameters)
+  - Location (Luna/Mars/Venus) is a parameter passed through profile, not a separate mode
+  - All reference exploration (ssc-000.json, old phase structures, npc-base-deploy, mars_settlement) was training data review — architecture already correctly implemented
+- **Deliverables created** (gitignored `/data`, not tracked by git):
+  - 14 phase definition files in `missions_v2/phases/` (all reference missions/tasks_v2 library with parametrized environment)
+  - Updated `precursor_mission_profile_v1.json` with 8 concurrent phases (gcc_mining, venus_harvest_launch, initial_hlt_landings, power_grid_deployment, psr_ice_mining, inflatable_habitat_placement, inflatable_habitat_pressurization, luna_isru_production)
+  - Concurrent operation windows documented (7 windows Days 0-876)
+  - Parametric Venus transit model (fuel-dependent arrival window Days 526-656)
+  - Updated rake task `luna_mission:phase_timing` with full timeline validation (200+ lines)
+- **Commits**: galaxyGame `latest` — rake task updated, JSON files untracked (gitignored)
+- **Status**: Architecture validated ✅ | Next task: Formal validation & audit of phase library (created new task file 2026-09-10)
+
+### Future Work Queued
+- **Task created**: `2026-09-10-HIGH-ARCHITECTURE-MISSIONS-V2-PHASE-LIBRARY-INTEGRATION.md` (backlog/current)
+  - Validate all 14 phase files load correctly
+  - Audit missions/tasks_v2 library (100+ tasks) for completeness
+  - Verify task_refs resolve
+  - Create architectural reference doc
+  - Ready for AI Manager dynamic profile generation
 
 ---
 
