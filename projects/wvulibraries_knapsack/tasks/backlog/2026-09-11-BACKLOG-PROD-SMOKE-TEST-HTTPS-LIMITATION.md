@@ -19,34 +19,47 @@
 
 ## Context
 
-- **Stack Car** (`up.sc.local.sh`): Works fine — uses Traefik proxy + `localhost.direct` domain for HTTPS
-- **Smoke Test** (`up.prod.local.sh`): Pulls pre-built GHCR images for quick validation, but lacks HTTPS setup
-- **Original Intent**: Smoke test should mirror production config on Mac before VM deployment, but HTTPS limitation prevents full validation
+- **Stack Car** (`up.sc.local.sh`): Local development convenience — Traefik provides HTTPS for developer ergonomics
+- **Smoke Test** (`up.prod.local.sh`): Quick validation of container images + config; runs on local Mac without infra layer
+- **Production & hykudev**: nginx reverse proxy (outside containers) handles HTTPS; containers run HTTP internally
+- **IIIF Viewer**: Requires HTTPS from browser's perspective, but doesn't care if it's provided by nginx (infrastructure) or container-level Traefik
+
+---
+
+## Root Cause
+
+Smoke test attempts to mirror production container behavior in isolation, but **production's HTTPS is an infrastructure concern** (nginx reverse proxy), not a container concern. Replicating nginx on local Mac for a "smoke test" defeats the purpose of a quick, lightweight validation.
 
 ---
 
 ## Potential Solutions
 
-### Option 1: Add Traefik to Production Smoke Test
-- Reuse the Traefik setup from Stack Car for `docker-compose.local.yml`
-- Would require updates to `docker-compose.local.yml`
-- Trade-off: Adds complexity to smoke test; might not be worth it for occasional testing
+### Option 1: Set Up Local nginx for Smoke Test
+- Add local nginx reverse proxy in front of smoke test containers (mirrors production architecture)
+- Trade-off: Smoke test becomes complex; no longer "smoke" — becomes full local production replica
+- Not recommended: Defeats the purpose of quick, lightweight testing
 
-### Option 2: Document HTTPS Limitation
-- Add note to README about what smoke test can/cannot validate
-- Direct users to Stack Car for full feature testing
-- Minimal change; acknowledges the constraint
+### Option 2: Document HTTPS Limitation & Redirect IIIF Testing to hykudev
+- Smoke test validates container images + config (HTTP-only)
+- Full IIIF/HTTPS validation happens on hykudev or production (where nginx provides HTTPS)
+- Clear division: smoke test = image validation; hykudev/prod = feature validation
+- **Recommended**: Lowest friction, aligns with actual architecture
 
-### Option 3: Create HTTPS-Aware Smoke Test Variant
-- Add new compose file (`docker-compose.local-https.yml`)
-- Include Traefik + certificate setup
-- More work, but provides true production-like testing
+### Option 3: Use mkcert for Local Self-Signed HTTPS
+- Add mkcert-generated certs to local Mac for smoke test
+- Provides HTTPS to smoke test without nginx complexity
+- Trade-off: Still not production-like (production uses nginx + real certs); adds local tooling requirement
 
 ---
 
 ## Recommendation
 
-**Option 2 (documentation)** for now — lowest effort, highest clarity. Consider **Option 1** (add Traefik) only if smoke test validation becomes critical path for deployment.
+**Option 2 (document HTTPS limitation and testing tiers)** — This aligns with actual architecture:
+- Smoke test is for validating container images + config in isolation (HTTP-only is fine for this)
+- IIIF/HTTPS feature validation belongs on hykudev or production, where nginx reverse proxy is present
+- Clear separation of concerns: smoke test = quick container validation; hykudev = full dev feature validation; production = live validation
+
+**Action**: Update README.md to document testing tiers and what each covers.
 
 ---
 
@@ -54,14 +67,14 @@
 
 - `up.prod.local.sh` — Current smoke test script
 - `docker-compose.local.yml` — Smoke test compose file (no HTTPS)
-- `docker-compose.yml` / Stack Car setup — Has Traefik for reference
+- `docker-compose.yml` / Stack Car setup — Has Traefik for dev convenience
 
 ---
 
-## Acceptance Criteria (if pursued)
+## Acceptance Criteria (When Addressed)
 
-- [ ] Production smoke test validates IIIF viewer without manual workarounds
-- [ ] HTTPS is available at `localhost.direct` or similar in smoke test
-- [ ] Documentation clearly explains what is/isn't validated in each test mode
-- [ ] No regression in Stack Car setup
+- [ ] README or TESTING.md documents three testing tiers: smoke test (containers), hykudev (dev features), production (live)
+- [ ] Smoke test section clearly states: validates images + config only; HTTP-only; no infra layer
+- [ ] IIIF/HTTPS testing section: direct to hykudev or production (where nginx is present)
+- [ ] No changes needed to `up.prod.local.sh` or `docker-compose.local.yml`
 
