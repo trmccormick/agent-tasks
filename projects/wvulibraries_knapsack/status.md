@@ -26,6 +26,28 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 
 ---
 
+## ✅ 2026-09-11 — Stack Car Compatibility Fix (COMPLETE)
+
+**Objective**: Resolve `rbenv: sc: command not found` errors when running `up.sc.local.sh`
+
+**Root Cause**: 
+- System default Ruby (3.4.5) lacks Stack Car gem installation
+- Stack Car gem only exists in Ruby 3.3.0
+- Without `.ruby-version`, rbenv defaults to 3.4.5 → `sc` not found
+
+**Solution Implemented** (based on Hyku PR #3277):
+- ✅ Added `.ruby-version` file specifying `3.3.0`
+- ✅ rbenv auto-switches to 3.3.0 upon directory entry
+- ✅ Stack Car command available immediately
+
+**Verification**: 
+- ✅ Ran `sc help` → displays commands without error
+- ✅ `rbenv version` confirms 3.3.0 is active
+
+**Status**: 🚀 **COMPLETE**
+
+---
+
 ## ✅ 2026-09-11 — CatalogControllerDecorator Refactor (COMPLETE)
 
 **Objective**: Improve facet limiting fix to be more flexible and remove hardcoded field mappings.

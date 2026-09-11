@@ -48,6 +48,20 @@ git merge origin/main --no-edit
 - ✅ Pushed improved decorator to `origin/fix/hide-type-facet-add-show-more-facets`
 - ✅ Pushed merge commit
 
+### 5. **Fixed Stack Car Compatibility** (commit `1c71677`)
+**Issue**: `rbenv: sc: command not found` when running `up.sc.local.sh`
+
+**Root Cause**: 
+- System default Ruby version (3.4.5) doesn't have Stack Car gem installed
+- Stack Car only exists in Ruby 3.3.0
+- Without a `.ruby-version` file, rbenv defaulted to 3.4.5
+
+**Solution** (from Hyku PR #3277):
+- ✅ Added `.ruby-version` file specifying `3.3.0`
+- ✅ rbenv now auto-switches to correct version when entering directory
+- ✅ `sc` command available without errors
+- ✅ Verified: `sc help` works ✓
+
 ---
 
 ## What Needs Doing
