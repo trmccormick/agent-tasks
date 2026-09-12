@@ -1,12 +1,12 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: architecture
 system_domain: ASSET_GENERATION
 mvp_alignment: TOOLING_INFRASTRUCTURE
 local_worker_safe: true
 created: 2026-09-09
-last_updated: 2026-09-09
+last_updated: 2026-09-11
 ---
 
 # TASK: Define canonical visual contract for asset generation
@@ -246,8 +246,11 @@ Structure it with at least these sections:
    - `asset_id` is the link; development orchestration determines which visual artifacts apply.
 
 4. **PromptCompiler contract**  
-   - Inputs: `asset_id`, `blueprint_path`, `operational_data_path`, `visual_definition_path`, `visual_profile_path`, `render_template_path` (or equivalent).  
-   - Explicit statement: PromptCompiler consumes already-resolved inputs; it does **not** search the repo by `asset_id`.  
+   - Public interface: `PromptCompiler.compile(asset_id:, blueprint_path:, operational_data_path:, visual_definition_path:, render_template_path:)`  
+   - `asset_id` is the canonical shared identity across all artifact types.  
+   - Development-time orchestration resolves which Visual Definition, Visual Profile, and Render Template apply for a given `asset_id`.  
+   - PromptCompiler consumes already-resolved inputs; it does **not** search the repository by `asset_id`.  
+   - Visual Profile resolution is handled by development-time orchestration, NOT by the PromptCompiler public API. The compiler does not accept a `visual_profile_path:` argument — any future change to the public interface is a separate implementation decision after this contract is established.  
    - Output: frozen image prompt for image-generation models.
 
 5. **Visual Definition format contract**  
