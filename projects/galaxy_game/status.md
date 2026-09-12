@@ -1,8 +1,26 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-11 — Dead EAP calls removed; evaluate_strategy wired at all three call sites
+**Last Updated:** 2026-09-11 — VISUAL_CONTRACT canonical contract created + Dead EAP calls removed
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🟢 Recent Closures (2026-09-11 — VISUAL_CONTRACT)
+
+### Canonical Visual Contract for Asset Generation — COMPLETED ✅
+- **Task**: `2026-09-09-HIGH-ARCHITECTURE-VISUAL-CONTRACT.md`
+- **Output**: `/Users/tam0013/Documents/git/galaxyGame/docs/reference/asset-generation/VISUAL_CONTRACT.md` (223 lines)
+- **Key definitions**:
+  - `asset_id` as shared canonical identity across all artifact types
+  - Blueprints do NOT carry `visual_profile` or `visual_definition` fields
+  - PromptCompiler public interface: `compile(asset_id:, blueprint_path:, operational_data_path:, visual_definition_path:, render_template_path:)` — no `visual_profile_path:`
+  - Visual Definition format contract: `.json` = raw valid JSON; `.md` = Markdown+YAML+embedded-JSON (human-readable)
+  - Identity resolution distinct from file discovery: PromptCompiler consumes already-resolved inputs, does NOT search by `asset_id`
+  - RH-400 VD violation acknowledged (`VEHICLE_HARVESTER_ROVER_RH400.json` is Markdown-wrapped but named `.json`); migration deferred as separate task
+  - Asset-generation tooling = development-time infrastructure outside Rails runtime
+- **Dependencies unblocked**: PromptCompiler adjustments, RH-400 VD migration, standalone asset-generation execution
+- **Commits**: galaxyGame `50f7925e`, agent-tasks `5b76b9f`
 
 ---
 
