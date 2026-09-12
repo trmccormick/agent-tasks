@@ -1,8 +1,45 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-11 — VISUAL_CONTRACT canonical contract created + Dead EAP calls removed
+**Last Updated:** 2026-09-12 — Asset-generation documentation/task-readiness updates + tools/asset_generation committed
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🟢 Recent Closures (2026-09-12 — Asset-Generation Documentation/Task-Readiness)
+
+### VISUAL_CONTRACT.md Amended with Orchestration Decision — COMPLETED ✅
+- **Decision**: Development-time Asset Registry/orchestration owns `asset_id → visual_profile_id` association.
+- **Storage boundary**: Association NOT stored in Blueprint, Visual Definition, Operational Data, or Render Template.
+- **Resolution path**: Orchestration resolves via `ProfileResolutionEngine`, supplies resolved `profile_attributes` through PromptCompiler's internal composition boundary (existing `CompositionRefinery.compose(profile_attributes: ...)` call).
+- **PromptCompiler constraint**: Does NOT discover, infer, or search for profiles by `asset_id`. Five-keyword public interface remains unchanged — no `visual_profile_id:` or `visual_profile_path:` added.
+- **Output**: `VISUAL_CONTRACT.md` amended with new "Visual Profile Orchestration (Decision — 2026-09-12)" section under Section 3.
+
+### ASSET_PROMPT_COMPILER_CONTRACT.md Marked Historical/Superseded — COMPLETED ✅
+- Added dated superseded notice naming `VISUAL_CONTRACT.md` as authoritative.
+- Body left intact; no rewriting or deletion.
+
+### PromptCompiler Conformance Task Corrected and Kept in Backlog — COMPLETED ✅
+- **Task**: `2026-09-11-HIGH-FEATURE-PROMPTCOMPILER-INPUT-CONTRACT-CONFORMANCE.md` (backlog/asset-ui/)
+- Removed VD-only fallback claims; replaced with orchestration-provided attributes requirement.
+- Added explicit failure requirements for missing/unresolvable mappings.
+- Updated test scope to seven specific requirements: mapping resolution, ProfileResolutionEngine invocation, attribute passage, no Blueprint lookup, missing/invalid mapping failures, non-RH-400 case.
+- Status remains `backlog` — ready for future dispatch; no implementation performed.
+
+### tools/asset_generation/ Committed to Git — COMPLETED ✅
+- **Files committed** (7 files):
+  - `tools/asset_generation/README.md`
+  - `tools/asset_generation/composition_refinery.rb`
+  - `tools/asset_generation/profile_resolution_engine.rb`
+  - `tools/asset_generation/prompt_compiler.rb`
+  - `tools/asset_generation/spec/composition_refinery_spec.rb`
+  - `tools/asset_generation/spec/profile_resolution_engine_spec.rb`
+  - `tools/asset_generation/spec/prompt_compiler_spec.rb`
+- **Excluded**: None — all files are intended source/spec/documentation. No generated assets, credentials, caches, or vendor files present.
+
+### Commits
+- galaxyGame: tools/asset_generation tracking commit (commit hash below)
+- agent-tasks: status.md update (commit hash below)
 
 ---
 
