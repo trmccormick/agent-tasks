@@ -39,6 +39,10 @@
 - galaxyGame: `bcb44a64` "docs: update economy wiki with three-pillar audience guides + create GAPS.md" (9 files, 497 insertions)
 - agent-tasks: `778f4a8` "fix: correct fee branch audit task template conformance" (1 file, 270 insertions)
 
+### Correction — Audit Report Repo Location
+- **Issue**: Initial audit report (`2026-09-12-AUDIT-FEE-BRANCH-STATUS.md`) was committed to `galaxyGame/summaries/` (game code repo) instead of `agent-tasks/projects/galaxy_game/summaries/`.
+- **Fix**: Copied to correct path, removed from galaxyGame via `git rm` + commit (`f1544ee4`), committed to agent-tasks (`69a33a4`). Verified exactly one copy exists at correct path.
+
 ---
 
 ## 🟢 Recent Closures (2026-09-12 — Asset-Generation Documentation/Task-Readiness)
