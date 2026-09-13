@@ -1,14 +1,15 @@
 ---
-status: backlog
+status: completed
 priority: HIGH
 type: feature
 system_domain: OTHER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 created: 2026-08-19
-last_updated: 2026-09-03
+last_updated: 2026-09-13
 # 2026-09-03: status corrected active → backlog (was in backlog/current/ with stale "active" header)
-phase_status: "Phases 1-4 COMPLETE (commits c9d44ca4, 1f8df564, 683327b5). Phase 5 (TransitEngine integration) PENDING."
+# 2026-09-13: Phase 5 completed, moved to completed/2026-09/
+phase_status: "ALL PHASES COMPLETE (commits c9d44ca4, 1f8df564, 683327b5, 7880f9f6)"
 # DISPATCH ORDERING — do not dispatch a task whose depends_on is not yet completed.
 # Phase 5 extends Mission::TransitEngine, which is created by the Transit Timing Engine task.
 depends_on:
@@ -425,18 +426,34 @@ git commit -m "chore: move orbital mechanics data layer to completed — all 5 p
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**:
-**Completion date**:
-**Final test result**:
+**Completed by**: Qwen local via Copilot (Implementation Agent)
+**Completion date**: 2026-09-13
+**Final test result**: 4733 examples, 195 failures (pre-existing/unrelated), 52 pending — zero transit_engine-related failures
+**Commit hash**: `7880f9f6` (galaxyGame repo)
 
 ### What was changed
-- Phase 5: TransitEngine reads discovered orbital data
+- Phase 5: TransitEngine reads discovered orbital data from CelestialBody JSONB column
+- Replaced hardcoded transit-day constants (146, 7, 1388, 259) with dynamic computation via Hohmann transfer formulas
+- Added J2000.0 epoch propagation: M(t) = M_0 + n × (t - t_0)
+- Implemented `compute_phase_angle`, `compute_hohmann_delta_v`, `compute_synodic_period`, `compute_transit_days_dynamic`
+- Added `Rails.logger.warn` in fallback path for visibility when orbital data unavailable
+- Documented eccentricity not yet factored in (orbits approximated circular)
+- Preserved legacy hardcoded methods for backward compatibility
+- TransitEngine spec: 32 examples, 0 failures
 
 ### Issues discovered
+- Luna had Mars's orbital_elements pasted into sol.json — fixed on disk (semi_major_axis was 227943800000.0, corrected to 384400000.0)
+- `transit_engine.rb` was written to disk but never committed — file was untracked (`??`) the entire time
+- Earlier session incorrectly reported "git diff — empty, already committed" — `git diff` on an untracked file produces no output regardless of commit state
 
 ### Follow-up tasks needed
+- None from Phase 5 — all acceptance criteria met
+- Future: factor eccentricity into phase-angle/delta-v calculations (requires true anomaly computation)
 
 ### Lessons learned
+- **CRITICAL**: When verifying commit status, check `git status --short` (look for `??`) or `git log -- <path>`, NOT just `git diff`. An untracked file produces no diff output, which can be misread as "already committed."
+- Luna's semi_major_axis is Earth-centric (384,400,000 m), not heliocentric (~149,600,000,000 m) — reference frame matters for moons vs planets
+- All orbits in Phase 5 are approximated as circular; eccentricity field exists but is unused
 
 ---
 
