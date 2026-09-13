@@ -1,8 +1,43 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-12 — Asset-generation documentation/task-readiness updates + tools/asset_generation committed
+**Last Updated:** 2026-09-12 — Economic wiki synthesis + GAPS.md + fee branch audit task fix
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🟢 Recent Closures (2026-09-12 — Economic Wiki Synthesis + GAPS.md)
+
+### Economy Wiki Three-Pillar Framework Applied — COMPLETED ✅
+- **Scope**: Updated 6 wiki files under `docs/wiki_reorganization/economy/` with Players/Admins/Developers audience sections and verified constants from economic_parameters.yml:
+  - `01-overview-and-design.md` — EAP formula, GCC emission schedule, transport rates
+  - `02-currencies-and-accounts.md` — Peg phases, monetary base (250M pre-seed + 1M/cycle), overdraft limits
+  - `03-market-and-pricing.md` — NPC pricing modes, route modifiers, price discovery lifecycle
+  - `04-bonds-and-financing.md` — Mining rates (1k/hr = 24k/day/sat), halving schedule, bond structures
+  - `05-launch-and-operational-fees.md` — Fee structure (SCC 0.5%, broker 0.3%, sales tax 3.37%), reserve requirements
+  - `07-npc-economy-lifecycle.md` — NPC pricing modes, debt thresholds, AI Manager tick loop
+- **README.md** updated with audience guide and documentation map covering all 7 wiki files + GAPS.md
+
+### GAPS.md Created — COMPLETED ✅
+- **File**: `docs/wiki_reorganization/economy/GAPS.md` (497 lines)
+- **8 gaps identified**, none have dedicated backlog tasks:
+  - Priority 1 (Critical): Gap E SettlementFees parity, Gap D hybrid GCC supply model, Gap A EAP helpers
+  - Priority 2 (Important): Gap C local-first enforcement, Gap F COGS integration
+  - Priority 3 (Strategic): Gap G peg automation, Gap B blueprint cost schemas, Gap H emission enforcement
+- **Backlog coverage**: 0 dedicated tasks; 3 have planning docs only; 5 need entirely new tasks
+
+### Fee Branch Audit Task Template Conformance Fixed — COMPLETED ✅
+- **Task**: `2026-09-12-HIGH-ARCHITECTURE-CONFIRM-FEE-BRANCH-STATUS.md` (backlog/economy/)
+- **Issues fixed**:
+  - Broken git mv line break in Agent Dispatch Interface (missing backslash continuation)
+  - Replaced Step 1 with user's better commands (`git show origin/market-fee-hold:app/models/orbital_settlement.rb`)
+  - Updated context from first-time verification to follow-up inspection (SettlementFees confirmed 3 days ago in Claude's handoff)
+  - Fixed all missing section headers (Problem Statement, Files Involved, Implementation Steps, etc.)
+  - Closed synthesis report code block properly; updated reference file path to actual handoff location
+
+### Commits
+- galaxyGame: `bcb44a64` "docs: update economy wiki with three-pillar audience guides + create GAPS.md" (9 files, 497 insertions)
+- agent-tasks: `778f4a8` "fix: correct fee branch audit task template conformance" (1 file, 270 insertions)
 
 ---
 
