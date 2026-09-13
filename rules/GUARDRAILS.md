@@ -588,3 +588,43 @@ intentional, and tries to work around it instead of stopping to ask. This
 pattern is not specific to one project — apply this rule on any project
 with a gitignored data path, and treat a recurrence on a new project as
 seriously as a repeat on this one.
+
+### Rule 30 — Summary/Synthesis Artifacts Belong in the Task-Management Repo
+**Applies to all agents, all roles, all supervision tiers, all projects.**
+
+Any project run through this workflow has (at minimum) two separate
+repos: the task-management repo (task files, synthesis reports, audit
+reports, handoffs — the paper trail of the work) and the project's own
+code repo (the actual application/game/product being built). Synthesis
+reports, audit reports, and any other session-output documentation
+belong in the task-management repo's `summaries/` folder — never in a
+`summaries/` folder (or equivalent) inside the code repo, even if one
+appears to already exist there or gets created ad hoc mid-session.
+
+This is the same root cause as Rule 10 (host vs. container path
+prefixes) and the general symlink/duplicate-directory confusion already
+documented elsewhere in this file — two similarly-shaped trees under a
+single session's context, easy to write into the wrong one under context
+pressure. Rule 10 covers path *prefixes* within one repo; this rule
+covers *which repo* a documentation artifact belongs in.
+
+**Before saving any synthesis report, audit report, or handoff doc:**
+1. Confirm the target path root is the task-management repo, not the
+   project's code repo — check the project's own session-start doc for
+   the exact `summaries/` path if unsure.
+2. Treat any `mkdir`/`create file` call for a path containing
+   `/summaries/`, `/handoffs/`, or `/tasks/` as a trigger to double-check
+   which repo you're in before writing.
+3. If a `summaries/`-style folder already exists inside the code repo,
+   that is itself worth flagging to the human — it likely means an
+   earlier session made this same mistake — not a sign that writing
+   there again is fine.
+
+**Confirmed violation (Galaxy Game project, 2026-09-12)**: a fee-branch
+status audit task correctly saved its Step 0 synthesis report to the
+task-management repo's `summaries/` folder, then later in the same
+session saved its final audit report to a `summaries/` folder inside the
+code repo instead — drift within a single session rather than a
+one-off misunderstanding of the instruction. The artifact had to be
+removed from the code repo's tracked history and re-committed at the
+correct path in the task-management repo.
