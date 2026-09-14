@@ -9,7 +9,11 @@ requires_tenant_build: false
 tags: [facet-limiting, blacklight, m3-flexible-metadata, solr-limits, resolved]
 updated: 2026-09-14
 solution_branch: fix/hide-type-facet-add-show-more-facets
-commits: 9ba5cc5, 2795bec
+commits: 9ba5cc5, 2795bec, f9c0472
+critical_validation_commands:
+  - "docker compose -f docker-compose.production.yml exec web bundle exec rails runner 'puts CatalogController.search_builder_class'"
+  - "docker compose -f docker-compose.production.yml exec web bundle exec rails runner 'CatalogController.blacklight_config.facet_fields.each { |n, f| puts \"#{n}: limit=#{f.limit.inspect}\" }'"
+validation_source: Grok review (2026-09-14)
 
 # FACET-LIMITING ON FILTERED PAGE — WHY NO MORE LINKS?
 
@@ -48,6 +52,54 @@ Abandoned method interception entirely. Implemented the correct approach:
 - **Solr-level enforcement** → Facet counts limited at query time (most efficient)
 - **Dynamic registration** → Catches M3 facets registered after boot (flexible)
 - **No field allowlists** → Works with any future M3 fields added (future-proof)
+
+### CRITICAL Implementation Requirements (Per Grok)
+
+These MUST be in place for the fix to work:
+
+1. **CatalogControllerDecorator must call prepend:**
+   ```ruby
+   ::CatalogController.prepend(CatalogControllerDecorator)
+   ```
+   This ensures the custom search_builder_class is used.
+
+2. **Decorator must set search_builder_class:**
+   ```ruby
+   config.search_builder_class = CatalogSearchBuilder  # or actual class name
+   ```
+   Without this, the default/inherited search builder is used (which won't have our add_facetting_to_solr override).
+
+3. **Custom search builder must override add_facetting_to_solr:**
+   ```ruby
+   def add_facetting_to_solr(solr_params)
+     super
+     # Inject f.<field>.facet.limit for each facet
+   end
+   ```
+   This is where Solr params are actually set (not in build() method).
+
+4. **Facet limits MUST be integer, not boolean:**
+   ```ruby
+   facet_config.limit = 5  # Integer ✓
+   # NOT: facet_config.limit = true  # Boolean ✗
+   ```
+
+5. **Don't rely on show_more: true** — It's a no-op in some Blacklight versions. Real requirement is:
+   - `facet_config.limit = 5` (integer)
+   - `f.<field>.facet.limit = 6` in Solr request (limit + 1)
+
+### Grok Validation Points (2026-09-14)
+
+**Exact Quote:**
+> Before we call it done, please verify these on the VM — they bite this codebase specifically
+
+**Key Message**: If pre-verification commands (1) or (2) fail, **the patch is incomplete even if the files look correct on disk.**
+
+**Why This Matters**:
+- File changes are necessary but not sufficient
+- Must verify at runtime that configuration is actually applied
+- Rails/Hyrax/Blacklight can reload or override configuration unexpectedly
+- Cannot trust disk files; must check running application state
 
 ### Testing
 
@@ -202,30 +254,108 @@ RUBY
 
 ## Testing Commands (2026-09-14 Solution)
 
+### Pre-Verification (CRITICAL — Must Pass Before UI Test)
+
+These commands verify the fix is actually applied. If they fail, the code changes are incomplete.
+
+**1. Confirm the Active Search Builder Class**
+```bash
+docker compose -f docker-compose.production.yml exec web \
+  bundle exec rails runner 'puts CatalogController.search_builder_class'
+```
+
+Expected output: Should be the custom search builder that overrides `add_facetting_to_solr` (likely `CatalogSearchBuilder` or `AdvSearchBuilder`)
+
+⚠️ If output is `Hyrax::CatalogSearchBuilder` or generic Blacklight class, the decorator is not being applied and facet limits won't be enforced.
+
+**2. Confirm Facet Limits in Config**
+```bash
+docker compose -f docker-compose.production.yml exec web \
+  bundle exec rails runner '
+    puts "=== FACET CONFIGURATION ==="
+    CatalogController.blacklight_config.facet_fields.each do |name, config|
+      puts "#{name}: limit=#{config.limit.inspect}"
+    end
+  '
+```
+
+Expected output: Every facet (especially M3 ones: `date_created_sim`, `location_sim`, `people_represented_sim`) must show `limit=5`
+
+Example:
+```
+creator_sim: limit=5
+date_created_sim: limit=5
+location_sim: limit=5
+people_represented_sim: limit=5
+subject_sim: limit=5
+...
+```
+
+⚠️ If any M3 facet shows `limit=nil`, the to_prepare hook is not running or M3 facets are registered after limits are applied.
+
+### Full VM Testing (Run After Pre-Verification Passes)
+
 ```bash
 # Deploy updated code
 git pull
 docker compose -f docker-compose.production.yml restart web
 sleep 10
 
-# Verify configuration with rails runner
+# Run pre-verification checks (see above)
+docker compose -f docker-compose.production.yml exec web \
+  bundle exec rails runner 'puts CatalogController.search_builder_class'
+
+docker compose -f docker-compose.production.yml exec web \
+  bundle exec rails runner '
+    CatalogController.blacklight_config.facet_fields.each do |n, f|
+      puts "#{n}: limit=#{f.limit.inspect}"
+    end
+  '
+
+# Verify configuration with verification script
 docker exec wvu_knapsack-web-1 rails runner script/verify_facet_limits.rb
 
 # Expected output:
 # ✓ ALL CHECKS PASSED - Facet limiting is correctly configured
-# Shows M3 facets (date_created_sim, location_sim, people_represented_sim) with limit: 5
+# Shows M3 facets with limit: 5
+# Shows search builder params with f.*.facet.limit
 
-# Visual test (browser)
-# https://hykudev.lib.wvu.edu/catalog?search_field=all_fields&q=
-# Verify:
-#   1. Date Created shows 5 items + "more" link
-#   2. Location shows 5 items + "more" link
-#   3. People Represented shows 5 items + "more" link
-#   4. Type facet is hidden
-
-# If verification fails, check logs
-docker compose -f docker-compose.production.yml logs web | grep -i "facet\|error" | tail -20
+# If any command fails, STOP and report output before continuing to UI test
 ```
+
+### UI Test (Only If Pre-Verification Passes)
+
+```
+Navigate to: https://hykudev.lib.wvu.edu/catalog?search_field=all_fields&q=
+
+Verify:
+  1. Date Created facet: Shows 5 items + "more" link ✓
+  2. Location facet: Shows 5 items + "more" link ✓
+  3. People Represented facet: Shows 5 items + "more" link ✓
+  4. Type facet: Hidden (not visible) ✓
+```
+
+If UI test shows >5 items without "more" link, check:
+- Solr params were sent (verify f.<field>.facet.limit in search builder)
+- Solr is actually respecting the limit parameters
+- Blacklight cache is not stale (restart web container)
+
+### Failure Diagnostics
+
+**If pre-verification #1 fails** (wrong search_builder_class):
+- Check that CatalogControllerDecorator calls `config.search_builder_class = CustomSearchBuilder`
+- Check that decorator file calls `::CatalogController.prepend(CatalogControllerDecorator)` at bottom
+- Ensure initializer loads the decorator file (check Rails autoload paths)
+
+**If pre-verification #2 fails** (facet limit not 5):
+- Check that `config/initializers/facet_limits.rb` is being loaded
+- Check that `to_prepare` hook is running (add debug logging if needed)
+- Verify M3 facets are registered before limits are applied (race condition?)
+
+**If UI shows 100+ items but pre-verification passed**:
+- Solr may be ignoring the limit parameters
+- Check Solr query logs to verify f.<field>.facet.limit params are being sent
+- Verify Solr facet.limit configuration is not overridden server-side
 
 ## Key Findings (Current)
 
