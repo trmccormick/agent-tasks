@@ -11,9 +11,9 @@ We've validated that **the missions_v2 architecture is correctly designed** and 
 
 **Current State:**
 - ✅ missions/tasks_v2/ — complete generic task library (~100+ tasks, untested)
-- ✅ missions_v2/phases/ — 14 phase definition files created, reference tasks correctly
+- 🔄 missions_v2/phases/ — 14 phase definition files created (task references **NOT YET VALIDATED**)
 - ✅ missions_v2/profiles/ — parametrized by location (target_body parameter)
-- ✅ missions_v2/manifests/ — HLT cargo inventory
+- 🔄 missions_v2/manifests/ — structure exists (**contents/inventory NOT YET CONFIRMED**)
 
 **Vision:**
 Move from prescripted profiles to **dynamically generated profiles** where AI Manager generates mission profiles on-demand based on settlement state, resources, and constraints.
@@ -74,7 +74,7 @@ missions_v2/manifests/
    - Added `luna_mission:phase_timing` validation
    - Full timeline simulation (precursor launch → pad construction → HLT landing → Venus arrival)
    - Tank farm readiness gate validation
-   - All timing constraints verified without abort
+   - **Actual timing validation output NOT YET CAPTURED** — rake file created but execution results pending
 
 ### Architecture Clarifications Made
 
@@ -130,14 +130,17 @@ missions_v2/manifests/
 
 ## Proposed Next Steps (4-Phase Approach)
 
-### Phase 1: Validation (High confidence, focused scope)
+### Phase 1: Validation (High confidence, focused scope) ← **START HERE**
 **Goal**: Verify 14 phase files + task library integration work end-to-end
-- Run existing rake `luna_mission:phase_timing` to validate full timeline
+- Confirm rake file has no uncommitted changes left from 2026-09-10 session
+- Run existing rake `luna_mission:phase_timing` to validate full timeline (capture actual output)
 - Audit missions/tasks_v2 library (which tasks are used? any orphaned?)
-- Create task reference map (which phase uses which task)
-- **Deliverable**: MISSIONS_V2_ARCHITECTURE.md documentation
+- Detect task_ref drift (both `task_X.json` and `task_X_v2.json` referenced)
+- Validate phase file structure conforms to expected schema
+- **Deliverable**: MISSIONS_V2_ARCHITECTURE.md documentation + audit results
 - **Effort**: 2-3 hours
 - **Blocker**: None — can run immediately
+- **Task File**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-09-10-HIGH-ARCHITECTURE-MISSIONS-V2-PHASE-LIBRARY-INTEGRATION.md` (ready for dispatch)
 
 ### Phase 2: Expansion (Medium confidence, moderate scope)
 **Goal**: Create Mars and Venus profiles using same missions/tasks_v2 library
@@ -249,11 +252,49 @@ missions_v2/manifests/
 
 ---
 
-## Attached Resources
+## PHASE 1 VALIDATION TASK — READY TO DISPATCH
 
-- Precursor Mission Profile (v1.0): 8 phases, concurrent windows, parametric Venus transit
-- Rake Task (phase_timing): Full timeline validation
-- 14 Phase Definition Files: All reference tasks_v2 correctly
-- Task Library: missions/tasks_v2/ (~100+ tasks)
+A fully-specified, dispatch-ready validation task already exists from the 2026-09-10 design session:
 
-**For Claude's review**: Are we aligned on this architecture? Should we proceed with Phase 1 validation, or pivot to a different concern?
+**File**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-09-10-HIGH-ARCHITECTURE-MISSIONS-V2-PHASE-LIBRARY-INTEGRATION.md`
+
+**Status**: Backlog, ready for immediate dispatch to Qwen
+- ✅ All implementation steps defined
+- ✅ Synthesis report template provided
+- ✅ Gotchas documented (rake commit status, task_ref drift, untested library, JSON vs production-ready)
+- ✅ Acceptance criteria measurable
+- ✅ Deliverables clear (MISSIONS_V2_ARCHITECTURE.md + audit results)
+
+**Action for Claude**: Review this Phase 1 task and decide:
+1. Dispatch it as-is to Qwen to execute validation?
+2. Or propose edits to it before dispatch?
+
+Once Phase 1 completes, the validation results will determine priority for Phases 2-4.
+
+---
+
+## Next Steps for Coordination Agent
+
+1. **Review** this corrected summary (unverified claims removed)
+2. **Review** the Phase 1 validation task (linked above)
+3. **Decide**:
+   - Dispatch Phase 1 as-is?
+   - Request edits to Phase 1 before dispatch?
+   - Skip Phase 1 and jump to Phase 2/3?
+4. **Create dispatch plan** for remaining phases based on validation results
+
+---
+
+## Important Corrections (vs earlier draft)
+
+**Three claims were unverified and have been corrected:**
+
+1. **"14 phase files reference tasks correctly"** → Updated to: "NOT YET VALIDATED — Phase 1 task will confirm this"
+2. **"All timing constraints verified without abort"** → Updated to: "Rake file created but actual output NOT YET CAPTURED — Phase 1 will run it"
+3. **"HLT cargo inventory"** → Updated to: "Structure exists but contents/inventory NOT YET CONFIRMED — Phase 1 will audit"
+
+**Going forward**: All task files and dispatch decisions will only claim what's been actually verified by Qwen execution, not what was asserted during design exploration.
+
+---
+
+**For Claude's review**: The Phase 1 validation task is ready. Should we dispatch it now?
