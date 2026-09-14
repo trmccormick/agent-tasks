@@ -9,9 +9,9 @@ requires_tenant_build: false
 tags: [facet-limiting, blacklight, m3-flexible-metadata, solr-limits, resolved]
 updated: 2026-09-14
 solution_branch: fix/hide-type-facet-add-show-more-facets
-commits: 9ba5cc5, 2795bec, f9c0472
+commits: 9ba5cc5, 2795bec, f9c0472, 2e35fbf, fa46c72
 critical_validation_commands:
-  - "docker compose -f docker-compose.production.yml exec web bundle exec rails runner 'puts CatalogController.search_builder_class'"
+  - "docker compose -f docker-compose.production.yml exec web bundle exec rails runner 'puts CatalogController.blacklight_config.search_builder_class'"
   - "docker compose -f docker-compose.production.yml exec web bundle exec rails runner 'CatalogController.blacklight_config.facet_fields.each { |n, f| puts \"#{n}: limit=#{f.limit.inspect}\" }'"
 validation_source: Grok review (2026-09-14)
 
@@ -26,20 +26,22 @@ validation_source: Grok review (2026-09-14)
 Abandoned method interception entirely. Implemented the correct approach:
 
 **Files Changed**:
-1. ✅ `config/initializers/facet_limits.rb` (NEW)
+1. ✅ `config/initializers/catalog_controller_decorator.rb` (NEW - commit fa46c72)
+   - Uses `to_prepare` hook to configure CatalogController
+   - Sets `search_builder_class = CatalogSearchBuilder` (overrides hyrax-webapp default)
+   - Applies pagination, advanced search facets, hides Type facet
+   - CRITICAL: Must run after CatalogController is defined
+
+2. ✅ `config/initializers/facet_limits.rb` (NEW)
    - Uses `to_prepare` hook to apply `limit: 5` to ALL facets
    - Catches M3 flexible-metadata facets registered after boot
    - No hardcoded field names
 
-2. ✅ `app/search_builders/catalog_search_builder.rb` (UPDATED)
+3. ✅ `app/search_builders/catalog_search_builder.rb` (UPDATED - commit 2e35fbf)
+   - Extends `AdvSearchBuilder` (the actual search builder used by catalog)
    - Overrides `add_facetting_to_solr` (the real Blacklight method)
-   - Injects `f.<fieldname>.facet.limit=6` for each facet
-   - Ensures Solr receives limit parameters (limit+1 for "more" detection)
-
-3. ✅ `app/controllers/catalog_controller_decorator.rb` (CLEANED)
-   - Removed all failed method interception attempts
-   - Kept only essential config: hide Type facet, set pagination
-   - No debug logging or wrappers
+   - Injects `f.<fieldname>.facet.limit=6` for each facet (limit+1 for "more" detection)
+   - Ensures Solr receives limit parameters
 
 4. ✅ `script/verify_facet_limits.rb` (NEW)
    - Verification script to test all configuration
@@ -53,70 +55,82 @@ Abandoned method interception entirely. Implemented the correct approach:
 - **Dynamic registration** → Catches M3 facets registered after boot (flexible)
 - **No field allowlists** → Works with any future M3 fields added (future-proof)
 
-### CRITICAL Implementation Requirements (Per Grok)
+### CRITICAL Implementation Requirements (Verified 2026-09-14)
 
-These MUST be in place for the fix to work:
+These are now in place:
 
-1. **CatalogControllerDecorator must call prepend:**
+1. ✅ **Initializer (to_prepare) to configure CatalogController:**
+   - Runs after CatalogController is defined
+   - Sets `config.search_builder_class = CatalogSearchBuilder`
+   - Applied in `config/initializers/catalog_controller_decorator.rb`
+
+2. ✅ **CatalogSearchBuilder extends AdvSearchBuilder:**
    ```ruby
-   ::CatalogController.prepend(CatalogControllerDecorator)
-   ```
-   This ensures the custom search_builder_class is used.
-
-2. **Decorator must set search_builder_class:**
-   ```ruby
-   config.search_builder_class = CatalogSearchBuilder  # or actual class name
-   ```
-   Without this, the default/inherited search builder is used (which won't have our add_facetting_to_solr override).
-
-3. **Custom search builder must override add_facetting_to_solr:**
-   ```ruby
-   def add_facetting_to_solr(solr_params)
-     super
-     # Inject f.<field>.facet.limit for each facet
+   class CatalogSearchBuilder < AdvSearchBuilder  # Correct parent class
+     def add_facetting_to_solr(solr_params)
+       super
+       # Inject f.<field>.facet.limit for each facet
+     end
    end
    ```
-   This is where Solr params are actually set (not in build() method).
+   Must extend AdvSearchBuilder (not Blacklight::SearchBuilder) to match what catalog uses.
 
-4. **Facet limits MUST be integer, not boolean:**
-   ```ruby
-   facet_config.limit = 5  # Integer ✓
-   # NOT: facet_config.limit = true  # Boolean ✗
-   ```
+3. ✅ **Custom search builder overrides add_facetting_to_solr:**
+   - This is where Blacklight injects Solr params (not build() method)
+   - Injects `f.<field>.facet.limit = limit + 1` for each facet
 
-5. **Don't rely on show_more: true** — It's a no-op in some Blacklight versions. Real requirement is:
-   - `facet_config.limit = 5` (integer)
-   - `f.<field>.facet.limit = 6` in Solr request (limit + 1)
+4. ✅ **Facet limits are integers, not booleans:**
+   - `facet_config.limit = 5` (set in to_prepare hook)
+   - Ensures Solr receives `f.field.facet.limit=6`
 
-### Grok Validation Points (2026-09-14)
+### Why This Approach Works (Fixed Issues)
 
-**Exact Quote:**
-> Before we call it done, please verify these on the VM — they bite this codebase specifically
+**Original Problem (2026-09-14 morning):**
+- Decorator in `app/controllers/` wasn't being loaded
+- Validation command used wrong syntax (`CatalogController.search_builder_class` doesn't exist)
+- Parent class was wrong (Blacklight::SearchBuilder instead of AdvSearchBuilder)
 
-**Key Message**: If pre-verification commands (1) or (2) fail, **the patch is incomplete even if the files look correct on disk.**
+**Solution Applied:**
+- Moved configuration to `config/initializers/catalog_controller_decorator.rb` (to_prepare block)
+- Changed parent class to `AdvSearchBuilder` (matches catalog's actual search builder)
+- Updated validation command to use correct syntax: `CatalogController.blacklight_config.search_builder_class`
 
-**Why This Matters**:
-- File changes are necessary but not sufficient
-- Must verify at runtime that configuration is actually applied
-- Rails/Hyrax/Blacklight can reload or override configuration unexpectedly
-- Cannot trust disk files; must check running application state
+### Pre-Verification (MUST PASS BEFORE UI TEST)
 
-### Testing
+**Validation #1: Search builder class** (commit fa46c72 fix)
+```bash
+docker compose -f docker-compose.production.yml exec web \
+  bundle exec rails runner 'puts CatalogController.blacklight_config.search_builder_class'
+```
+Expected: `CatalogSearchBuilder` — if wrong, initializer didn't apply or parent class is wrong
+
+**Validation #2: Facet limits in config** (commit fa46c72 + facet_limits.rb)
+```bash
+docker compose -f docker-compose.production.yml exec web \
+  bundle exec rails runner 'CatalogController.blacklight_config.facet_fields.each { |n, f| puts "#{n}: limit=#{f.limit.inspect}" }'
+```
+Expected: All facets show `limit=5`, especially M3 ones (date_created_sim, location_sim, people_represented_sim) — if any M3 facet is nil, to_prepare hook isn't running
+
+### Full Testing Sequence
 
 ```bash
+# Pull and restart
 git pull
-docker compose -f docker-compose.production.yml restart web
-sleep 10
+docker compose -f docker-compose.production.yml restart web && sleep 10
 
-# Verify configuration
+# Run BOTH validation commands above
+# If both pass → proceed to UI test
+# If either fails → report outputs and do not proceed to UI test
+
+# Full verification (if validations pass)
 docker exec wvu_knapsack-web-1 rails runner script/verify_facet_limits.rb
 
 # Visual test - should show 5 items + "more" link for each:
 # https://hykudev.lib.wvu.edu/catalog?search_field=all_fields&q=
-#   - Date Created ✓
-#   - Location ✓
-#   - People Represented ✓
-#   - Type facet (hidden) ✓
+#   - Date Created: 5 items + "more" link ✓
+#   - Location: 5 items + "more" link ✓
+#   - People Represented: 5 items + "more" link ✓
+#   - Type facet: hidden ✓
 ```
 
 ### Acceptance Criteria (Updated)
