@@ -1,102 +1,46 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-12 — Economic wiki synthesis + GAPS.md + fee branch audit task fix
+**Last Updated:** 2026-09-14 — GCC mining economic classification + source-trace investigation
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🟢 Recent Closures (2026-09-12 — Economic Wiki Synthesis + GAPS.md)
+## 🟢 Recent Closures (2026-09-14)
 
-### Economy Wiki Three-Pillar Framework Applied — COMPLETED ✅
-- **Scope**: Updated 6 wiki files under `docs/wiki_reorganization/economy/` with Players/Admins/Developers audience sections and verified constants from economic_parameters.yml:
-  - `01-overview-and-design.md` — EAP formula, GCC emission schedule, transport rates
-  - `02-currencies-and-accounts.md` — Peg phases, monetary base (250M pre-seed + 1M/cycle), overdraft limits
-  - `03-market-and-pricing.md` — NPC pricing modes, route modifiers, price discovery lifecycle
-  - `04-bonds-and-financing.md` — Mining rates (1k/hr = 24k/day/sat), halving schedule, bond structures
-  - `05-launch-and-operational-fees.md` — Fee structure (SCC 0.5%, broker 0.3%, sales tax 3.37%), reserve requirements
-  - `07-npc-economy-lifecycle.md` — NPC pricing modes, debt thresholds, AI Manager tick loop
-- **README.md** updated with audience guide and documentation map covering all 7 wiki files + GAPS.md
-
-### GAPS.md Created — COMPLETED ✅
-- **File**: `docs/wiki_reorganization/economy/GAPS.md` (497 lines)
-- **8 gaps identified**, none have dedicated backlog tasks:
-  - Priority 1 (Critical): Gap E SettlementFees parity, Gap D hybrid GCC supply model, Gap A EAP helpers
-  - Priority 2 (Important): Gap C local-first enforcement, Gap F COGS integration
-  - Priority 3 (Strategic): Gap G peg automation, Gap B blueprint cost schemas, Gap H emission enforcement
-- **Backlog coverage**: 0 dedicated tasks; 3 have planning docs only; 5 need entirely new tasks
-
-### Fee Branch Audit Task Template Conformance Fixed — COMPLETED ✅
-- **Task**: `2026-09-12-HIGH-ARCHITECTURE-CONFIRM-FEE-BRANCH-STATUS.md` (backlog/economy/)
-- **Issues fixed**:
-  - Broken git mv line break in Agent Dispatch Interface (missing backslash continuation)
-  - Replaced Step 1 with user's better commands (`git show origin/market-fee-hold:app/models/orbital_settlement.rb`)
-  - Updated context from first-time verification to follow-up inspection (SettlementFees confirmed 3 days ago in Claude's handoff)
-  - Fixed all missing section headers (Problem Statement, Files Involved, Implementation Steps, etc.)
-  - Closed synthesis report code block properly; updated reference file path to actual handoff location
-
-### Commits
-- galaxyGame: `bcb44a64` "docs: update economy wiki with three-pillar audience guides + create GAPS.md" (9 files, 497 insertions)
-- agent-tasks: `778f4a8` "fix: correct fee branch audit task template conformance" (1 file, 270 insertions)
-
-### Correction — Audit Report Repo Location
-- **Issue**: Initial audit report (`2026-09-12-AUDIT-FEE-BRANCH-STATUS.md`) was committed to `galaxyGame/summaries/` (game code repo) instead of `agent-tasks/projects/galaxy_game/summaries/`.
-- **Fix**: Copied to correct path, removed from galaxyGame via `git rm` + commit (`f1544ee4`), committed to agent-tasks (`69a33a4`). Verified exactly one copy exists at correct path.
+### GCC Mining Economic Classification + Source-Trace Investigation — COMPLETED ✅
+- **Session type**: Read-only research + documentation (no code changes)
+- **Key findings**:
+  - GCC is fiat-style ledger currency, not a material/commodity; LDC is sole authorized issuer
+  - `recalculate_stats` (base_craft.rb:372) and `mine_gcc` (cryptocurrency_mining.rb:10) are two disconnected code paths — no data flows between them
+  - Satellite `base_mining_rate_gcc_per_hour: 1000` is dead/unconsumed design data for mining output
+  - Two exchange-rate systems exist but are NOT connected: ExchangeRateService (in-memory) vs ExchangeRate model (DB)
+  - VirtualLedgerService.exchange_rate_to_gcc returns hardcoded 100.0 (test artifact, never cleaned up)
+  - GameSimulationJob fires every 1 minute (self-scheduled), not 6 hours as wiki claims; `days_to_simulate = (elapsed_seconds / game_state.seconds_per_game_day).to_i` — whole days only
+  - At default speed=3: seconds_per_game_day=60, advances 1 game day per minute
+  - Satellite battery compatibility resolved: NOT a blocker (`recommended_fit` is NPC/testing config; `compatible_units` whitelist is documentation only)
+- **Wiki corrections committed**: `0e4f67be` — GCC identity, USD=GCC scope, virtual-ledger role, mining terminology, implementation gap callout
+- **P0 task drafted**: Held pending Claude + Gemini + Tracy review (not dispatched)
+- **Review package produced**: 10-item package for Claude/Gemini/Tracy review
+- **Reconciliation package**: `2026-09-14-GCC-MINING-DOCUMENTATION-TASK-ARTIFACT-RECONCILIATION.md` — all artifacts inventoried and reconciled
 
 ---
 
-## 🟢 Recent Closures (2026-09-12 — Asset-Generation Documentation/Task-Readiness)
+## 🟢 Recent Closures (2026-09-13)
 
-### VISUAL_CONTRACT.md Amended with Orchestration Decision — COMPLETED ✅
-- **Decision**: Development-time Asset Registry/orchestration owns `asset_id → visual_profile_id` association.
-- **Storage boundary**: Association NOT stored in Blueprint, Visual Definition, Operational Data, or Render Template.
-- **Resolution path**: Orchestration resolves via `ProfileResolutionEngine`, supplies resolved `profile_attributes` through PromptCompiler's internal composition boundary (existing `CompositionRefinery.compose(profile_attributes: ...)` call).
-- **PromptCompiler constraint**: Does NOT discover, infer, or search for profiles by `asset_id`. Five-keyword public interface remains unchanged — no `visual_profile_id:` or `visual_profile_path:` added.
-- **Output**: `VISUAL_CONTRACT.md` amended with new "Visual Profile Orchestration (Decision — 2026-09-12)" section under Section 3.
-
-### ASSET_PROMPT_COMPILER_CONTRACT.md Marked Historical/Superseded — COMPLETED ✅
-- Added dated superseded notice naming `VISUAL_CONTRACT.md` as authoritative.
-- Body left intact; no rewriting or deletion.
-
-### PromptCompiler Conformance Task Corrected and Kept in Backlog — COMPLETED ✅
-- **Task**: `2026-09-11-HIGH-FEATURE-PROMPTCOMPILER-INPUT-CONTRACT-CONFORMANCE.md` (backlog/asset-ui/)
-- Removed VD-only fallback claims; replaced with orchestration-provided attributes requirement.
-- Added explicit failure requirements for missing/unresolvable mappings.
-- Updated test scope to seven specific requirements: mapping resolution, ProfileResolutionEngine invocation, attribute passage, no Blueprint lookup, missing/invalid mapping failures, non-RH-400 case.
-- Status remains `backlog` — ready for future dispatch; no implementation performed.
-
-### tools/asset_generation/ Committed to Git — COMPLETED ✅
-- **Files committed** (7 files):
-  - `tools/asset_generation/README.md`
-  - `tools/asset_generation/composition_refinery.rb`
-  - `tools/asset_generation/profile_resolution_engine.rb`
-  - `tools/asset_generation/prompt_compiler.rb`
-  - `tools/asset_generation/spec/composition_refinery_spec.rb`
-  - `tools/asset_generation/spec/profile_resolution_engine_spec.rb`
-  - `tools/asset_generation/spec/prompt_compiler_spec.rb`
-- **Excluded**: None — all files are intended source/spec/documentation. No generated assets, credentials, caches, or vendor files present.
-
-### Commits
-- galaxyGame: tools/asset_generation tracking commit (commit hash below)
-- agent-tasks: status.md update (commit hash below)
-
----
-
-## 🟢 Recent Closures (2026-09-11 — VISUAL_CONTRACT)
-
-### Canonical Visual Contract for Asset Generation — COMPLETED ✅
-- **Task**: `2026-09-09-HIGH-ARCHITECTURE-VISUAL-CONTRACT.md`
-- **Output**: `/Users/tam0013/Documents/git/galaxyGame/docs/reference/asset-generation/VISUAL_CONTRACT.md` (223 lines)
-- **Key definitions**:
-  - `asset_id` as shared canonical identity across all artifact types
-  - Blueprints do NOT carry `visual_profile` or `visual_definition` fields
-  - PromptCompiler public interface: `compile(asset_id:, blueprint_path:, operational_data_path:, visual_definition_path:, render_template_path:)` — no `visual_profile_path:`
-  - Visual Definition format contract: `.json` = raw valid JSON; `.md` = Markdown+YAML+embedded-JSON (human-readable)
-  - Identity resolution distinct from file discovery: PromptCompiler consumes already-resolved inputs, does NOT search by `asset_id`
-  - RH-400 VD violation acknowledged (`VEHICLE_HARVESTER_ROVER_RH400.json` is Markdown-wrapped but named `.json`); migration deferred as separate task
-  - Asset-generation tooling = development-time infrastructure outside Rails runtime
-- **Dependencies unblocked**: PromptCompiler adjustments, RH-400 VD migration, standalone asset-generation execution
-- **Commits**: galaxyGame `50f7925e`, agent-tasks `5b76b9f`
+### Orbital Mechanics Data Layer — ALL 5 PHASES COMPLETE ✅
+- **Task**: `2026-08-19-HIGH-FEATURE-ORBITAL-MECHANICS-DATA-LAYER.md`
+- **Phase 5 (TransitEngine)**: Dynamic orbital mechanics integration
+  - Replaced hardcoded transit-day constants (146, 7, 1388, 259) with computed values from CelestialBody JSONB column
+  - Added J2000.0 epoch propagation: M(t) = M_0 + n × (t - t_0)
+  - Implemented `compute_phase_angle`, `compute_hohmann_delta_v`, `compute_synodic_period`, `compute_transit_days_dynamic`
+  - Added `Rails.logger.warn` in fallback path for visibility when orbital data unavailable
+  - Documented eccentricity not yet factored in (orbits approximated circular)
+- **RSpec**: 4733 examples, 195 failures (pre-existing/unrelated), 52 pending — zero transit_engine-related failures
+- **TransitEngine spec**: 32 examples, 0 failures
+- **Commits**:
+  - galaxyGame: `7880f9f6` "feat: Phase 5 TransitEngine dynamic orbital mechanics integration"
+  - agent-tasks: `0d8fdfb` (task → completed/2026-09/)
 
 ---
 
@@ -115,33 +59,6 @@
 - **Commits**:
   - galaxyGame: `1c684a37` "architecture(ai-manager): replace dead calculate_eap_ceiling calls with evaluate_strategy"
   - agent-tasks: `bb8fa6c` (task → completed/2026-09/)
-
----
-
-## 🟢 Recent Closures (2026-09-10 — Missions v2 Architecture Session)
-
-### Missions v2 Architecture Discovery & Phase Library Design — IN PROGRESS 🔄
-- **Session work (2026-09-10)**: Complete architecture exploration and 14 JSON data files created
-- **Findings**:
-  - Confirmed correct pattern: missions/tasks_v2 (complete generic parametrized library) → missions_v2/phases (reference tasks) → missions_v2/profiles (set parameters)
-  - Location (Luna/Mars/Venus) is a parameter passed through profile, not a separate mode
-  - All reference exploration (ssc-000.json, old phase structures, npc-base-deploy, mars_settlement) was training data review — architecture already correctly implemented
-- **Deliverables created** (gitignored `/data`, not tracked by git):
-  - 14 phase definition files in `missions_v2/phases/` (all reference missions/tasks_v2 library with parametrized environment)
-  - Updated `precursor_mission_profile_v1.json` with 8 concurrent phases (gcc_mining, venus_harvest_launch, initial_hlt_landings, power_grid_deployment, psr_ice_mining, inflatable_habitat_placement, inflatable_habitat_pressurization, luna_isru_production)
-  - Concurrent operation windows documented (7 windows Days 0-876)
-  - Parametric Venus transit model (fuel-dependent arrival window Days 526-656)
-  - Updated rake task `luna_mission:phase_timing` with full timeline validation (200+ lines)
-- **Commits**: galaxyGame `latest` — rake task updated, JSON files untracked (gitignored)
-- **Status**: Architecture validated ✅ | Next task: Formal validation & audit of phase library (created new task file 2026-09-10)
-
-### Future Work Queued
-- **Task created**: `2026-09-10-HIGH-ARCHITECTURE-MISSIONS-V2-PHASE-LIBRARY-INTEGRATION.md` (backlog/current)
-  - Validate all 14 phase files load correctly
-  - Audit missions/tasks_v2 library (100+ tasks) for completeness
-  - Verify task_refs resolve
-  - Create architectural reference doc
-  - Ready for AI Manager dynamic profile generation
 
 ---
 
@@ -448,7 +365,7 @@
 | ~~**Epoxy Resin Blueprint**~~ | `completed/2026-08/2026-08-20-HIGH-DATA-CREATE-EPOXY-RESIN-BLUEPRINT.md` | ✅ COMPLETED (blueprint created) — sourcing structure insufficient; see rework task below |
 | **Epoxy Resin Sourcing Rework** | `backlog/current/2026-09-02-HIGH-DATA-REWORK-EPOXY-RESIN-SOURCING-STRUCTURE.md` | 🆕 HELD for review — rework flat-string sourcing to per-location structure + add production path placeholder; follows existing `regolith_composite.json` pattern |
 | **Fabrication Plant Blueprint** | `backlog/current/2026-08-20-HIGH-DATA-CREATE-FABRICATION-PLANT-BLUEPRINT.md` | DEFERRED (Phase 11+) — blueprint drafted but premature; git tracking violated standing convention and was reverted; do not re-dispatch until Phase 11+ work begins |
-| **Orbital Mechanics Data Layer** | `backlog/current/2026-08-19-HIGH-FEATURE-ORBITAL-MECHANICS-DATA-LAYER.md` | Phase 1-4 complete, Phase 5 pending |
+| **Orbital Mechanics Data Layer** | `completed/2026-09/2026-08-19-HIGH-FEATURE-ORBITAL-MECHANICS-DATA-LAYER.md` | ✅ ALL 5 PHASES COMPLETE (7880f9f6)
 | **Launch Window + Transit Timing Engine** | `backlog/current/2026-08-18-HIGH-FEATURE-LAUNCH-WINDOW-TRANSIT-TIMING-ENGINE.md` | Architecture feature |
 
 ### MEDIUM Priority
@@ -493,8 +410,7 @@
 1. ~~**Dispatch epoxy_resin blueprint**~~ — ✅ COMPLETED (blueprint created) — **rework task filed** (sourcing structure insufficient), HELD for review
 
 ### Ready to Dispatch (No Sign-off Needed):
-2. **Orbital Mechanics Data Layer Phase 5** — TransitEngine integration pending (needs verification pass first — see task file)
-3. **Launch Window + Transit Timing Engine** — Architecture feature, backlog (must complete before Orbital Phase 5)
+2. **Launch Window + Transit Timing Engine** — Architecture feature, backlog (must complete before Orbital Phase 5)
 4. **MEDIUM bug fixes** (08-16/17) — Atmosphere generator nil
 
 ### Do NOT Touch This Session:
