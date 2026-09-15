@@ -6,6 +6,19 @@
 
 ---
 
+### Power/Energy/Power-Generation Data Taxonomy Research — COMPLETED ✅
+- **Task**: `2026-08-31-HIGH-ARCHITECTURE-POWER-DATA-TAXONOMY-RESEARCH`
+- **Session type**: Read-only research (9 steps completed, no code/data changes)
+- **Deliverables**:
+  - `summaries/2026-08-31-ARCHITECTURE-POWER-DATA-TAXONOMY-RESEARCH.md` — full research report (15 sections)
+  - `summaries/2026-08-31-power-data-taxonomy-inventory.json` — machine-readable inventory
+- **Key findings**: Three distinct categories (`energy`=generation, `power`=distribution/storage, `power_generation`=payload metadata); slot semantics confirm they are intentionally different; 8 duplicate ID pairs found (2 CRITICAL); all 3 nuclear reactors lack operational specs; `power_generation` not loaded by any lookup service
+- **No migration or source/data/wiki changes were made** — advisory-only report
+- **Human review required and intentionally deferred** until current GCC planning-agent work is complete
+- **Stop conditions**: duplicate IDs, missing reactor operational specifications, unloaded power_generation category behavior
+
+---
+
 ## 🟢 Recent Closures (2026-09-14)
 
 ### GCC Mining Economic Classification + Source-Trace Investigation — COMPLETED ✅
