@@ -1,8 +1,8 @@
 # GCC Mining Satellite — Unified Hardware Capacity and Simulation-Loop Integration
 
-**Status**: DRAFT — Requires Claude and Gemini review; not dispatch-ready  
+**Status**: DRAFT — Requires Gemini review + Tracy approval; Claude answers applied (see below)  
 **Created**: 2026-09-14  
-**Last Updated**: 2026-09-14  
+**Last Updated**: 2026-09-15  
 **Priority**: P0 (highest)  
 **Type**: HIGH-FEATURE / ARCHITECTURE  
 
@@ -117,14 +117,18 @@ Additionally, there is a verified source-trace discrepancy: `recalculate_stats` 
 
 ---
 
-## Claude Review Questions (Required Before Dispatch)
+## Claude Review Answers (Applied — No Longer Dispatch Gates)
 
-1. **Append-only ledger immutability**: Should GCC ledger entries be append-only/immutably auditable? What are the financial-architecture implications?
-2. **Virtual-ledger obligation visibility**: How should virtual-ledger obligations be reported separately from settled GCC transactions?
-3. **Deficit threshold policy**: What deficit thresholds and AI Manager intervention rules apply to NPC entities using virtual ledger?
-4. **GCC capacity unification**: Should `recalculate_stats` output be consumed by `mine_gcc`, or should mining have its own canonical calculation with craft-stat reporting delegated to it?
-5. **Satellite base-rate field**: What is the correct treatment of `base_mining_rate_gcc_per_hour: 1000` in the satellite operational data — remove, deprecate, or repurpose?
-6. **Time-model contract**: Should `0.18` be documented as a per-operation conversion factor, or should it be connected to the simulation tick interval?
+> **Tracy's direction**: Q1-Q3 removed as P0 dispatch gates. They contradict the task's own out-of-scope list (which already excludes virtual-ledger redesign and exchange-rate policy). All three deferred to a dedicated future ledger-architecture task.
+
+### Q4 — Capacity Unification: RESOLVED ✅
+Make the existing `mine_gcc`/`MiningUnitAdapter` chain the **single canonical calculation**. If `current_mining_rate_gcc_per_hour` is kept as a displayed stat, it must call the same method — not maintain a second parallel implementation.
+
+### Q5 — Satellite Base-Rate Field: RESOLVED ✅
+Deprecate/remove `base_mining_rate_gcc_per_hour: 1000` rather than repurpose. It is dead/unconsumed design data for mining output.
+
+### Q6 — Time-Model Contract: RESOLVED ✅
+Document `0.18` as a per-operation unit-conversion constant, explicitly **not** tied to the simulation tick interval, with a code comment.
 
 ---
 

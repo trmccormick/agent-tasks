@@ -1,6 +1,6 @@
 # Architecture Decision Note — GCC Mining Capacity Calculation
 
-**Status**: PROVISIONAL — Requires Claude and Gemini review  
+**Status**: PROVISIONAL — Requires Gemini review + Tracy approval; Claude answers applied (see below)
 **Created**: 2026-09-14  
 **Last Updated**: 2026-09-14  
 
@@ -72,7 +72,7 @@ capacity = effective_mining_capacity
 - **Risk**: Unified calculation may not reproduce exact current behavior (thermal/processing multipliers applied differently)
 - **Mitigation**: Runtime differential validation before deployment
 
-### Recommendation: PROVISIONAL — Requires Claude and Gemini review
+### Recommendation: PROVISIONAL — Requires Gemini review + Tracy approval; Claude answers applied
 This option aligns with the approved hardware-only capacity direction but requires runtime validation to confirm it reproduces current mining output correctly.
 
 ---
@@ -120,7 +120,7 @@ Mining operation has its own canonical calculation (current `mine_gcc` behavior)
 - **Risk**: If `recalculate_stats` has other consumers not yet discovered, removing or reworking it could break them
 - **Mitigation**: Repository-reference audit before any changes to `recalculate_stats`
 
-### Recommendation: PROVISIONAL — Requires Claude and Gemini review
+### Recommendation: PROVISIONAL — Requires Gemini review + Tracy approval; Claude answers applied
 This option preserves current behavior but leaves the documentation discrepancy unresolved. Suitable if runtime validation confirms current mining output is correct.
 
 ---
@@ -139,15 +139,20 @@ This option preserves current behavior but leaves the documentation discrepancy 
 
 ---
 
-## Unanswered Questions for Claude and Gemini
+## Claude Answers (Applied — No Longer Open Questions)
 
-1. **Claude (financial architecture)**: Should GCC ledger entries be append-only/immutably auditable? What are the implications for mining credit recording?
-2. **Claude**: Does `recalculate_stats` have any consumers other than craft-stat reporting? A repository-reference audit is needed before Option B is safe.
-3. **Gemini (economic design)**: Which option aligns with the approved hardware-only capacity direction? Is there a policy reason to prefer one over the other?
-4. **Gemini**: What is the correct treatment of `base_mining_rate_gcc_per_hour: 1000` — remove, deprecate, or repurpose?
-5. **Both**: Should satellite capacity establish potential throughput while LDC authorization governs actual credits, or should they be unified?
+> **Tracy's direction**: Q1-Q3 removed as dispatch gates. They contradict the task's own out-of-scope list. All three deferred to a dedicated future ledger-architecture task.
+
+### Q4 — Capacity Unification: RESOLVED ✅
+Make the existing `mine_gcc`/`MiningUnitAdapter` chain the **single canonical calculation**. If `current_mining_rate_gcc_per_hour` is kept as a displayed stat, it must call the same method — not maintain a second parallel implementation.
+
+### Q5 — Satellite Base-Rate Field: RESOLVED ✅
+Deprecate/remove `base_mining_rate_gcc_per_hour: 1000` rather than repurpose. It is dead/unconsumed design data for mining output.
+
+### Q6 — Time-Model Contract: RESOLVED ✅
+Document `0.18` as a per-operation unit-conversion constant, explicitly **not** tied to the simulation tick interval, with a code comment.
 
 ---
 
-**Status**: PROVISIONAL — Requires Claude and Gemini review before P0 dispatch.  
+**Status**: PROVISIONAL — Requires Gemini review + Tracy approval before P0 dispatch. Claude answers applied.  
 **Recommendation**: Option A is preferred if runtime validation confirms it reproduces current mining output correctly. Option B is the safe fallback.
