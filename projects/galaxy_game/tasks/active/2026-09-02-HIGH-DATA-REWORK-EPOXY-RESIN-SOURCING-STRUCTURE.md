@@ -1,14 +1,65 @@
 ---
-status: active
+status: blocked
 priority: HIGH
 type: data
 system_domain: MANUFACTURING
 mvp_alignment: ISRU_PRODUCTION
 local_worker_safe: true
 created: 2026-09-02
+blocked_by: "Geography-agnostic sourcing model not yet approved. See synthesis report for analysis and required decisions."
 # DISPATCH ORDERING — do not dispatch a task whose depends_on is not yet completed.
 depends_on: []
 blocks: []
+---
+
+## 🔴 BLOCKED — Re-scoped as Planning/Reconciliation Task (2026-09-16)
+
+**This task is BLOCKED pending human approval of a geography-agnostic sourcing model.**
+
+The following changes have been applied to the task scope:
+
+### Prohibited Changes
+- **NO new executable `sourcing` fields** may be added to `epoxy_resin.json` until a geography-agnostic sourcing schema is approved.
+- **NO normalization of `production.input_materials`** — this is a separate schema-planning task.
+- **Existing epoxy `production` data must remain unchanged.** The current block (with `{material, quantity, unit, notes}` format) is preserved as-is.
+- **`sourcing_strategy` field remains unchanged** — it is narrative/authoring metadata, not executable data.
+
+### Current State Recorded
+- Material JSON files have **no validated sourcing schema**. Only 3 of 207 materials have a `sourcing` block; only epoxy_resin has `sourcing_strategy`. No code validates or enforces a consistent structure.
+- The material loader (`MaterialLookupService`) treats all material JSON as opaque data bags — no schema validation exists.
+
+### Identified Separate Future Tasks
+1. **Procedural-world pricing resolution** (separate task): `pricing.lunar_production` hardcoding in `npc_price_calculator.rb` (4 locations) must be resolved for arbitrary celestial bodies. This is the more urgent procedural-world compatibility problem.
+2. **Production-input normalization** (separate task): Three different `input_materials` formats exist across 20 materials (`{id, amount}`, `{material, quantity, unit, notes}`, string arrays). Requires schema-planning separate from sourcing redesign.
+
+### Required Future Handoff (when ready for implementation)
+When a geography-agnostic sourcing model is approved, the following read-only inventory must be completed first:
+
+```text
+You are Qwen acting as a READ-ONLY PLANNING AND EVIDENCE agent in the
+galaxyGame repository.
+
+Task type: Geography-agnostic sourcing schema planning — evidence inventory.
+
+Do not create, edit, move, rename, delete, stage, commit, stash, reset, clean,
+rebase, checkout, generate repository reports, or otherwise alter any file or
+Git state. Return findings only in your response.
+
+Required read-only investigation:
+
+1. All `pricing.lunar_production` consumers — list every file, line number, and
+   the exact dig path used. Identify which are hardcoded to "luna" vs. computed.
+2. All body-name checks across the codebase — grep for "luna", "earth",
+   "martian", "deep_space_location?", and any celestial-body name literals used
+   in pricing/sourcing logic.
+3. PrecursorCapabilityService inputs — what body properties does it check?
+   Does it accept arbitrary body names or only known Sol bodies?
+4. Candidate geography-agnostic resolver boundaries — where would a runtime
+   pricing resolver plug in without breaking existing EAP/extraction/capex logic?
+
+Return the required inventory report only. Make no repository changes.
+```
+
 ---
 
 ## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
