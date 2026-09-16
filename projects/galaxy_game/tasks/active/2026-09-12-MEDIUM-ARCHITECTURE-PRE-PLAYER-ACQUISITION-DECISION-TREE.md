@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: MEDIUM
 type: architecture
 system_domain: AI_MANAGER
