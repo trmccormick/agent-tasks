@@ -1,8 +1,17 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-14 — GCC mining economic classification + source-trace investigation
+**Last Updated:** 2026-09-15 — Wiki governance template + Transportation Station correction
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+### Wiki Governance Template + Transportation Station Correction — COMPLETED ✅
+- **Session type**: Documentation (two approved single-file amendments)
+- **Deliverables committed**: `260391eb` — governance guide + corrected taxonomy
+  - `docs/wiki_reorganization/governance/WIKI_SECTION_TEMPLATE_AND_ADOPTION_GUIDE.md` — new canonical governance guide with retired/deprecated source rule (Section 5)
+  - `docs/wiki_reorganization/transportation/01-craft-taxonomy.md` — Station section corrected: removed stale `Settlement::SpaceStation < BaseSettlement` as current evidence, added retirement warning, distinguished verified source from canonical design intent
+- **No code, tests, data, configuration, or Git state beyond these two files was changed**
 
 ---
 
