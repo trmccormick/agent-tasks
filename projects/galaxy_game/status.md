@@ -1,223 +1,25 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-15 — GCC P0 planning/documentation alignment (settled design record applied to planning packet)
+**Last Updated:** 2026-09-06 — CNT Fabricator Naming Collision Investigation completed (galaxyGame `[COMMIT_HASH]`), task moved to completed/
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-### GCC P0 Planning/Documentation Alignment — COMPLETED ✅
-- **Session type**: Read-only planning documentation update (no code, tests, data, config, wiki, task state, or implementation changes)
-- **Deliverable**: `projects/galaxy_game/summaries/2026-09-15-GCC-P0-PLANNING-DECISION-PACKET.md` — updated with all five required sections
-- **Sections added/updated**:
-  - **Human Decisions Settled This Session** (NEW): 8 authoritative decisions from Tracy's policy guidance (1:1 peg fixed, future uncoupling deferred, LDC band nonbinding, GCC identity settled, mining infrastructure settled, mined GCC → LDC account, multi-currency supported, physical ≠ GCC)
-  - **Section A — Current-State Contract**: GCC identity terminology updated to "centrally managed, crypto-inspired virtual ledger currency using LDC-controlled simulated compute mining for issuance"; VirtualLedgerService 100.0 labeled confirmed defect; bootstrap peg language strengthened
-  - **Section B — Future-Reference Peg Note** (NEW): Locked 1:1 rule; qualitative maturity indicators; LDC-managed band as nonbinding reference
-  - **Section D — Non-Dispatched Task Draft**: VirtualLedgerService 100.0 defect alignment task with problem statement, actual/required behavior, acceptance criteria, non-goals, dependencies, Luna impact
-  - **Section F — Terminology Guidance** (NEW subsection): 6-item settled-record terminology recommendations; existing 4-item inventory preserved intact
-- **Commits**: `1af57e1` (GCC P0 planning packet + verification evidence packets + Perplexity handoff), `b6b3616` (evening session handoffs)
-- **No files modified; no implementation dispatched**
+## 🟢 Recent Closures (2026-09-06)
+- **CNT Fabricator Naming Collision Investigation — COMPLETED ✅**
+  - **Task**: `2026-08-16-MEDIUM-INVESTIGATE-CNT-FABRICATOR-NAMING-COLLISION.md` → `tasks/completed/2026-08/`
+  - **Findings**: Confirmed ID collision between industrial and production-tier blueprints.
+  - **Fix**: Renamed industrial blueprint to `cnt_industrial_weaver_mk1_bp.json` and updated internal ID to `cnt_industrial_weaver_mk1`.
+  - **Verification**: Full-repo grep confirms no remaining references to the old ID.
+  - **Follow-up**: Flagged potential regex mismatch in `mission_profile_analyzer.rb` as a new research task.
+
 
 ---
 
-### GCC Mining Economic Policy Draft Tasks — DRAFT ONLY (Not Dispatched) ✅
-- **Session type**: Read-only evidence verification + planning document creation (no code, tests, data, config, migration, seed, wiki, branch, or commit changes except these draft task files)
-- **Evidence sweep** (read-only): Inspected complete implementation of `Account#deposit`, `CryptocurrencyMining#mine_gcc`, `BaseSatellite#process_tick`, `MineGccJob`, `SatelliteMiningSchedulerJob`, `MissionTaskRunnerService` mining path, `Transaction`, `Currency`, `MiningLog`, `EconomicConfig`, `crypto_mining_satellite_data.json`
-- **Key findings documented**:
-  - `Account#deposit` credits balance + creates Transaction (`:deposit` type); no supply minting semantics
-  - Three mining entry paths with different deposit recipients (satellite account, owner account, LDC account)
-  - Satellite tick path may produce duplicate credits (mine_gcc → satellite account + process_tick → owner account)
-  - No LDC authorization guard in any mining path; `can_mine_gcc?` only checks account + mining units
-  - MiningLog is separate model/table but Transaction records use `:deposit` type identical to other deposits
-  - Config-defined monetary policy (max_supply, halving, difficulty_scaling, block_reward) exists but never called from mining code
-  - Satellite `*_per_hour` fields are dead/unconsumed design data for payout; actual source is fitted computer-unit values
-  - `VirtualLedgerService.exchange_rate_to_gcc` returns hardcoded 100.0 (test artifact)
-- **Draft tasks created** (committed as `a994deb`):
-  1. `2026-09-15-HIGH-BUG-FIX-BOOTSTRAP-USD-GCC-CONVERSION-CORRECTION.md` — USD→GCC conversion rate fix
-  2. `2026-09-15-HIGH-BUG-FIX-GCC-MINING-SATELLITE-INTEGRITY-DUPLICATE-CREDIT-PREVENTION.md` — one credit per mining event (Task 2 clarification applied: consolidated three recipient-policy gates into one post-issuance-policy gate)
-  3. `2026-09-15-HIGH-ARCHITECTURE-GCC-ISSUANCE-AUTHORIZATION-LDC-RECIPIENT-ROUTING.md` — GCC authorization guard + LDC routing, per-currency extensible
-  4. `2026-09-15-HIGH-ARCHITECTURE-GCC-MINING-CADENCE-RATE-SEMANTICS-ALIGNMENT.md` — time model, trigger ownership, rate semantics
-- **Human decision gates** (all marked [FILL IN]): bootstrap conversion approach, canonical recipient per path, LDC authorization expression, canonical LDC account resolution, time model, trigger consolidation, satellite `*_per_hour` field treatment
-- **Unverified facts requiring test/spec confirmation**: dual deposit intent, caller inventory for `exchange_rate_to_gcc`, MiningLog audit adequacy, `recalculate_stats` consumer, `time_skipped` intent
-- **No files modified; no implementation dispatched**
-
----
-
-### Transportation Normalization + Economy Template Extraction — COMPLETED ✅
-- **Session type**: Read-only analysis + approved wiki-only documentation restructuring (no code, tests, data, config, migrations, tasks, or Git state changes)
-- **Part 1 — Economy Template Extraction**: Comprehensive read-only analysis
-  - Extracted reusable Economy section template (21 template rules, evidenced patterns, exceptions)
-  - Compared Transportation against Economy pattern (file-by-file gap analysis, structural mismatches)
-  - Proposed reusable wiki-section template for future domains (folder layout, file naming, metadata, page outline, gap/audit conventions)
-  - Cross-domain ownership map (what lives where: Transportation, Economy, Terminology/Foundations)
-  - Identified approval gates and open questions (human decisions + Gemini/Claude reviews needed)
-  - Return report: A–G sections with template extraction, gap analysis, normalization plan, ownership map, approval gates, next action
-  - **No files modified; no implementation dispatched**
-- **Part 2 — Transportation Normalization** (approved, executed):
-  - Commits: `df1e9786` (transportation domain), `260391eb` (governance guide)
-  - File changes:
-    - `transportation/reports/` created; `GCC_WIKI_FOUNDATION_REPORT.md` moved from root (session deliverable, not canonical)
-    - `transportation/README.md` revised in place (normalized to Economy hub pattern: architecture overview, grouped doc map, Key Models/Services table, cross-domain refs, Change History)
-    - `transportation/craft.md` → `transportation/01-craft-taxonomy.md` (renumbered, numbered headings `## 1.` through `## 9.`, status block simplified to Economy style + extended implementation-alignment metadata retained, Key Models table added, links updated, Change History entry)
-    - `transportation/gcc_mining_satellite.md` → `transportation/02-gcc-mining-satellite.md` (renumbered, numbered headings, shared terminology cross-linked to 01-craft-taxonomy instead of duplicating, status block simplified + extended metadata retained, Change History entry)
-    - `transportation/GAPS.md` created (Gap A: GCC recipient routing alignment, Gap B: mining cadence/rate semantics, Gap C: craft lifecycle coverage — all evidence-backed, status-labeled)
-  - Old unnumbered files deleted; internal Transportation links all verify correct
-  - Cross-domain links (Transportation → Economy) preserved and verified
-  - Phase 4 index/site-map updates deliberately deferred (not touched)
-  - Link validation: 10 internal links all resolve; cross-domain links point to verified Economy pages
-- **Quality assurance**: No Phase 4 files, application source, tests, blueprints, data, config, migrations, seeds, manifests, task lifecycle, branches, or commits were modified
-- **Review required**: Gemini alignment review (terminology conventions, depth vs Phase 4 priorities, Economy consistency) before canonical adoption to Phase 4 site-map
-
-### Wiki Governance Template + Transportation Station Correction — COMPLETED ✅
-- **Session type**: Documentation (two approved single-file amendments)
-- **Deliverables committed**: `260391eb` — governance guide + corrected taxonomy
-  - `docs/wiki_reorganization/governance/WIKI_SECTION_TEMPLATE_AND_ADOPTION_GUIDE.md` — new canonical governance guide with retired/deprecated source rule (Section 5)
-  - `docs/wiki_reorganization/transportation/01-craft-taxonomy.md` — Station section corrected: removed stale `Settlement::SpaceStation < BaseSettlement` as current evidence, added retirement warning, distinguished verified source from canonical design intent
-- **No code, tests, data, configuration, or Git state beyond these two files was changed**
-
----
-
-### Power/Energy/Power-Generation Data Taxonomy Research — COMPLETED ✅
-- **Task**: `2026-08-31-HIGH-ARCHITECTURE-POWER-DATA-TAXONOMY-RESEARCH`
-- **Session type**: Read-only research (9 steps completed, no code/data changes)
-- **Deliverables**:
-  - `summaries/2026-08-31-ARCHITECTURE-POWER-DATA-TAXONOMY-RESEARCH.md` — full research report (15 sections)
-  - `summaries/2026-08-31-power-data-taxonomy-inventory.json` — machine-readable inventory
-- **Key findings**: Three distinct categories (`energy`=generation, `power`=distribution/storage, `power_generation`=payload metadata); slot semantics confirm they are intentionally different; 8 duplicate ID pairs found (2 CRITICAL); all 3 nuclear reactors lack operational specs; `power_generation` not loaded by any lookup service
-- **No migration or source/data/wiki changes were made** — advisory-only report
-- **Human review required and intentionally deferred** until current GCC planning-agent work is complete
-- **Stop conditions**: duplicate IDs, missing reactor operational specifications, unloaded power_generation category behavior
-
----
-
-## 🟢 Recent Closures (2026-09-14)
-
-### GCC Mining Economic Classification + Source-Trace Investigation — COMPLETED ✅
-- **Session type**: Read-only research + documentation (no code changes)
-- **Key findings**:
-  - GCC is fiat-style ledger currency, not a material/commodity; LDC is sole authorized issuer
-  - `recalculate_stats` (base_craft.rb:372) and `mine_gcc` (cryptocurrency_mining.rb:10) are two disconnected code paths — no data flows between them
-  - Satellite `base_mining_rate_gcc_per_hour: 1000` is dead/unconsumed design data for mining output
-  - Two exchange-rate systems exist but are NOT connected: ExchangeRateService (in-memory) vs ExchangeRate model (DB)
-  - VirtualLedgerService.exchange_rate_to_gcc returns hardcoded 100.0 (test artifact, never cleaned up)
-  - GameSimulationJob fires every 1 minute (self-scheduled), not 6 hours as wiki claims; `days_to_simulate = (elapsed_seconds / game_state.seconds_per_game_day).to_i` — whole days only
-  - At default speed=3: seconds_per_game_day=60, advances 1 game day per minute
-  - Satellite battery compatibility resolved: NOT a blocker (`recommended_fit` is NPC/testing config; `compatible_units` whitelist is documentation only)
-- **Wiki corrections committed**: `0e4f67be` — GCC identity, USD=GCC scope, virtual-ledger role, mining terminology, implementation gap callout
-- **P0 task drafted**: Held pending Claude + Gemini + Tracy review (not dispatched)
-- **Review package produced**: 10-item package for Claude/Gemini/Tracy review
-- **Reconciliation package**: `2026-09-14-GCC-MINING-DOCUMENTATION-TASK-ARTIFACT-RECONCILIATION.md` — all artifacts inventoried and reconciled
-
----
-
-## 🟢 Recent Closures (2026-09-13)
-
-### Orbital Mechanics Data Layer — ALL 5 PHASES COMPLETE ✅
-- **Task**: `2026-08-19-HIGH-FEATURE-ORBITAL-MECHANICS-DATA-LAYER.md`
-- **Phase 5 (TransitEngine)**: Dynamic orbital mechanics integration
-  - Replaced hardcoded transit-day constants (146, 7, 1388, 259) with computed values from CelestialBody JSONB column
-  - Added J2000.0 epoch propagation: M(t) = M_0 + n × (t - t_0)
-  - Implemented `compute_phase_angle`, `compute_hohmann_delta_v`, `compute_synodic_period`, `compute_transit_days_dynamic`
-  - Added `Rails.logger.warn` in fallback path for visibility when orbital data unavailable
-  - Documented eccentricity not yet factored in (orbits approximated circular)
-- **RSpec**: 4733 examples, 195 failures (pre-existing/unrelated), 52 pending — zero transit_engine-related failures
-- **TransitEngine spec**: 32 examples, 0 failures
-- **Commits**:
-  - galaxyGame: `7880f9f6` "feat: Phase 5 TransitEngine dynamic orbital mechanics integration"
-  - agent-tasks: `0d8fdfb` (task → completed/2026-09/)
-
----
-
-## 🟢 Recent Closures (2026-09-11)
-
-### Dead EAP Calls Removed + evaluate_strategy Wired — COMPLETED ✅
-- **Task**: `2026-09-11-HIGH-ARCHITECTURE-ACQUISITION-WIRE-EVALUATE-STRATEGY.md`
-- **Problem**: Three call sites invoked dead `NpcPriceCalculator.send(:calculate_eap_ceiling, ...)` — raises `NoMethodError` at runtime
-- **Fixes applied**:
-  - `resource_acquisition_service.rb:140` → `evaluate_strategy(material:, location:, context:)` with safe `&.reference_cost` guard
-  - `decision_tree.rb:284` → Same replacement in `create_special_missions_for_critical_needs`; added `next unless result&.reference_cost` guard
-  - `special_mission_service.rb:8` → Same replacement in `generate_critical_mission`; added `return nil unless result&.reference_cost` guard
-- **Specs**: Created `resource_acquisition_service_spec.rb` (3 examples); updated `special_mission_service_spec.rb` stubs (3 stubs)
-- **Test results**: 42 examples, 0 failures (3 + 11 + 28)
-- **Final grep**: Zero remaining `calculate_eap_ceiling` references in `app/services/`
-- **Commits**:
-  - galaxyGame: `1c684a37` "architecture(ai-manager): replace dead calculate_eap_ceiling calls with evaluate_strategy"
-  - agent-tasks: `bb8fa6c` (task → completed/2026-09/)
-
----
-
-## 🟢 Recent Closures (2026-09-10 — haiku takeover)
-
-### Market::NpcPriceCalculator.evaluate_strategy — COMPLETED ✅
-- **Task**: Implement `.evaluate_strategy(material:, location:, context:)` class method for AI Manager Phase 3 acquisition decisions
-- **Implementation**: 
-  - Added public class method that instantiates calculator and evaluates three strategies (EAP, extraction floor, CapEx amortization)
-  - Added instance method that evaluates all three strategies and returns OpenStruct with strategy_type, reference_cost, breakdown, feasible?, notes
-  - Refactored `cost_based_bid` to branch between EAP and extraction floor based on deep-space location classification
-  - Added `calculate_extraction_floor` helper to support deep-space pricing
-  - All instance methods properly positioned outside `class << self` singleton block
-- **Tests**: 28 examples, 0 failures ✅
-- **Commits**:
-  - galaxyGame: `792e670b` "architecture: add evaluate_strategy to Market::NpcPriceCalculator for Phase 3 acquisition unblock"
-  - agent-tasks: `8ca08df` "chore: move 2026-09-08-HIGH-ARCHITECTURE-NPC-PRICE-CALCULATOR-EVALUATE.md to completed/"
-- **Status**: Ready for AI Manager Phase 3 integration
-
-### Iron/Steel Production Chain Research — COMPLETED ✅
-- **Task**: `2026-09-09-MEDIUM-RESEARCH-MATERIAL-CHAIN-IRON-STEEL` — research-only, no code/data changes
-- **Deliverables**: 
-  - `summaries/2026-09-09-MATERIAL-CHAIN-IRON-STEEL.md` — real-world chain (5 stages), in-game material set (8 recommended), generalization pattern for Al/Cu/Ti/Ni/Si, 5 schema recommendations
-  - `summaries/2026-09-09-SYNTHESIS-MATERIAL-CHAIN-IRON-STEEL.md` — synthesis report
-- **Key findings**: Minimum viable chain = `iron_ore → iron_concentrate → pig_iron → steel`; frontier worlds need hydrogen DRI route; current template v1.6 needs `routes`, `credit`, `yield` fields for production chains
-- **Commits**: agent-tasks `9614366` (research + synthesis), `e4f524a` (task → completed/)
-
-### Previous Session Debugging Context
-- Previous agent (Qwen) struggled for ~150+ messages with Ruby singleton class visibility issues
-- Root cause: Instance methods were inside `class << self` block (for class methods only)
-- Resolution: Proper architecture with instance methods outside singleton class, clear file structure
-- All three visibility/caching fixes attempted by previous agent were masking architectural issue
-- Fresh implementation completed efficiently on first clean attempt by haiku agent
-
----
-
-## 🟢 Recent Closures (2026-09-10)
-
-### Task File Template Conformance Reviews — 3 Files Corrected ✅
-- **Scope**: Reviewed three backlog task files for template conformance per TASK_TEMPLATE.md
-- **Files corrected**:
-  - `2026-09-09-HIGH-ARCHITECTURE-VISUAL-CONTRACT.md` (architecture) — fixed: YAML frontmatter, Agent Dispatch Interface code block wrapping, duplicate Prerequisites section, relative→absolute paths, self-contradictory synthesis instruction
-  - `2026-09-09-HIGH-DATA-BLUEPRINT-OPERATIONAL-DATA-CONTRACT-AUDIT.md` (data) — fixed: Agent Dispatch Interface code block wrapping, stray "text" keywords, non-existent visual_definitions/materials paths, relative→absolute paths, factual error ("fourth robot" → "third")
-  - All three files committed to agent-tasks repo (commit `734d82b`)
-- **Status**: Corrected but NOT yet dispatched — await human review before dispatch
-
-### RH-400 Visual Profile / Blueprint Contract Audit — COMPLETED ✅
-- **Task**: `2026-09-09-HIGH-RESEARCH-RH400-VISUAL-PROFILE-CONTRACT-AUDIT.md`
-- **Finding**: Two contract mismatches between PromptCompiler and actual RH-400 data artifacts:
-  - PromptCompiler expects blueprint to have `visual_profile` field — RH-400 blueprint has none
-  - PromptCompiler expects Visual Definition to be raw JSON — RH-400 VD is Markdown+YAML+embedded-JSON
-- **Root cause**: Phase 1 asset-generation migration assumptions never reconciled with actual data model
-- **No canonical schema exists** for blueprints, Visual Definitions, visual profiles, or render templates
-- **Deliverables**:
-  - `summaries/2026-09-09-SYNTHESIS-RH400-VISUAL-PROFILE-CONTRACT-AUDIT.md` (synthesis report)
-  - `summaries/2026-09-09-RH400-VISUAL-PROFILE-CONTRACT-AUDIT.md` (full research note, 853 lines)
-- **Recommendations**: Update PromptCompiler to handle Markdown-wrapped VDs + optional visual_profile; formalize Visual Definition contract from RH-400 pilot pattern
-- **Commits**: `858535b` (research note), `7c79ed3` (task file → completed/)
-- **Audit summary**: `summaries/2026-09-09-RH400-VISUAL-PROFILE-CONTRACT-AUDIT.md` (in agent-tasks)
-
----
-
-## 🟢 Recent Closures (2026-09-07)
-
-### AI Manager Acquisition Surface Inventory — COMPLETED ✅
-- **Task**: `2026-09-01-LOW-RESEARCH-AI-MANAGER-SERVICE-INVENTORY-AND-GAPS.md`
-- **Synthesis Report**: `summaries/2026-09-07-RESEARCH-AI-MANAGER-SERVICE-INVENTORY-AND-GAPS.md`
-- **Findings**: Four acquisition services confirmed (EscalationService 627L, ProcurementService 112L, ResourceAcquisitionService 148L, ResourceFulfillmentService 33L). Two parallel paths in manager loop (OperationalManager→ProcurementService vs ResourcePlanner→ResourceAcquisitionService). Placeholder pricing in ProcurementService is reachable but non-functional. No single canonical path — runtime trace required.
-- **Gaps**: EAP enforcement placeholder, no excess-listing-after-self-harvest, cycler preference only in EscalationService emergency fork, no unified "can afford" logic.
-- **Recommendation**: Extend existing spine; do not create parallel architecture. Clarify canonical path before implementing gaps.
-- **Commits**: `6b3dbf1` (move to active), `f8d8a49` (synthesis report), closing commit below
-
----
-
-## 🔴 Recent Closures (2026-09-03)
+## 🟢 Recent Closures (2026-09-03)
+- A1 — Asset Registry Reality Check (Research: confirmed registry is spec-only, no implementation exists; identified mapping gap with Visual Definition)
+- A1 — Asset Registry Reality Check (Research: confirmed registry is spec-only, no implementation exists; identified mapping gap with Visual Definition)
 
 ### Real Game Loop Integration Test — COMPLETED ✅
 - **Task**: `2026-08-31-HIGH-FEATURE-REAL-LOOP-INTEGRATION-TEST.md`
@@ -337,6 +139,20 @@
 
 ---
 
+---
+
+## 🟢 Recent Closures (2026-09-16)
+
+### Pre-Player Acquisition Decision Tree — COMPLETED ✅
+- **Task**: `completed/2026-09/2026-09-12-MEDIUM-ARCHITECTURE-PRE-PLAYER-ACQUISITION-DECISION-TREE.md`
+- **Deliverable**: Synthesis report at `summaries/2026-09-16-ARCHITECTURE-PRE-PLAYER-ACQUISITION-DECISION-TREE.md`
+- **Owner decision**: ResourceAcquisitionService = execution owner; EscalationService = shortage/emergency spine
+- **Pricing**: `evaluate_strategy` as sole pricing source (no EAP multipliers, no `calculate_eap_ceiling`)
+- **Pre-player tree**: stockpile → local → cycler → emergency → import via evaluate_strategy
+- **Post-player tree**: documented only (buy orders + player missions — follow-on task)
+- **Non-goals**: No parallel service, no player-first, no Foothold/multi-system scope
+- **Follow-on**: Wire decision tree onto EscalationService; revise/supersede 2026-09-03 Material Sourcing
+
 ## 📋 Active Tasks: 0
 
 > No tasks currently in `active/`. Lookup Service Caching Pattern was confirmed
@@ -439,8 +255,7 @@
 ### 🆕 Asset/UI Workstream (2026-09-01) — HELD / READY FOR REVIEW
 | Task | Location | Notes |
 |------|----------|-------|
-| **Asset/UI Tasks A1–A6, B1–B3, C1–C5, D1–D3** (17 files) | `backlog/asset-ui/2026-08-31-*-ASSET-UI-*.md` | Reorganized 2026-09-07 (commit `75f900f`) from `backlog/current/` → `backlog/asset-ui/`. All status: backlog. Undispatched. A1 is the natural starting point. |
-| **Asset Generation Standalone** (1 file) | `backlog/asset-ui/2026-09-06-HIGH-FEATURE-ASSET-GENERATION-STANDALONE-EXECUTION.md` | Sep 6 standalone task — status: backlog. Undispatched. |
+| **Asset/UI Tasks A1–A6, B1–B3, C1–C5, D1–D3** (17 files) | `backlog/current/2026-08-31-*-ASSET-UI-*.md` | Created, content-verified, prerequisite gaps fixed. Undispatched. A1 is the natural starting point. |
 
 
 ### HIGH Priority
@@ -449,7 +264,7 @@
 | ~~**Epoxy Resin Blueprint**~~ | `completed/2026-08/2026-08-20-HIGH-DATA-CREATE-EPOXY-RESIN-BLUEPRINT.md` | ✅ COMPLETED (blueprint created) — sourcing structure insufficient; see rework task below |
 | **Epoxy Resin Sourcing Rework** | `backlog/current/2026-09-02-HIGH-DATA-REWORK-EPOXY-RESIN-SOURCING-STRUCTURE.md` | 🆕 HELD for review — rework flat-string sourcing to per-location structure + add production path placeholder; follows existing `regolith_composite.json` pattern |
 | **Fabrication Plant Blueprint** | `backlog/current/2026-08-20-HIGH-DATA-CREATE-FABRICATION-PLANT-BLUEPRINT.md` | DEFERRED (Phase 11+) — blueprint drafted but premature; git tracking violated standing convention and was reverted; do not re-dispatch until Phase 11+ work begins |
-| **Orbital Mechanics Data Layer** | `completed/2026-09/2026-08-19-HIGH-FEATURE-ORBITAL-MECHANICS-DATA-LAYER.md` | ✅ ALL 5 PHASES COMPLETE (7880f9f6)
+| **Orbital Mechanics Data Layer** | `backlog/current/2026-08-19-HIGH-FEATURE-ORBITAL-MECHANICS-DATA-LAYER.md` | Phase 1-4 complete, Phase 5 pending |
 | **Launch Window + Transit Timing Engine** | `backlog/current/2026-08-18-HIGH-FEATURE-LAUNCH-WINDOW-TRANSIT-TIMING-ENGINE.md` | Architecture feature |
 
 ### MEDIUM Priority
@@ -457,7 +272,6 @@
 |------|----------|-------|
 | **Classify 19 Blueprints** | `backlog/current/2026-08-16-MEDIUM-RESEARCH-CLASSIFY-19-BLUEPRINTS-OPERATIONAL-DATA.md` | NEEDS_REVIEW #4 |
 | **CNT Fabricator Collision** | `backlog/current/2026-08-16-MEDIUM-INVESTIGATE-CNT-FABRICATOR-NAMING-COLLISION.md` | NEEDS_REVIEW #5 |
-| **Material Thermal Properties Data Gap** | `backlog/current/2026-08-16-MEDIUM-BUG-FIX-MATERIAL-THERMAL-PROPERTIES-DATA-SOURCE-GAP.md` | ✅ COMPLETED (moved to completed/) |
 
 ### LOW Priority
 | Task | Location | Notes |
@@ -494,7 +308,8 @@
 1. ~~**Dispatch epoxy_resin blueprint**~~ — ✅ COMPLETED (blueprint created) — **rework task filed** (sourcing structure insufficient), HELD for review
 
 ### Ready to Dispatch (No Sign-off Needed):
-2. **Launch Window + Transit Timing Engine** — Architecture feature, backlog (must complete before Orbital Phase 5)
+2. **Orbital Mechanics Data Layer Phase 5** — TransitEngine integration pending (needs verification pass first — see task file)
+3. **Launch Window + Transit Timing Engine** — Architecture feature, backlog (must complete before Orbital Phase 5)
 4. **MEDIUM bug fixes** (08-16/17) — Atmosphere generator nil
 
 ### Do NOT Touch This Session:
@@ -529,7 +344,7 @@
 - **Task moved**: `backlog/ai-manager/2026-06-07-MEDIUM-FEATURE-MULTI-SYSTEM-RESOURCE-COORDINATION.md`
 - **Status**: Legitimate Phase 9+ feature, depends on foothold establishment + wormhole topology (both in progress)
 - **Proposes**: `ResourceCoordinator` service for cross-settlement optimization once multiple settlements exist
-- **Ties into**: Resource First Foothold Planner task (currently active) — both are AI Manager work Grok is handling
+- **Ties into**: Resource First Foothold Planner task (completed 2026-09-05; Super-Mars no-moon test case landed) — both are AI Manager work Grok is handling
 
 ### Review Pass Summary (2026-09-03)
 | Task | Result | Action |
