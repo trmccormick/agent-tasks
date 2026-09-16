@@ -1,8 +1,22 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-15 — GCC mining economic policy draft tasks + Transportation normalization + Economy template extraction (read-only analysis + approved wiki-only implementation)
+**Last Updated:** 2026-09-15 — GCC P0 planning/documentation alignment (settled design record applied to planning packet)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+### GCC P0 Planning/Documentation Alignment — COMPLETED ✅
+- **Session type**: Read-only planning documentation update (no code, tests, data, config, wiki, task state, or implementation changes)
+- **Deliverable**: `projects/galaxy_game/summaries/2026-09-15-GCC-P0-PLANNING-DECISION-PACKET.md` — updated with all five required sections
+- **Sections added/updated**:
+  - **Human Decisions Settled This Session** (NEW): 8 authoritative decisions from Tracy's policy guidance (1:1 peg fixed, future uncoupling deferred, LDC band nonbinding, GCC identity settled, mining infrastructure settled, mined GCC → LDC account, multi-currency supported, physical ≠ GCC)
+  - **Section A — Current-State Contract**: GCC identity terminology updated to "centrally managed, crypto-inspired virtual ledger currency using LDC-controlled simulated compute mining for issuance"; VirtualLedgerService 100.0 labeled confirmed defect; bootstrap peg language strengthened
+  - **Section B — Future-Reference Peg Note** (NEW): Locked 1:1 rule; qualitative maturity indicators; LDC-managed band as nonbinding reference
+  - **Section D — Non-Dispatched Task Draft**: VirtualLedgerService 100.0 defect alignment task with problem statement, actual/required behavior, acceptance criteria, non-goals, dependencies, Luna impact
+  - **Section F — Terminology Guidance** (NEW subsection): 6-item settled-record terminology recommendations; existing 4-item inventory preserved intact
+- **Commits**: `1af57e1` (GCC P0 planning packet + verification evidence packets + Perplexity handoff), `b6b3616` (evening session handoffs)
+- **No files modified; no implementation dispatched**
 
 ---
 
