@@ -1,10 +1,35 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-15 — Wiki governance template + Transportation Station correction
+**Last Updated:** 2026-09-15 — Transportation normalization + Economy template extraction (read-only analysis + approved wiki-only implementation)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
+
+### Transportation Normalization + Economy Template Extraction — COMPLETED ✅
+- **Session type**: Read-only analysis + approved wiki-only documentation restructuring (no code, tests, data, config, migrations, tasks, or Git state changes)
+- **Part 1 — Economy Template Extraction**: Comprehensive read-only analysis
+  - Extracted reusable Economy section template (21 template rules, evidenced patterns, exceptions)
+  - Compared Transportation against Economy pattern (file-by-file gap analysis, structural mismatches)
+  - Proposed reusable wiki-section template for future domains (folder layout, file naming, metadata, page outline, gap/audit conventions)
+  - Cross-domain ownership map (what lives where: Transportation, Economy, Terminology/Foundations)
+  - Identified approval gates and open questions (human decisions + Gemini/Claude reviews needed)
+  - Return report: A–G sections with template extraction, gap analysis, normalization plan, ownership map, approval gates, next action
+  - **No files modified; no implementation dispatched**
+- **Part 2 — Transportation Normalization** (approved, executed):
+  - Commits: `df1e9786` (transportation domain), `260391eb` (governance guide)
+  - File changes:
+    - `transportation/reports/` created; `GCC_WIKI_FOUNDATION_REPORT.md` moved from root (session deliverable, not canonical)
+    - `transportation/README.md` revised in place (normalized to Economy hub pattern: architecture overview, grouped doc map, Key Models/Services table, cross-domain refs, Change History)
+    - `transportation/craft.md` → `transportation/01-craft-taxonomy.md` (renumbered, numbered headings `## 1.` through `## 9.`, status block simplified to Economy style + extended implementation-alignment metadata retained, Key Models table added, links updated, Change History entry)
+    - `transportation/gcc_mining_satellite.md` → `transportation/02-gcc-mining-satellite.md` (renumbered, numbered headings, shared terminology cross-linked to 01-craft-taxonomy instead of duplicating, status block simplified + extended metadata retained, Change History entry)
+    - `transportation/GAPS.md` created (Gap A: GCC recipient routing alignment, Gap B: mining cadence/rate semantics, Gap C: craft lifecycle coverage — all evidence-backed, status-labeled)
+  - Old unnumbered files deleted; internal Transportation links all verify correct
+  - Cross-domain links (Transportation → Economy) preserved and verified
+  - Phase 4 index/site-map updates deliberately deferred (not touched)
+  - Link validation: 10 internal links all resolve; cross-domain links point to verified Economy pages
+- **Quality assurance**: No Phase 4 files, application source, tests, blueprints, data, config, migrations, seeds, manifests, task lifecycle, branches, or commits were modified
+- **Review required**: Gemini alignment review (terminology conventions, depth vs Phase 4 priorities, Economy consistency) before canonical adoption to Phase 4 site-map
 
 ### Wiki Governance Template + Transportation Station Correction — COMPLETED ✅
 - **Session type**: Documentation (two approved single-file amendments)
