@@ -1,8 +1,31 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-15 — Transportation normalization + Economy template extraction (read-only analysis + approved wiki-only implementation)
+**Last Updated:** 2026-09-15 — GCC mining economic policy draft tasks + Transportation normalization + Economy template extraction (read-only analysis + approved wiki-only implementation)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+### GCC Mining Economic Policy Draft Tasks — DRAFT ONLY (Not Dispatched) ✅
+- **Session type**: Read-only evidence verification + planning document creation (no code, tests, data, config, migration, seed, wiki, branch, or commit changes except these draft task files)
+- **Evidence sweep** (read-only): Inspected complete implementation of `Account#deposit`, `CryptocurrencyMining#mine_gcc`, `BaseSatellite#process_tick`, `MineGccJob`, `SatelliteMiningSchedulerJob`, `MissionTaskRunnerService` mining path, `Transaction`, `Currency`, `MiningLog`, `EconomicConfig`, `crypto_mining_satellite_data.json`
+- **Key findings documented**:
+  - `Account#deposit` credits balance + creates Transaction (`:deposit` type); no supply minting semantics
+  - Three mining entry paths with different deposit recipients (satellite account, owner account, LDC account)
+  - Satellite tick path may produce duplicate credits (mine_gcc → satellite account + process_tick → owner account)
+  - No LDC authorization guard in any mining path; `can_mine_gcc?` only checks account + mining units
+  - MiningLog is separate model/table but Transaction records use `:deposit` type identical to other deposits
+  - Config-defined monetary policy (max_supply, halving, difficulty_scaling, block_reward) exists but never called from mining code
+  - Satellite `*_per_hour` fields are dead/unconsumed design data for payout; actual source is fitted computer-unit values
+  - `VirtualLedgerService.exchange_rate_to_gcc` returns hardcoded 100.0 (test artifact)
+- **Draft tasks created** (committed as `a994deb`):
+  1. `2026-09-15-HIGH-BUG-FIX-BOOTSTRAP-USD-GCC-CONVERSION-CORRECTION.md` — USD→GCC conversion rate fix
+  2. `2026-09-15-HIGH-BUG-FIX-GCC-MINING-SATELLITE-INTEGRITY-DUPLICATE-CREDIT-PREVENTION.md` — one credit per mining event (Task 2 clarification applied: consolidated three recipient-policy gates into one post-issuance-policy gate)
+  3. `2026-09-15-HIGH-ARCHITECTURE-GCC-ISSUANCE-AUTHORIZATION-LDC-RECIPIENT-ROUTING.md` — GCC authorization guard + LDC routing, per-currency extensible
+  4. `2026-09-15-HIGH-ARCHITECTURE-GCC-MINING-CADENCE-RATE-SEMANTICS-ALIGNMENT.md` — time model, trigger ownership, rate semantics
+- **Human decision gates** (all marked [FILL IN]): bootstrap conversion approach, canonical recipient per path, LDC authorization expression, canonical LDC account resolution, time model, trigger consolidation, satellite `*_per_hour` field treatment
+- **Unverified facts requiring test/spec confirmation**: dual deposit intent, caller inventory for `exchange_rate_to_gcc`, MiningLog audit adequacy, `recalculate_stats` consumer, `time_skipped` intent
+- **No files modified; no implementation dispatched**
 
 ---
 
