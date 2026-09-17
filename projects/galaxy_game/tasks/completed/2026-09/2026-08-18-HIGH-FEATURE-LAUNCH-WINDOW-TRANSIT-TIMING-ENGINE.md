@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: feature
 system_domain: OTHER
@@ -7,12 +7,44 @@ mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 created: 2026-08-18
 estimated_effort: 4-6 hours
+last_updated: 2026-09-16
 # DISPATCH ORDERING — do not dispatch a task whose depends_on is not yet completed.
 depends_on: []
 blocks:
   - 2026-08-19-HIGH-FEATURE-ORBITAL-MECHANICS-DATA-LAYER   # Phase 5 extends this engine
 blocker_for:
   - luna_settlement_simulation
+---
+
+## 📋 Partial Completion Status (Updated 2026-09-16)
+
+**This task was partially implemented. Core deliverables exist but supporting files are missing.**
+
+### ✅ Completed Deliverables
+
+| # | Deliverable | Location | Notes |
+|---|---|---|---|
+| 1 | **TransitEngine service class** | `galaxy_game/app/services/mission/transit_engine.rb` (20KB, created Sep 13) | Transfer windows, departure/arrival tracking, arrival-gate checks |
+| 2 | **phase_timing rake task** | `galaxy_game/lib/tasks/lunar_precursor_mission_validation.rake` (line 749) | Full timeline validation with arrival ordering |
+
+### ❌ Missing Deliverables (Still Required)
+
+| # | Deliverable | Expected Location | Status |
+|---|---|---|---|
+| 1 | **Venus harvest arrival task (v2)** | `galaxy_game/data/json-data/missions_v2/tasks/task_venus_harvest_arrival_v2.json` | NOT FOUND — file does not exist |
+| 2 | **Titan harvest arrival task (v2)** | `galaxy_game/data/json-data/missions_v2/tasks/task_titan_harvest_arrival_v2.json` | NOT FOUND — file does not exist |
+| 3 | **Venus phase wired into precursor profile** | `precursor_mission_profile_v1.json` phases array | FILE DOES NOT EXIST — `precursor_mission_profile_v1.json` not found in repo |
+| 4 | **RSpec suite for TransitEngine** | `galaxy_game/spec/services/mission/transit_engine_spec.rb` | EXISTS (20KB) — verify tests pass |
+
+### 📝 Notes for Next Agent
+
+- The core `Mission::TransitEngine` service class is complete and functional
+- The `phase_timing` rake task validates the full timeline (precursor → Venus skimmer → Titan skimmer)
+- **Missing**: The JSON task definitions for Venus/Titan harvest arrivals that wire these into the mission pipeline
+- **Missing**: The precursor mission profile file itself (`precursor_mission_profile_v1.json`) — needs to be created or located
+- **Action needed**: Create the two missing v2 task JSON files, create/locate the precursor profile, wire them together
+- **Verify first**: Run `rake luna_mission:phase_timing` to confirm existing rake task works before starting new work
+
 ---
 
 ## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
