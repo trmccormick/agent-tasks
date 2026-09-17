@@ -35,16 +35,63 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 
 ---
 
+## ✅ 2026-09-16 Evening — HOMEPAGE FACET INVESTIGATION RESEARCH COMPLETE
+
+**Research Task**: 2026-09-16-RESEARCH-HOMEPAGE-FACET-INVESTIGATION.md (Qwen)
+
+**Key Finding**: 
+Homepage facets work via **dedicated facet resolver** (decoupled from catalog initialization chain). 
+Catalog facets fail because tenant initialization **overrides Blacklight config** before base facets are merged.
+
+**Why Homepage Works**:
+- Uses `home_facets` configuration explicitly bound to root path
+- Bypasses global `FacetLimiters` array that catalog controller depends on
+- View/layout level facet hardcoding avoids Blacklight's default limiters
+
+**Why Catalog Fails**:
+- Relies on `Blacklight::Configuration.facets` (dynamic configuration)
+- Tenant catalogs reset this hash during boot unless shared concern explicitly merges base facets *after* engine mounts
+- Current hardcoded patches work but break multi-tenant isolation
+
+**Proper Solution Pattern**:
+```ruby
+# app/concerns/hyku/default_facets_concern.rb
+module Hyku::DefaultFacetsConcern
+  def self.included(base)
+    base.class_eval do
+      configure_blacklight do |config|
+        config.facet_fields.merge!(base_facet_config)
+      end
+    end
+  end
+end
+
+# catalog_controller.rb
+include Hyku::DefaultFacetsConcern
+```
+
+**Why This Works**:
+- Centralizes base facets in shared concern (not decorators)
+- Applies during controller initialization (preserves multi-tenant isolation)
+- Replaces hardcoded 3-facet registration with dynamic M3 discovery
+- Works as basis for upstream PR to Hyku/Hyrax
+
+**Synthesis Report**: `summaries/RESEARCH-HOMEPAGE-FACET-MECHANISM.md` ✅
+
+**Next Phase**: Implement proper fix using shared concern pattern (task: 2026-09-16-CRITICAL-DESIGN-PROPER-FACET-LIMITING-SOLUTION)
+
+---
+
 ## Current Status
-- **Status:** 🔄 **IN PROGRESS — Design Proper Facet Limiting Solution (Do NOT Deploy Band-Aid to Production)**
+- **Status:** 🔄 **IN PROGRESS — Implement Proper Facet Limiting Solution (Research Complete)**
 - **Active Branches:**
   - `main` — Stable; production-ready with full volume mount structure
-  - `fix/hide-type-facet-add-show-more-facets` — ✅ Works for demo; ❌ Band-aid only (DO NOT MERGE to production)
+  - `fix/hide-type-facet-add-show-more-facets` — ✅ Demo working; ⏸️ On hold pending architecture decision
   - `clover-test` — Clover IIIF viewer integration (backlog)
   - `ollama_testing` — Ollama vision model for alt-text generation (backlog, experimental)
-- **Last Session:** 2026-09-11 (Band-aid solution tested on demo VM)
-- **Current Session:** 2026-09-16 — Recognized scaling limitation; designing proper fix
-- **Next Step:** Investigate homepage mechanism → design upstream-ready fix → remove band-aid → test on production data
+- **Last Session:** 2026-09-16 Evening (Research complete, findings saved)
+- **Current Session:** 2026-09-16 Evening → 2026-09-17 Morning (Design & implementation phase)
+- **Next Step:** Implement proper fix using shared concern pattern (not hardcoded patches)
 
 ---
 

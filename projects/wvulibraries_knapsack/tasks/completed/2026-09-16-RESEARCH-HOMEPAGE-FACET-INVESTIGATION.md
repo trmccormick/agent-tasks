@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 priority: CRITICAL
 type: investigation
 system_domain: M3_METADATA, FACETING, ARCHITECTURE
