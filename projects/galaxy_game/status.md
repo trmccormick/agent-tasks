@@ -1,8 +1,23 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-06 — CNT Fabricator Naming Collision Investigation completed (galaxyGame `[COMMIT_HASH]`), task moved to completed/
+**Last Updated:** 2026-09-17 — GCC mining scheduler containment plan approved (ce5b597); dependency state explicit; no implementation
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🟢 GCC Mining Scheduler Containment Plan — APPROVED (2026-09-17)
+
+- **Artifact**: `summaries/2026-09-16-ARCHITECTURE-GCC-MINING-SCHEDULER-CONTAINMENT-PLAN.md`
+- **Commit**: `ce5b597` (agent-tasks)
+- **Status**: Complete for evidence/option mapping; **implementation blocked** — no containment option approved or recommended
+- **Key findings**:
+  - Dual-credit via `process_tick` confirmed live: `GameSimulationJob → Game#advance_by_days → process_free_crafts → craft.process_tick`
+  - Scheduler job path broken before mutation (Integer#mine_gcc)
+  - Two disconnected rate calculations (recalculate_stats vs MiningUnitAdapter)
+- **Immediate required next action**: Human-gated GCC issuance-recipient + authorization decision task
+- **Task 2 (duplicate credit prevention)**: Blocked on output of the above decision task
+- **Task 4 (cadence/rate alignment)**: Conditional — may proceed early only after independent preflight proves it cannot alter recipient, mint, rate-authority, or cadence semantics
 
 ---
 

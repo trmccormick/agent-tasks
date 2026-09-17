@@ -81,11 +81,12 @@ The dispatch interface above is ONLY the bootstrap instructions.
 ---
 
 # TASK: GCC Mining Scheduler Containment and Issuance-Flow Decision
-**Status**: BACKLOG
+**Status**: ACTIVE
 **Priority**: HIGH
 **Type**: architecture (planning-only)
 **Created**: 2026-09-16
 **Last Updated**: 2026-09-16
+**Agent Session**: 2026-09-16 — Step 0 complete, task file moved to active/
 
 ---
 
