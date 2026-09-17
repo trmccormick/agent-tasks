@@ -1,0 +1,417 @@
+{
+  "inventory_date": "2026-09-14",
+  "task": "2026-08-31-HIGH-ARCHITECTURE-POWER-DATA-TAXONOMY-RESEARCH",
+  "directory_tree": {
+    "blueprints": [
+      "/home/galaxy_game/app/data/blueprints/components/",
+      "/home/galaxy_game/app/data/blueprints/crafts/",
+      "/home/galaxy_game/app/data/blueprints/infrastructure/",
+      "/home/galaxy_game/app/data/blueprints/items/",
+      "/home/galaxy_game/app/data/blueprints/modules/energy/",
+      "/home/galaxy_game/app/data/blueprints/modules/computer/",
+      "/home/galaxy_game/app/data/blueprints/modules/defense/",
+      "/home/galaxy_game/app/data/blueprints/modules/em_storage/",
+      "/home/galaxy_game/app/data/blueprints/modules/infrastructure/",
+      "/home/galaxy_game/app/data/blueprints/modules/life_support/",
+      "/home/galaxy_game/app/data/blueprints/modules/production/",
+      "/home/galaxy_game/app/data/blueprints/modules/propulsion/",
+      "/home/galaxy_game/app/data/blueprints/modules/science/",
+      "/home/galaxy_game/app/data/blueprints/modules/sensor/",
+      "/home/galaxy_game/app/data/blueprints/modules/stabilization_core/",
+      "/home/galaxy_game/app/data/blueprints/modules/storage/",
+      "/home/galaxy_game/app/data/blueprints/modules/utility/",
+      "/home/galaxy_game/app/data/blueprints/ports/",
+      "/home/galaxy_game/app/data/blueprints/rigs/energy/",
+      "/home/galaxy_game/app/data/blueprints/rigs/power/",
+      "/home/galaxy_game/app/data/blueprints/rigs/computer/",
+      "/home/galaxy_game/app/data/blueprints/rigs/defense/",
+      "/home/galaxy_game/app/data/blueprints/rigs/infrastructure/",
+      "/home/galaxy_game/app/data/blueprints/rigs/life_support/",
+      "/home/galaxy_game/app/data/blueprints/rigs/production/",
+      "/home/galaxy_game/app/data/blueprints/rigs/propulsion/",
+      "/home/galaxy_game/app/data/blueprints/rigs/science/",
+      "/home/galaxy_game/app/data/blueprints/rigs/storage/",
+      "/home/galaxy_game/app/data/blueprints/rigs/utility/",
+      "/home/galaxy_game/app/data/blueprints/rigs/wormhole_anchor/",
+      "/home/galaxy_game/app/data/blueprints/structures/power_generation/",
+      "/home/galaxy_game/app/data/blueprints/structures/habitation/",
+      "/home/galaxy_game/app/data/blueprints/structures/landing_infrastructure/",
+      "/home/galaxy_game/app/data/blueprints/structures/life_support/",
+      "/home/galaxy_game/app/data/blueprints/structures/manufacturing/",
+      "/home/galaxy_game/app/data/blueprints/structures/mega_structures/",
+      "/home/galaxy_game/app/data/blueprints/structures/resource_extraction/",
+      "/home/galaxy_game/app/data/blueprints/structures/resource_processing/",
+      "/home/galaxy_game/app/data/blueprints/structures/science_research/",
+      "/home/galaxy_game/app/data/blueprints/structures/space_stations/",
+      "/home/galaxy_game/app/data/blueprints/structures/storage/",
+      "/home/galaxy_game/app/data/blueprints/structures/transportation/",
+      "/home/galaxy_game/app/data/blueprints/units/energy/",
+      "/home/galaxy_game/app/data/blueprints/units/power/",
+      "/home/galaxy_game/app/data/blueprints/units/power_generation/",
+      "/home/galaxy_game/app/data/blueprints/units/computer/",
+      "/home/galaxy_game/app/data/blueprints/units/construction/",
+      "/home/galaxy_game/app/data/blueprints/units/control/",
+      "/home/galaxy_game/app/data/blueprints/units/electronics/",
+      "/home/galaxy_game/app/data/blueprints/units/em_processing/",
+      "/home/galaxy_game/app/data/blueprints/units/gravitational_control/",
+      "/home/galaxy_game/app/data/blueprints/units/habitats/",
+      "/home/galaxy_game/app/data/blueprints/units/housing/",
+      "/home/galaxy_game/app/data/blueprints/units/industrial/",
+      "/home/galaxy_game/app/data/blueprints/units/infrastructure/",
+      "/home/galaxy_game/app/data/blueprints/units/life_support/",
+      "/home/galaxy_game/app/data/blueprints/units/mechanical/",
+      "/home/galaxy_game/app/data/blueprints/units/production/",
+      "/home/galaxy_game/app/data/blueprints/units/propulsion/",
+      "/home/galaxy_game/app/data/blueprints/units/resource/",
+      "/home/galaxy_game/app/data/blueprints/units/robots/",
+      "/home/galaxy_game/app/data/blueprints/units/sensors/",
+      "/home/galaxy_game/app/data/blueprints/units/specialized/",
+      "/home/galaxy_game/app/data/blueprints/units/storage/"
+    ],
+    "operational_data": [
+      "/home/galaxy_game/app/data/operational_data/crafts/",
+      "/home/galaxy_game/app/data/operational_data/modules/energy/",
+      "/home/galaxy_game/app/data/operational_data/modules/computer/",
+      "/home/galaxy_game/app/data/operational_data/modules/control/",
+      "/home/galaxy_game/app/data/operational_data/modules/defense/",
+      "/home/galaxy_game/app/data/operational_data/modules/em_storage/",
+      "/home/galaxy_game/app/data/operational_data/modules/harvester/",
+      "/home/galaxy_game/app/data/operational_data/modules/infrastructure/",
+      "/home/galaxy_game/app/data/operational_data/modules/life_support/",
+      "/home/galaxy_game/app/data/operational_data/modules/maintenance/",
+      "/home/galaxy_game/app/data/operational_data/modules/production/",
+      "/home/galaxy_game/app/data/operational_data/modules/propulsion/",
+      "/home/galaxy_game/app/data/operational_data/modules/science/",
+      "/home/galaxy_game/app/data/operational_data/modules/sensor/",
+      "/home/galaxy_game/app/data/operational_data/modules/stabilization_core/",
+      "/home/galaxy_game/app/data/operational_data/modules/storage/",
+      "/home/galaxy_game/app/data/operational_data/modules/utility/",
+      "/home/galaxy_game/app/data/operational_data/rigs/energy/",
+      "/home/galaxy_game/app/data/operational_data/rigs/power/",
+      "/home/galaxy_game/app/data/operational_data/rigs/computer/",
+      "/home/galaxy_game/app/data/operational_data/rigs/defense/",
+      "/home/galaxy_game/app/data/operational_data/rigs/infrastructure/",
+      "/home/galaxy_game/app/data/operational_data/rigs/life_support/",
+      "/home/galaxy_game/app/data/operational_data/rigs/production/",
+      "/home/galaxy_game/app/data/operational_data/rigs/propulsion/",
+      "/home/galaxy_game/app/data/operational_data/rigs/science/",
+      "/home/galaxy_game/app/data/operational_data/rigs/storage/",
+      "/home/galaxy_game/app/data/operational_data/rigs/utility/",
+      "/home/galaxy_game/app/data/operational_data/rigs/wormhole_anchor/",
+      "/home/galaxy_game/app/data/operational_data/structures/power_generation/",
+      "/home/galaxy_game/app/data/operational_data/units/energy/",
+      "/home/galaxy_game/app/data/operational_data/units/power/",
+      "/home/galaxy_game/app/data/operational_data/units/power_generation/",
+      "/home/galaxy_game/app/data/operational_data/units/computer/",
+      "/home/galaxy_game/app/data/operational_data/units/construction/",
+      "/home/galaxy_game/app/data/operational_data/units/control/",
+      "/home/galaxy_game/app/data/operational_data/units/em_processing/",
+      "/home/galaxy_game/app/data/operational_data/units/gravitational_control/",
+      "/home/galaxy_game/app/data/operational_data/units/habitats/",
+      "/home/galaxy_game/app/data/operational_data/units/industrial/",
+      "/home/galaxy_game/app/data/operational_data/units/infrastructure/",
+      "/home/galaxy_game/app/data/operational_data/units/life_support/",
+      "/home/galaxy_game/app/data/operational_data/units/mechanical/",
+      "/home/galaxy_game/app/data/operational_data/units/production/",
+      "/home/galaxy_game/app/data/operational_data/units/propulsion/",
+      "/home/galaxy_game/app/data/operational_data/units/resource/",
+      "/home/galaxy_game/app/data/operational_data/units/robots/",
+      "/home/galaxy_game/app/data/operational_data/units/sensors/",
+      "/home/galaxy_game/app/data/operational_data/units/specialized/",
+      "/home/galaxy_game/app/data/operational_data/units/storage/"
+    ]
+  },
+  "path_existence": {
+    "blueprints_units_energy": {
+      "path": "/home/galaxy_game/app/data/blueprints/units/energy",
+      "exists": true,
+      "file_count": 7,
+      "files": [
+        "biogas_generator_engine_bp.json",
+        "nuclear_reactor_fusion_bp.json",
+        "planetary_power_management_unit_bp.json",
+        "power_controller_bp.json",
+        "radioisotope_thermoelectric_generator_bp.json",
+        "satellite_battery_bp.json",
+        "solar_panel_bp.json"
+      ]
+    },
+    "blueprints_units_power": {
+      "path": "/home/galaxy_game/app/data/blueprints/units/power",
+      "exists": true,
+      "file_count": 10,
+      "files": [
+        "compact_nuclear_reactor_bp.json",
+        "compact_solar_panel_bp.json",
+        "energy_storage_unit_bp.json",
+        "mars_industrial_nuclear_reactor_bp.json",
+        "power_controller_bp.json",
+        "power_distribution_unit_bp.json",
+        "rtg_power_unit_bp.json",
+        "solar_panel_array_bp.json",
+        "solar_panel_bp.json",
+        "solar_shade_power_collector_bp.json"
+      ]
+    },
+    "blueprints_units_power_generation": {
+      "path": "/home/galaxy_game/app/data/blueprints/units/power_generation",
+      "exists": true,
+      "file_count": 1,
+      "files": [
+        "nuclear_micro_reactor_mk1_bp.json"
+      ]
+    },
+    "blueprints_structures_power_generation": {
+      "path": "/home/galaxy_game/app/data/blueprints/structures/power_generation",
+      "exists": true,
+      "file_count": 0,
+      "files": []
+    },
+    "operational_data_units_energy": {
+      "path": "/home/galaxy_game/app/data/operational_data/units/energy",
+      "exists": true,
+      "file_count": 7,
+      "files": [
+        "biogas_generator_engine_data.json",
+        "compact_solar_panel_data.json",
+        "nuclear_reactor_fusion_data.json",
+        "power_controller_data.json",
+        "radioisotope_thermoelectric_generator_data.json",
+        "satellite_battery_data.json",
+        "solar_panel_data.json"
+      ]
+    },
+    "operational_data_units_power": {
+      "path": "/home/galaxy_game/app/data/operational_data/units/power",
+      "exists": true,
+      "file_count": 2,
+      "files": [
+        "solar_panel_array.json",
+        "nuclear_micro_reactor_v1_data.json"
+      ]
+    },
+    "operational_data_units_power_generation": {
+      "path": "/home/galaxy_game/app/data/operational_data/units/power_generation",
+      "exists": true,
+      "file_count": 1,
+      "files": [
+        "nuclear_micro_reactor_v1_data.json"
+      ]
+    }
+  },
+  "reactor_comparison": {
+    "compact_nuclear_reactor": {
+      "path": "/home/galaxy_game/app/data/blueprints/units/power/compact_nuclear_reactor_bp.json",
+      "id": "compact_nuclear_reactor",
+      "template": "component_blueprint",
+      "metadata_type": "blueprint",
+      "category": "power_generation",
+      "subcategory": "nuclear",
+      "specs_present": false,
+      "thermal_output": null,
+      "electrical_output": null,
+      "mass": null,
+      "volume": null,
+      "unit_slots": null,
+      "module_slots": null,
+      "rig_slots": null,
+      "notes": "Minimal metadata — no specs, no output values, no mass/volume"
+    },
+    "nuclear_micro_reactor_mk1": {
+      "path": "/home/galaxy_game/app/data/blueprints/units/power_generation/nuclear_micro_reactor_mk1_bp.json",
+      "id": "nuclear_micro_reactor_mk1",
+      "template": "unit_blueprint",
+      "metadata_type": "blueprint",
+      "category": "power_generation",
+      "subcategory": "nuclear_reactor",
+      "specs_present": false,
+      "thermal_output": null,
+      "electrical_output": null,
+      "mass": null,
+      "volume": null,
+      "unit_slots": null,
+      "module_slots": null,
+      "rig_slots": null,
+      "notes": "Minimal metadata — no specs, no output values, no mass/volume"
+    },
+    "mars_industrial_nuclear_reactor": {
+      "path": "/home/galaxy_game/app/data/blueprints/units/power/mars_industrial_nuclear_reactor_bp.json",
+      "id": "mars_industrial_nuclear_reactor",
+      "template": "component_blueprint",
+      "metadata_type": "blueprint",
+      "category": "power_generation",
+      "subcategory": "nuclear",
+      "specs_present": false,
+      "thermal_output": null,
+      "electrical_output": null,
+      "mass": null,
+      "volume": null,
+      "unit_slots": null,
+      "module_slots": null,
+      "rig_slots": null,
+      "notes": "Minimal metadata — no specs, no output values, no mass/volume"
+    },
+    "compact_fusion_reactor_l1_bp": {
+      "path": "NOT FOUND",
+      "notes": "File does not exist in current data tree. Was expected at blueprints/units/power_generation/ but not present."
+    },
+    "compact_fusion_reactor_l1_data-2": {
+      "path": "NOT FOUND",
+      "notes": "File does not exist in current data tree."
+    }
+  },
+  "duplicate_ids": [
+    {
+      "id": "3d_printed_ibeam_mk1",
+      "locations": [
+        "app/data/blueprints/components/structural/3d_printed_ibeam_mk1_bp.json",
+        "app/data/blueprints/components/structural/3d_printed_ibeam_mk1_bp_v1.4.json"
+      ],
+      "severity": "HIGH"
+    },
+    {
+      "id": "smart_composites_bp",
+      "locations": [
+        "app/data/blueprints/components/materials/smart_composites_bp.json",
+        "app/data/blueprints/items/smart_composites_bp.json"
+      ],
+      "severity": "HIGH"
+    },
+    {
+      "id": "power_controller",
+      "locations": [
+        "app/data/blueprints/modules/energy/power_controller_bp.json",
+        "app/data/blueprints/units/energy/power_controller_bp.json",
+        "app/data/blueprints/units/power/power_controller_bp.json"
+      ],
+      "severity": "CRITICAL"
+    },
+    {
+      "id": "comms_equipment",
+      "locations": [
+        "app/data/blueprints/units/electronics/comms_equipment_bp.json",
+        "app/data/blueprints/units/infrastructure/comms_equipment_bp.json"
+      ],
+      "severity": "HIGH"
+    },
+    {
+      "id": "planetary_power_management_unit_mk1",
+      "locations": [
+        "app/data/blueprints/units/energy/planetary_power_management_unit_bp.json",
+        "app/data/blueprints/units/infrastructure/planetary_power_management_unit_mk1_bp.json"
+      ],
+      "severity": "HIGH"
+    },
+    {
+      "id": "solar_panel",
+      "locations": [
+        "app/data/blueprints/units/energy/solar_panel_bp.json",
+        "app/data/blueprints/units/power/solar_panel_bp.json"
+      ],
+      "severity": "CRITICAL"
+    },
+    {
+      "id": "planetary_volatiles_extractor_mk1",
+      "locations": [
+        "app/data/blueprints/units/production/extractors/planetary_volatiles_extractor_mk1_bp.json",
+        "app/data/blueprints/units/resource/planetary_volatiles_extractor_mk1_bp.json"
+      ],
+      "severity": "HIGH"
+    },
+    {
+      "id": "3d_printed_ibeam_mk1",
+      "locations": [
+        "app/data/blueprints/components/structural/3d_printed_ibeam_mk1_bp.json",
+        "app/data/blueprints/components/structural/3d_printed_ibeam_mk1_bp_v1.4.json"
+      ],
+      "severity": "HIGH"
+    }
+  ],
+  "json_syntax_errors": [
+    {
+      "file": "app/data/blueprints/units/habitats/small_habitat_bp.json",
+      "error": "expected ',' or '}' after object value, got: '\"mass_kg\": 8500.0"
+    },
+    {
+      "file": "app/data/generated_star_systems/djew-716790.json",
+      "error": "expected ',' or '}' after object value, got: '\"state_distribution\": { \"liquid\""
+    },
+    {
+      "file": "app/data/generated_star_systems/fr-488530.json",
+      "error": "expected object key, got: '}, \"stars\" ["
+    },
+    {
+      "file": "app/data/items/components/structural/3d_printed_ibeam_mk1.json",
+      "error": "unexpected token at end of stream"
+    },
+    {
+      "file": "app/data/items/components/structural/3d_printed_ibeam_mk2.json",
+      "error": "unexpected token at end of stream"
+    },
+    {
+      "file": "app/data/items/components/structural/3d_printed_ibeam_mk3.json",
+      "error": "unexpected token at end of stream"
+    },
+    {
+      "file": "app/data/missions/puck_conversion_hub/puck_conversion_hub_profile.json",
+      "error": "expected ',' or '}' after object value"
+    },
+    {
+      "file": "app/data/missions/tasks_v2/ai_decision_framework_and_manifest_optimization.json",
+      "error": "expected ',' or '}' after object value, got: '>'"
+    },
+    {
+      "file": "app/data/missions/venus_settlement/phases/04_industrial_integration.json",
+      "error": "expected object key, got: '}'"
+    }
+  ],
+  "loader_references": {
+    "unit_lookup_service": {
+      "energy_path": "GalaxyGame::Paths::ENERGY_UNITS_PATH -> /blueprints/units/energy",
+      "power_path": "GalaxyGame::Paths::POWER_UNITS_PATH -> /blueprints/units/power",
+      "loading_mode": "recursive_scan for both energy and power",
+      "notes": "Both paths are loaded independently — no cross-reference between them"
+    },
+    "module_lookup_service": {
+      "energy_path": "base_modules_path.join('energy')",
+      "power_path": "NOT DEFINED in module lookup",
+      "notes": "Modules only have 'energy' path, not 'power'"
+    },
+    "structure_lookup_service": {
+      "power_generation_path": "STRUCTURES_PATH.join('power_generation')",
+      "notes": "Structures explicitly reference power_generation"
+    }
+  },
+  "path_constants": {
+    "ENERGY_UNITS_PATH": "/blueprints/units/energy",
+    "POWER_UNITS_PATH": "/blueprints/units/power",
+    "POWER_GENERATION_UNITS_PATH": "NOT DEFINED as separate constant",
+    "base_modules_path": "/blueprints/modules/energy"
+  },
+  "factory_structure_slots": {
+    "id": "metal_smelter_facility_bp",
+    "template": "structure_blueprint_v1",
+    "category": "structure",
+    "subcategory": "resource_processing",
+    "unit_slots": [
+      {"type": "production/smelters", "count": 8},
+      {"type": "energy", "count": 3},
+      {"type": "computers", "count": 2},
+      {"type": "life_support", "count": 4},
+      {"type": "storage", "count": 3}
+    ],
+    "module_slots": [
+      {"type": "power", "count": 2},
+      {"type": "computer", "count": 1},
+      {"type": "safety", "count": 2}
+    ],
+    "compatible_units_examples": [
+      {"id": "ore_smelter", "type": "production/smelters"},
+      {"id": "backup_generator", "type": "energy"}
+    ],
+    "compatible_modules_examples": [
+      {"id": "efficiency_optimizer", "type": "power"},
+      {"id": "output_booster", "type": "power"}
+    ]
+  }
+}
