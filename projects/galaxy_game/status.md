@@ -153,7 +153,42 @@
 - **Non-goals**: No parallel service, no player-first, no Foothold/multi-system scope
 - **Follow-on**: Wire decision tree onto EscalationService; revise/supersede 2026-09-03 Material Sourcing
 
-## 📋 Active Tasks: 0
+---
+
+## 🟢 Today's Work (2026-09-16 — afternoon session)
+
+### GCC Mining Scheduler Containment Task File — Template Corrections Applied ✅
+- **Task**: `backlog/current/2026-09-16-HIGH-PLANNING-GCC-MINING-SCHEDULER-CONTAINMENT-AND-ISSUANCE-FLOW.md`
+- **Work**: Applied template-compliant corrections (YAML frontmatter, Task Readiness Checklist, Agent Dispatch Interface with Step 0, Prerequisites, Architecture Gotchas tied to flow-map evidence, bounded Implementation Steps, Acceptance Criteria, Stop Conditions)
+- **Result**: File is now 316 lines, fully template-compliant, status: backlog
+
+### Launch Window + Transit Timing Engine — Partial Completion Verified ✅
+- **Task**: `backlog/current/2026-08-18-HIGH-FEATURE-LAUNCH-WINDOW-TRANSIT-TIMING-ENGINE.md`
+- **Verified complete**: TransitEngine service class (20KB, created Sep 13), phase_timing rake task (line 749 in lunar_precursor_mission_validation.rake)
+- **Missing deliverables**: Venus harvest arrival v2 JSON, Titan harvest arrival v2 JSON, precursor_mission_profile_v1.json
+- **Status updated**: Added partial completion table and notes for next agent
+
+### Fabrication Plant Blueprint — Deferred Status Verified ✅
+- **Task**: `backlog/current/2026-08-20-HIGH-DATA-CREATE-FABRICATION-PLANT-BLUEPRINT.md`
+- **Verified**: fabrication_plant does NOT exist in codebase; graphite blueprint COMPLETED; epoxy resin rework ACTIVE in parallel session
+- **Status updated**: Changed from backlog → backlog-deferred, added explicit dependencies table
+
+### GCC Mining Evidence Report — Live/Latent/Unresolved Classification ✅
+- Investigated BaseSatellite#process_tick liveness and SatelliteMiningSchedulerJob activation
+- Classified findings as live / latent / unresolved with file:line citations
+
+### Pricing-Resolver Decision Brief (Task 1) — Draft Corrections Applied ✅
+- **File**: `drafts/2026-09-16-HIGH-ARCHITECTURE-GEOGRAPHY-AGNOSTIC-PRICING-AVAILABILITY-RESOLVER-DECISION-BRIEF.md`
+- **Corrections applied**: (1) MaterialLookupService path → confirmed `lookup/material_lookup_service.rb:6`; (2) NpcPriceCalculator line numbers confirmed (112, 173, 252, 491); (3) ResourceAcquisitionService line discrepancy flagged; (4) Sourcing-block contradiction explicitly noted (zero blocks found vs epoxy blocker's "3 of 207" claim)
+
+### Material Production-Input Schema Planning (Task 2) — Draft Corrections Applied ✅
+- **File**: `drafts/2026-09-16-MEDIUM-DATA-MATERIAL-PRODUCTION-INPUT-SCHEMA-NORMALIZATION-PLANNING.md`
+- **Corrections applied**: (1) MaterialLookupService path → `lookup/material_lookup_service.rb:6`; (2) Manufacturing::CostCalculator path → `manufacturing/cost_calculator.rb:5`; both Status Synthesis Report table and Files Involved Reference Files table updated; zero remaining [FILL IN] markers
+- **Both files remain in drafts/**, status: backlog unchanged — no moves, no dispatch
+
+### NEEDS_REVIEW.md Log Entry Created ✅
+- Logged draft review session with timestamp and task pointers
+
 
 > No tasks currently in `active/`. Lookup Service Caching Pattern was confirmed
 > completed 2026-09-03 (work done 08-08, stale duplicate removed, status corrected).
