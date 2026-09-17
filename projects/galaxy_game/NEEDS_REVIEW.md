@@ -35,6 +35,18 @@ this file should stay small. Full history stays in status.md.
 
 ## Current entries
 
+### 2026-09-16 — Draft review/fill pass: two task files (pricing-resolver decision brief + material production-input schema planning)
+**What happened**: Systematic fill-in pass on two draft task files in `backlog/drafts/`. Resolved all [FILL IN] markers against confirmed repo state. Both files remain in drafts/ with status: backlog — no moves, no dispatch.
+**What I already checked**: grep confirmed MaterialLookupService at `lookup/material_lookup_service.rb:6`, NpcPriceCalculator pricing.lunar_production at lines 112/173/252/491, Manufacturing::CostCalculator at `manufacturing/cost_calculator.rb:5`, zero sourcing blocks in material JSON files (contradicts epoxy blocker's "3 of 207" claim).
+**What needs a second opinion**: The sourcing-block contradiction — grep found zero matches but the epoxy blocker report claims "3 of 207 files have a sourcing block." Needs resolution before either task is dispatched.
+**Status**: OPEN (sourcing-block contradiction unresolved)
+
+### 2026-09-16 — NEEDS_REVIEW.md duplicate in drafts/ folder
+**What happened**: A log-entry copy of NEEDS_REVIEW.md was created inside `tasks/drafts/` alongside the canonical project-level file at `projects/galaxy_game/NEEDS_REVIEW.md`. Two copies caused confusion about which is authoritative.
+**What I already checked**: Confirmed drafts/ copy was 233 bytes (log entry only) vs 19KB canonical file. Removed the drafts/ copy.
+**What needs a second opinion**: None — resolved by removal.
+**Status**: **RESOLVED (2026-09-16, removed duplicate from drafts/, canonical file at projects/galaxy_game/NEEDS_REVIEW.md)**
+
 ### 2026-07-21 — InfrastructureCostCalculator calls non-existent method
 **Status**: **RESOLVED (2026-07-26, confirmed dead code via grep, signature fixed, backlog task filed for test coverage)**
 
