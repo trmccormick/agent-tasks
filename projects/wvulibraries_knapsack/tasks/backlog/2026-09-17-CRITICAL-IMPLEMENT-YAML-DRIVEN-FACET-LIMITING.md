@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: in-progress
 priority: CRITICAL
 type: implementation
 system_domain: M3_METADATA, FACETING, SEARCH, CONFIGURATION
@@ -11,6 +11,8 @@ created: 2026-09-17
 updated: 2026-09-17
 discovery_phase: 2026-09-16-CRITICAL-DESIGN-PROPER-FACET-LIMITING-SOLUTION (COMPLETE)
 solution_branch: fix/hide-type-facet-add-show-more-facets
+implementation_commit: 8b3dff3 (YAML-driven facet limiting)
+deployment_status: DEPLOYED_TO_VM_RESTARTING_2026-09-17
 ---
 
 ## Agent Dispatch Interface
