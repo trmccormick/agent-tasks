@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: CRITICAL
 type: investigation
 system_domain: M3_METADATA, FACETING, ARCHITECTURE
@@ -10,7 +10,7 @@ tags: [facet-limiting, homepage, catalog, m3-discovery, architecture-investigati
 created: 2026-09-16
 ---
 
-## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
+## � Task Active & Ready for Investigation
 
 ```
 You are **Research Agent**.
@@ -18,13 +18,10 @@ You are **Research Agent**.
 Project: wvulibraries_knapsack
 Task: /Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/active/2026-09-16-RESEARCH-HOMEPAGE-FACET-INVESTIGATION.md
 
-STEP 0 — MOVE TASK FILE TO ACTIVE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/wvulibraries_knapsack/tasks/backlog/2026-09-16-RESEARCH-HOMEPAGE-FACET-INVESTIGATION.md \
-         projects/wvulibraries_knapsack/tasks/active/2026-09-16-RESEARCH-HOMEPAGE-FACET-INVESTIGATION.md
-  Then open the moved file and change: status: backlog → status: active
-  Paste the output of both commands in chat before proceeding.
+STATUS: This task is now ACTIVE and ready for investigation.
+STEP 0 has been completed by the dispatcher (file moved and status updated).
 
-READ FIRST (after Step 0): Task file contains all research questions, investigation plan, and synthesis requirements.
+BEGIN INVESTIGATION: Proceed with Phase 1 (Homepage Controller Code Review)
 
 CRITICAL: Save synthesis report as MD file to summaries folder BEFORE finishing.
   Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/summaries/
