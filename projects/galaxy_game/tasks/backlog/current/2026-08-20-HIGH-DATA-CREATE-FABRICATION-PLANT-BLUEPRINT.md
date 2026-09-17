@@ -1,11 +1,50 @@
 ---
-status: backlog
+status: backlog-deferred
 priority: HIGH
 type: data
 system_domain: MANUFACTURING
 mvp_alignment: SPEC_HEALTH
 local_worker_safe: true
-notes: "blueprint drafted but premature — correctly deferred to Phase 11+ per [[boil-off-mktier-storage]], git tracking violated a standing convention and was reverted, do not re-dispatch until Phase 11+ work begins."
+created: 2026-08-20
+last_updated: 2026-09-16
+notes: "Phase 11+ facility — deferred until Phase 11+ work begins. Graphite blueprint (dependency) is COMPLETED. Epoxy resin rework (dependency) is ACTIVE in parallel session. Do not dispatch until epoxy_resin rework completes and Phase 11+ scope is active."
+# DISPATCH ORDERING — do not dispatch a task whose depends_on is not yet completed.
+depends_on:
+  - 2026-08-20-HIGH-DATA-CREATE-GRAPHITE-BLUEPRINT          # ✅ COMPLETED
+  - 2026-09-02-HIGH-DATA-REWORK-EPOXY-RESIN-SOURCING-STRUCTURE  # 🟡 ACTIVE (in progress)
+blocks: []
+blocker_for:
+  - graphene_composite_production_chain
+---
+
+## 📋 Current Status (Updated 2026-09-16)
+
+**This task is DEFERRED to Phase 11+ scope. It is NOT ready for dispatch.**
+
+### Why Deferred
+- `fabrication_plant` is a Phase 11+ facility (advanced composite production)
+- Early phases lack the infrastructure to support fabrication plants
+- The task was correctly deferred per architecture review (`boil-off-mktier-storage`)
+- Previous git tracking violated a standing convention and was reverted — do not re-dispatch until Phase 11+ work begins
+
+### Dependency Status
+
+| Dependency | Status | Location |
+|---|---|---|
+| Graphite blueprint | ✅ COMPLETED | `completed/2026-08/` |
+| Epoxy resin rework | 🟡 ACTIVE (in progress) | `active/2026-09-02-HIGH-DATA-REWORK-EPOXY-RESIN-SOURCING-STRUCTURE.md` |
+
+### What Still Needs to Happen
+
+1. **Epoxy resin rework completes** — this is the last blocking dependency
+2. **Phase 11+ scope becomes active** — fabrication_plant only makes sense after basic ISRU is established
+3. **Create fabrication_plant facility blueprint** — confirmed NOT to exist in codebase (verified Sep 16)
+4. **Wire into graphene_composite production chain** — complete the mk2/mk3 storage blueprint chain
+
+### Why This File Is Still in `backlog/current/`
+
+This is a known organizational issue. The file should eventually move to `backlog/phase11+` or similar when Phase 11+ work begins. For now it stays in `current/` as a placeholder but the status field clearly marks it as deferred.
+
 ---
 
 ## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
