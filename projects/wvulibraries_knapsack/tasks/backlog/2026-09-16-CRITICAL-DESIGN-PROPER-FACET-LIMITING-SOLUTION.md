@@ -1,5 +1,5 @@
 ---
-status: active
+status: backlog
 priority: CRITICAL
 type: architecture
 system_domain: M3_METADATA, FACETING, SEARCH

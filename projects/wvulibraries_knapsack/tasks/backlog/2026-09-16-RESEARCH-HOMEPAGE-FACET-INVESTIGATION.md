@@ -1,5 +1,5 @@
 ---
-status: active
+status: backlog
 priority: CRITICAL
 type: investigation
 system_domain: M3_METADATA, FACETING, ARCHITECTURE
@@ -18,9 +18,11 @@ You are **Research Agent**.
 Project: wvulibraries_knapsack
 Task: /Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/active/2026-09-16-RESEARCH-HOMEPAGE-FACET-INVESTIGATION.md
 
-STEP 0 — VERIFY TASK STATUS (already active, verify):
-  ls -la /Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/active/2026-09-16-RESEARCH-HOMEPAGE-FACET-INVESTIGATION.md
-  Confirm file exists in active/ folder.
+STEP 0 — MOVE TASK FILE TO ACTIVE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/wvulibraries_knapsack/tasks/backlog/2026-09-16-RESEARCH-HOMEPAGE-FACET-INVESTIGATION.md \
+         projects/wvulibraries_knapsack/tasks/active/2026-09-16-RESEARCH-HOMEPAGE-FACET-INVESTIGATION.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
 
 READ FIRST (after Step 0): Task file contains all research questions, investigation plan, and synthesis requirements.
 
