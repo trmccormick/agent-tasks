@@ -1,5 +1,5 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-09-11
+**Last Updated:** 2026-09-16
 
 ---
 
@@ -13,16 +13,63 @@ Knapsack — WVU Libraries resource management and digital collection system (Hy
 
 ---
 
+## 🚨 CRITICAL REALIZATION — 2026-09-16
+
+**The current facet-limiting solution is a BAND-AID that works in demo but will FAIL in production.**
+
+- ✅ **demo-hykudev.lib.wvu.edu**: Works perfectly (3 facets showing "more" links)
+  - Why: Demo uses small test dataset with only ~3 visible facets
+  - Current fix force-registers exactly those 3 facets
+  
+- ❌ **digitalhistory.lib.wvu.edu** (production): Will NOT work
+  - Why: Production has MANY more facets in M3 profile (beyond the hardcoded 3)
+  - Problem: Any facet not in the hardcoded list will truncate to 5 items with NO "more" link
+  - Example: If M3 profile has 15 facetable fields, only 3 get proper limiting
+  
+- ❌ **Why it's a band-aid**:
+  - Force-registers only 3 hardcoded field names (date_created_sim, location_sim, people_represented_sim)
+  - Defeats purpose of flexible M3 metadata system
+  - Each new M3 field added to profile requires code change + deployment
+
+**NEXT STEP**: Design proper upstream-ready solution that handles ALL M3 facets dynamically (see task 2026-09-16-CRITICAL-DESIGN-PROPER-FACET-LIMITING-SOLUTION)
+
+---
+
 ## Current Status
-- **Status:** 🔄 **IN PROGRESS — Catalog Facet Limiting with Dynamic Label Generation (Ready for Dev VM Testing)**
+- **Status:** 🔄 **IN PROGRESS — Design Proper Facet Limiting Solution (Do NOT Deploy Band-Aid to Production)**
 - **Active Branches:**
   - `main` — Stable; production-ready with full volume mount structure
-  - `fix/hide-type-facet-add-show-more-facets` — 🔧 IMPROVED & MERGED (2026-09-11); includes latest from main; ready for dev VM QA
+  - `fix/hide-type-facet-add-show-more-facets` — ✅ Works for demo; ❌ Band-aid only (DO NOT MERGE to production)
   - `clover-test` — Clover IIIF viewer integration (backlog)
   - `ollama_testing` — Ollama vision model for alt-text generation (backlog, experimental)
-- **Last Session:** 2026-08-25 (Qwen testing complete)
-- **Current Session:** 2026-09-11 — Branch improvement & merge with main
-- **Next Step:** Pull on dev VM & test facet truncation (Date Created, Location, People Represented)
+- **Last Session:** 2026-09-11 (Band-aid solution tested on demo VM)
+- **Current Session:** 2026-09-16 — Recognized scaling limitation; designing proper fix
+- **Next Step:** Investigate homepage mechanism → design upstream-ready fix → remove band-aid → test on production data
+
+---
+
+## 🚧 2026-09-16 — Recognized Scaling Limitation & Created Proper Design Task (IN PROGRESS)
+
+**What Happened**:
+- ✅ Realized current solution is band-aid that only patches 3 hardcoded facets
+- ✅ Identified why demo works: small test data matches exactly 3 hardcoded facets
+- ✅ Predicted production will fail: digitalhistory.lib.wvu.edu has 15+ facets; only 3 will get "more" links
+- ✅ Created comprehensive task: `2026-09-16-CRITICAL-DESIGN-PROPER-FACET-LIMITING-SOLUTION.md`
+- ✅ Updated this status.md with critical realization
+
+**Current State of Branch**: `fix/hide-type-facet-add-show-more-facets`
+- ✅ **Safe to show to boss tomorrow** (demo VM works perfectly)
+- ⚠️ **DO NOT merge to production** (will fail on digitalhistory data)
+- 🔧 **Requires refactor** before any production deployment
+
+**Next Phase**:
+1. Investigate why HomepageController works without patches
+2. Determine proper architectural home for fix
+3. Refactor to remove hardcoded 3-facet section
+4. Test on production data (15+ facets)
+5. Create upstream PR ready for Hyku/Hyrax review
+
+**Task**: See `tasks/active/2026-09-16-CRITICAL-DESIGN-PROPER-FACET-LIMITING-SOLUTION.md`
 
 ---
 
