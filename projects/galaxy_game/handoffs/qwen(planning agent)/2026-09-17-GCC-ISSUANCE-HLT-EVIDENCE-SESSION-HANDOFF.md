@@ -64,6 +64,13 @@ The JSON payload (`co2_kg: 75000, n2_kg: 30000`) is a post-processing allocation
 7. **Two loose threads before Step 3:**
    - Item 3's "applies to all craft types" claim was uncited — needs quick grep
 
+6. **Tank capacity model (critical constraint)** — Tanks exist primarily as **capacity gates** during transfers:
+   - Craft tanks have fixed capacity (4× mk2 cryo tanks on Venus skimmer)
+   - Base/depot tanks have fixed capacity (orbital_depot_mk1 has 12 cryo tank slots + 5 cryo_pump processing units)
+   - Transfers only succeed if **both sides have room** — `InventoryManager.transfer_item` checks `seller_item.amount < quantity` before deducting
+   - The correct arrival check should verify tank capacity on both craft and base sides, not just docking port availability
+   - This is the missing piece that `can_offload_n2?` never addressed: it doesn't check capacity on either side
+
 7. **AtmosphericTransferService (existing infrastructure)** — The rake file `venus_mars_pipeline.rake` shows:
    - `TerraSim::AtmosphericTransferService.new(venus, mars, mode: :raw)` exists for planet-to-planet transfers
    - Two modes: `:raw` (direct transfer) and `:processed` (CO2-split with ratios)
@@ -71,13 +78,9 @@ The JSON payload (`co2_kg: 75000, n2_kg: 30000`) is a post-processing allocation
    - The skimmer needs to use `atmosphere.remove_gas` to pull gases from Venus, store in 4× mk2 cryo tanks,
      then use the same transfer infrastructure when docking at the depot
 
-6. **Tank capacity model (critical constraint)** — Tanks exist primarily as **capacity gates** during transfers:
-   - Craft tanks have fixed capacity (4× mk2 cryo tanks on Venus skimmer)
-   - Base/depot tanks have fixed capacity (orbital_depot_mk1 has 12 cryo tank slots + 5 cryo_pump processing units)
-   - Transfers only succeed if **both sides have room** — `InventoryManager.transfer_item` checks `seller_item.amount < quantity` before deducting
-   - The correct arrival check should verify tank capacity on both craft and base sides, not just docking port availability
-   - This is the missing piece that `can_offload_n2?` never addressed: it doesn't check capacity on either side
-   - Item 6's "CONFIRMED AS ARCHITECTURE" label sits alongside unverified Financial::Account existence — real gap under a confirmed label
+8. **Loose threads before Step 3:**
+   - "Applies to all craft types" claim was uncited — needs quick grep for mine_gcc across all craft types
+   - "CONFIRMED AS ARCHITECTURE" label sits alongside unverified Financial::Account existence — real gap under confident label
 
 ### Claude's Assessment:
 - The checkpoint was respected correctly (stopped before Step 3)

@@ -1,8 +1,41 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-18 — Pre-Player Acquisition Tree Wiring completed; EscalationService owns tree, delegates to ResourceAcquisitionService
+**Last Updated:** 2026-09-18 — GCC Issuance + HLT Evidence session completed; handoff ready for Tracy's Step 3 (implementation contract)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🟢 Recent Closures (2026-09-18)
+
+### GCC Issuance + HLT/Launch-Window Evidence Check — SESSION COMPLETE ✅
+- **Handoff**: `2026-09-17-GCC-ISSUANCE-HLT-EVIDENCE-SESSION-HANDOFF.md` (agent-tasks repo)
+- **Workstream 1** — GCC Issuance-Recipient + Authorization (Steps 0/1):
+  - Resolved multiple citation discrepancies: `base_satellite.rb` (lines 304, 311, 326), `cryptocurrency_mining.rb` (line 55)
+  - Confirmed GameState.running gate at `game_simulation_job.rb:13` (hard block on entire process_tick)
+  - Identified third independent deposit path in `mission_task_runner_service.rb:28-30` (mine_gcc → accounts[:ldc])
+  - Findings compiled in handoff for Step 1 implementation specs
+- **Workstream 2** — HLT/Launch-Window Evidence Checks (Complete):
+  - **Q1**: HeavyLander confirmed NOT participating in GCC mining (safe)
+  - **Q2**: Three independent resource-crediting paths documented with exact locations
+  - **Q2 Venus Skimmer Correction**: 
+    - Operational model: pulls 1000 kg/hr atmosphere → CO2 splitter → O2+CO onboard → remaining in 4× mk2 cryo tanks
+    - Refuels CH4 (methane), not LOX (makes own from CO2)
+    - can_offload_n2? is orphaned and wrong on every level (hardcoded single gas, no capacity check, never called)
+    - Missing infrastructure: craft-level harvesting bridge (atmosphere.remove_gas → craft tanks)
+  - **Q4**: TransitEngine delta-v computes one date at a time (no cost-curve iteration)
+- **Key Architectural Findings**:
+  - Tank capacity model: tanks are **gates** on transfers, not just storage (both sides must have room)
+  - AtmosphericTransferService exists for planet-to-planet but missing craft-level harvesting layer
+  - Correct arrival model: verify docking port + depot CH4 inventory, verify tank capacity (both craft & base)
+  - AstroLift ownership changes market-order vs direct-offload design intent
+  - mine_gcc naming should generalize to `mine_currency(currency:)` with crypto-asset lifecycle
+- **Pending for Step 3**: 
+  - Verify Financial::Account existence as deposit target
+  - Clarify AstroLift market-order vs direct-offload design
+  - Finalize 8 decision points + mine_currency generalization → implementation contract
+  - **Status**: All evidence collected; awaiting Tracy's approval to proceed with contract draft
+- **Commits**: Handoff edits + formatting fixes (2026-09-18)
 
 ---
 
