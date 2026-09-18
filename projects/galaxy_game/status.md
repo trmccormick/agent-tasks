@@ -1,8 +1,30 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-11 — Dead EAP calls removed; evaluate_strategy wired at all three call sites
+**Last Updated:** 2026-09-18 — Pre-Player Acquisition Tree Wiring completed; EscalationService owns tree, delegates to ResourceAcquisitionService
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🟢 Recent Closures (2026-09-18)
+
+### Pre-Player Acquisition Tree Wiring — COMPLETED ✅
+- **Task**: `2026-09-17-HIGH-FEATURE-PRE-PLAYER-ACQUISITION-TREE-WIRING.md`
+- **Implementation**:
+  - Added 5-step ordered decision tree on `EscalationService.pre_player_acquisition_tree(material, deficit, settlement)` (private method)
+  - Tree steps: (1) inventory sufficient? → resolved; (2) local capability? → deploy; (3) emergency? → defer if not; (4) can stand up locally? → deploy; (5) import via evaluate_strategy
+  - Integrated with `handle_resource_shortage` entry point — tree executes first, falls through to existing emergency-mission logic on `:unresolved` return
+  - Thin adapter `ResourceAcquisitionService.process_external_import_with_cost` accepts explicit cost from evaluate_strategy
+  - Tree returns: `:resolved`, `:deferred`, Robot unit (local deployment), or `:unresolved` (evaluates strategy)
+- **Specs**: 45 examples, 0 failures (up from 14 pre-fix) ✅
+  - Wrapped existing tests with `:unresolved` stub to preserve backward compatibility
+  - Integration test validates tree unresolved branch falls through to emergency mission
+  - Removed private method specs (testing private methods violates best practices)
+- **Guardrails**: `calculate_eap_ceiling` removed ✓; `player_sell_orders_exceed_eap?` stub in post-player flow only ✓; no player-first branches in tree ✓
+- **Commits**:
+  - galaxyGame: `cbb45d4d` "feature(ai-manager): wire pre-player acquisition tree on EscalationService → ResourceAcquisitionService"
+  - agent-tasks: `00fce87` "chore: move 2026-09-17-HIGH-FEATURE-PRE-PLAYER-ACQUISITION-TREE-WIRING to completed/"
+- **Follow-on**: Post-player tree; Material Sourcing revise; OperationalManager redirect (if Path A continues); cycler scheduling engine; multi-settlement coordination
 
 ---
 
