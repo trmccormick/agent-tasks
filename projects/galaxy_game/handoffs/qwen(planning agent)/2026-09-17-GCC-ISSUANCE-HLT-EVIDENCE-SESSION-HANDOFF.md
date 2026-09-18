@@ -26,7 +26,16 @@
 2. `base_satellite.rb:326` — owner_gcc_account.deposit (live-tick path, stacked on top of #1)
 3. **NEW FINDING**: `mission_task_runner_service.rb:28-30` — `'mine_gcc'` task type calls satellite.mine_gcc directly (which deposits to self.account), then separately deposits same amount to accounts[:ldc]. This is a third independent deposit path we didn't know about.
 
-**Q3 — Venus skimmer arrival gating:** has_arrived? is pure elapsed-time check. can_offload_n2? exists and validates correctly but is never called from it — orphaned safety check, not a missing one.
+### Q2 — Venus skimmer arrival gating:
+**has_arrived?** (`transit_engine.rb:148-150`) is pure elapsed-time check. **can_offload_n2? exists at `transit_engine.rb:163-178` and validates correctly but is never called from it — orphaned safety check.**
+
+**But can_offload_n2? is wrong on every level:**
+- **Wrong gas**: N2 isn't the product or fuel need. The skimmer pulls full atmosphere (1000 kg/hr), processes CO2 → O2 + CO onboard, stores remaining gases in 4× mk2 cryo tanks
+- **Wrong model**: Arrival is a docking/refueling event (CH4 + service), not an offload gate. The craft makes its own LOX from CO2 processing — it needs CH4 refuel and servicing at the depot/Luna base
+- **Wrong scope**: Even if offload were relevant, it's mixed gases (O2/N2/exhaust), not single-gas
+- **Correct arrival check would be**: `can_dock_and_refuel?(craft_type:, fuel_needed:)` — checking docking port availability and depot CH4 inventory
+
+The JSON payload (`co2_kg: 75000, n2_kg: 30000`) is a post-processing allocation spec, not a harvest target. The operational cycle is: Venus atmosphere → CO2 splitter → O2+CO onboard → store remaining in cryo tanks → dock at depot → offload mixed gases for depot volatiles processing → refuel CH4 + service.
 
 **Q4 — TransitEngine delta-v modeling:** Computes delta-v for one date at a time with no cost-curve iteration. Both mission profiles hardcode transit_days with zero dynamic sourcing.
 
@@ -45,9 +54,14 @@
    - Same mechanism a player-operated ship would use later
    - The JSON offload_requirements and can_offload_n2? pattern might be the *wrong* mechanism entirely — a direct-transfer model standing in for what should be market-order creation through NpcPriceCalculator/EscalationService/ResourceAcquisitionService
 
-4. **can_offload_n2? generalization** — Even if wired into has_arrived?, it would only gate N2 cargo. Titan's CH4 arrival would need its own method. Should be one resource-agnostic method like `can_offload_resource?(resource_type:, tank_farm_ready:, tank_count:, ...)` instead of a family of copy-pasted single-gas checks.
+4. **can_offload_n2? generalization** — Even if wired into has_arrived?, it would only gate N2 cargo. Titan's CH4 arrival would need its own method. Should be one resource-agnostic method like `can_dock_and_refuel?(craft_type:, fuel_needed:)` instead of a family of copy-pasted single-gas checks.
 
-5. **Two loose threads before Step 3:**
+5. **Venus skimmer operational model (corrected)** — The craft pulls full atmosphere (1000 kg/hr), processes CO2 → O2 + CO onboard, stores remaining gases in 4× mk2 cryo tanks. At the depot/Luna base it:
+   - Offloads mixed gases for depot volatiles processing
+   - **Refuels CH4 (methane) + servicing** — NOT LOX, since it makes its own LOX from CO2 processing
+   - The correct arrival check is docking port availability + depot CH4 inventory, not tank farm readiness for a specific gas
+
+6. **Two loose threads before Step 3:**
    - Item 3's "applies to all craft types" claim was uncited — needs quick grep
    - Item 6's "CONFIRMED AS ARCHITECTURE" label sits alongside unverified Financial::Account existence — real gap under a confirmed label
 
