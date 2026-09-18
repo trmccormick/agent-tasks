@@ -64,6 +64,13 @@ The JSON payload (`co2_kg: 75000, n2_kg: 30000`) is a post-processing allocation
 7. **Two loose threads before Step 3:**
    - Item 3's "applies to all craft types" claim was uncited — needs quick grep
 
+7. **AtmosphericTransferService (existing infrastructure)** — The rake file `venus_mars_pipeline.rake` shows:
+   - `TerraSim::AtmosphericTransferService.new(venus, mars, mode: :raw)` exists for planet-to-planet transfers
+   - Two modes: `:raw` (direct transfer) and `:processed` (CO2-split with ratios)
+   - **Missing piece**: craft-level harvesting that bridges planet atmosphere → craft tanks
+   - The skimmer needs to use `atmosphere.remove_gas` to pull gases from Venus, store in 4× mk2 cryo tanks,
+     then use the same transfer infrastructure when docking at the depot
+
 6. **Tank capacity model (critical constraint)** — Tanks exist primarily as **capacity gates** during transfers:
    - Craft tanks have fixed capacity (4× mk2 cryo tanks on Venus skimmer)
    - Base/depot tanks have fixed capacity (orbital_depot_mk1 has 12 cryo tank slots + 5 cryo_pump processing units)
