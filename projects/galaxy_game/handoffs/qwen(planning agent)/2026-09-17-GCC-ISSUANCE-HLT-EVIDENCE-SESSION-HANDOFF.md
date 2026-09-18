@@ -61,8 +61,15 @@ The JSON payload (`co2_kg: 75000, n2_kg: 30000`) is a post-processing allocation
    - **Refuels CH4 (methane) + servicing** — NOT LOX, since it makes its own LOX from CO2 processing
    - The correct arrival check is docking port availability + depot CH4 inventory, not tank farm readiness for a specific gas
 
-6. **Two loose threads before Step 3:**
+7. **Two loose threads before Step 3:**
    - Item 3's "applies to all craft types" claim was uncited — needs quick grep
+
+6. **Tank capacity model (critical constraint)** — Tanks exist primarily as **capacity gates** during transfers:
+   - Craft tanks have fixed capacity (4× mk2 cryo tanks on Venus skimmer)
+   - Base/depot tanks have fixed capacity (orbital_depot_mk1 has 12 cryo tank slots + 5 cryo_pump processing units)
+   - Transfers only succeed if **both sides have room** — `InventoryManager.transfer_item` checks `seller_item.amount < quantity` before deducting
+   - The correct arrival check should verify tank capacity on both craft and base sides, not just docking port availability
+   - This is the missing piece that `can_offload_n2?` never addressed: it doesn't check capacity on either side
    - Item 6's "CONFIRMED AS ARCHITECTURE" label sits alongside unverified Financial::Account existence — real gap under a confirmed label
 
 ### Claude's Assessment:
