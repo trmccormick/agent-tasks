@@ -628,3 +628,27 @@ code repo instead — drift within a single session rather than a
 one-off misunderstanding of the instruction. The artifact had to be
 removed from the code repo's tracked history and re-committed at the
 correct path in the task-management repo.
+
+---
+
+## Multi-Agent Governance
+
+### MAG-1 — Task File as Execution Contract
+
+**The selected task file is the authoritative execution contract for an implementation agent.** Before any implementation work begins, the assigned agent reads the selected task file in full. The task file is task-specific: it identifies the objective, scope, required artifacts, constraints, authorized actions, prohibited actions, acceptance criteria, validation requirements, completion-report and handoff obligations, and any applicable human approval gates.
+
+**Agents execute only within the selected task file and applicable governance rules.** Agents must not infer missing authority, access, acceptance criteria, or task scope from chat context, informal handoffs, provider or model preference, or another agent's suggestion. A task file does not override applicable governance rules — it operates within them.
+
+**Canonical task identity must be verified before execution.** Before acting, the assigned agent performs preflight verification:
+- The selected task file exists at the exact path specified in the dispatch.
+- The task file's YAML status field, repository location, and authorized mode match the assignment and the repository's lifecycle convention; a task need not be `active` when the dispatch explicitly authorizes bounded draft-only, review-only, or other non-implementation work.
+- All referenced files and paths exist in the current repository state.
+- No other plausible canonical copy of the same task identity exists in the filesystem.
+
+**If two or more canonical copies of the same task exist** (same task ID/date/slug in different lifecycle folders, or with conflicting YAML status fields), the agent must stop and escalate to Tracy immediately. Do not silently select one copy, merge them, delete one, or infer obsolescence. Noncanonical references such as synthesis reports, completion records, evidence artifacts, review extracts, or proposals stored outside the task-file hierarchy are not duplicates and do not require escalation. The duplicate protocol applies only to two or more plausible execution-contract copies of the same task identity; differences in lifecycle location, YAML status, or material task content are indicators requiring escalation, not a rule that every differently located file is automatically a duplicate.
+
+**Agents must stop and escalate to Tracy if** the selected task file is materially incomplete or ambiguous, conflicts with applicable governance rules, lacks required access or authority, lacks clear acceptance criteria, or cannot be completed safely within its stated bounds. Escalation is preferred to improvisation.
+
+**Routine bounded execution decisions** within an explicitly authorized task do not require a separate human approval gate for every ordinary action. Approval gates are determined by action risk and authority boundary (as defined in MAG-2), not by agent identity or provider.
+
+**This rule is consistent with MAG-2** (agents execute within explicit authorization; Tracy selects tasks, approves material/risk-gated decisions, and dispatches) **and MAG-3** (task requirements and constraints are the basis for eligibility and routing recommendations).
