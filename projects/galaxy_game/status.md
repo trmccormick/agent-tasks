@@ -6,7 +6,50 @@
 
 ---
 
-## 🟡 Pending Evidence (Blocking GCC Contract Step 3)
+## � New Backlog Tasks Filed (2026-09-19 — From Gemini Venus Skimmer Design Session)
+
+Three new architecture/feature tasks created from Gemini conversation about Venus skimmer design and atmospheric processing pipeline:
+
+### 1. Proportional Atmospheric Harvesting (`removeRawGas` Service Method)
+- **File**: `2026-09-19-HIGH-ARCHITECTURE-PROPORTIONAL-ATMOSPHERIC-HARVESTING.md`
+- **Scope**: Implement `CelestialBody#removeRawGas(target_mass_kg)` — bulk atmosphere extraction maintaining stoichiometric ratios
+- **Rationale**: Skimmers scoop atmosphere proportionally (not cherry-picking individual gases). Creates composition metadata via mass-first approach (mirrors Gas model)
+- **Output**: Metadata hash with composition breakdown ready for `Item.metadata = result`
+- **Dependencies**: None (uses existing Gas/AtmosphereConcern)
+- **Tests**: 4 unit cases (Venus extraction, depletion tracking, mass balance, rounding)
+- **Priority**: High — foundation for Venus skimmer + TEU extraction paths
+- **Status**: Ready for dispatch after backlog review
+
+### 2. Gas Separator — Composition-Aware Processing
+- **File**: `2026-09-19-HIGH-FEATURE-GAS-SEPARATOR-COMPOSITION-AWARE-PROCESSING.md`
+- **Scope**: Wire Gas Separator to read `Item.metadata['composition']` instead of flat global constants
+- **Change location**: `material_processing_service.rb:144` (mixed_volatiles case)
+- **Rationale**: Separator yields should reflect actual cargo composition (e.g., Venus mix with 30% CO2 ≠ default 96% CO2). Each world's regolith yields different ratios
+- **Backward compatible**: Falls back to crust_volatiles for legacy items
+- **Tests**: 5 unit cases (metadata read, legacy fallback, Venus mix, efficiency, edge cases)
+- **Dependencies**: removeRawGas task (provides composition structure)
+- **Priority**: High — enables accurate material accounting through processing pipeline
+- **Status**: Can implement in parallel with removeRawGas if using test fixtures
+
+### 3. Venus Skimmer In-Flight CO2 Cracking + Venting/Storage Decision Logic
+- **File**: `2026-09-19-HIGH-FEATURE-VENUS-SKIMMER-IN-FLIGHT-PROCESSING.md`
+- **Scope**: Implement `AtmosphericProcessingService.crack_co2_in_flight(item:, craft:, config:)` — active chemistry during transit
+- **Chemistry**: CO2 → 8/11 O2 (LOX tank) + 3/11 CO (byproduct), with market-driven routing on CO (vent/store/remix)
+- **Rationale**: Venus skimmers don't just haul — they actively process based on market conditions and tank configuration. Design resolves architectural conflict between "passive hauling" vs. "active processing"
+- **Tests**: 6 unit cases (basic crack+vent, dedicated tank, remix, mass balance, no-CO2, energy tracking)
+- **Dependencies**: removeRawGas task (initial composition), blueprint operational_data config
+- **Priority**: High — core mission execution path for Venus operations
+- **Status**: Ready for dispatch; requires `in_flight_processing` section in venus_skimmer blueprint
+
+### Gemini Conversation Outcomes
+- **Architecture confirmed**: Item.metadata is correct container for composition (already used for crate manifests, blueprint variants, trade routing)
+- **Schema confirmed**: No new columns needed — jsonb+mass-first approach mirrors existing Gas model exactly
+- **Tech-tree flexibility**: Built-in via existing targeted `remove_gas` method (basic units use removeRawGas, advanced units cherry-pick)
+- **Container pattern**: Self-referential `has_many :contained_items` via `container_id` FK — tanks are capacity gates, inventory tracking via Item model
+
+---
+
+## �🟡 Pending Evidence (Blocking GCC Contract Step 3)
 
 ### GCC Issuance Scope Expansion — Settlement Mining (2026-09-19)
 - **Discovery**: `CryptocurrencyMining` concern included by TWO model types, not just satellites:
