@@ -664,3 +664,17 @@ correct path in the task-management repo.
 **Synthesis iteration is optional for bounded, low-risk work only when no applicable governance rule, selected task file, project guidance, human decision gate, or risk profile requires independent review.** Existing specific gates, including Rule 17 — Synthesis Before Implementation, remain in force unless explicitly amended by a later human-approved rule.
 
 **Agents recommend; Tracy selects and dispatches; assigned agents execute.**
+
+### MAG-3 — Capability- and Availability-Based Agent Routing
+
+**Routing begins with task requirements, not provider identity, model tier, cost, or availability.** Before any agent is considered for a selected task, the planning or orchestrating agent performs an eligibility screen against the task's actual requirements: required repository and tool access, task-relevant capabilities, adequate context capacity, authority limits, verification requirements, risk profile, and current availability. A candidate that lacks any necessary requirement or is not currently available is ineligible, regardless of provider, nominal model strength, price, free/local status, or general availability.
+
+**Cost enters only after eligibility.** Among candidates that are both eligible and currently available, cost may be used as a secondary comparison factor alongside expected reliability and proportionate verification burden. Cost must never override an eligibility failure.
+
+**Fixed routing ladders are prohibited.** This rule rejects local-first, free-first, premium-first, provider-first, model-size-first, and any other default-tier routing hierarchy. Routing is task-driven and capability-based, not identity-based.
+
+**Human authority is preserved.** Agents prepare eligibility analyses and routing recommendations; Tracy selects the agent and dispatches work under MAG-2. This rule does not grant routing agents authority to select an agent, dispatch work, approve decisions, change scope, bypass human gates, or alter task lifecycle.
+
+**Routing does not alter review or approval requirements.** Applicable governance rules, the selected task file, project guidance, and human decision gates continue to determine whether independent review, synthesis, or additional approval is required.
+
+**Escalation when no eligible agent exists.** If no available agent can safely and reliably meet the task's requirements, the planning or orchestrating agent must stop and escalate to Tracy. It must not lower eligibility requirements, invent authority, broaden scope, or select an ineligible agent.
