@@ -678,3 +678,21 @@ correct path in the task-management repo.
 **Routing does not alter review or approval requirements.** Applicable governance rules, the selected task file, project guidance, and human decision gates continue to determine whether independent review, synthesis, or additional approval is required.
 
 **Escalation when no eligible agent exists.** If no available agent can safely and reliably meet the task's requirements, the planning or orchestrating agent must stop and escalate to Tracy. It must not lower eligibility requirements, invent authority, broaden scope, or select an ineligible agent.
+
+### MAG-4 — Blocking Dependency Management & Non-Blocking Parallelization
+
+**Genuine blocking dependencies require a prerequisite artifact, decision, access, approval, or verified upstream result.** A task is blocking only when it cannot proceed safely without that specific dependency. Unrelated work, optional work, and work with no overlapping write targets may proceed in parallel without waiting for the blocker.
+
+**Each parallel workstream must have a bounded objective, clear ownership, defined inputs and outputs, and no overlapping write targets unless Tracy explicitly approves coordination.** A blocker does not authorize agents to stop unrelated work, duplicate another agent's assigned work, speculate about missing inputs, or silently change task scope.
+
+**Agents may identify dependencies, propose safe parallelization, and recommend sequencing — but may not independently dispatch parallel agents.** Tracy selects and dispatches under MAG-2. Agents must report blockers and escalate to Tracy when a required dependency is unclear, missing, materially ambiguous, or conflicts with a governance rule rather than manufacturing an answer.
+
+**Synthesis and review remain proportionate to risk.** Routine independent low-risk work does not automatically require multi-agent synthesis; it is required only when task guidance, project guidance, a MAG-2 gate, or the risk profile requires it. This rule is consistent with MAG-1 (the selected task file is the execution contract; agents execute only within it and applicable governance rules) and MAG-3 (task requirements and constraints identified in the execution contract are the basis for eligibility and routing recommendations).
+
+### MAG-5 — Agent Preferences as Guidance, Not Rules
+
+**Agent preferences, provider/model preferences, session guidance, role labels, previous-chat context, informal handoffs, suggestions, and advisory project notes are guidance only unless incorporated into the selected task file or applicable governance rules.** Advisory guidance may help an agent interpret or plan authorized work but cannot grant authority, alter scope, change acceptance criteria, override required validation, bypass an approval gate, reassign ownership, change task lifecycle state, or direct an agent to stop or continue contrary to the selected active task file.
+
+**When advisory sources conflict with a selected task file, applicable governance rules, an explicit human instruction, or a risk/authority gate, the higher-precedence controlling source governs.** Agents must not treat an advisory source as a reason to ignore a current task step, invent a lifecycle transition, continue past an explicit stop condition, or bypass escalation. If two controlling sources genuinely conflict or the active task's next action is materially unclear, the agent must stop and escalate to Tracy rather than choose whichever chat message is newest.
+
+**Useful preferences and session guidance are permitted without requiring escalation when non-conflicting.** This rule preserves MAG-1 task-file authority, MAG-2 human approval/dispatch authority, MAG-3 task-first routing, and MAG-4 ownership/dependency boundaries. Advisory notes do not constitute approval gates or dispatch authorization; they operate within the boundaries established by those rules.
