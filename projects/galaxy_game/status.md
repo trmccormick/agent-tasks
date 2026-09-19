@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-18 — GCC Issuance + HLT Evidence session completed; handoff ready for Tracy's Step 3 (implementation contract)
+**Last Updated:** 2026-09-18 — Pre-player acquisition tree wiring cleanup (stale duplicates removed, synthesis report committed)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -8,56 +8,14 @@
 
 ## 🟢 Recent Closures (2026-09-18)
 
-### GCC Issuance + HLT/Launch-Window Evidence Check — SESSION COMPLETE ✅
-- **Handoff**: `2026-09-17-GCC-ISSUANCE-HLT-EVIDENCE-SESSION-HANDOFF.md` (agent-tasks repo)
-- **Workstream 1** — GCC Issuance-Recipient + Authorization (Steps 0/1):
-  - Resolved multiple citation discrepancies: `base_satellite.rb` (lines 304, 311, 326), `cryptocurrency_mining.rb` (line 55)
-  - Confirmed GameState.running gate at `game_simulation_job.rb:13` (hard block on entire process_tick)
-  - Identified third independent deposit path in `mission_task_runner_service.rb:28-30` (mine_gcc → accounts[:ldc])
-  - Findings compiled in handoff for Step 1 implementation specs
-- **Workstream 2** — HLT/Launch-Window Evidence Checks (Complete):
-  - **Q1**: HeavyLander confirmed NOT participating in GCC mining (safe)
-  - **Q2**: Three independent resource-crediting paths documented with exact locations
-  - **Q2 Venus Skimmer Correction**: 
-    - Operational model: pulls 1000 kg/hr atmosphere → CO2 splitter → O2+CO onboard → remaining in 4× mk2 cryo tanks
-    - Refuels CH4 (methane), not LOX (makes own from CO2)
-    - can_offload_n2? is orphaned and wrong on every level (hardcoded single gas, no capacity check, never called)
-    - Missing infrastructure: craft-level harvesting bridge (atmosphere.remove_gas → craft tanks)
-  - **Q4**: TransitEngine delta-v computes one date at a time (no cost-curve iteration)
-- **Key Architectural Findings**:
-  - Tank capacity model: tanks are **gates** on transfers, not just storage (both sides must have room)
-  - AtmosphericTransferService exists for planet-to-planet but missing craft-level harvesting layer
-  - Correct arrival model: verify docking port + depot CH4 inventory, verify tank capacity (both craft & base)
-  - AstroLift ownership changes market-order vs direct-offload design intent
-  - mine_gcc naming should generalize to `mine_currency(currency:)` with crypto-asset lifecycle
-- **Pending for Step 3**: 
-  - Verify Financial::Account existence as deposit target
-  - Clarify AstroLift market-order vs direct-offload design
-  - Finalize 8 decision points + mine_currency generalization → implementation contract
-  - **Status**: All evidence collected; awaiting Tracy's approval to proceed with contract draft
-- **Commits**: Handoff edits + formatting fixes (2026-09-18)
-
----
-
-## 🟢 Recent Closures (2026-09-18)
-
-### Pre-Player Acquisition Tree Wiring — COMPLETED ✅
-- **Task**: `2026-09-17-HIGH-FEATURE-PRE-PLAYER-ACQUISITION-TREE-WIRING.md`
-- **Implementation**:
-  - Added 5-step ordered decision tree on `EscalationService.pre_player_acquisition_tree(material, deficit, settlement)` (private method)
-  - Tree steps: (1) inventory sufficient? → resolved; (2) local capability? → deploy; (3) emergency? → defer if not; (4) can stand up locally? → deploy; (5) import via evaluate_strategy
-  - Integrated with `handle_resource_shortage` entry point — tree executes first, falls through to existing emergency-mission logic on `:unresolved` return
-  - Thin adapter `ResourceAcquisitionService.process_external_import_with_cost` accepts explicit cost from evaluate_strategy
-  - Tree returns: `:resolved`, `:deferred`, Robot unit (local deployment), or `:unresolved` (evaluates strategy)
-- **Specs**: 45 examples, 0 failures (up from 14 pre-fix) ✅
-  - Wrapped existing tests with `:unresolved` stub to preserve backward compatibility
-  - Integration test validates tree unresolved branch falls through to emergency mission
-  - Removed private method specs (testing private methods violates best practices)
-- **Guardrails**: `calculate_eap_ceiling` removed ✓; `player_sell_orders_exceed_eap?` stub in post-player flow only ✓; no player-first branches in tree ✓
-- **Commits**:
-  - galaxyGame: `cbb45d4d` "feature(ai-manager): wire pre-player acquisition tree on EscalationService → ResourceAcquisitionService"
-  - agent-tasks: `00fce87` "chore: move 2026-09-17-HIGH-FEATURE-PRE-PLAYER-ACQUISITION-TREE-WIRING to completed/"
-- **Follow-on**: Post-player tree; Material Sourcing revise; OperationalManager redirect (if Path A continues); cycler scheduling engine; multi-settlement coordination
+### Pre-Player Acquisition Tree Wiring — Cleanup ✅
+- **Task**: `2026-09-17-HIGH-FEATURE-PRE-PLAYER-ACQUISITION-TREE-WIRING.md` (already completed in prior session)
+- **Cleanup actions**:
+  - Deleted stale untracked copy from `tasks/active/`
+  - Deleted stale untracked copy from `tasks/backlog/ai-manager/`
+  - Committed synthesis report to agent-tasks repo: `bf11ba8` "docs: add pre-player acquisition tree wiring synthesis report"
+- **Verification**: Only ONE copy exists — `completed/2026-09/2026-09-17-HIGH-FEATURE-PRE-PLAYER-ACQUISITION-TREE-WIRING.md`
+- **git status**: Clean — no untracked pre-player files remain
 
 ---
 
