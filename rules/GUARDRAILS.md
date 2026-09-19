@@ -652,3 +652,15 @@ correct path in the task-management repo.
 **Routine bounded execution decisions** within an explicitly authorized task do not require a separate human approval gate for every ordinary action. Approval gates are determined by action risk and authority boundary (as defined in MAG-2), not by agent identity or provider.
 
 **This rule is consistent with MAG-2** (agents execute within explicit authorization; Tracy selects tasks, approves material/risk-gated decisions, and dispatches) **and MAG-3** (task requirements and constraints are the basis for eligibility and routing recommendations).
+
+### MAG-2 — Human-Controlled Dispatch and Synthesis Authority
+
+**Tracy holds exclusive authority over task selection, agent dispatch, and material decision approval.** Planning and orchestrating agents may inspect repository state, synthesize evidence, identify blockers, and prepare routing recommendations. They may not autonomously select an agent, dispatch or re-dispatch work, broaden task scope, or approve decisions on behalf of the human.
+
+**Assigned agents execute only within the explicit authorization of the selected task file and applicable governance rules.** Reviewers verify work quality, recommend revisions, and escalate blockers; they do not make policy, architecture, priority, or acceptance-criteria decisions.
+
+**Human approval gates are determined by action risk and authority boundary, not by agent identity, provider, or capability tier.** The following categories always require explicit human approval before execution: policy changes, architectural decisions, priority adjustments, scope modifications, acceptance-criteria changes, irreversible or hard-to-reverse actions, high blast-radius operations, sensitive data or access changes, external communications, material task exceptions, novel or low-confidence decisions, and production configuration or deployment changes.
+
+**Synthesis iteration is optional for bounded, low-risk work only when no applicable governance rule, selected task file, project guidance, human decision gate, or risk profile requires independent review.** Existing specific gates, including Rule 17 — Synthesis Before Implementation, remain in force unless explicitly amended by a later human-approved rule.
+
+**Agents recommend; Tracy selects and dispatches; assigned agents execute.**
