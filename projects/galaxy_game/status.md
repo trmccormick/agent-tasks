@@ -1,12 +1,59 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-18 — Pre-player acquisition tree wiring cleanup (stale duplicates removed, synthesis report committed)
+**Last Updated:** 2026-09-19 — GCC contract scope expansion discovered: BaseSettlement also mines GCC; blocking check: settlement mine_gcc behavior before Tracy's Step 3 approval
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## 🟢 Recent Closures (2026-09-18)
+## 🟡 Pending Evidence (Blocking GCC Contract Step 3)
+
+### GCC Issuance Scope Expansion — Settlement Mining (2026-09-19)
+- **Discovery**: `CryptocurrencyMining` concern included by TWO model types, not just satellites:
+  - `BaseSatellite` (base_satellite.rb:5) — satellites mine GCC ✅
+  - `BaseSettlement` (base_settlement.rb:6) — settlements mine GCC ✅ (newly discovered)
+- **Evidence**: `docs/wiki_reorganization/analysis/gcc_mining_craft_evidence_report.md:94-96`
+- **Impact on GCC Contract**: Recipient/authorization policy must cover settlements too, but **settlement mine_gcc behavior has not been evidenced yet**
+- **Blocking question** 🚨: Does `BaseSettlement.mine_gcc` have:
+  - Same 3-path duplicate-credit bug as satellites? OR
+  - Clean single-deposit? OR
+  - Different behavior entirely?
+- **Status**: Must be answered before Tracy reviews Step 3 (implementation contract draft)
+- **Next step**: Quick read-only check on `base_settlement.rb` mine_gcc implementation + settlement deposit routing
+
+---
+
+## � Identified Gaps (Ready for Task Filing)
+
+### Gas Separator Unit — No Production Code Path (2026-09-19)
+- **Issue**: `gas_separator_unit_bp.json` is pure JSON blueprint with zero production code
+- **Only references**: Planning strings in `foothold_planner.rb` (lines 284, 310) + test doubles in spec
+- **Missing gap**: TEU produces `mixed_volatiles` constant → inventory, but nothing reads it to feed gas separator pipeline
+- **Why material_processing_service.rb:144 isn't the answer**: That `'mixed_volatiles'` case serves PVE chain (reads geosphere survey data), not TEU→gas-separator path
+- **Evidence**: `/memories/session/2026-09-19-gcc-contract-scope-expansion.md` (section 1)
+- **Ready to file**: YES — scope is clear, refactoring target identified (need TEU→gas-separator pipeline)
+- **Priority**: Medium (craft-level harvesting infrastructure, downstream of ISRU chain)
+
+### TEU Per-World Volatiles — Flat Constant vs. Geological Data (2026-09-19)
+- **Issue**: TEU uses hardcoded `TEU_MIXED_VOLATILES_FRACTION = 0.005` (0.5%) regardless of world
+- **Real data exists**: `stored_volatiles` structure contains per-compound geological fractions per body; `isru_evaluator.rb:309-324` has working `volatile_fraction()` method to extract it
+- **Why it matters**: Different planets have different volatile composition (CO2/H2O/N2 ratios vary); TEU should reflect that
+- **Code comment**: `isru_evaluator.rb:286` says "A future geosphere survey integration can improve this per-world"
+- **Evidence**: `/memories/session/2026-09-19-gcc-contract-scope-expansion.md` (section 2)
+- **Ready to file**: YES — scope is clear, method/data already exist, just need integration
+- **Priority**: Medium (data accuracy, TEU balance tuning)
+
+### Settlement mine_gcc Behavior — Unverified (Blocking GCC Contract)
+- **Issue**: Satellites have 3 independent GCC deposit paths (confirmed). Settlements also include `CryptocurrencyMining` concern, but behavior unverified
+- **Question**: Does settlement mining have duplicate-credit bug, clean implementation, or different routing?
+- **Blocker**: Recipient/authorization policy design depends on settlement behavior — can't finalize contract without this evidence
+- **Evidence needed**: Quick read-only check on `base_settlement.rb` mine_gcc implementation
+- **Ready to file**: NO — blocked until evidence gathered
+- **Priority**: CRITICAL (blocking GCC contract Step 3 approval)
+
+---
+
+## �🟢 Recent Closures (2026-09-18)
 
 ### Pre-Player Acquisition Tree Wiring — Cleanup ✅
 - **Task**: `2026-09-17-HIGH-FEATURE-PRE-PLAYER-ACQUISITION-TREE-WIRING.md` (already completed in prior session)
