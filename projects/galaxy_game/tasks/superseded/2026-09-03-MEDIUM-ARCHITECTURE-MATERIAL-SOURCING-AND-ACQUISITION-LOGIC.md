@@ -1,11 +1,14 @@
 ---
-status: backlog
+status: superseded
 priority: MEDIUM
 type: architecture
 system_domain: AI_MANAGER
 mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 ---
+
+<!-- SUPERSEDED by 2026-09-24-MEDIUM-ARCHITECTURE-MATERIAL-DATA-CONTRACT-FACILITY-BASED.md — do not dispatch.
+     Acquisition routing is covered by the completed pre-player tree work; remaining useful scope is the material data contract only. -->
 
 ## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
 
