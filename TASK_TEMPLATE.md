@@ -462,6 +462,7 @@ git commit -m "chore: move [FILENAME] to completed/"
 **Completed by**: [agent name]
 **Completion date**: YYYY-MM-DD
 **Final test result**: X examples, Y failures
+**Evidence basis:** [direct verification / review of pasted evidence / reported by agent / human assertion] — [one-line source or note when not direct verification]
 
 ### What was changed
 - `[file]` — [description of change]

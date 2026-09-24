@@ -385,6 +385,18 @@ If asked to analyze test failures:
 Fabricated output that looks real is more dangerous than obvious failure.
 A model that says "I can't do this" is always preferable to one that invents results.
 
+### Rule 20a — Evidence Basis for Material Claims
+**Applies to all agents, all roles, and all supervision tiers.**
+
+When reporting a material claim about repository state, source or diff scope, Git commit/history/push state, command or test execution/results, task lifecycle status, or completion, identify the evidence basis when the claim was not directly verified through the agent's current repository or tool session:
+
+- **Direct verification** — the agent ran the relevant command, read the relevant file, or checked the relevant state in its current session.
+- **Pasted evidence** — the agent reviewed raw logs, diffs, or source excerpts supplied in chat without independently inspecting the current repository/tool state. Describe this as "review of pasted evidence," not independent verification of the live repository.
+- **Agent report** — the claim comes from another agent's report without raw supporting output or independent verification. Describe it as "reported by [agent/session]."
+- **Human assertion** — the human states repository state, test results, or completion without attached supporting evidence. Describe the repository fact as asserted unless independently verified; this does not limit the human's authority to authorize, accept, dispatch, or decide work.
+
+This rule concerns how evidence is characterized; it does not change Rule 20's prohibition on fabrication, MAG-2 human authority, or any other governing rule. If an unverified claim is material to safe task execution and no authorized basis exists to proceed, stop and escalate rather than represent it as verified.
+
 ### Rule 21 — Qwen3.5 Triage Phase Requirements
 **Applies to Continue-based Qwen3.5 models during task triage.**
 

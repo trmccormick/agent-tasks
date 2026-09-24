@@ -62,7 +62,7 @@ Your job TODAY:
 Start by reading all files in order, then create a STATUS REPORT in chat.
 ```
 
-**All context arrives in chat via paste** — review agents have no file system access.
+- **All context arrives in chat via paste** — review agents have no file system access. Describe conclusions about pasted logs, diffs, or source excerpts as "review of pasted evidence," not independent live-repository verification.
 
 ---
 
