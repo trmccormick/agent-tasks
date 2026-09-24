@@ -1,3 +1,10 @@
+---
+status: backlog
+type: governance
+---
+
+> **Historical status:** This is a draft-only governance specification retained for historical reference. Its corresponding MAG rule is authoritative in `rules/GUARDRAILS.md`. This draft was not dispatched as an implementation task and must not be used as an active execution contract.
+
 # MAG-3 — Capability- and Availability-Based Agent Routing
 
 ## Objective

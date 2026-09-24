@@ -8,6 +8,8 @@ local_worker_safe: true
 cross_project_impact: true
 ---
 
+> **Historical status:** This is a draft-only governance specification retained for historical reference. MAG-6 is authoritative in `rules/GUARDRAILS.md`; the later ownership-lanes clarification was added separately. This draft was not dispatched as an implementation task and must not be used as an active execution contract.
+
 # TASK: MAG-6 — Per-Project Implementation via SESSION_GUIDANCE.md
 
 **Status**: Backlog (draft for Tracy review; no Qwen dispatch yet)
