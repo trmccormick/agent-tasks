@@ -545,3 +545,14 @@ Three new architecture/feature tasks created from Gemini conversation about Venu
 | Multi-System Resource Coordination | Not implemented, legitimate future feature | Moved to `backlog/ai-manager/` for Grok review |
 
 **Grok needs to incorporate**: Material sourcing convention + acquisition logic into his Foothold Planner work. The multi-system coordination task is deferred but should be reviewed when footholds are established.
+
+---
+
+**Session 2026-09-24 — Material Data Contract closeout:**
+
+### Material Data Contract (Facility-Based) — COMPLETED
+- **Task**: `2026-09-24-MEDIUM-ARCHITECTURE-MATERIAL-DATA-CONTRACT-FACILITY-BASED.md` → moved to `tasks/completed/2026-09/`
+- **Synthesis**: `summaries/2026-09-24-ARCHITECTURE-MATERIAL-DATA-CONTRACT-FACILITY-BASED.md` (committed)
+- **Deliverables**: Facility-based target shape, forbidden patterns, audit list (3 location-keyed sourcing offenders, 6 body-named production key offenders), explicit non-goals
+- **Superseded**: `2026-09-03-MEDIUM-ARCHITECTURE-MATERIAL-SOURCING-AND-ACQUISITION-LOGIC.md` (moved to `tasks/superseded/`)
+- **Next step**: Optional JSON migration task for listed offenders (not dispatched)
