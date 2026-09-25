@@ -1,11 +1,13 @@
 ---
-status: active
+status: superseded
 priority: MEDIUM
 type: documentation
 system_domain: OTHER
 mvp_alignment: OTHER
 local_worker_safe: true
 ---
+
+> **Superseded status:** This audit's governance-gap objective was subsequently addressed by the live MAG-1 through MAG-6 rules in `rules/GUARDRAILS.md`. This task is retained in place as historical workflow context; it is not an active execution contract.
 
 ## ⚡ Minimal Handoff (Copy this to send to agent)
 
