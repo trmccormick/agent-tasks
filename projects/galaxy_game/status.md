@@ -556,3 +556,15 @@ Three new architecture/feature tasks created from Gemini conversation about Venu
 - **Deliverables**: Facility-based target shape, forbidden patterns, audit list (3 location-keyed sourcing offenders, 6 body-named production key offenders), explicit non-goals
 - **Superseded**: `2026-09-03-MEDIUM-ARCHITECTURE-MATERIAL-SOURCING-AND-ACQUISITION-LOGIC.md` (moved to `tasks/superseded/`)
 - **Next step**: Optional JSON migration task for listed offenders (not dispatched)
+
+---
+
+**Session 2026-09-25 — Material JSON facility-based migration closeout:**
+
+### Material JSON Migration (Facility-Based Contract) — COMPLETED
+- **Task**: `2026-09-24-MEDIUM-DATA-MATERIAL-JSON-FACILITY-BASED-MIGRATION.md` → moved to `tasks/completed/2026-09/`
+- **Synthesis**: `summaries/2026-09-25-DATA-MATERIAL-JSON-FACILITY-BASED-MIGRATION.md`
+- **Deliverables**: 9 offender files migrated (5 body-named → local_production, 3 sourcing blocks deleted)
+- **Verification**: grep zero hits for `"sourcing"` and `lunar_production|martian_production` across all 207 materials
+- **Note**: data/ is gitignored; distribution via Raspberry Pi share → Intel laptop, not GitHub
+- **No Ruby service changes** — data-only task
