@@ -1,20 +1,20 @@
 # WVU Libraries Databases — Project Status & Task Tracking
-**Last Updated:** 2026-08-03
+**Last Update:** 2026-09-25 — Admin offcanvas nav restored (Option A fix); Bootstrap refactoring planned (Option B)
 
 ---
 
 ## Project Overview
 Databases — WVU Libraries resource discovery and catalog indexing system (Ruby on Rails).
 
-**Context**: Rails 7 modernization in progress. Production bug fixes, test infrastructure improvements, and UI regression fixes completed in current session.
+**Context**: Rails 7 modernization in progress. Admin panel offcanvas navigation bug fixed (turbo event migration); Bootstrap native offcanvas refactoring planned as long-term improvement.
 
 ---
 
 ## Current Status
-- **Status:** ✅ **PRODUCTION BUG FIXED + TEST COVERAGE BOOSTED + FLASH MESSAGES RESTORED** — Branch rails7-circleci-test ready for review
+- **Status:** ✅ **OFFCANVAS NAV RESTORED** — Option A (turbo event migration) verified working; Option B (Bootstrap refactoring) planned as long-term improvement
 - **Active Branch:** `rails7-circleci-test`
-- **Last Session:** 2026-08-03 (TODAY)
-- **Last Update:** 2026-08-03 — Flash message styling regression fixed, all infrastructure synchronized
+- **Last Session:** 2026-09-25 (TODAY)
+- **Last Update:** 2026-09-25 — Admin offcanvas navigation fixed: turbolinks events → turbo events + CSS safety net
 
 ---
 
