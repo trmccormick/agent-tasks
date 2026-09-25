@@ -1,6 +1,8 @@
 # Routing Logic — Quick Reference
 **Last Updated**: 2026-06-17
 
+> **Advisory status:** This document records current operational preferences and observed model capabilities. It does not override `rules/GUARDRAILS.md`, a selected task file, or explicit human instruction. Routing should begin with task requirements, required access, capability, verification needs, risk, and current availability; cost and preferences are secondary considerations among eligible agents.
+
 > Full routing table and agent details are in `rules/AGENT_ROUTING.md`.
 > This file is a quick-reference summary only.
 
@@ -178,14 +180,14 @@ ollama run qwen3.6:9b
 Symptoms: JSON leaking to output, no response, tool calls not completing.
 
 1. **Fresh local session first** — open new session with same task file. Do NOT retry in same session.
-2. If fresh session also fails → escalate to Claude Haiku 4.5 (Copilot).
+2. If a fresh session also fails, reassess task requirements and eligible available agents before choosing the next attempt.
 
 ### Type 2 — Task Complexity Failure
 Symptoms: Wrong output, logic errors, spec failures, misunderstood requirements.
 
 1. **Tighten the task file** — add explicit before/after examples, narrow scope, add stop conditions. Retry once in fresh local session.
 2. If second attempt fails → try qwen3.5:35b-a3b on Ryzen if available.
-3. If still failing → escalate to Claude Haiku 4.5 (Copilot).
+3. After repeated local failures, reassess task requirements and eligible available agents before choosing the next attempt.
 
 **Never retry a tool execution failure in the same session. Never escalate a complexity failure without first trying a tighter task file.**
 

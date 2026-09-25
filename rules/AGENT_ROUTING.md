@@ -6,6 +6,8 @@
 > Read DECISIONS.md before this file.
 > Routing decisions here are based on actual model capabilities AND token cost.
 
+> **Advisory status:** This document records current operational preferences and observed model capabilities. It does not override `rules/GUARDRAILS.md`, a selected task file, or explicit human instruction. Routing should begin with task requirements, required access, capability, verification needs, risk, and current availability; cost and preferences are secondary considerations among eligible agents.
+
 ---
 
 ## 🔴 NEW: Cross-Project GitHub Copilot Budget Strategy (June 2026)
@@ -95,6 +97,10 @@
 | **Raptor mini (Preview)** | 0.33x | Alternative when GPT-5 mini unavailable — same criteria |
 
 **Before escalating to cloud**: document which local model was tried, what it produced, and why it failed. Log in `COPILOT_USAGE_LOG.md`.
+
+High-multiplier Copilot models may be available but consume Premium quota rapidly. They are not default routing targets. Consider them only after an eligibility review, when the task's expected value, urgency, and likely benefit justify the quota cost and the required approval is obtained under the applicable guardrails.
+
+Free web-model output may inform planning or review but must not be represented as direct verification of unprovided repository state; apply Rule 20a where it governs evidence characterization.
 
 ---
 
@@ -197,10 +203,9 @@ If asked to run a command the model cannot execute:
 
 ## Decision Rules
 
-### Default: Always Try Local First
-1. Qwen3.5-27B for anything requiring reasoning or multi-file work
-2. Qwen3.5-9B for single file reads and targeted spec runs
-3. Only escalate to cloud after two genuine local failures
+### Default: Eligibility Review First
+
+Select eligible agents using task-first requirements. Local execution may be a cost-efficient option when it meets those requirements.
 
 ### When to Escalate to Cloud (0.33x)
 All three conditions must be true:
@@ -209,6 +214,14 @@ All three conditions must be true:
 - Copilot budget is not in red alert (check `COPILOT_BUDGET_MANAGEMENT.md`)
 
 Document the escalation in `COPILOT_USAGE_LOG.md` before proceeding.
+
+### New or Changed Model Evaluation
+
+A newly available or materially changed model is not a default routing target merely because it is available or has a favorable quota multiplier. Treat it as unvalidated until it has been deliberately evaluated on bounded, low-risk work.
+
+Before broader use, record the model's observed tool/repository access, task fit, reliability, response speed, verification burden, and quota cost. Tracy decides whether it becomes a preferred option, remains limited to specific task types, or is not used.
+
+Do not replace an established working model or broaden a model's role solely from provider claims, one successful run, or cost.
 
 ### When NOT to Use Cloud Agents
 - Routine RSpec fixes → Qwen3.5-27B
