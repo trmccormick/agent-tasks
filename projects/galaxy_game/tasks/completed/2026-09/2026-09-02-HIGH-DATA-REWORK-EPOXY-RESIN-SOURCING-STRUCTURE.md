@@ -1,15 +1,32 @@
 ---
-status: blocked
+status: superseded
 priority: HIGH
 type: data
 system_domain: MANUFACTURING
 mvp_alignment: ISRU_PRODUCTION
 local_worker_safe: true
 created: 2026-09-02
-blocked_by: "Geography-agnostic sourcing model not yet approved. See synthesis report for analysis and required decisions."
+superseded_by: |
+  - summaries/2026-09-24-ARCHITECTURE-MATERIAL-DATA-CONTRACT-FACILITY-BASED.md
+    (facility-based material data contract — forbids location-keyed sourcing)
+  - completed task: 2026-09-24 facility-based material data contract
 # DISPATCH ORDERING — do not dispatch a task whose depends_on is not yet completed.
 depends_on: []
 blocks: []
+---
+
+## ⛔ SUPERSEDED (2026-09-25)
+
+**This task is SUPERSEDED.** The 2026-09-24 facility-based material data contract
+forbids location-keyed sourcing. This task would add `earth`/`lunar`/`martian`
+sourcing keys — the opposite direction of the approved architecture.
+
+**Remaining concerns are separate tasks:**
+- **NpcPriceCalculator body-agnostic pricing** — `pricing.lunar_production` hardcoding
+  must be resolved for procedural worlds (separate task).
+- **input_materials schema normalization** — three different formats across 20 materials
+  requires a separate schema-planning effort.
+
 ---
 
 ## 🔴 BLOCKED — Re-scoped as Planning/Reconciliation Task (2026-09-16)
@@ -352,11 +369,10 @@ git commit -m "chore: move epoxy resin sourcing rework to completed"
 ---
 
 ## Dependencies
+**Superseded by**: facility-based material data contract (see superseded_by field above)
 **Blocked by**: (none)
 **Blocks**: (none)
-**Related tasks**:
-- `completed/2026-08/2026-08-20-HIGH-DATA-CREATE-EPOXY-RESIN-BLUEPRINT.md` (original blueprint creation — completed, but sourcing structure was insufficient)
-- `backlog/current/2026-08-20-HIGH-DATA-CREATE-FABRICATION-PLANT-BLUEPRINT.md` (Fabrication Plant — DEFERRED Phase 11+; the `facility_type` chosen here may need to align with that blueprint when it's eventually dispatched)
+**Related tasks**: (see original task file for remaining related tasks)
 
 ---
 
