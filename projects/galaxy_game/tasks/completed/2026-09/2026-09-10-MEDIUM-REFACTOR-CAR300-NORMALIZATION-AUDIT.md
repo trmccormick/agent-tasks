@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 priority: MEDIUM
 type: refactor
 system_domain: OTHER
