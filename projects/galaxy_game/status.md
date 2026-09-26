@@ -1,8 +1,14 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-19 — GCC contract scope expansion discovered: BaseSettlement also mines GCC; blocking check: settlement mine_gcc behavior before Tracy's Step 3 approval
+**Last Updated:** 2026-09-25 — epoxy_resin sourcing task superseded by facility-based material data contract
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## ⛔ Superseded Tasks (2026-09-25)
+
+- **`2026-09-02-HIGH-DATA-REWORK-EPOXY-RESIN-SOURCING-STRUCTURE`** — superseded by facility-based material data contract. Location-keyed sourcing (`earth`/`lunar`/`martian`) is the wrong direction; use facility-based model instead. Remaining concerns: NpcPriceCalculator body-agnostic pricing and input_materials schema normalization (separate tasks).
 
 ---
 
