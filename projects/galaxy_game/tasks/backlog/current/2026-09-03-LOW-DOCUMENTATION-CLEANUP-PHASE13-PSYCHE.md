@@ -41,12 +41,12 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting a
 
 ---
 
-# TASK: Cleanup sweep — backlog/phase13-psyche/ (1 task files)
+# TASK: Cleanup sweep — backlog/phase12-belt-operations/phase12b-16psyche/ (1 task file)
 **Status**: BACKLOG
 **Priority**: LOW
 **Type**: documentation
 **Created**: 2026-09-03
-**Last Updated**: 2026-09-03
+**Last Updated**: 2026-09-26
 
 ---
 
@@ -55,7 +55,11 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting a
 Part of a systematic backlog cleanup initiated 2026-09-03 after discovering the
 Lookup Service Caching task had a stale duplicate (completed work left with
 `status: active` in `completed/`, plus a recreated copy in `backlog/current/`).
-This task covers the `backlog/phase13-psyche/` folder specifically.
+This task covers the `backlog/phase12-belt-operations/phase12b-16psyche/` folder specifically.
+
+**Updated 2026-09-26**: Phase restructured — Psyche moved from `phase13-psyche/` to `phase12-belt-operations/phase12b-16psyche/` (paired with Ceres). phase13 is now Titan/Saturn (`phase13-outer-worlds/`). Content unchanged, only references updatedsyche/` folder specifically.
+
+**Updated 2026-09-26**: Phase restructured — Psyche moved from `phase13-psyche/` to `phase12-belt-operations/phase12b-16psyche/` (paired with Ceres). phase13 is now Titan/Saturn (`phase13-outer-worlds/`). Content unchanged, only references updated.
 
 ## Problem Statement
 

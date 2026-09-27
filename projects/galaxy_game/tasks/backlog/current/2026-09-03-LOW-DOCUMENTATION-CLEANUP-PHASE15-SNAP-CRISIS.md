@@ -41,12 +41,12 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting a
 
 ---
 
-# TASK: Cleanup sweep — backlog/phase15-snap-crisis/ (3 task files)
+# TASK: Cleanup sweep — backlog/phase17-snap-crisis/ (3 task files)
 **Status**: BACKLOG
 **Priority**: LOW
 **Type**: documentation
 **Created**: 2026-09-03
-**Last Updated**: 2026-09-03
+**Last Updated**: 2026-09-26
 
 ---
 
@@ -55,7 +55,15 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting a
 Part of a systematic backlog cleanup initiated 2026-09-03 after discovering the
 Lookup Service Caching task had a stale duplicate (completed work left with
 `status: active` in `completed/`, plus a recreated copy in `backlog/current/`).
-This task covers the `backlog/phase15-snap-crisis/` folder specifically.
+This task covers the `backlog/phase17-snap-crisis/` folder specifically.
+
+**Updated 2026-09-26**: Phase renumbered — `phase15-snap-crisis/` → `phase17-snap-crisis/`. Content unchanged, only references updated.
+
+**Updated 2026-09-26**: Phase renumbered — `phase15-snap-crisis/` → `phase17-snap-crisis/`. Content unchanged, only references updated.
+
+**Updated 2026-09-26**: Phase renumbered — `phase15-snap-crisis/` → `phase17-snap-crisis/`. Content unchanged, only references updated.
+
+**Updated 2026-09-26**: Phase renumbered — `phase15-snap-crisis/` → `phase17-snap-crisis/`. Content unchanged, only references updated.
 
 ## Problem Statement
 
