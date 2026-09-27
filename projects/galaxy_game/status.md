@@ -1,108 +1,47 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-25 — epoxy_resin sourcing task superseded by facility-based material data contract
+**Last Updated:** 2026-09-26 — Phase restructure (Phases 12-17), fabrication plant relocation, task file cleanup
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
 ---
 
-## ⛔ Superseded Tasks (2026-09-25)
+## 🔴 Paused Work (2026-09-26)
 
-- **`2026-09-02-HIGH-DATA-REWORK-EPOXY-RESIN-SOURCING-STRUCTURE`** — superseded by facility-based material data contract. Location-keyed sourcing (`earth`/`lunar`/`martian`) is the wrong direction; use facility-based model instead. Remaining concerns: NpcPriceCalculator body-agnostic pricing and input_materials schema normalization (separate tasks).
-
----
-
-## � New Backlog Tasks Filed (2026-09-19 — From Gemini Venus Skimmer Design Session)
-
-Three new architecture/feature tasks created from Gemini conversation about Venus skimmer design and atmospheric processing pipeline:
-
-### 1. Proportional Atmospheric Harvesting (`removeRawGas` Service Method)
-- **File**: `2026-09-19-HIGH-ARCHITECTURE-PROPORTIONAL-ATMOSPHERIC-HARVESTING.md`
-- **Scope**: Implement `CelestialBody#removeRawGas(target_mass_kg)` — bulk atmosphere extraction maintaining stoichiometric ratios
-- **Rationale**: Skimmers scoop atmosphere proportionally (not cherry-picking individual gases). Creates composition metadata via mass-first approach (mirrors Gas model)
-- **Output**: Metadata hash with composition breakdown ready for `Item.metadata = result`
-- **Dependencies**: None (uses existing Gas/AtmosphereConcern)
-- **Tests**: 4 unit cases (Venus extraction, depletion tracking, mass balance, rounding)
-- **Priority**: High — foundation for Venus skimmer + TEU extraction paths
-- **Status**: Ready for dispatch after backlog review
-
-### 2. Gas Separator — Composition-Aware Processing
-- **File**: `2026-09-19-HIGH-FEATURE-GAS-SEPARATOR-COMPOSITION-AWARE-PROCESSING.md`
-- **Scope**: Wire Gas Separator to read `Item.metadata['composition']` instead of flat global constants
-- **Change location**: `material_processing_service.rb:144` (mixed_volatiles case)
-- **Rationale**: Separator yields should reflect actual cargo composition (e.g., Venus mix with 30% CO2 ≠ default 96% CO2). Each world's regolith yields different ratios
-- **Backward compatible**: Falls back to crust_volatiles for legacy items
-- **Tests**: 5 unit cases (metadata read, legacy fallback, Venus mix, efficiency, edge cases)
-- **Dependencies**: removeRawGas task (provides composition structure)
-- **Priority**: High — enables accurate material accounting through processing pipeline
-- **Status**: Can implement in parallel with removeRawGas if using test fixtures
-
-### 3. Venus Skimmer In-Flight CO2 Cracking + Venting/Storage Decision Logic
-- **File**: `2026-09-19-HIGH-FEATURE-VENUS-SKIMMER-IN-FLIGHT-PROCESSING.md`
-- **Scope**: Implement `AtmosphericProcessingService.crack_co2_in_flight(item:, craft:, config:)` — active chemistry during transit
-- **Chemistry**: CO2 → 8/11 O2 (LOX tank) + 3/11 CO (byproduct), with market-driven routing on CO (vent/store/remix)
-- **Rationale**: Venus skimmers don't just haul — they actively process based on market conditions and tank configuration. Design resolves architectural conflict between "passive hauling" vs. "active processing"
-- **Tests**: 6 unit cases (basic crack+vent, dedicated tank, remix, mass balance, no-CO2, energy tracking)
-- **Dependencies**: removeRawGas task (initial composition), blueprint operational_data config
-- **Priority**: High — core mission execution path for Venus operations
-- **Status**: Ready for dispatch; requires `in_flight_processing` section in venus_skimmer blueprint
-
-### Gemini Conversation Outcomes
-- **Architecture confirmed**: Item.metadata is correct container for composition (already used for crate manifests, blueprint variants, trade routing)
-- **Schema confirmed**: No new columns needed — jsonb+mass-first approach mirrors existing Gas model exactly
-- **Tech-tree flexibility**: Built-in via existing targeted `remove_gas` method (basic units use removeRawGas, advanced units cherry-pick)
-- **Container pattern**: Self-referential `has_many :contained_items` via `container_id` FK — tanks are capacity gates, inventory tracking via Item model
+### GCC Mining Work — HELD
+- All GCC-related tasks paused until Claude returns
+- Awaiting Claude review before any further GCC work proceeds
 
 ---
 
-## �🟡 Pending Evidence (Blocking GCC Contract Step 3)
+## 🟢 Recent Closures (2026-09-26)
 
-### GCC Issuance Scope Expansion — Settlement Mining (2026-09-19)
-- **Discovery**: `CryptocurrencyMining` concern included by TWO model types, not just satellites:
-  - `BaseSatellite` (base_satellite.rb:5) — satellites mine GCC ✅
-  - `BaseSettlement` (base_settlement.rb:6) — settlements mine GCC ✅ (newly discovered)
-- **Evidence**: `docs/wiki_reorganization/analysis/gcc_mining_craft_evidence_report.md:94-96`
-- **Impact on GCC Contract**: Recipient/authorization policy must cover settlements too, but **settlement mine_gcc behavior has not been evidenced yet**
-- **Blocking question** 🚨: Does `BaseSettlement.mine_gcc` have:
-  - Same 3-path duplicate-credit bug as satellites? OR
-  - Clean single-deposit? OR
-  - Different behavior entirely?
-- **Status**: Must be answered before Tracy reviews Step 3 (implementation contract draft)
-- **Next step**: Quick read-only check on `base_settlement.rb` mine_gcc implementation + settlement deposit routing
+### Phase Structure Reorganization ✅
+- **Renumbered phases**: Act 1 = Phases 1–14, Act 2 = Phase 16+, Act 3 = Phase 17+
+- **New phase folders**:
+  - `phase12-belt-operations/` — Ceres + 16 Psyche (parallel sub-phases: 12a, 12b)
+  - `phase13-outer-worlds/` — Titan/Saturn operations
+  - `phase14-venus-mars-terraforming/` — Coordinated Mars/Venus terraforming (shared tech)
+  - `phase15-optional-expansion/` — Jupiter moons, Saturn moons, Uranus/Neptune moons, Kuiper Belt, Oort Cloud, Mercury (all optional, AI evaluates ROI)
+    - Sub-phases ordered by distance from Sun: 15a-jupiter → 15b-saturn → 15c-uranus → 15d-neptune → 15e-kuiper-belt → 15f-oort-cloud → 15g-mercury
+  - `phase16-eden-expansion/` — AI operational independence test
+  - `phase17-snap-crisis/` — Wormhole mass-limit → Snap event
+- **Parallel execution**: Phases 12–14 run concurrently once Phase 11 cycler loop is established (not sequential)
+- **Phase 15 optional**: All sub-phases are optional — AI Manager evaluates ROI, may skip lower-value targets
+- **Documentation updated**: PHASE_STRUCTURE.md, 01_story_arc.md both reflect new structure
 
----
+### Task File Relocations ✅
+- **fabrication_plant task** → `blueprints-operational-data/` (phase-agnostic, ready when mk3 storage chain is needed)
+- **distribute_consortium_profits spec task** → `current/` (was in phase11-logistics/ — wrong home; test-only task, not logistics)
+- **terraforming-atmospheric-gap-analysis** → `phase14-venus-mars-terraforming/` (was in phase12-belt-operations/phase12b-16psyche/ — terraforming is Phase 14, not belt ops)
 
-## � Identified Gaps (Ready for Task Filing)
-
-### Gas Separator Unit — No Production Code Path (2026-09-19)
-- **Issue**: `gas_separator_unit_bp.json` is pure JSON blueprint with zero production code
-- **Only references**: Planning strings in `foothold_planner.rb` (lines 284, 310) + test doubles in spec
-- **Missing gap**: TEU produces `mixed_volatiles` constant → inventory, but nothing reads it to feed gas separator pipeline
-- **Why material_processing_service.rb:144 isn't the answer**: That `'mixed_volatiles'` case serves PVE chain (reads geosphere survey data), not TEU→gas-separator path
-- **Evidence**: `/memories/session/2026-09-19-gcc-contract-scope-expansion.md` (section 1)
-- **Ready to file**: YES — scope is clear, refactoring target identified (need TEU→gas-separator pipeline)
-- **Priority**: Medium (craft-level harvesting infrastructure, downstream of ISRU chain)
-
-### TEU Per-World Volatiles — Flat Constant vs. Geological Data (2026-09-19)
-- **Issue**: TEU uses hardcoded `TEU_MIXED_VOLATILES_FRACTION = 0.005` (0.5%) regardless of world
-- **Real data exists**: `stored_volatiles` structure contains per-compound geological fractions per body; `isru_evaluator.rb:309-324` has working `volatile_fraction()` method to extract it
-- **Why it matters**: Different planets have different volatile composition (CO2/H2O/N2 ratios vary); TEU should reflect that
-- **Code comment**: `isru_evaluator.rb:286` says "A future geosphere survey integration can improve this per-world"
-- **Evidence**: `/memories/session/2026-09-19-gcc-contract-scope-expansion.md` (section 2)
-- **Ready to file**: YES — scope is clear, method/data already exist, just need integration
-- **Priority**: Medium (data accuracy, TEU balance tuning)
-
-### Settlement mine_gcc Behavior — Unverified (Blocking GCC Contract)
-- **Issue**: Satellites have 3 independent GCC deposit paths (confirmed). Settlements also include `CryptocurrencyMining` concern, but behavior unverified
-- **Question**: Does settlement mining have duplicate-credit bug, clean implementation, or different routing?
-- **Blocker**: Recipient/authorization policy design depends on settlement behavior — can't finalize contract without this evidence
-- **Evidence needed**: Quick read-only check on `base_settlement.rb` mine_gcc implementation
-- **Ready to file**: NO — blocked until evidence gathered
-- **Priority**: CRITICAL (blocking GCC contract Step 3 approval)
+### Documentation Updates ✅
+- **PHASE_STRUCTURE.md**: Act numbering, parallel execution note, Phase 15 optional expansion section, new Phase 12-17 sections
+- **01_story_arc.md**: Act numbering (Act 2 → Phase 16+, Act 3 → Phase 17+), phase mapping table, override sequence updated
 
 ---
 
-## �🟢 Recent Closures (2026-09-18)
+## 🟢 Recent Closures (2026-09-18)
 
 ### Pre-Player Acquisition Tree Wiring — Cleanup ✅
 - **Task**: `2026-09-17-HIGH-FEATURE-PRE-PLAYER-ACQUISITION-TREE-WIRING.md` (already completed in prior session)
@@ -350,10 +289,12 @@ Three new architecture/feature tasks created from Gemini conversation about Venu
 
 ## 📋 Active Tasks: 0
 
-> No tasks currently in `active/`. Lookup Service Caching Pattern was confirmed
-> completed 2026-09-03 (work done 08-08, stale duplicate removed, status corrected).
+> No tasks currently in `active/`. GCC work paused until Claude returns.
 >
-> **Note**: All oxygen-fixture, can_harvest_locally, fabrication_plant, and asset-prompt-contract tasks are now correctly in completed/.
+> **Undispatched backlog items** (ready for future dispatch):
+> - `blueprints-operational-data/2026-08-20-HIGH-DATA-CREATE-FABRICATION-PLANT-BLUEPRINT.md` — fabrication_plant blueprint (phase-agnostic, needed for mk3 storage chain)
+> - `current/2026-08-16-LOW-SPEC-DISTRIBUTE-CONSORTIUM-PROFITS.md` — test coverage only, no code changes
+> - `current/` has 25 other backlog items (cleanup sweeps, architecture tasks, investigations)
 
 ---
 
@@ -551,26 +492,3 @@ Three new architecture/feature tasks created from Gemini conversation about Venu
 | Multi-System Resource Coordination | Not implemented, legitimate future feature | Moved to `backlog/ai-manager/` for Grok review |
 
 **Grok needs to incorporate**: Material sourcing convention + acquisition logic into his Foothold Planner work. The multi-system coordination task is deferred but should be reviewed when footholds are established.
-
----
-
-**Session 2026-09-24 — Material Data Contract closeout:**
-
-### Material Data Contract (Facility-Based) — COMPLETED
-- **Task**: `2026-09-24-MEDIUM-ARCHITECTURE-MATERIAL-DATA-CONTRACT-FACILITY-BASED.md` → moved to `tasks/completed/2026-09/`
-- **Synthesis**: `summaries/2026-09-24-ARCHITECTURE-MATERIAL-DATA-CONTRACT-FACILITY-BASED.md` (committed)
-- **Deliverables**: Facility-based target shape, forbidden patterns, audit list (3 location-keyed sourcing offenders, 6 body-named production key offenders), explicit non-goals
-- **Superseded**: `2026-09-03-MEDIUM-ARCHITECTURE-MATERIAL-SOURCING-AND-ACQUISITION-LOGIC.md` (moved to `tasks/superseded/`)
-- **Next step**: Optional JSON migration task for listed offenders (not dispatched)
-
----
-
-**Session 2026-09-25 — Material JSON facility-based migration closeout:**
-
-### Material JSON Migration (Facility-Based Contract) — COMPLETED
-- **Task**: `2026-09-24-MEDIUM-DATA-MATERIAL-JSON-FACILITY-BASED-MIGRATION.md` → moved to `tasks/completed/2026-09/`
-- **Synthesis**: `summaries/2026-09-25-DATA-MATERIAL-JSON-FACILITY-BASED-MIGRATION.md`
-- **Deliverables**: 9 offender files migrated (5 body-named → local_production, 3 sourcing blocks deleted)
-- **Verification**: grep zero hits for `"sourcing"` and `lunar_production|martian_production` across all 207 materials
-- **Note**: data/ is gitignored; distribution via Raspberry Pi share → Intel laptop, not GitHub
-- **No Ruby service changes** — data-only task

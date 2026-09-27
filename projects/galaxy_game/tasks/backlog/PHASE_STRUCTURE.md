@@ -9,14 +9,14 @@ intent: NPC-only Sol system expansion and early terraforming — AI Manager trai
 
 ## Core Intent (Read This First)
 
-**Act 1 = Phases 1–13: NPC-only Sol system expansion and early terraforming.**
+**Act 1 = Phases 1–14: NPC-only Sol system expansion and early terraforming.**
 This is **not player-facing content**. Players do not enter the game during Act 1. Instead, they inherit a living universe that has been built by an AI Manager learning to expand autonomously using pattern-based decision-making trained on JSON mission data.
 
-**Act 2 = Phase 14+: Eden system expansion test.**
+**Act 2 = Phase 16+: Eden system expansion test.**
 The AI Manager takes full operational control of Sol and discovers/begins expanding into the Eden system using learned patterns. This is the first test of whether the AI can successfully apply Sol-system training to a new environment.
 
-**Act 3 = Phase 15+: Snap crisis event.**
-Unplanned Eden expansion pushes past natural wormhole mass-limit stability, triggering the Snap crisis. Post-Phase 15 is where player-facing gameplay (Act 2) begins.
+**Act 3 = Phase 17+: Snap crisis event.**
+Unplanned Eden expansion pushes past natural wormhole mass-limit stability, triggering the Snap crisis. Post-Phase 17 is where player-facing gameplay (Act 2) begins.
 
 **Act 4 = Not yet planned.**
 Post-Snap narrative content (wormhole mastery, Hammer Protocol, etc.) — deferred until Act 3 framework is established.
@@ -38,11 +38,11 @@ The resulting world-state becomes the backstory players inherit when they arrive
 
 ---
 
-## Act 1: Sol System Expansion (Phases 1–13) — NPC-Only AI Training
+**Act 1: Sol System Expansion (Phases 1–14) — NPC-Only AI Training**
 
 **Goal**: Validate AI Manager can autonomously expand across Sol system using pattern-based decision-making, then initiate early terraforming efforts.
 
-**Scope**: Earth → Luna → (parallel: Mars + Venus + Optional Branches + Psyche) → Coordinated multi-world operations
+**Scope**: Earth → Luna → Mars → Venus → Belt operations (Ceres + Psyche) → Titan/Saturn → Terraforming → Optional expansion → Eden test
 **Player Experience**: None during Act 1. Players inherit the result post-Snap.
 
 **CRITICAL ARCHITECTURE: Tug/Cycler Deployment Sequence Gates Expansion**
@@ -84,9 +84,17 @@ Phase 11: Multi-world logistics maturation (Earth→Mars→Venus standing cycler
     ├─ Cycler docking/cargo transfer across all three worlds
     └─ AI Manager learns coordinated multi-world operations
     ↓
-Phase 12: Optional branches (Ceres belt mining, Titan/Saturn settlement)
+Phase 12–14: Parallel expansion (Ceres/Psyche belt ops + Titan/Saturn + Venus/Mars terraforming)
+    ├─ Phase 12a: Ceres mining
+    ├─ Phase 12b: 16 Psyche mining
+    ├─ Phase 13: Titan/Saturn operations
+    └─ Phase 14: Venus/Mars coordinated terraforming
     ↓
-Phase 13: Psyche mining + coordinated terraforming
+Phase 15: Optional expansion (Jupiter moons, Saturn moons, Uranus/Neptune moons, Kuiper Belt, Oort Cloud, Mercury)
+    ↓
+Phase 16: Eden system expansion test
+    ↓
+Phase 17: Snap crisis event
 ```
 
 **Key Mechanic: Slag Propellant Closed Loop**
@@ -143,24 +151,42 @@ Phase 11+: Stationary Skimmers Deployed (Different Craft)
 | **9** | `phase09-mars/` | PLANNED | Tug deployment to Mars | Tug hollows moons (generates slag propellant), repositions them; Cycler arrives with equipment |
 | **10** | `phase10-venus/` | PLANNED | Tug→Belt→Venus | Tug travels to asteroid belt with slag propellant, captures asteroids, repositions to Venus orbit |
 | **11** | `phase11-logistics/` | PLANNED | Multi-world operations | Standing Earth→Mars→Venus cycler loop established (both worlds now equipped) |
-| **12** | `phase12-optional-branches/` | PLANNED (optional) | Branch expansion | Optional: Ceres belt mining and/or Titan/Saturn settlement |
-| **13** | `phase13-psyche/` | PLANNED | Advanced mining | 16 Psyche mining + coordinated terraforming |
-| **14+** | TBD | FUTURE | Sequential gate | AI operational independence + Eden expansion |
+| **12** | `phase12-belt-operations/` | PLANNED | Belt mining (parallel sub-phases) | Ceres + 16 Psyche belt operations |
+| **13** | `phase13-outer-worlds/` | PLANNED | Outer worlds | Titan/Saturn atmospheric/surface operations |
+| **14** | `phase14-venus-mars-terraforming/` | PLANNED | Terraforming | Coordinated Mars + Venus shared terraforming tech |
+| **15** | `phase15-optional-expansion/` | FUTURE | Optional expansion | Jupiter moons, Saturn moons, Uranus/Neptune moons, Kuiper Belt, Oort Cloud, Mercury |
+| **16** | `phase16-eden-expansion/` | FUTURE | Eden test | AI operational independence + Eden discovery |
+| **17** | `phase17-snap-crisis/` | FUTURE | Crisis event | Wormhole mass-limit → Snap crisis |
 
 **Sequential Dependency Chain**:
 - Phase 8 completion → Tug + Cycler built at L1 shipyard
 - Phase 9 → Tug deployed to Mars; Moon hollowing generates slag propellant; Cycler arrives with equipment
 - Phase 10 → Tug departs Mars with full slag tank; travels to asteroid belt; captures and repositions asteroids to Venus
 - Phase 11 → Cycler begins standing loop; both Mars and Venus now operational; multi-world logistics coordination begins
-- Phases 12–13 → Optional/parallel expansion occurs while standing cycler loop sustains main world infrastructure
+
+**Parallel Execution (Phases 11–14)**:
+- Phases 12, 13, and 14 run **in parallel**, not sequentially. Once Phase 11 cycler loop is established, the AI Manager can simultaneously:
+  - Mine Ceres + 16 Psyche in the belt (Phase 12)
+  - Operate Titan/Saturn atmospheric/surface missions (Phase 13)
+  - Coordinate Mars/Venus terraforming with shared technology (Phase 14)
+- The standing cycler loop sustains all parallel operations
+- AI Manager learns to prioritize and allocate resources across concurrent expansion efforts
+
+**Optional Expansion (Phase 15)**:
+- Phase 15 is optional — the core Sol system (Phases 1–14) is complete without it
+- Sub-phases ordered by distance from Sun: Jupiter moons → Saturn moons → Uranus moons → Neptune moons → Kuiper Belt → Oort Cloud → Mercury (last due to low value)
+- AI Manager evaluates ROI for each optional branch; may skip lower-value targets
 
 **Key mechanic**: Slag propellant generated during moon hollowing is self-sustaining; tug doesn't need Earth resupply for Mars→Belt→Venus journey.
 
 **Why This Structure**:
 - **Phases 5-8**: Sequential foundation (can't build Mars infrastructure before orbital infrastructure exists)
-- **Phases 9-13**: Parallel execution (Mars surface doesn't wait for Venus cloud cities; they develop concurrently)
-- **AI complexity**: Learning to manage 4-5 simultaneous expansion efforts teaches AI realistic coordination decisions
-- **Resource prioritization**: When cyclers are scarce, AI learns to allocate them across competing world demands
+- **Phase 9→10**: Sequential tug/cycler deployment (tug must reach Mars before belt/Venus operations)
+- **Phase 11**: Cycler loop establishment (prerequisite for all parallel work)
+- **Phases 12-14**: Parallel expansion (belt ops + Titan + terraforming run concurrently while cycler sustains core)
+- **Phase 15**: Optional outer-system expansion (AI evaluates ROI, may skip lower-value targets)
+- **AI complexity**: Learning to manage concurrent expansion efforts across belt, outer worlds, and terraforming teaches realistic coordination
+- **Resource prioritization**: When cyclers are scarce, AI learns to allocate them across competing parallel demands
 - **Stress testing**: Logistics and economics tested under realistic multi-world load, not in isolation
 
 ---
@@ -407,68 +433,152 @@ Phase 11+: Stationary Skimmers Deployed (Different Craft)
 - Assumes mk2 cooling technology available for Venus skimmer operations
 - Cannot begin multi-world coordination until both worlds are operational and equipped
 
+**Mars Transfer Hub Dependency**: Phase 11 sets up cycler routes and moves cargo only within the core loop (Earth/Luna-Mars-Venus). Phases 12-15 are parallel Sol-expansion tracks; each adds a route that terminates at Mars for transfer, then re-enters the core loop via Venus -> Earth/Luna -> Mars rotation. Phase 11's Mars-side transfer capacity is a dependency for 12-15, not a fully-parallel peer — correct the "runs in parallel" note to reflect that Phase 11 (or at minimum its Mars transfer infrastructure) needs to be in place first.
+
 **Gate**: Multi-world cycler logistics loop proven operational under realistic concurrent load. Boil-off enforcement validated (supply chain now accounts for real atmospheric loss). Venus skimmer proof-of-concept proven. AI trained on complex coordination across two simultaneous expansion efforts with real resource constraints. Inner-system trade network operational with resource harvesting integrated.
 
 ---
 
-### Phase 12 — Ceres Belt Mining & Titan Skimming: Testing & AI Training
-**Goal**: Test advanced asteroid mining (belt location) and Titan skimmer operations (O2/LOX harvesting, mk3 cooling) running while standing cycler loop sustains core infrastructure.
+### Phase 12 — Belt Operations (Ceres + 16 Psyche): Testing & AI Training
+**Goal**: Test asteroid belt mining operations at Ceres and 16 Psyche running while standing cycler loop sustains core infrastructure. **Parallel with Phases 13-14.**
 
-**Scope**: Ceres belt mining + Titan skimmer operations + multi-world resource routing validation
+**Scope**: Ceres belt mining + 16 Psyche core-remnant mining (parallel sub-phases)
 **Structure**:
 - **Phase 12a**: Ceres asteroid discovery + characterization profiles validation (belt selection + spectral analysis patterns)
-- **Phase 12b**: Automated belt mining mission profiles validation (mining operation profiles, material sorting, resource batching)
-- **Phase 12c**: Titan skimmer proof-of-concept activation (mk3 cooling assumed active; harvest O2/LOX from Titan atmosphere -> orbital depot -> cycler integration)
-- **Phase 12d**: Multi-world resource routing AI training (AI learns to route belt-mined metals + Titan O2/LOX through shipyards across three worlds; manages resource arbitrage and boil-off economics)
-
-**Skimmer Resource Targets** (Phase 12+):
-- **Titan**: Harvest O2/LOX (liquid oxygen) from atmosphere via stationary depot-based skimmers -> accumulate in orbital storage -> transfer to cycler -> transport across system (mk3 cooling manages higher boil-off on extended transits)
+- **Phase 12b**: Automated Ceres belt mining mission profiles validation (mining operation profiles, material sorting, resource batching)
+- **Phase 12c**: 16 Psyche core-remnant extraction mission profiles validation (core-specific extraction patterns)
+- **Phase 12d**: Belt mining AI training (AI learns to evaluate Ceres vs Psyche ROI, allocate cycler capacity for belt operations)
 
 **Key Deliverables**:
 - Ceres mining infrastructure options validated
-- Automated belt mining mission profiles validated
-- **Titan skimmer operations validated** (O2/LOX harvesting at planetary scale; mk3 cooling required due to longer boil-off transit times)
+- Automated Ceres belt mining mission profiles validated
+- **16 Psyche core-remnant extraction validated** (advanced mining for high-value metals)
 - Belt mining mission profiles validated
-- Multi-world metal + gas resource routing tested
-- AI learns coordinated belt mining + Titan resource harvesting + shipyard utilization patterns
-- Standing cycler loop continues sustaining core infrastructure while branch resources added
-- Triple-world resource network (Luna + Mars + Venus + Belt + Titan) validated
+- AI learns coordinated belt mining + shipyard utilization patterns
+- Standing cycler loop sustains core infrastructure while belt operations run in parallel
 
-**Critical Note**: Ceres and Titan are independently optional paths - pursuing one doesn't require the other. Ceres has early-design relationship with Mars (belt extraction/logistics coordination). Titan requires mk3 cooling technology maturity.
+**Critical Note**: Ceres and 16 Psyche are **parallel sub-phases**, not sequential. Both can proceed simultaneously once Phase 11 cycler loop is established. Graphite extraction from Ceres feeds graphene_composite production chain (fabrication_plant blueprint needed for Phase 13+).
 
 **Dependencies**:
-- **Runs after Phase 11 complete** (standing cycler loop sustains core infrastructure; branch expansion can now be evaluated)
-- Titan skimming requires mk3 cooling technology available
-- Optional - AI can decide not to pursue branches if core world expansion ROI is higher
-- Doesn't gate Phase 13 or other priorities
+- **Requires Phase 11 complete** (standing cycler loop sustains belt operations)
+- Parallel with Phases 13-14 — does not wait for them, they do not wait for it
+- Fabrication_plant blueprint (advanced composite facility) needed for mk3 storage chain
 
-**Gate**: Optional - branches can be pursued independently or skipped based on AI economic evaluation; does not gate Phase 13 or later progression. If pursued: belt mining + Titan skimming validated; extended resource network operational.
+**Gate**: Belt mining infrastructure operational. Ceres graphite + 16 Psyche core-remnant extraction validated. AI trained on belt economics. Ready to proceed with Phase 15 optional expansion.
 
 ---
 
-### Phase 13 — Psyche Mining & Terraforming: Testing & AI Training
-**Goal**: Test advanced mining (core-remnant extraction) and coordinated terraforming options running while standing cycler loop sustains core infrastructure.
+### Phase 13 — Outer Worlds (Titan/Saturn): Testing & AI Training
+**Goal**: Test Titan atmospheric/surface operations and Saturn moon network while standing cycler loop sustains core infrastructure. **Parallel with Phases 12, 14.**
 
-**Scope**: Psyche core-remnant mining + multi-world terraforming infrastructure validation
+**Scope**: Titan/Saturn atmospheric harvesting + Saturn moon network coordination
 **Structure**:
-- **Phase 13a**: Psyche mining mission profiles validation (core-remnant-specific extraction patterns)
-- **Phase 13b**: Multi-world terraforming mission profiles validation (Mars + Venus atmospheric enrichment, gas export logistics)
-- **Phase 13c**: Coordinated terraforming AI training (AI learns to coordinate multi-world atmospheric engineering while managing main settlements)
+- **Phase 13a**: Titan atmospheric harvesting proof-of-concept activation (O2/LOX from Titan atmosphere via stationary depot-based skimmers)
+- **Phase 13b**: Titan fuel processing validation (CH4 breakdown → H2 + C; methane as fuel source)
+- **Phase 13c**: Saturn moon network coordination validation (Dione, Enceladus, Miranda, Puck, Rhea integration)
+- **Phase 13d**: Outer worlds AI training (AI learns Titan economics, Saturn moon resource routing, mk3 cooling requirements)
+
+**Skimmer Resource Targets**:
+- **Titan**: Harvest O2/LOX from atmosphere via stationary depot-based skimmers -> accumulate in orbital storage -> transfer to cycler. CH4 breakdown provides H2 for Venus operations.
+- **Cooling Chain**: Graphite (Ceres) + Epoxy Resin → Graphene Composite (fabrication_plant, Phase 13+) → mk3 storage tanks (0.07% boil-off)
 
 **Key Deliverables**:
-- Psyche mining infrastructure options validated
-- Mars/Venus terraforming pathway options validated
-- Venus/Titan gas export mission profiles validated
+- **Titan skimmer operations validated** (O2/LOX harvesting at planetary scale; mk3 cooling required for extended transits)
+- Titan fuel processing validated (CH4 → H2 + C pathway)
+- Saturn moon network coordination validated
+- AI learns outer worlds resource routing + boil-off economics
+- Standing cycler loop sustains core infrastructure while outer worlds run in parallel
+
+**Critical Note**: Titan provides **H2 source** via CH4 breakdown — critical for Venus operations (Venus has N2 but no H2). Titan requires mk3 cooling technology maturity. If Titan is delayed or made optional, an alternative H2 source must be identified.
+
+**Dependencies**:
+- **Requires Phase 11 complete** (standing cycler loop sustains outer worlds)
+- Requires mk3 cooling technology (graphene_composite → fabrication_plant)
+- Parallel with Phases 12, 14 — does not wait for them, they do not wait for it
+
+**Gate**: Titan atmospheric/surface operations validated. Saturn moon network operational. AI trained on outer worlds economics. Ready to proceed with Phase 15 optional expansion.
+
+---
+
+### Phase 14 — Venus/Mars Terraforming: Testing & AI Training
+**Goal**: Test coordinated Mars + Venus terraforming using shared technology (solar shades, atmospheric transfer) while standing cycler loop sustains core infrastructure. **Parallel with Phases 12, 13.**
+
+**Scope**: Coordinated Mars/Venus terraforming infrastructure validation
+**Structure**:
+- **Phase 14a**: Mars terraforming initiation validation (atmospheric enrichment, great warming options)
+- **Phase 14b**: Venus terraforming pathway validation (cloud city adaptation, atmospheric processing)
+- **Phase 14c**: Shared technology validation (solar shades/reflectors, atmospheric transfer between worlds)
+- **Phase 14d**: Coordinated terraforming AI training (AI learns to balance Mars/Venus terraforming efforts with main settlement operations)
+
+**Key Deliverables**:
+- Mars terraforming pathway options validated
+- Venus terraforming pathway options validated
+- **Shared terraforming technology validated** (solar shades, atmospheric transfer between worlds)
 - Multi-world atmospheric engineering patterns tested
 - Long-haul logistics for terraforming support tested
 - AI learns to balance terraforming efforts with main settlement operations
 
-**Dependencies**:
-- **Runs after Phase 11 complete** (standing cycler loop sustains core infrastructure; terraforming coordination can now be validated)
-- Coordinates with Phase 11 for long-haul cycler logistics to support terraforming
-- Phase 12 may run concurrently or be skipped based on AI evaluation
+**Critical Note**: Mars + Venus share terraforming technology — solar shades and atmospheric transfer are **shared infrastructure**, not duplicated. This is the first phase where Mars and Venus coordinate directly rather than operating independently.
 
-**Gate**: Terraforming initiation systems operational, gas export pipelines validated. All Sol system settlement and infrastructure patterns tested, validated, and AI trained. AI Manager ready for operational independence test in Phase 14+.
+**Dependencies**:
+- **Requires Phase 11 complete** (standing cycler loop sustains terraforming logistics)
+- Parallel with Phases 12, 13 — does not wait for them, they do not wait for it
+- Requires established Mars/Venus footholds from Phases 9-10
+
+**Gate**: Terraforming initiation systems operational. Shared technology validated. All Sol system settlement and infrastructure patterns tested, validated, and AI trained. AI Manager ready for operational independence test in Phase 16.
+
+---
+
+### Phase 15 — Optional Expansion: Testing & AI Training
+**Goal**: Test optional outer-system expansion locations while core Sol system (Phases 1-14) is fully operational. **All sub-phases are optional** — AI Manager evaluates ROI for each and may skip lower-value targets.
+
+**Scope**: Jupiter moons, Saturn moons, Uranus/Neptune moons, Kuiper Belt, Oort Cloud, Mercury
+**Structure** (ordered by distance from Sun; Mercury last due to low value):
+- **Phase 15a**: Jupiter moons (Callisto, Europa, Ganymede, Io) — volcanic/subsurface resource extraction
+- **Phase 15b**: Saturn moons (Dione, Enceladus, Miranda, Puck, Rhea) — ice/mining operations
+- **Phase 15c**: Uranus moons — deep-space atmospheric/surface operations
+- **Phase 15d**: Neptune moons — frontier exploration
+- **Phase 15e**: Kuiper Belt — trans-Neptunian object operations
+- **Phase 15f**: Oort Cloud — extreme-distance frontier operations
+- **Phase 15g**: Mercury orbital hub — low-value target (evaluated last)
+
+**Critical Note**: Phase 15 is **optional** — the core Sol system is complete without it. AI Manager evaluates each sub-phase by ROI and may pursue only high-value targets. Many of these locations are genuinely optional frontier content.
+
+**Gate**: Optional expansion evaluated by AI Manager. High-value targets pursued; low-value targets skipped. Core Sol system remains fully operational regardless.
+
+---
+
+### Phase 16 — Eden Expansion Test: AI Operational Independence
+**Goal**: The AI Manager takes full operational control of Sol and discovers/begins expanding into the Eden system using learned patterns. This is the first test of whether the AI can successfully apply Sol-system training to a new environment.
+
+**Scope**: Sol autonomous management handoff, Eden discovery and initial expansion
+**Requirements**:
+- ✅ All Phases 1-14 complete (Sol system mastery including terraforming coordination)
+- ✅ Luna simulation calibrated and validated
+- ✅ Inner-system footholds operational (Mars, Venus, etc.)
+- ✅ Cycler logistics loop stable and repeatable
+- ✅ Coordinated Mars-Venus terraforming systems operational
+
+**Eden Expansion Test**: The AI Manager applies learned patterns to the Eden system without human intervention. This tests:
+- Whether the AI can successfully transfer Sol-system knowledge to a new environment
+- Whether pattern-based decision-making generalizes across different celestial bodies
+- Whether the AI can handle novel conditions not encountered during training
+
+**Gate**: AI Manager demonstrates sustained independent Sol management. Eden expansion underway — proceeds to Phase 17 where this independence gets stress-tested.
+
+---
+
+### Phase 17 — Snap Crisis: NPC-Only Crisis Response
+**Goal**: Unplanned Eden expansion pushes past natural wormhole mass-limit stability, triggering the Snap crisis. This is where the test reveals its result — the AI Manager's confidence from successful Sol patterns leads it to overbuild Eden infrastructure.
+
+**Scope**: Eden infrastructure buildup (unplanned/uncapped), wormhole stability monitoring, mass-limit threshold discovery
+
+**The Crisis Event**: The Snap event occurs when:
+- Eden infrastructure buildup exceeds natural wormhole mass-limit stability
+- Wormhole reaches instability and shifts exit point
+- Eden becomes orphaned from Sol system
+
+**Post-Snap State**: This is where player-facing gameplay (Act 2) begins. Everything in Phases 5-17 has been building the world-state players inherit at this moment.
 
 ---
 
