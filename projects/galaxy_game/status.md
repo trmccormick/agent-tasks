@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-29 — Session wrap-up: B1 dispatch handoff prepared, workspace audit completed, RSpec baseline captured
+**Last Updated:** 2026-09-29 — Session wrap-up: B1 dispatch handoff prepared, workspace audit completed, RSpec baseline captured, ProductionService env-fix confirmed
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -15,6 +15,21 @@
 - **Handoff file**: `handoffs/qwen(planning agent)/2026-09-28-b1-readiness-assessment-for-chatgpt.md` — prepared for ChatGPT review/decision
 - **Dependency chain**: A1 → B1 → B2+B3 parallel → C-series implementation
 - **Status**: READY FOR DISPATCH — awaiting human approval
+
+### ProductionService consume_materials / produce_to_inventory — PASSING ✅
+- **Scope**: Fix 2 (`#consume_materials`) + Fix 3 (`#produce_to_inventory`) diagnostic runs with `unset DATABASE_URL && RAILS_ENV=test` env prefix
+- **Results**: All 3 targeted examples PASS (0 failures)
+  - `"consumes from multiple items"` — passed
+  - `"destroys items fully consumed"` — passed
+  - `"adds item to inventory"` — passed
+- **File**: `galaxy_game/spec/services/manufacturing/production_service_spec.rb`
+- **Status**: No code changes needed; env-contamination fix confirmed sufficient
+
+### File Polish — Sabatier Task (2026-09-29) ✅
+- **Task**: `2026-09-28-MEDIUM-REFACTOR-DISPOSITION-SABATIER-REACTOR-SPEC.md`
+- **Edits**: Readiness checklist → `**READY FOR DISPATCH**`; `last_updated` → `2026-09-29`
+- **Dig path check**: No typo found — `material_data.dig('pricing', 'lunar_production')` already correct
+- **Status**: READY FOR DISPATCH — no code changes, no git operations
 
 ### market-fee-hold Branch Audit — 2026-09-29 ✅
 - **Finding**: Branch is **already fully merged** into main — zero divergence
@@ -65,8 +80,10 @@
 
 ### Sabatier Disposition Task
 - **Task**: `2026-09-28-MEDIUM-REFACTOR-DISPOSITION-SABATIER-REACTOR-SPEC.md` (backlog/current/)
-- **Status**: NOT dispatched — currently being edited by a second session (research/edit only)
-- **Restrictions**: No move, no status change, no commit by the editing session
+- **Status**: READY FOR DISPATCH — file polish completed 2026-09-29
+- **Edits applied**: readiness checklist → `**READY FOR DISPATCH**`; `last_updated` → `2026-09-29`
+- **Dig path typo check**: No typo found — `material_data.dig('pricing', 'lunar_production')` already correct throughout
+- **Restrictions lifted**: Task is now ready for human dispatch
 
 ---
 
