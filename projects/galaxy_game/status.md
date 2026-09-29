@@ -1,8 +1,25 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-29 — Session wrap-up: B1 dispatch handoff prepared, workspace audit completed, RSpec baseline captured, ProductionService env-fix confirmed
+**Last Updated:** 2026-09-29 — Session wrap-up: B1 dispatch handoff prepared, workspace audit completed, RSpec baseline captured, ProductionService env-fix confirmed, Inventory add_item diagnostic
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## 🔍 In Flight — Open Sessions & Staged Tasks
+
+### Inventory `add_item` Diagnostic (2026-09-27) — IN PROGRESS
+- **Issue**: `settlement.inventory.add_item('binding_agent', 50, player)` returns `false`, persists nothing. Spec context "with sufficient materials" reports `binding_agent (need 10.0, have 0.0)` even though `before` block calls `add_item`.
+- **Findings so far**:
+  - Working tree confirmed clean for `production_service_spec.rb`
+  - `RAILS_ENV=test` confirmed correct in container
+  - First reproduction: `add_item` returned `false`, `can_store?` is a private method, 0 items persisted to settlement's inventory (id 35303)
+  - Storage unit's inventory (id 35304) was created then destroyed during factory setup
+  - Second attempt with `settlement:` (attachable) parameter: hit "Default currency (GCC) not found" because deleting tables without re-seeding broke the Player factory
+  - Shell escaping issues through `docker-compose exec` prevented inline Ruby execution
+  - Volume mount confirmed: `./galaxy_game` → `/home/galaxy_game` in container — no `docker cp` needed
+- **Debug script**: Created at `galaxy_game/tmp/debug_inv.rb` (mounted to container)
+- **Status**: Script ready to run; awaiting clean execution to get full diagnostic output
 
 ---
 
