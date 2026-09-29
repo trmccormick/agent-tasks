@@ -1,8 +1,159 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-09-26 — Phase restructure (Phases 12-17), fabrication plant relocation, task file cleanup
+**Last Updated:** 2026-09-29 — Session wrap-up: B1 dispatch handoff prepared, workspace audit completed, RSpec baseline captured
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+---
+
+## � Recent Closures (2026-09-29)
+
+### B1 Dispatch Handoff — PREPARED ✅
+- **Task**: `2026-08-31-HIGH-ARCHITECTURE-ASSET-UI-B1-map-asset-registry-to-visual-definition.md`
+- **Assessment**: CONFIRMED READY — all prerequisites satisfied, no contradictions with VISUAL_CONTRACT
+- **A1 evidence**: `summaries/2026-09-03-RESEARCH-ASSET-REGISTRY-REALITY-CHECK.md` (completed)
+- **Handoff file**: `handoffs/qwen(planning agent)/2026-09-28-b1-readiness-assessment-for-chatgpt.md` — prepared for ChatGPT review/decision
+- **Dependency chain**: A1 → B1 → B2+B3 parallel → C-series implementation
+- **Status**: READY FOR DISPATCH — awaiting human approval
+
+### market-fee-hold Branch Audit — 2026-09-29 ✅
+- **Finding**: Branch is **already fully merged** into main — zero divergence
+- **Merge-base**: `7db7566c` (the branch tip itself)
+- **Commits on branch side**: 0 (fully merged)
+- **Pushed to remote?**: No — local-only branch
+- **Archive tag created**: `archive/market-fee-hold` → `7db7566c` (preservation only, no other changes)
+- **Files added by branch**: 2 files in its single feature commit:
+  - `galaxy_game/app/models/concerns/settlement_fees.rb` — concern with broker/transaction fee config
+  - `galaxy_game/spec/services/ai_manager/per_location_fees_spec.rb` — 17-example spec
+- **Files modified by branch**: 4 files (base_settlement.rb, orbital_settlement.rb, logistics_coordinator.rb, universal_docking_service.rb)
+- **Claim correction**: "12 economy docs (~2,500 lines)" was **INCORRECT** — zero docs added by this branch
+- **Drift check**: None — all 4 key files (settlement_fees.rb, per_location_fees_spec.rb, base_settlement.rb, orbital_settlement.rb) unchanged since merge
+- **Concern on main?**: Yes — included by both BaseSettlement (line 89) and OrbitalSettlement (line 7)
+- **Recommendation**: Branch can be deleted safely; all work is on main. Run spec to confirm passing.
+
+### Workspace Audit — 2026-09-28 ✅
+- **Branch**: `main` (clean, no feature branch checked out)
+- **Feature branches**: `market-fee-hold` exists locally — **already merged** into main (see audit above)
+- **Uncommitted changes**: 4 modified files + 1 untracked (`scripts/debug_inv.rb`)
+  - `inventory.rb` has 6 lines modified (from debugging session)
+  - `01_story_arc.md` has Phase structure updates
+- **Models verified**: LedgerEntry, VirtualLedgerService, BaseSatellite all present at expected paths
+- **No schema drift detected**
+
+### RSpec Baseline — Captured ✅
+- Full run output saved to `rspec_full_1790652010.log`
+- **Confirmed baseline**: 4764 examples, 143 failures, 55 pending (ran in container, 13m 20s)
+- **Per-file breakdown**: Still incomplete (~72 of 107 services/ failures unaccounted for)
+- **Env-contamination finding**: Unprefixed docker rspec runs in the dev env hit the dev DB, so old baselines (178/159/167 failures) are suspect — this run is the first clean baseline since that was identified
+
+---
+
+## 🟢 Recent Closures (2026-09-28–29)
+
+### Fix 1/2/3 + Env-Contamination Closure ✅
+- **Commits**: `c4539604` (stale base_units cache fix), `75086c1a` (story arc doc phase 16/17 renumbering)
+- **Env-contamination**: Confirmed — unprefixed docker rspec runs in dev env against dev DB invalidated prior baselines
+
+---
+
+## 🔴 Known Breaks & Staged Tasks (NOT DISPATCHED)
+
+### Luna Mission:execute Phase Skip
+- **Issue**: `luna_mission:execute` skips all 4 phases because the plan file drifted while gitignored
+- **Fix task**: Staged in backlog, NOT dispatched
+- **Status**: BLOCKED — plan file drift needs resolution before dispatch
+
+### Sabatier Disposition Task
+- **Task**: `2026-09-28-MEDIUM-REFACTOR-DISPOSITION-SABATIER-REACTOR-SPEC.md` (backlog/current/)
+- **Status**: NOT dispatched — currently being edited by a second session (research/edit only)
+- **Restrictions**: No move, no status change, no commit by the editing session
+
+---
+
+## 🚀 In Flight — Open Sessions & Staged Tasks
+
+| Session / Task | Host / Session | Status | Timestamp |
+|---|---|---|---|
+| **Planning session (this one)** | Qwen local (Copilot) | Closing — status.md update in progress | 2026-09-29 |
+| **Task-edit session** | Second session (editing Sabatier task file) | Research/edit only; no move/status/commit | Ongoing |
+| **8/30 Game-Loop Reality Check** | `2026-08-29-HIGH-ARCHITECTURE-LIVE-GAME-LOOP-REALITY-CHECK.md` | **Completed** — task file in `tasks/completed/2026-08/` with status: completed; findings/synthesis docs exist in summaries/ (3 files). Previously marked "unverified" but confirmed via find. | 2026-08-30 (original) |
+| **market-fee-hold branch** | Local branch `market-fee-hold` (commit `7db7566c`) | **MERGED INTO MAIN** — audit completed 2026-09-29. All work present on main, zero drift. Archive tag `archive/market-fee-hold` created for preservation. Branch safe to delete. | 2026-09-29 |
+
+---
+
+## 📋 Workspace Audit (2026-09-29)
+
+> **Note**: The task-edit session has not yet reported which files it touched. Files below are labeled accordingly — "unexplained" means I cannot confirm the source. Do not guess.
+
+### galaxyGame repo (`/Users/tam0013/Documents/git/galaxyGame`)
+```
+(tam0013@LIB-DCL-TRACYMK galaxyGame % git status --short)
+(clean — no uncommitted changes)
+```
+
+### agent-tasks repo (`/Users/tam0013/Documents/git/agent-tasks`) — Counts
+- **Modified (M): 2 files** — `status.md`, `2026-09-10-HIGH-ARCHITECTURE-MISSIONS-V2-PHASE-LIBRARY-INTEGRATION.md`
+- **Deleted (D): 19 files** — 1 from phase13-psyche, 14 from phase14-eden-expansion, 4 from phase15-snap-crisis
+- **Untracked (??): 13 files** — handoffs and task directories
+
+### galaxyGame repo (`/Users/tam0013/Documents/git/galaxyGame`)
+```
+(clean — no uncommitted changes)
+```
+
+### Full agent-tasks `git status --short` output
+```
+ M projects/galaxy_game/status.md
+ D projects/galaxy_game/tasks/backlog/current/2026-08-20-HIGH-DATA-CREATE-FABRICATION-PLANT-BLUEPRINT.md
+ M projects/galaxy_game/tasks/backlog/current/2026-09-10-HIGH-ARCHITECTURE-MISSIONS-V2-PHASE-LIBRARY-INTEGRATION.md
+ D projects/galaxy_game/tasks/backlog/phase13-psyche/2026-07-05-LOW-RESEARCH-TERRAFORMING-ATMOSPHERIC-GAP-ANALYSIS.md
+ D projects/galaxy_game/tasks/backlog/phase14-eden-expansion/2026-03-27-HIGH-REFACTOR-TERRAFORMING-MANAGER-DATA-DRIVEN.md
+ D projects/galaxy_game/tasks/backlog/phase14-eden-expansion/2026-04-16-HIGH-ARCHITECTURE-RAW-RESOURCE-EXTRACTION-PRICING.md
+ D projects/galaxy_game/tasks/backlog/phase14-eden-expansion/2026-05-28-LOW-ARCHITECTURE-WORLDHOUSE-STATE-SCHEMA.md
+ D projects/galaxy_game/tasks/backlog/phase14-eden-expansion/2026-05-29-HIGH-ARCHITECTURE-MISSION-PROFILE-RECOMMENDATION-ENGINE-V2.md
+ D projects/galaxy_game/tasks/backlog/phase14-eden-expansion/2026-06-21-HIGH-ARCHITECTURE-RAW-RESOURCE-EXTRACTION-PRICING.md
+ D projects/galaxy_game/tasks/backlog/phase14-eden-expansion/2026-06-21-MEDIUM-REFACTOR-TERRAFORMING-MANAGER-IDENTIFY-AVAILABLE-RESOURCES.md
+ D projects/galaxy_game/tasks/backlog/phase14-eden-expansion/2026-06-22-HIGH-REFACTOR-TERRAFORMING-MANAGER-DATA-DRIVEN.md
+ D projects/galaxy_game/tasks/backlog/phase14-eden-expansion/2026-06-30-LOW-PHASE-8B-DEFERRAL-WORMHOLE-AND-ECONOMICS.md
+ D projects/galaxy_game/tasks/backlog/phase14-eden-expansion/2026-07-15-HIGH-FEATURE-MISSION-PLANNER-TIER3-SOURCING.md
+ D projects/galaxy_game/tasks/backlog/phase14-eden-expansion/2026-07-15-HIGH-FEATURE-WORMHOLE-CONNECTIVITY-STATUS.md
+ D projects/galaxy_game/tasks/backlog/phase14-eden-expansion/2026-08-03-HIGH-BUGFIX-TERRAFORMING-MANAGER-DEFAULT-PARAMS.md
+ D projects/galaxy_game/tasks/backlog/phase14-eden-expansion/2026-08-03-HIGH-BUGFIX-TERRAFORMING-MANAGER-METHOD-SHADOWING.md
+ D projects/galaxy_game/tasks/backlog/phase14-eden-expansion/2026-08-03-MEDIUM-BUGFIX-TERRAFORMING-MANAGER-METHOD-SHADOWING.md
+ D projects/galaxy_game/tasks/backlog/phase14-eden-expansion/2026-08-03-MEDIUM-REFACTOR-TERRAFORMING-MANAGER-HARDCODED-TARGETS.md
+ D projects/galaxy_game/tasks/backlog/phase15-snap-crisis/2026-03-29-HIGH-REFACTOR-WORMHOLE-EXPANSION-SERVICE-AWS-CONSTRUCTION.md
+ D projects/galaxy_game/tasks/backlog/phase15-snap-crisis/2026-06-22-HIGH-FEATURE-GGMAP-STRATEGIC-DATA-DISPLAY.md
+ D projects/galaxy_game/tasks/backlog/phase15-snap-crisis/2026-07-13-RESEARCH-ALIEN-BIOME-SYSTEM-ARCHITECTURE.md
+?? "projects/galaxy_game/handoffs/chatgpt(free web)/GalaxyGame_Morning_Coordination_Handoff_2026-09-29.md"
+?? "projects/galaxy_game/handoffs/claude(free web)/2026-09-24-HANDOFF-manufacturing-storage-type-fix.md"
+?? "projects/galaxy_game/handoffs/claude(free web)/2026-09-27-HANDOFF-phase-restructuring-car300-rspec-triage.md"
+?? "projects/galaxy_game/handoffs/claude(free web)/2026-09-29-HANDOFF-rspec-fixes-luna-mission-baseline.md"
+?? projects/galaxy_game/handoffs/gemini/galaxy_game_handoff_2026-09-29.md
+?? "projects/galaxy_game/handoffs/grok(free web)/2026-09-27-SESSION-HANDOFF-AI-MANAGER-GROK.md"
+?? projects/galaxy_game/handoffs/grok/
+?? projects/galaxy_game/handoffs/perplexity/2026-09-27-MORNING-HANDOFF.md
+?? "projects/galaxy_game/handoffs/qwen(planning agent)/2026-09-27-inventory-add-item-investigation.md"
+?? "projects/galaxy_game/handoffs/qwen(planning agent)/2026-09-28-b1-readiness-assessment-for-chatgpt.md"
+?? projects/galaxy_game/tasks/backlog/blueprints-operational-data/
+?? projects/galaxy_game/tasks/backlog/current/2026-08-16-LOW-SPEC-DISTRIBUTE-CONSORTIUM-PROFITS.md
+?? projects/galaxy_game/tasks/backlog/current/2026-09-28-MEDIUM-REFACTOR-DISPOSITION-SABATIER-REACTOR-SPEC.md
+```
+
+### Rename Check: Deleted vs Untracked Paths
+**No rename pairs found.** None of the 19 deleted filenames appear in the 13 untracked paths. The deleted files are old phase-task files (phase13/14/15); the untracked files are new handoffs and task files — completely different sets.
+
+### File Labels (pending task-edit session report)
+| File | Label |
+|---|---|
+| `status.md` (agent-tasks, M) | **unexplained** — this planning session wrote it |
+| `2026-09-10-HIGH-ARCHITECTURE-MISSIONS-V2-PHASE-LIBRARY-INTEGRATION.md` (agent-tasks, M) | **unexplained** — has uncommitted changes; status: backlog |
+| All 19 deleted files (phase13/14/15) | **unexplained** — need task-edit session confirmation |
+| All 13 untracked files | **unexplained** — need task-edit session confirmation |
+
+### market-fee-hold Branch
+- **Branch**: `market-fee-hold` (local only, not merged into main)
+- **Latest commit**: `7db7566c` — "feat: per-location market fee management for AI Manager"
+- **Creation**: Branch was created from commit `7db7566c` (reflog: `market-fee-hold@{0}: branch: Created from 7db7566c`). Exact date unconfirmed — reflog entry has no timestamp.
 
 ---
 
@@ -11,6 +162,19 @@
 ### GCC Mining Work — HELD
 - All GCC-related tasks paused until Claude returns
 - Awaiting Claude review before any further GCC work proceeds
+
+---
+
+## 🟢 Recent Closures (2026-09-28)
+
+### B1 Readiness Assessment — CONFIRMED READY ✅
+- **Task**: `2026-08-31-HIGH-ARCHITECTURE-ASSET-UI-B1-map-asset-registry-to-visual-definition.md`
+- **Assessment**: All prerequisites satisfied, no contradictions found between task file and established architecture
+- **A1 evidence**: `summaries/2026-09-03-RESEARCH-ASSET-REGISTRY-REALITY-CHECK.md` — completed (registry is specification-only)
+- **Visual Contract**: `docs/reference/asset-generation/VISUAL_CONTRACT.md` — complete, fully compatible with B1 scope
+- **Dependency chain confirmed**: A1 (completed) → B1 (registry mapping) → B2+B3 parallel → C-series implementation
+- **Scope caution**: B1 must map Asset Registry concepts onto existing Visual Definition Template v1.0 fields without creating any parallel asset-to-visual relationship model or modifying locked artifacts (Visual Profiles, Render Templates, PromptCompiler)
+- **Status**: READY FOR DISPATCH — awaiting human approval to dispatch
 
 ---
 
