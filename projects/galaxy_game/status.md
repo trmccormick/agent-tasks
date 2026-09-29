@@ -25,6 +25,13 @@
 - **File**: `galaxy_game/spec/services/manufacturing/production_service_spec.rb`
 - **Status**: No code changes needed; env-contamination fix confirmed sufficient
 
+### Env-Contamination Root Cause — DOCUMENTED ✅
+- **Issue**: Unprefixed `docker-compose exec web bundle exec rspec` runs hit the dev DB and ran in `"development"` mode, invalidating prior RSpec baselines (178/159/167 failures)
+- **Root cause**: Container default `RAILS_ENV=development`; `DATABASE_URL=postgres://.../galaxy_game_development`. Rails infers environment from DB name suffix (`_development` → `"development"`), overriding `RAILS_ENV=test` when both are set
+- **Fix**: Always use `unset DATABASE_URL && RAILS_ENV=test` prefix for test runs in the container
+- **Verified**: `printenv RAILS_ENV DATABASE_URL` confirmed `RAILS_ENV=development` without unset; `"test"` with unset
+- **Impact**: All prior failure counts from unprefixed docker rspec runs are suspect — only prefixed runs are reliable
+
 ### File Polish — Sabatier Task (2026-09-29) ✅
 - **Task**: `2026-09-28-MEDIUM-REFACTOR-DISPOSITION-SABATIER-REACTOR-SPEC.md`
 - **Edits**: Readiness checklist → `**READY FOR DISPATCH**`; `last_updated` → `2026-09-29`
