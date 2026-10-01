@@ -1,5 +1,25 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-09-17
+**Last Updated:** 2026-09-28
+
+---
+
+## 🎯 2026-09-28 — Collections Button UX Fix (COMPLETE)
+
+**Issue**: Main homepage "View All Collections" button opened a modal instead of navigating to collections-filtered catalog (mismatch with Cooper Commons UX)
+
+**Solution Implemented** (commit `a50c742`):
+- ✅ Changed button_tag to link_to in `_featured_collection_section.html.erb`
+- ✅ Links directly to `/catalog` filtered by Collections: `f[generic_type_sim][]=Collection`
+- ✅ Added `locale=en` and `sort=title_ssi asc` parameters (matching Cooper Commons pattern)
+- ✅ Removed modal rendering reference
+- ✅ Collections now display in full catalog view with filtering/sorting like https://cooper.hykucommons.org/catalog
+
+**Files Modified**:
+- `app/views/themes/wvu_home/hyrax/homepage/_featured_collection_section.html.erb` — Replaced button logic with direct catalog link
+- Modal file `_browse_collections_modal.html.erb` — Now unused (can be deleted in cleanup)
+
+**Branch**: `fix/hide-type-facet-add-show-more-facets`
+**Status**: Ready for testing on demo-hykudev
 
 ---
 
