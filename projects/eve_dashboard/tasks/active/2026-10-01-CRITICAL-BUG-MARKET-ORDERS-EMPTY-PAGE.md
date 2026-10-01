@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: CRITICAL
 type: bug-fix
 system_domain: MARKET_DASHBOARD
@@ -7,7 +7,27 @@ mvp_alignment: MARKET_ORDER_TRACKING
 local_worker_safe: true
 ---
 
-## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
+## 🟢 BACKEND VERIFIED - FRONTEND ISSUE ISOLATED
+
+**UPDATE (2026-10-01 18:57:23 UTC)**: Database corruption cleared after restart. Backend investigation complete:
+
+✅ **VERIFIED WORKING**:
+- Docker container running and healthy
+- Database integrity: PASSED
+- API `/market/orders` endpoint returns valid JSON with 100+ orders
+- Characters syncing: Neon Blue Mernher, Neon Red (with 13+ orders each)
+- Data persistence: Orders correctly saved with synced_at timestamps
+- ESI scope: Characters have market orders authorization working
+
+❌ **ISSUE ISOLATED**: Frontend /market page is likely not rendering data from the API
+
+**Next Steps for Qwen**:
+- Skip backend verification (Steps 1-8)- **START FROM STEP 9 (Frontend Issue)**
+- Check if market.html template exists and loads
+- Verify market.js is fetching /market/orders endpoint
+- Check browser console for JavaScript errors
+- Verify template passes data to JavaScript correctly
+- Test API directly: `curl http://localhost:8765/market/orders | jq .orders[0]`
 
 **STOP. Do not send this task to an agent until ALL boxes are checked.**
 
