@@ -68,3 +68,13 @@
 ## 📋 Active Tasks: 0
 
 > No tasks currently in `active/`. GCC work paused until Claude returns.
+
+---
+
+## 📐 Structural Notes
+
+### AI Manager — Outside Settlement Phase Sequence
+- **Location**: `tasks/backlog/ai-manager/` (backlog) + `tasks/active/` (active work)
+- **Relationship to phases**: AI Manager is a cross-cutting system that sits **outside** the world-settlement phase folders (`phase05-luna`, `phase09-mars`, etc.)
+- **Direction of knowledge flow**: Settlement phases produce real settlement knowledge → AI Manager consumes and generalizes it into resource-first foothold planning
+- **Documentation source**: `tasks/backlog/ai-manager/README.md` + this note (task `2026-09-01-MEDIUM-DOCUMENTATION-AI-MANAGER-OUTSIDE-PHASE-STRUCTURE` completed 2026-09-30)
