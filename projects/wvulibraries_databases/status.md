@@ -11,10 +11,11 @@ Databases — WVU Libraries resource discovery and catalog indexing system (Ruby
 ---
 
 ## Current Status
-- **Status:** ✅ **OFFCANVAS NAV FULLY FIXED** — Option A verified working on local and dev VM; tested and pushed to rails7-circleci-test
+- **Status:** ✅ **OFFCANVAS NAV FUNCTIONAL** — Menu opens/closes correctly, all links work
+- **Remaining:** ⏳ **OVERLAY VIEWPORT COVERAGE** — Dark backdrop doesn't cover full viewport (visual polish only)
 - **Active Branch:** `rails7-circleci-test`
-- **Last Session:** 2026-10-01
-- **Last Update:** 2026-10-01 — Admin offcanvas navigation fix verified on dev VM and pushed to git
+- **Last Session:** 2026-10-01 (ongoing)
+- **Last Update:** 2026-10-01 — Offcanvas menu works; overlay viewport coverage needs Qwen debugging & fix
 
 ---
 
@@ -85,7 +86,56 @@ bc573c9 fix: remove custom alert styling and rely on Bootstrap defaults
 
 ---
 
-## ⏳ NEXT STEPS
+## PENDING — Session 2026-10-01: Offcanvas Overlay Viewport Coverage (Visual Polish)
+
+**Summary**: Admin offcanvas menu navigation fully functional (menu opens/closes, all links work). However, dark overlay backdrop doesn't cover the full viewport — light/gray areas remain visible at edges.
+
+### Problem Statement
+
+**Current (dev/localhost):** Overlay covers ~60% of viewport; white areas visible on left and bottom edges  
+**Expected (production):** Overlay covers 100% of viewport; entire page darkened except menu panel  
+**Impact:** Visual inconsistency only; menu is fully functional and doesn't block usage
+
+### Root Cause Analysis
+
+Hiraku library applies `transform: translateX(-300px)` to body when menu opens, creating a new CSS stacking context that breaks:
+- `position: fixed` positioning (becomes relative to transformed body, not viewport)
+- `position: absolute` positioning (only covers body element, not full viewport)
+- Dimension/offset compensation math
+
+### Work Attempted Today (2026-10-01)
+
+1. ✅ Identified root cause: CSS transform stacking context issue
+2. ✅ Tried CSS-only fixes (7 attempts) — all failed due to transform context
+3. ✅ User implemented JavaScript overlay solution in `off_canvas.js` with:
+   - Dynamic overlay div creation with expanded dimensions
+   - Negative offset positioning to counter body transform
+   - MutationObserver on nav `aria-hidden` attribute for show/hide
+4. ❌ JS solution incomplete — still has viewport coverage gaps
+5. ✅ Created formal task file: `tasks/active/2026-10-01-MEDIUM-overlay-viewport-coverage.md`
+
+### Files Modified
+
+- `databases/app/assets/javascripts/plugins/off_canvas.js` — overlay creation + MutationObserver
+- `databases/app/assets/stylesheets/interface/elements/_nav.scss` — overlay styling (partial)
+
+### Next Steps (For Qwen Planning Session)
+
+**Pending Debug & Implementation:**
+- [ ] Review current JS overlay implementation for dimension/offset calculation errors
+- [ ] Test on dev VM (`https://databases.lib.wvu.edu/admin`) with SSO auth
+- [ ] Compare with production site screenshot for exact overlay behavior
+- [ ] Determine if overlay needs different DOM positioning strategy
+- [ ] Implement proper fix ensuring full 100% viewport coverage
+- [ ] Verify no regression to menu functionality
+
+**Testing**: Dev VM has working auth; local requires SSO workaround
+
+**Priority:** MEDIUM (visual polish, not blocking functionality)
+
+**Estimated Effort:** 2-4 hours including debugging + implementation + testing
+
+---
 
 1. ✅ **PR Review**: rails7-circleci-test branch ready for code review
 2. **Deployment**: Merge to main when ready
