@@ -1,0 +1,497 @@
+---
+title: "TransitEngine Topology Containment — Phase 1"
+status: backlog
+priority: high
+work_type: architecture_containment
+created: 2026-09-30
+revised: 2026-10-03
+supersedes: null
+related_tasks:
+  - 2026-09-29-HIGH-REFACTOR-TRANSIT-ENGINE.md
+dispatch_ready: false
+---
+
+**Claude disposition**: REVISE (not approved). This revision incorporates Claude's required changes per human authorization. A fresh Qwen read-only task-text verification and Claude re-review are required after this revision.
+
+# TransitEngine Topology Containment — Phase 1
+
+## Status and authority
+
+This task remains **backlog** and is **not dispatchable** until:
+
+1. Claude gives an explicit final technical disposition approving it for human dispatch review.
+2. The human owner explicitly approves dispatch.
+3. The repository workflow/status/location convention is rechecked immediately before dispatch.
+
+Do not move, archive, supersede, deprecate, edit, stage, commit, or push the related older task:
+
+`2026-09-29-HIGH-REFACTOR-TRANSIT-ENGINE.md`
+
+during this task. Its later lifecycle disposition is a separate human-approved action.
+
+## Objective
+
+Contain known unsupported topologies in the legacy single-μ heliocentric-approximation path of `Mission::TransitEngine`, which continues to use fixed `MU_SUN`.
+
+The existing dynamic path applies `MU_SUN` and heliocentric assumptions whenever both supplied body identifiers yield non-empty orbital JSON. It can therefore apply a solar-frame calculation to a moon/parent-centric route such as Earth→Luna.
+
+Phase 1 must explicitly reject known unsupported topologies via a Phase 1 topology proxy (same-system, parentless planet-lineage topology). It does not establish physical correctness of the retained legacy dynamic path for Sol, Eden, other procedurally generated systems, or multi-star systems.
+
+This task is **containment**, not a general orbital-routing implementation. GalaxyGame must support Eden, procedurally generated/partially completed systems, and multi-star systems; this task makes no claim about non-Sol or multi-star correctness.
+
+## Evidence basis
+
+### Verified locally
+
+- `CelestialBodies::Planets::Planet` is an abstract base class.
+- Production code already uses:
+
+  ```ruby
+  body.is_a?(CelestialBodies::Planets::Planet)
+  ```
+
+  as the structural planet-category check.
+
+- Concrete rocky, ocean, and gaseous `Planets::*` classes descend from that abstract base.
+- `CelestialBodies::CelestialBody` provides optional `parent_celestial_body_id`, optional `solar_system_id`, and `orbital_elements`.
+- The current solver:
+  - defaults `launch_date` to `Time.current.to_date`;
+  - loads orbital JSON for both identifiers;
+  - falls back to a hardcoded duration table if either orbital-data result is nil;
+  - uses `MU_SUN` for all non-nil orbital data;
+  - has no reference-frame or topology validation.
+- A resolved Earth→Luna pair with populated orbital data enters the dynamic path.
+- `luna_mission:phase_timing` invokes `schedule_departure` for Earth→Luna and consumes only `precursor_departure[:transit_days]` afterward.
+- The Earth→Luna rake result is not persisted and no other schedule-return field is used by the downstream precursor timeline.
+- `docs/wiki_reorganization/transportation/` is an active domain area with a hub, gap-tracking convention, and current/planned/deferred documentation pattern.
+
+### External research / design guidance
+
+- The classic two-impulse Hohmann model assumes a shared central body, compatible reference frame, a consistent gravitational parameter \(\mu\), and idealized circular/coplanar orbits.
+- Planet environmental profiles—terrestrial, ocean, hycean, lava, carbon, super-Earth, gas giant, ice giant, and hot Jupiter—must not determine dynamic-transfer eligibility.
+- Dwarf planets and minor bodies are deferred because the current project does not have validated data/contracts for their routing, not because a basic heliocentric approximation is inherently impossible.
+
+### Reported current-model limitations
+
+- `orbital_elements` has no explicit epoch, reference-frame tag, central-body metadata, or unit metadata.
+- There is no generic per-body \(\mu\) API.
+- `Star` and station models are outside the `CelestialBodies::CelestialBody` input hierarchy for the identified TransitEngine API.
+- Existing direct legacy helper methods can bypass `calculate_transfer_window`.
+
+## In scope
+
+1. Add a domain error for a resolved but unsupported TransitEngine topology, following verified project error-class/autoload conventions:
+
+   ```ruby
+   Mission::UnsupportedTransferError
+   ```
+
+2. Add a Phase 1 eligibility boundary to `Mission::TransitEngine.calculate_transfer_window`.
+
+3. Restrict the existing **dynamic** calculation (retained legacy dynamic path) to resolved body records that satisfy all of the following **per-endpoint** conditions:
+
+   - `is_a?(CelestialBodies::Planets::Planet)`;
+   - `parent_celestial_body_id.nil?`;
+   - non-nil `solar_system_id`;
+   - the `solar_system` association resolves.
+
+When both endpoints resolve, their `solar_system_id` values must be equal. This is a **pair condition**, not an individual endpoint property.
+
+4. Raise `Mission::UnsupportedTransferError` for any **resolved** `CelestialBodies::CelestialBody` endpoint that fails the Phase 1 topology proxy.
+
+5. Ensure resolved unsupported topology raises before the existing:
+   - dynamic calculation;
+   - nested dynamic fallback;
+   - outer `fallback_transfer_window`;
+   - hardcoded `compute_transit_days` route table.
+
+6. Preserve the existing fallback contract for an identifier that cannot be resolved to a `CelestialBodies::CelestialBody` record, subject to the resolution/validation order below.
+
+7. Replace the dynamic Earth→Luna precursor-rake call with a labeled, static 7-game-day scenario that provides the downstream-compatible `:transit_days` value.
+
+8. Add narrow tests and narrow documentation updates described below.
+
+9. The implementer performs the mandatory read-only pre-implementation caller audit (see Verification) of all callers of `calculate_transfer_window` and `schedule_departure` across rakes, services, jobs, controllers, and specs.
+
+10. Require GAPS.md entries documenting residual gaps (see Documentation requirement section).
+
+## Required behavior
+
+### Resolution, validation, and calculation order
+
+`calculate_transfer_window` must behave in this order:
+
+1. Resolve both supplied identifiers independently, using the same existing resolver semantics currently used by TransitEngine. Do not introduce divergent name/case/identifier resolution rules.
+
+2. Validate every endpoint that resolves against the Phase 1 topology proxy.
+   - A body is eligible only when it:
+     - is in the `CelestialBodies::Planets::Planet` lineage;
+     - has no parent celestial body (`parent_celestial_body_id.nil?`);
+     - has non-nil `solar_system_id`;
+     - the `solar_system` association resolves.
+   - Pair condition (not a per-body property): when both endpoints resolve, their `solar_system_id` values must be equal. A mismatch raises like any other proxy failure.
+
+3. If **any resolved endpoint** fails the Phase 1 topology proxy, raise `Mission::UnsupportedTransferError`, even if the other endpoint is unresolvable. The error must be raised before orbital data is interpreted, before dynamic calculation, and before any outer or nested fallback calculation.
+
+4. Only if every resolved endpoint passes the proxy **and** one or both endpoints are unresolvable: preserve existing legacy fallback behavior. Do not raise `Mission::UnsupportedTransferError` for unresolvable identifiers alone.
+
+5. Only if both endpoints resolve and both pass the proxy: continue through the existing orbital-data retrieval path, preserve existing behavior for missing/empty orbital data on otherwise eligible pairs, and preserve existing dynamic calculation behavior for eligible pairs except as required by the guard.
+
+### Examples / acceptance criteria for resolution order
+
+- Parentless same-system planet-lineage pair → retained legacy dynamic path; no physics-validity claim.
+- Parentless planet system A + parentless planet system B (different `solar_system_id`) → raise `Mission::UnsupportedTransferError`.
+- Planet → moon → raise.
+- Moon → planet → raise.
+- Moon → unknown → raise (resolved moon fails proxy).
+- Eligible planet → unknown → preserve legacy fallback.
+- Unknown → unknown → preserve legacy fallback.
+
+### Phase 1 interpretation
+
+This is a **temporary topology proxy**, not true reference-frame validation.
+
+> These are necessary topology containment conditions, not sufficient validation of a common governing primary, compatible orbital reference frame, primary-specific μ, epoch, unit contract, or physical transfer feasibility. Passing the proxy retains legacy fixed-`MU_SUN` behavior only.
+
+It must not claim to validate heliocentric frame, orbital epoch, units, central-body \(\mu\), SOI transitions, or general transfer feasibility.
+
+It must not use a manually maintained concrete world-subtype allowlist. In particular, eligibility must not depend on whether a planet is terrestrial, ocean, gaseous, hycean, lava, carbon, a super-Earth, a gas giant, an ice giant, or a hot Jupiter.
+
+It must not add a Sol identity/name/identifier check.
+It must not add a runtime non-Sol/multi-star exclusion.
+It must not claim that any non-Sol, generated, or multi-star route is physically correct after this task.
+
+### Runtime rejection scope
+
+For the current `CelestialBody` input contract, reject resolved endpoints that are:
+
+- outside the verified `CelestialBodies::Planets::Planet` lineage;
+- moons/satellites or other parented celestial bodies;
+- dwarf planets, minor bodies, comets, asteroids, and legacy non-lineage celestial-body types;
+- planet-lineage records with a non-nil parent;
+- planet-lineage records with no usable solar-system context (`solar_system_id` nil or `solar_system` association not resolving);
+- resolved endpoint pairs whose `solar_system_id` values differ.
+
+Do not add special Star or station handling/tests unless source evidence during implementation demonstrates that these types can reach this TransitEngine API. They are not established `CelestialBody` endpoints for this task.
+
+## Error and compatibility contract
+
+- Use `Mission::UnsupportedTransferError` for a **resolved but unsupported topology**.
+- The error must make clear that the requested dynamic transfer topology is unsupported by the Phase 1 legacy single-μ calculator. Include offending identifier(s) and a stable fragment describing the limitation, for example:
+  `unsupported topology for legacy transfer calculation`
+
+At least one unsupported-topology test must assert all of the following:
+- `Mission::UnsupportedTransferError` is raised;
+- the stable message fragment `unsupported topology for legacy transfer calculation` appears in the error message;
+- the offending resolved identifier appears in the error message;
+- the error propagates from `calculate_transfer_window` with no returned result.
+
+Do not require a full exact error message string.
+- Do not convert unresolvable identifiers into `Mission::UnsupportedTransferError`.
+- Preserve legacy fallback behavior only when every endpoint that resolves passes the Phase 1 topology proxy and one or both identifiers remain unresolvable, and for missing/empty orbital data on otherwise eligible pairs.
+- The guard must be outside every rescue scope in `calculate_transfer_window`.
+- `Mission::UnsupportedTransferError` must follow verified local error-class/autoload/inheritance convention. Before implementation, the implementer must verify (Verification item 4) that the selected inheritance is not caught by an existing broad rescue.
+- Do not rescue `Mission::UnsupportedTransferError` in `schedule_departure`.
+- Do not remove or alter the existing hardcoded route-table methods in this task.
+- Do not invoke a fallback route duration for a resolved unsupported topology.
+
+## Rake baseline and static scenario
+
+Before implementation, capture the existing narrow `luna_mission:phase_timing` output under a fixed/frozen date where project conventions permit:
+- Record the current Earth→Luna transit value and relevant downstream timeline output.
+
+In `luna_mission:phase_timing`:
+
+1. Remove the Earth→Luna dynamic invocation of:
+
+   ```ruby
+   Mission::TransitEngine.schedule_departure(
+     "precursor_hlt_1",
+     "EARTH-01",
+     "LUNA-01",
+     ...
+   )
+   ```
+
+2. Replace it with an explicitly named/labeled static scenario duration of **7 game days**.
+   - If a named 7-day mission profile/scenario constant already exists, reuse it rather than duplicate literal `7`.
+   - Otherwise use a clearly named/labeled static scenario constant/variable representing 7 game days.
+
+3. Preserve the existing downstream-compatible shape used by the rake:
+
+   ```ruby
+   precursor_departure[:transit_days]
+   ```
+
+   Current evidence establishes that no other field of the prior `schedule_departure` result is consumed in this rake path.
+
+4. The implementation preserves the existing downstream arithmetic after setting the precursor arrival anchor to the explicit 7-game-day scenario duration:
+   - precursor arrival is anchored at 7 game days;
+   - existing 30-day landing-pad work remains unchanged;
+   - existing 15-day tank-farm work remains unchanged;
+   - existing offload/timeline logic remains unchanged.
+
+5. Preserve the Earth→Venus dynamic `schedule_departure` call.
+
+6. Preserve existing later `luna_to_venus_transit_days` and `can_offload_n2?` behavior.
+
+7. The static Earth→Luna scenario:
+   - must not call `calculate_transfer_window`;
+   - must not use rescue as a substitute for removal;
+   - must not depend on `Time.current`, `Date.current`, `Date.today`, or host-clock-derived duration.
+
+## Simulation-time boundary
+
+GalaxyGame may capture a real-world timestamp as an initial Sol simulation epoch. After initialization, ongoing game “now” must be driven by simulation-time advancement and game speed.
+
+This task does **not** redesign the game clock or the existing TransitEngine default-date behavior.
+
+Requirements for this task:
+
+- Do not add any new ambient host-time lookup to changed production code.
+- Use explicit fixed launch dates/epochs in new or modified tests.
+- The static Earth→Luna scenario must use an explicit duration and must not depend on ambient host time.
+- Record the existing `calculate_transfer_window` default of `Time.current.to_date` as a separate future simulation-time-authority concern. Do not refactor it here unless a named stop condition is reached and human/Claude review authorizes a split.
+
+## Legacy-helper boundary
+
+The Phase 1 guard belongs only in `calculate_transfer_window`.
+
+Keep public direct legacy helpers unchanged, including:
+
+- `fallback_transfer_window`;
+- `compute_transit_days`;
+- `compute_transit_days_dynamic`;
+- named `earth_to_*` and `luna_to_*` helper methods;
+- existing direct-helper test examples.
+
+These direct helpers remain a documented Phase 1 containment gap. This task must neither represent them as fully topology-safe nor refactor them into a broader routing API.
+
+## Tests
+
+Follow the current project’s test style, factories, helpers, and official narrow test commands. Do not redesign factories or broaden test infrastructure merely to satisfy these cases.
+
+Add or update narrow tests proving each of the following as a separate case:
+
+1. **Eligible retained-legacy pair (characterization)**
+   - A resolved parentless same-system planet-lineage pair uses the existing dynamic path and does not invoke `fallback_transfer_window`.
+   - No numeric or physical-validity assertions.
+
+2. **Planet → moon** raises `Mission::UnsupportedTransferError`.
+
+3. **Moon → planet** raises `Mission::UnsupportedTransferError`.
+
+4. **Generic non-lineage body**: a resolved `CelestialBodies::CelestialBody` outside the `Planets::Planet` lineage raises.
+
+5. **Parented planet-lineage body**: a resolved planet-lineage record with non-nil `parent_celestial_body_id` raises.
+
+6. **Missing solar-system context**: a resolved planet-lineage record with nil `solar_system_id` or a non-resolving `solar_system` raises.
+
+7. **Dwarf planet / minor body**: a resolved dwarf-planet or minor-body record raises, subject to the lineage verification. If no fixture exists without redesign, stop per Stop condition 3.
+
+8. **Different-system pair**: two parentless planet-lineage bodies with different `solar_system_id` raise.
+
+9. **Moon → unknown identifier** raises (the resolved moon fails the proxy).
+
+10. **Eligible planet → unknown identifier** preserves the existing fallback and does not raise.
+
+11. **Unknown → unknown** preserves the existing fallback and does not raise.
+
+12. **Eligible pair with missing/empty orbital data** preserves the existing eligible-pair fallback.
+
+13. **Error assertion**: at least one raising test (cases 2–9) asserts all of: `Mission::UnsupportedTransferError` class; message contains `unsupported topology for legacy transfer calculation`; message contains the offending resolved identifier; the error propagates from `calculate_transfer_window` with no returned result. Do not require a full exact message.
+
+14. **Ordering / no fallback leakage**: for resolved unsupported cases, verify the error occurs before `fallback_transfer_window`, `compute_transit_days_dynamic`, nested `fallback_transit_days`, and `compute_transit_days`. Use established project conventions; avoid private-method coupling where observable behavior proves the boundary.
+
+15. **Legacy helper regression**: existing direct-helper behavior and expectations remain unchanged.
+
+16. **Rake verification** (per the repository's established rake-test or narrow-command convention, under a fixed/frozen date):
+    - Earth→Luna no longer invokes `schedule_departure` dynamically.
+    - The precursor transit is 7 game days and downstream timeline arithmetic is intact.
+    - Earth→Venus remains on the dynamic path; no date-dependent Venus numeric assertion.
+    - Do not run a full suite as a requirement of this task.
+
+17. **Time determinism**: new/modified tests use explicit fixed dates and depend on no host calendar date or clock time.
+
+## Documentation requirement
+
+After implementation and narrow verification establish the actual behavior, make a limited documentation update under:
+
+`docs/wiki_reorganization/transportation/`
+
+Follow the existing active-domain hub, cross-link, current/planned/deferred, and `GAPS.md` conventions.
+
+Document only verified Phase 1 behavior and explicit limitations:
+
+- Dynamic transfer support is currently limited to the same-system, parentless planet-lineage topology proxy.
+- The precursor Earth→Luna scenario uses an explicitly labeled static 7-game-day duration.
+- Moon/satellite, parented, non-planet, dwarf/minor-body, and otherwise nonconforming resolved celestial-body topologies are rejected by this dynamic path.
+- The proxy is temporary containment, not a complete orbital route-planning system.
+- Future work requires explicit reference-frame metadata, central-body association, per-body \(\mu\), parent/SOI transitions, and multi-leg routing.
+
+**GAPS.md must record these residual gaps:**
+
+1. No governing-primary or reference-frame association.
+2. No per-primary \(\mu\).
+3. Fixed `MU_SUN` remains applied to every pair that passes this Phase 1 topology proxy.
+4. Direct legacy helpers remain unguarded, including parent-centric route-table helpers such as `luna_to_venus_transit_days`.
+5. `calculate_transfer_window` retains its `Time.current.to_date` default.
+6. Same-system eligibility is a topology containment check only; it does not establish multi-star, non-Sol, generated-system, or physical transfer correctness.
+
+State that the future primary/frame-aware route architecture is human-filed follow-up work, not a task the implementer may create or dispatch.
+
+Do not:
+
+- create a new top-level wiki hierarchy;
+- implement or canonize the unapproved proposed Simulation-domain reorganization;
+- document future architecture as current behavior;
+- use the documentation update to conceal or redefine unresolved code behavior.
+
+## Explicit non-goals
+
+- No game-clock/simulation-time authority refactor.
+- No new per-body \(\mu\) storage/API.
+- No orbital-frame, epoch, or unit metadata schema change.
+- No planet–moon, moon–moon, mixed-parent, SOI, patched-conic, N-body, Lambert, or multi-leg routing.
+- No dwarf-planet/minor-body dynamic-transfer support.
+- No station-routing system.
+- No broad celestial taxonomy redesign, STI migration, or world-profile refactor.
+- No changes to unrelated global Zeitwerk baseline issues.
+- No unrelated baseline-spec remediation.
+- No task lifecycle action for the 2026-09-29 task.
+- No commits or pushes unless separately and explicitly authorized by the human owner and repository workflow.
+
+## Verification
+
+### Pre-implementation verification (MANDATORY)
+
+The implementer must perform these read-only checks before changing code, specs, rake files, or documentation. The implementer must include results in the required pre-implementation/synthesis report. If any listed escalation trigger is found, stop before implementation and report it.
+
+1. **Caller audit**
+   - The implementer enumerates all callers of `calculate_transfer_window` and `schedule_departure` across rakes, services, jobs, controllers, and specs.
+   - The audit records identifier/body origins for production-reachable callers.
+   - The audit searches for broad rescues or error transformations affecting `Mission::UnsupportedTransferError`.
+   - Findings use only:
+     - `currently reachable in production paths reviewed`; or
+     - `currently unreachable in production paths reviewed`.
+   - Stop/escalate if production-reachable paths can pass non-Sol, multi-star, procedurally generated, or partially generated/incomplete-system bodies.
+   - Do not call the audit a "comprehensive" or "exhaustive" review; it is scoped to the current checkout.
+
+2. **Lineage verification and factory/test feasibility**
+   - The implementer confirms against the current checkout that:
+     - `CelestialBodies::Planets::Planet` is an abstract base class;
+     - concrete rocky, ocean, and gaseous `Planets::*` classes descend from it;
+     - no intended-to-be-rejected dwarf planet, asteroid, comet, or minor-body class descends from `CelestialBodies::Planets::Planet`;
+     - `CelestialBodies::CelestialBody` provides `parent_celestial_body_id`, `solar_system_id`, and `orbital_elements` as expected.
+   - Record the verification method (e.g., `grep`, `class_parents`, `descendants`) and results in the report.
+   - Confirm that current factories/spec support can create the required test fixtures without redesign: both moon/planet failure directions; a non-lineage body; the required independent parent or missing-solar-context cases where applicable.
+   - If any required fixture cannot be created, note the stop condition and escalate.
+
+3. **Seeded retained-route verification**
+   - Before code/spec/rake/docs changes, verify expected retained legacy routes used by the current caller surface, including Earth/Venus where applicable, satisfy:
+     - `CelestialBodies::Planets::Planet` lineage;
+     - `parent_celestial_body_id.nil?`;
+     - a present and resolving `solar_system` association;
+     - matching `solar_system_id` values when both endpoints resolve.
+   - Stop if those routes fail the proxy/same-system pair condition or their existing caller contract becomes incompatible.
+
+4. **Resolver and error convention verification**
+   - Verify the existing resolver can be reused with the same identifier and case semantics.
+   - Verify the error class's expected file/path, inheritance, and autoload conventions.
+   - Verify `Mission::UnsupportedTransferError` is neither swallowed nor transformed by internal rescue scopes or production caller rescues.
+   - Stop if this cannot be established without broader behavior changes.
+
+5. **Fixed-date rake baseline capture**
+   - Before any code changes, capture the existing `luna_mission:phase_timing` output under a fixed/frozen date where project conventions permit.
+   - Record the current Earth→Luna transit value and relevant downstream timeline output in the pre-implementation/synthesis report.
+   - Record whether an existing named 7-day mission/scenario constant exists.
+   - Stop if safe capture is unavailable under documented environment and test-process rules.
+
+6. **Overlapping task check**
+   - Confirm no overlapping active/review task owns this exact code or documentation surface.
+
+### Required report contents
+
+The required pre-implementation/synthesis report must explicitly include results for each of these six groups:
+
+1. Caller audit.
+2. Lineage verification and factory/test feasibility.
+3. Seeded retained-route verification.
+4. Resolver semantics plus error class/autoload/rescue convention verification.
+5. Fixed-date rake baseline, Earth→Luna output/timeline capture, and named 7-day constant check.
+6. Overlapping-task check.
+
+### General verification
+
+Before implementation, the implementer must re-read current project workflow guidance and re-check:
+
+- actual task lifecycle/location conventions;
+- test/factory support for all required cases;
+- current error-class/autoload convention;
+- current rake verification convention;
+- current Git state and any overlapping active/review work.
+
+During implementation, run only approved official/narrow commands identified from the repository. Report:
+
+- commands run;
+- pass/fail counts;
+- changed files;
+- expected baseline failures, if any;
+- unexpected findings;
+- stop conditions reached;
+- proof that no unrelated scope was changed.
+
+Do not run tests concurrently with another RSpec process. Follow the repository's documented test-environment prefix/wrapper.
+
+
+## Stop conditions
+
+Stop implementation, make no speculative extension, and escalate if any of the following is encountered:
+
+1. An intended rejected dwarf-planet, asteroid, comet, or minor-body class descends from `CelestialBodies::Planets::Planet`, or cannot be distinguished safely from that lineage.
+2. Expected retained legacy caller-route bodies, including Earth/Venus where applicable, fail the topology proxy or same-system pair condition.
+3. Existing factories/spec support cannot produce all required cases without broad factory, model, schema, or data redesign: moon/planet in both directions; parented planet-lineage; missing/non-resolving solar-system context; generic non-lineage body; applicable dwarf/minor body; different-system pair; and unknown-ID combinations.
+4. Error inheritance/autoload conventions, internal rescue scopes, or production caller rescues swallow or transform `Mission::UnsupportedTransferError`.
+5. Existing resolver semantics cannot be reused with the same identifier and case semantics without divergent resolution behavior.
+6. A safe fixed-date `luna_mission:phase_timing` baseline cannot be captured under documented environment and test-process rules.
+7. Callers or specs require old dynamic Earth→Luna behavior as a broader public contract, or the Earth→Luna rake call has persistence/state effects beyond the verified `:transit_days` consumer.
+8. A production-reachable caller can pass non-Sol, multi-star, procedurally generated, or partially generated/incomplete-system bodies.
+9. Earth→Venus or another retained legacy caller route becomes incompatible after application of the topology proxy.
+10. Documentation would require an unapproved hierarchy change or claims beyond verified behavior.
+11. Work expands into governing-primary/frame metadata, per-primary \(\mu\), simulation-clock redesign, multi-leg/SOI routing, legacy-helper refactor, schema migration, or unrelated baseline cleanup.
+12. An overlapping active or review task is found to own the same code or documentation surface.
+
+## Acceptance criteria
+
+- [ ] A resolved parentless same-system planet-lineage pair uses the existing dynamic path without invoking `fallback_transfer_window`; characterization only, no numeric or physical-validity claim.
+- [ ] No manually maintained concrete planet-profile allowlist and no Sol name/identity check is added.
+- [ ] Planet→moon and moon→planet each raise `Mission::UnsupportedTransferError`.
+- [ ] A resolved generic non-lineage `CelestialBody` raises.
+- [ ] A resolved planet-lineage body with a parent raises.
+- [ ] A resolved planet-lineage body with nil `solar_system_id` or a non-resolving `solar_system` raises.
+- [ ] A resolved dwarf-planet or minor-body record raises (after lineage verification).
+- [ ] A parentless pair with differing `solar_system_id` raises.
+- [ ] Moon→unknown raises; eligible planet→unknown and unknown→unknown preserve legacy fallback and do not raise.
+- [ ] An eligible pair with missing/empty orbital data preserves the existing fallback.
+- [ ] At least one test asserts the error class, the fragment `unsupported topology for legacy transfer calculation`, the offending resolved identifier, and propagation with no returned result.
+- [ ] Resolved unsupported topology reaches neither dynamic calculation nor any fallback/route-table path; the guard sits outside every rescue scope and the error is not swallowed or transformed by internal or production-caller rescues.
+- [ ] Direct legacy helpers remain unchanged and their existing behavior is preserved.
+- [ ] `luna_mission:phase_timing` does not dynamically schedule Earth→Luna; it uses a labeled static 7-game-day scenario and preserves downstream timeline arithmetic.
+- [ ] Earth→Venus remains on its existing dynamic scheduling path.
+- [ ] No new ambient host-time lookup is introduced; new/modified tests use fixed dates.
+- [ ] The mandatory pre-implementation verification was completed and the six-group report delivered before any code, spec, rake, or docs change; any escalation trigger (including production-reachable non-Sol, multi-star, procedural, or partially generated inputs) was stopped and reported.
+- [ ] Documentation under `docs/wiki_reorganization/transportation/` reflects verified Phase 1 behavior and clear deferrals only, and GAPS records all six residual gaps without framing any intended system as invalid.
+- [ ] Required narrow verification commands pass, or any baseline/unrelated failure is documented with evidence.
+- [ ] No unrelated code, data, test, or wiki-reorganization work is included.
+- [ ] No move, stage, commit, push, or lifecycle action is taken on this task or on `2026-09-29-HIGH-REFACTOR-TRANSIT-ENGINE.md` without explicit human approval.
+
+## Readiness checklist — intentionally incomplete
+
+- [ ] Local evidence reconfirmed against the current checkout immediately before dispatch.
+- [ ] Error-class path/inheritance and autoload convention rechecked.
+- [ ] Factory/test feasibility rechecked immediately before dispatch.
+- [ ] Rake verification command rechecked immediately before dispatch.
+- [ ] Gemini critique reconciled.
+- [ ] Claude final technical disposition received.
+- [ ] Human owner approved dispatch.
+- [ ] Related 2026-09-29 task lifecycle explicitly deferred and recorded.
