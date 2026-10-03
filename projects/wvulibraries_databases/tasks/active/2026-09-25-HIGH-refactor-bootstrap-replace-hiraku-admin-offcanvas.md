@@ -116,10 +116,10 @@ Not needed — all work is local development / Docker.
 - Right: Use .offcanvas, .offcanvas-header, .offcanvas-body, and offcanvas-end  
 - Why: Bootstrap JS looks for these exact classes/attributes to initialize  
 
-**GOTCHA 2**: Nested Rails App Path  
-- Wrong: Editing databases/app/...  
-- Right: Editing databases/databases/app/...  
-- Why: The Rails application lives one level deeper in this repo  
+**GOTCHA 2**: Absolute paths use `/Users/tam0013/Documents/git/` as root — the Rails app lives at `databases/databases/app/...`
+- ❌ Wrong: `cd /Users/tam0013/Documents/git && grep -r ... databases/app/...` (shallow path)
+- ✅ Right: `cd /Users/tam0013/Documents/git && grep -r ... databases/databases/app/...` (nested path)
+- Why: The outer `databases/` is the git repo, the inner `databases/` contains the actual Rails app. Table paths start with `databases/databases/app/...` and resolve from this root.  
 
 **GOTCHA 3**: Remove All Hiraku Artifacts  
 - Wrong: Leaving Hiraku require/import/package entries  
@@ -193,6 +193,8 @@ Admin offcanvas currently depends on Hiraku.js. After the Rails 7 / Turbo migrat
 
 ## Files Involved
 
+**Path Root**: `/Users/tam0013/Documents/git/` (base for all paths in this file)
+
 ### Primary Files — you will edit these
 | File | Purpose |
 |------|---------|
@@ -226,7 +228,7 @@ Expected: exactly one file under tasks/active/. Paste output before proceeding.
 ### Step 1 — Audit remaining Hiraku usage
 cd /Users/tam0013/Documents/git/databases
 grep -ri "hiraku\|Hiraku" --include="*.js" --include="*.scss" --include="*.css" --include="*.erb" --include="*.html" --include="package.json" .
-Paste full output. List every file that must change.
+Paste full output. List every file that must change. All table paths in this task use the stated root: `/Users/tam0013/Documents/git/` — each path starts with `databases/databases/app/...` and resolves from there.
 
 ### Step 2 — Rewrite _navigation.html.erb to Bootstrap offcanvas
 Use Bootstrap structure:
@@ -247,12 +249,17 @@ Ensure visual parity with original production menu (dark background, light text,
 - interface.js: remove hiraku require
 - main.scss: remove hiraku import
 - package.json: remove hiraku entry
-- Then run yarn install inside the container app workdir
+- Then run `yarn install` inside the container at `/home/databases` (the app workdir):
+  ```bash
+  docker exec databases yarn install --cwd /home/databases
+  ```
 - off_canvas.js: delete or leave as no-op comment
 
 ### Step 6 — Precompile and restart
-docker exec (container) bundle exec rake assets:precompile
-docker restart (container)
+```bash
+docker exec databases bundle exec rake assets:precompile
+docker restart databases
+```
 
 ### Step 7 — Browser verification
 1. Open admin page
@@ -276,10 +283,84 @@ docker restart (container)
 
 ---
 
-## Blocked/Blocks
+## Stop Conditions — escalate to user immediately if:
+- Fix causes new failures in files outside the Primary Files list above
+- Same failure persists after two attempts
+- Asset compilation fails with a dependency change that can't be resolved locally
+- Any architectural decision about Bootstrap component structure is required
 
-**Blocked By**: None (prior Option A Hiraku fix is superseded; do not wait on it)  
-**Blocks**: None  
+---
+
+## Commit Instructions
+
+Run git commands on **host only** — never inside the Docker container:
+```bash
+git add [specific files only — never git add .]
+git commit -m "[type]: [spec/file name] — [brief description of root cause and fix]"
+git push
+```
+
+**Task file move on completion:**
+```bash
+# Tracked file (already committed): use git mv
+git mv projects/wvulibraries_databases/tasks/active/[FILENAME] \
+       projects/wvulibraries_databases/tasks/completed/[YYYY-MM]/[FILENAME]
+
+# New/untracked file (just created this session): move with filesystem, then add the final path
+mv projects/wvulibraries_databases/tasks/active/[FILENAME] \
+   projects/wvulibraries_databases/tasks/completed/[YYYY-MM]/[FILENAME]
+git add projects/wvulibraries_databases/tasks/completed/[YYYY-MM]/[FILENAME]
+
+git commit -m "chore: move [FILENAME] to completed/"
+```
+
+---
+
+## Documentation
+
+- [ ] No doc changes needed
+
+---
+
+## Dependencies
+
+**Blocked by**: none (prior Option A Hiraku fix is superseded; do not wait on it)
+
+**Blocks**: none
+
+**Related tasks**:
+- `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_databases/summaries/2026-09-25-ADMIN-OFFCANVAS-FINDINGS.md`
+- `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_databases/summaries/2026-10-02-GROK-REVIEW-OVERLAY-VIEWPORT-FIX.md`
+
+---
+
+## Completion Report
+
+*Filled in by the implementing agent after completion*
+
+**Completed by**: [agent name]
+**Completion date**: YYYY-MM-DD
+**Evidence basis:** [direct verification / review of pasted evidence / reported by agent / human assertion] — [one-line source or note when not direct verification]
+
+### What was changed
+- `[file]` — [description of change]
+
+### Issues discovered
+[Any problems found during implementation that weren't in the original task]
+
+### Follow-up tasks needed
+[Any new backlog items identified — do not create the files, just list them here]
+
+### Lessons learned
+[What worked, what didn't, what future tasks in this area should know]
+
+---
+
+## Handoff Summary
+
+*Filled in at end of session — one scannable line for next agent*
+
+HANDOFF SUMMARY: [files updated] | [structural changes] | [next action needed]  
 
 ---
 
