@@ -423,3 +423,33 @@
 ## ✋ Blocking Issues: NONE
 
 All merge conflicts resolved. Docker/credentials/mining setup preserved. Market dashboard feature gap identified and ready for Qwen implementation. Sync verified working on all 3 characters. Ready for Phase 2 Part 2 functional testing or market dashboard implementation.
+
+## Session Log 2026-10-02 (supersedes earlier sections where they conflict)
+
+### Market Orders Debugging Results
+- Market page loads live data: 17 sell orders (Neon Blue Mernher 11, Neon Red 6), 0 buys.
+- History of totals: 24 -> 18 -> 17 -> 17 (consistent with orders closing in-game; in-game count check PENDING, Tracy).
+- Root cause UNCONFIRMED. Leading candidate: DB corruption cleared by the 2026-10-01 restart (no evidence; not in dashboard.log). Also one unexplained transient 500 on /market/orders on 2026-10-02 while the container showed unhealthy (stats endpoint worked); traceback not captured.
+- Verified: PRAGMA integrity_check returned ok; container healthy; /market/stats matches the DB.
+- esi.py raises on errors and sync.py catches them, so save_market_orders' delete-before-empty-check only runs after a successful ESI response (low risk; add fetched/saved logging, no behavior change needed).
+
+### Open Items
+- In-game order count verification: PENDING (Tracy)
+- Slow filters unmeasured (client-side JS render <1ms for 24 rows; server API 7ms)
+- Tal Beyond sync status unverified (no market_orders rows found)
+- Sync logging regression: sync.py has 3 logger calls vs 17 print_exc, no sync lines in dashboard.log since 2026-10-01
+- invalid_scope on esi-corporations.read_structures.v1 blocks adding accounts
+- DISPATCH_README.md missing from repo (mentioned in status but file not found on disk)
+- Expired-status code path is dead (clear_expired_orders exists but called nowhere)
+- ISK-at-risk label misleading for all-sell portfolios
+- Margin shows "-" because no buy orders exist to compute spread against
+
+### Corrections to Earlier Sections
+- "Blocking Issues: NONE" is wrong — invalid_scope blocks adding accounts.
+- Market bug is NOT resolved. Status remains PARTIAL / UNCONFIRMED root cause.
+
+### Next Session Start Order
+1. In-game order count check for both characters
+2. Tal Beyond account/sync status
+3. market.js error handling for a failed /market/orders fetch
+4. invalid_scope diagnosis and fix for add-account flow
