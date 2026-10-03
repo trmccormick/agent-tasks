@@ -1,5 +1,5 @@
 ---
-status: active
+status: backlog
 priority: HIGH
 type: refactor
 system_domain: OTHER
@@ -33,18 +33,21 @@ Agents receive this exact text as the startup contract. Every word matters.
 You are **Implementation Agent**.
 
 Project: wvulibraries_databases
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_databases/tasks/active/2026-09-25-HIGH-refactor-bootstrap-replace-hiraku-admin-offcanvas.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_databases/tasks/backlog/2026-09-25-HIGH-refactor-bootstrap-replace-hiraku-admin-offcanvas.md
 
-STEP 0 — Task is already in active/. Verify with:
-  find /Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_databases/tasks -name "*bootstrap-replace-hiraku*"
-  Expected: exactly one result at the active/ path.
-  Paste the output in chat before proceeding.
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/wvulibraries_databases/tasks/backlog/2026-09-25-HIGH-refactor-bootstrap-replace-hiraku-admin-offcanvas.md \
+         projects/wvulibraries_databases/tasks/active/2026-09-25-HIGH-refactor-bootstrap-replace-hiraku-admin-offcanvas.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
 LIFECYCLE: backlog → active → completed
   - Tracked file: git mv (never cp or plain mv)
   - New/untracked file: mv then git add the final path
   - Never leave stale copies in the source folder
+  - Verify with: find agent-tasks/projects/wvulibraries_databases/tasks -name "2026-09-25-HIGH-refactor-bootstrap-replace-hiraku-admin-offcanvas.md"
+    Only ONE result should exist. Paste this output before committing.
 
 READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
@@ -64,7 +67,7 @@ The dispatch interface above is ONLY the bootstrap instructions.
 ---
 
 # TASK: Replace Hiraku Admin Offcanvas with Bootstrap 5 Native Offcanvas
-**Status**: ACTIVE  
+**Status**: BACKLOG  
 **Priority**: HIGH  
 **Type**: refactor  
 **Created**: 2026-09-25  
