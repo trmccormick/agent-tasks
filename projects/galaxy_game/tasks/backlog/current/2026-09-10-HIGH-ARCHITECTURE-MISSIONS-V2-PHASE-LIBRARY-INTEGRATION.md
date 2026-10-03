@@ -81,6 +81,58 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 ---
 
+## 2026-09-29 — Confirmed Findings from a Fresh Run
+
+### Finding A: Hardcoded `execution_order` predates the 9-phase mission plan redesign
+
+The rake file (`galaxy_game/lib/tasks/luna_mission.rake`, line 286) contains:
+```ruby
+execution_order = ["power_comms", "isru_deployment", "gas_processing", "robot_logistics"]
+```
+
+These 4 phase_ids are the **old** Luna Phase 1 phases from before the 09-10 session's redesign. The current mission plan (`luna_precursor_mission_plan_v2.json`) defines **9 new phases**:
+
+| phase_id | reference_file |
+|----------|---------------|
+| gcc_mining | phases/gcc_mining_v2.json |
+| venus_harvest_launch | phases/venus_harvest_v2.json (typo — see Finding B) |
+| initial_hlt_landings | phases/initial_hlt_landings_v2.json |
+| power_grid_deployment | phases/power_grid_deployment_v2.json |
+| psr_ice_mining | phases/psr_ice_mining_v2.json |
+| inflatable_habitat_placement | phases/inflatable_habitat_placement_v2.json |
+| inflatable_habitat_pressurization | phases/inflatable_habitat_pressurization_v2.json |
+| luna_isru_production | phases/luna_isru_production_v2.json |
+| l1_leo_supply | phases/l1_leo_supply_v2.json |
+
+**Impact**: Every phase silently prints `SKIPPED - phase not present in loaded profile`. The rake reports `0 passed / 0 not-passed (0 total)` — looks clean but is non-functional. No errors, no tasks executed.
+
+**Root cause**: The rake builds `phase_index` from the mission plan (lines 289-312), so `phase_index` *does* contain all 9 new phase_ids. But the later loop at line 454 iterates over the hardcoded `execution_order` list, which contains none of those 9 ids. The lookup `phase_index[phase_id]` always returns nil.
+
+### Finding B: `venus_harvest_launch` reference_file typo in mission plan
+
+In `luna_precursor_mission_plan_v2.json`, the `venus_harvest_launch` phase has:
+```json
+"reference_file": "phases/venus_harvest_v2.json"
+```
+
+But the actual file on disk is `phases/venus_harvest_launch_v2.json`. The `_launch` suffix is dropped. This means even if execution_order were fixed, this phase would fail with a missing-file error.
+
+### Finding C: Old 4 phase files still exist (17 total tasks), now unused
+
+The old phase files are untouched (Jul 6 timestamps) and contain substantial content:
+- `power_comms_v2.json` — 6 tasks
+- `isru_deployment_v2.json` — 4 tasks
+- `gas_processing_v2.json` — 3 tasks
+- `robot_logistics_v2.json` — 4 tasks
+
+These are now orphaned — no code path references them. They need a separate archiving decision (not part of this fix).
+
+### Finding D: Mission plan phases have rich metadata the rake ignores
+
+Each phase in the mission plan has: `dependencies`, `conditions`, `estimated_duration_hours/days`, `priority`, `concurrent_with`, and sometimes `notes`. The rake currently reads only `phase_id` and `reference_file` (lines 305-310). A proper fix should use `dependencies` for topological sort instead of a hardcoded list.
+
+---
+
 ## Agent Assignment (Human-filled, not seen by agents)
 
 **Assigned To**: Qwen local via Copilot (primary)
@@ -124,6 +176,7 @@ The precursor mission profile was updated (v1.0) with 8 phases, concurrent opera
 
 ## Problem Statement
 
+### Original Problem (from 2026-09-10)
 **Current state:**
 - `missions_v2/phases/` has 14 files that reference tasks_v2 library ✓
 - Phase files are syntactically valid JSON ✓
@@ -134,6 +187,14 @@ The precursor mission profile was updated (v1.0) with 8 phases, concurrent opera
 - Parameter passing: Does target_body from profile flow through to task execution?
 - Task library audit: Which missions/tasks_v2 tasks are used? Are any orphaned?
 - Documentation: What is the status of each phase file and task?
+
+### Updated Problem (from 2026-09-29 fresh run)
+**Critical regression discovered:** The rake's hardcoded `execution_order` (4 old phase_ids) does not match any of the 9 new mission-plan phases. All phases silently SKIP — the rake reports `0 passed / 0 tasks` which looks clean but is completely non-functional.
+
+**Additional issues:**
+1. `venus_harvest_launch` has a reference_file typo in the mission plan (drops `_launch` suffix)
+2. Old 4 phase files (`power_comms_v2`, `isru_deployment_v2`, `gas_processing_v2`, `robot_logistics_v2`) are orphaned with 17 total tasks — need archiving decision
+3. Mission plan phases have rich metadata (`dependencies`, `conditions`, `priority`, `concurrent_with`) that the rake ignores — should derive execution order from `dependencies` via topological sort
 
 ---
 
@@ -188,21 +249,29 @@ missions_v2/profiles/
 
 | File | Purpose | Action |
 |---|---|---|
-| `data/json-data/missions/tasks_v2/*.json` | Generic task library (~100+ tasks) | Audit which are referenced by phases, validate parametrization |
-| `data/json-data/missions_v2/phases/*.json` | 14 phase definition files created today | Validate task_refs resolve, timeline is correct |
-| `data/json-data/missions_v2/profiles/precursor_mission_profile_v1.json` | Precursor profile with 8 phases | Verify all phases wired correctly |
-| `galaxy_game/lib/tasks/lunar_precursor_mission_validation.rake` | Rake validation (updated today) | Confirm committed (Gotcha 3), then run full timing validation |
-| `docs/architecture/ai_manager/MISSIONS_V2_ARCHITECTURE.md` | NEW — document the pattern | Create architectural reference doc |
+| `galaxy_game/lib/tasks/luna_mission.rake` | Mission execution rake (lines 286, 289-312, 454-460) | Fix execution_order derivation; fix venus_harvest reference_file lookup |
+| `galaxy_game/app/data/missions_v2/profiles/luna_base_profile_v2.json` | Profile that references mission plan | Verify mission_plan_ref path is correct |
+| `galaxy_game/app/data/missions_v2/mission_plans/luna_precursor_mission_plan_v2.json` | DAG with 9 phases, dependencies, concurrent windows | Fix venus_harvest_launch reference_file typo |
+| `galaxy_game/app/data/missions_v2/phases/*.json` (14 files) | Phase definition files — 9 new + 4 old orphaned | Audit task_refs; decide fate of old 4 files |
+| `galaxy_game/app/data/json-data/missions/tasks_v2/*.json` | Generic task library (~100+ tasks) | Audit which are referenced by phases |
 
 ### Reference Files — read but do not edit
 
 | File | Why |
 |---|---|
-| `data/json-data/missions_v2/manifests/lunar_precursor_manifest_v2.json` | Inventory structure |
-| `data/json-data/missions_v2/mission_plans/luna_precursor_mission_plan_v2.json` | DAG with concurrent windows |
+| `galaxy_game/app/data/missions_v2/manifests/lunar_precursor_manifest_v2.json` | Inventory structure |
+| `docs/architecture/ai_manager/MISSIONS_V2_ARCHITECTURE.md` | Architectural reference doc (create if not exists) |
 
-### Migration (if needed)
-- [x] No migration needed — this is a validation/documentation task only
+### Orphaned Files — need separate archiving decision
+
+| File | Tasks | Last Modified |
+|---|---|---|
+| `galaxy_game/app/data/missions_v2/phases/power_comms_v2.json` | 6 | Jul 6, 2026 |
+| `galaxy_game/app/data/missions_v2/phases/isru_deployment_v2.json` | 4 | Jul 6, 2026 |
+| `galaxy_game/app/data/missions_v2/phases/gas_processing_v2.json` | 3 | Jul 6, 2026 |
+| `galaxy_game/app/data/missions_v2/phases/robot_logistics_v2.json` | 4 | Jul 6, 2026 |
+
+**Total: 17 tasks across 4 orphaned files. Do NOT delete as part of this task — flag for separate archiving decision.**
 
 ---
 
@@ -397,12 +466,23 @@ Save to summaries folder covering:
 ---
 
 ## Acceptance Criteria
+
+### Original Criteria (from 2026-09-10)
 - [ ] Rake file confirmed fully committed before validation (Gotcha 3)
 - [ ] Rake `luna_mission:phase_timing` runs without error
 - [ ] All 14 phase files have syntactically correct JSON
 - [ ] All task_refs in phases resolve to files in `missions/tasks_v2/`
 - [ ] No unexplained non-_v2/_v2 task_ref duplicates (or, if found, confirmed intentional and documented)
 - [ ] Phase structure audit complete (table created)
+
+### Updated Criteria (from 2026-09-29 findings)
+- [ ] `execution_order` derived from mission plan's `dependencies` field via topological sort (no hardcoded list)
+- [ ] All 9 new phases execute in correct dependency order on a fresh rake run
+- [ ] `venus_harvest_launch` reference_file typo fixed in `luna_precursor_mission_plan_v2.json`
+- [ ] Old 4 phase files flagged for separate archiving decision (not deleted as part of this task)
+- [ ] v1-profile code path has explicit fallback when `dependencies` field is unavailable
+- [ ] Architectural reference doc updated to reflect current architecture
+- [ ] No regressions in existing mission specs
 - [ ] Architectural reference doc created (MISSIONS_V2_ARCHITECTURE.md)
 - [ ] Synthesis report created with full audit results
 - [ ] No regressions in existing mission specs
