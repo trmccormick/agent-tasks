@@ -286,6 +286,17 @@ docker restart databases
 
 ---
 
+## Implementation Notes
+
+1. Bootstrap 5 offcanvas docs: https://getbootstrap.com/docs/5.3/components/offcanvas/
+2. Use offcanvas-end for right-side panel
+3. Prefer btn-close-white (or filter: invert(1)) for visibility on dark background
+4. After removing Hiraku from package.json, run yarn install in the app workdir inside the container
+5. Do not batch all changes without intermediate browser checks
+6. Decision 2026-10-02: stop patching Hiraku overlay; replace with Bootstrap native offcanvas while preserving original look and behavior
+
+---
+
 ## Stop Conditions — escalate to user immediately if:
 - Fix causes new failures in files outside the Primary Files list above
 - Same failure persists after two attempts
@@ -296,25 +307,31 @@ docker restart databases
 
 ## Commit Instructions
 
-Run git commands on **host only** — never inside the Docker container:
+Run git commands on **host only** — never inside the Docker container. Two repos are involved:
+
+### Code changes (databases repo)
 ```bash
-git add [specific files only — never git add .]
-git commit -m "[type]: [spec/file name] — [brief description of root cause and fix]"
+cd /Users/tam0013/Documents/git/databases
+git add [specific changed files by path — never git add .]
+git commit -m "[type]: [short description]"
 git push
 ```
 
-**Task file move on completion:**
+### Task file move on completion (agent-tasks repo)
 ```bash
+cd /Users/tam0013/Documents/git/agent-tasks
+
 # Tracked file (already committed): use git mv
 git mv projects/wvulibraries_databases/tasks/active/[FILENAME] \
-       projects/wvulibraries_databases/tasks/completed/[YYYY-MM]/[FILENAME]
+       projects/wvulibraries_databases/tasks/completed/[FILENAME]
 
 # New/untracked file (just created this session): move with filesystem, then add the final path
 mv projects/wvulibraries_databases/tasks/active/[FILENAME] \
-   projects/wvulibraries_databases/tasks/completed/[YYYY-MM]/[FILENAME]
-git add projects/wvulibraries_databases/tasks/completed/[YYYY-MM]/[FILENAME]
+   projects/wvulibraries_databases/tasks/completed/[FILENAME]
+git add projects/wvulibraries_databases/tasks/completed/[FILENAME]
 
 git commit -m "chore: move [FILENAME] to completed/"
+git push
 ```
 
 ---
@@ -364,16 +381,3 @@ git commit -m "chore: move [FILENAME] to completed/"
 *Filled in at end of session — one scannable line for next agent*
 
 HANDOFF SUMMARY: [files updated] | [structural changes] | [next action needed]  
-
----
-
-## Implementation Notes
-
-1. Bootstrap 5 offcanvas docs: https://getbootstrap.com/docs/5.3/components/offcanvas/
-2. Use offcanvas-end for right-side panel
-3. Prefer btn-close-white (or filter: invert(1)) for visibility on dark background
-4. After removing Hiraku from package.json, run yarn install in the app workdir inside the container
-5. Do not batch all changes without intermediate browser checks
-6. Decision 2026-10-02: stop patching Hiraku overlay; replace with Bootstrap native offcanvas while preserving original look and behavior
-
----
