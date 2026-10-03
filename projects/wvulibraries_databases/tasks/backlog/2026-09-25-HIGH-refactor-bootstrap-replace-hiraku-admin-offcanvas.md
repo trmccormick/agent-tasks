@@ -162,6 +162,7 @@ Replace Hiraku-based admin offcanvas with Bootstrap 5.3 native offcanvas, preser
 | databases/databases/app/assets/javascripts/interface.js | Remove hiraku require | not started |
 | databases/databases/app/assets/stylesheets/interface/main.scss | Remove hiraku import | not started |
 | databases/databases/package.json | Remove hiraku dependency | not started |
+| databases/databases/yarn.lock | Lockfile — updated by yarn install after removing hiraku | not started |
 | databases/databases/app/assets/javascripts/plugins/off_canvas.js | Delete or empty | not started |
 
 ### Prerequisites Completed
@@ -207,6 +208,7 @@ Admin offcanvas currently depends on Hiraku.js. After the Rails 7 / Turbo migrat
 | databases/databases/app/assets/javascripts/interface.js | Remove hiraku require |
 | databases/databases/app/assets/stylesheets/interface/main.scss | Remove hiraku import |
 | databases/databases/package.json | Remove hiraku dependency |
+| databases/databases/yarn.lock | Lockfile — updated by yarn install after removing hiraku |
 | databases/databases/app/assets/javascripts/plugins/off_canvas.js | Delete or empty |
 
 ### Reference Files — read but do not edit
@@ -256,6 +258,7 @@ Ensure visual parity with original production menu (dark background, light text,
   ```bash
   docker exec databases yarn install --cwd /home/databases
   ```
+- yarn.lock is expected to change; include it in the code commit.
 - off_canvas.js: delete or leave as no-op comment
 
 ### Step 6 — Precompile and restart
