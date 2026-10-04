@@ -7,38 +7,30 @@ mvp_alignment: MARKET_ORDER_TRACKING
 local_worker_safe: true
 ---
 
-## 🟢 BACKEND VERIFIED - FRONTEND ISSUE ISOLATED
+## 🟠 STATUS: PARTIAL — page loads live data; root cause UNCONFIRMED (updated 2026-10-03)
 
-**UPDATE (2026-10-01 18:57:23 UTC)**: Database corruption cleared after restart. Backend investigation complete:
+Current evidence (see summaries/2026-10-01-MARKET-BUG-SYNTHESIS.md and the status.md session logs):
+- /market loads and shows live data: 17 sell orders (Neon Blue Mernher 11, Neon Red 6), 0 buys, as of 2026-10-02. History 24 -> 18 -> 17 -> 17.
+- PRAGMA integrity_check returned ok (Tracy, 2026-10-02 and 2026-10-03). The original 2026-10-01 "integrity PASSED" claim has no recorded method, and nothing records the database state before the 2026-10-01 restart.
+- Root cause UNCONFIRMED. Leading candidate: database corruption cleared by the restart (no evidence). Also one unexplained 500 on /market/orders on 2026-10-02 (traceback not captured).
+- Not verified: in-game order counts; Tal Beyond sync (no market rows); filter slowness (client render under 1 ms for 24 rows, API 7 ms).
 
-✅ **VERIFIED WORKING**:
-- Docker container running and healthy
-- Database integrity: PASSED
-- API `/market/orders` endpoint returns valid JSON with 100+ orders
-- Characters syncing: Neon Blue Mernher, Neon Red (with 13+ orders each)
-- Data persistence: Orders correctly saved with synced_at timestamps
-- ESI scope: Characters have market orders authorization working
-
-❌ **ISSUE ISOLATED**: Frontend /market page is likely not rendering data from the API
-
-**Next Steps for Qwen**:
-- Skip backend verification (Steps 1-8)- **START FROM STEP 9 (Frontend Issue)**
-- Check if market.html template exists and loads
-- Verify market.js is fetching /market/orders endpoint
-- Check browser console for JavaScript errors
-- Verify template passes data to JavaScript correctly
-- Test API directly: `curl http://localhost:8765/market/orders | jq .orders[0]`
+Next steps, in order:
+1. In-game order counts per character (Tracy).
+2. Review the /market/orders view in main.py (about lines 759-815) for what could raise a 500, such as sorting on None values.
+3. After the logging fix is deployed, confirm per-sync "orders saved" lines in dashboard.log.
+Do NOT start from Step 9 (frontend debugging): no frontend fault has been found.
 
 **STOP. Do not send this task to an agent until ALL boxes are checked.**
 
-- [x] Agent Dispatch Interface section below is complete and accurate (no placeholders)
-- [x] All Step 0-N instructions are clear and actionable (not vague)
-- [x] Synthesis report template is provided (copy/paste ready, not as example)
-- [x] No placeholder text remains in Implementation Steps
-- [x] All file paths are verified to exist
-- [x] Architecture Gotchas are specific (not generic)
-- [x] Acceptance Criteria are measurable
-- [x] Dependencies and Blocked/Blocks relationships are clear
+- [x] Agent Dispatch Interface section below is complete and accurate (no placeholders)  
+- [x] All Step 0-N instructions are clear and actionable (not vague)  
+- [x] Synthesis report template is provided (copy/paste ready, not as example)  
+- [x] No placeholder text remains in Implementation Steps  
+- [x] All file paths are verified to exist  
+- [x] Architecture Gotchas are specific (not generic)  
+- [x] Acceptance Criteria are measurable  
+- [x] Dependencies and Blocked/Blocks relationships are clear  
 
 **Task is READY FOR DISPATCH.**
 
@@ -50,13 +42,10 @@ local_worker_safe: true
 You are **Implementation Agent** (Qwen via GitHub Copilot).
 
 Project: eve-dashboard
-Task: /Users/tracymccormick/Documents/git/agent-tasks/projects/eve_dashboard/tasks/backlog/2026-10/2026-10-01-CRITICAL-BUG-MARKET-ORDERS-EMPTY-PAGE.md
+Task: /Users/tracymccormick/Documents/git/agent-tasks/projects/eve_dashboard/tasks/active/2026-10-01-CRITICAL-BUG-MARKET-ORDERS-EMPTY-PAGE.md
 
-STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE:
-  cd /Users/tracymccormick/Documents/git/agent-tasks
-  git mv projects/eve_dashboard/tasks/backlog/2026-10/2026-10-01-CRITICAL-BUG-MARKET-ORDERS-EMPTY-PAGE.md \
-          projects/eve_dashboard/tasks/active/2026-10-01-CRITICAL-BUG-MARKET-ORDERS-EMPTY-PAGE.md
-  git commit -m "Move market orders bug to active - investigating empty dashboard"
+STEP 0 — This task is already in tasks/active/. Do NOT move or rename it.
+  Do not commit or push anything; Tracy approves all commits and pushes.
 
 Follow all steps in the Implementation Steps section.
 When complete, provide synthesis report using the template at the end of this file.
@@ -87,13 +76,24 @@ When complete, provide synthesis report using the template at the end of this fi
 
 ## 🎯 Acceptance Criteria
 
-- [x] Database contains market orders for at least one character (verify via sqlite3)
-- [x] API endpoint GET /market/orders returns non-empty JSON array
-- [x] API endpoint GET /market/stats returns correct aggregated data
-- [x] Market page displays at least one order in the table
-- [x] Filters work (status, character, search)
-- [x] All sync logs show market orders being fetched without errors
-- [x] Root cause identified and documented
+- [ ] Database contains market orders for at least one character (verify via the python3 one-liner in the Commands Reference)  
+evidence: PENDING
+- [ ] API endpoint GET /market/orders returns non-empty JSON array  
+evidence: PENDING
+- [ ] API endpoint GET /market/stats returns correct aggregated data  
+evidence: PENDING
+- [ ] Market page displays at least one order in the table  
+evidence: PENDING
+- [ ] Filters work (status, character, search)  
+evidence: PENDING
+- [ ] All sync logs show market orders being fetched without errors (blocked until the logging fix is deployed; sync lines stopped reaching dashboard.log after the upstream merge)  
+evidence: PENDING
+- [ ] Root cause identified and documented  
+evidence: PENDING
+- [ ] In-game order counts match the dashboard (Neon Blue Mernher, Neon Red, Tal Beyond)  
+evidence: PENDING
+- [ ] /market/orders returns no 500 across 10 reloads and 24 hours of running, or a traceback is captured if one occurs  
+evidence: PENDING
 
 ---
 
@@ -147,7 +147,7 @@ Look for:
 
 ### Step 3: Check Database Schema Exists
 ```bash
-docker exec eve-dashboard-app-1 sqlite3 /app/data/dashboard.db ".schema market_orders" | head -20
+docker exec eve-dashboard python3 -c "import sqlite3; c=sqlite3.connect('/app/data/dashboard.db'); print(c.execute('SELECT sql FROM sqlite_master WHERE name=?', ('market_orders',)).fetchall())"
 ```
 Expected output: SQL CREATE TABLE statement starting with "CREATE TABLE IF NOT EXISTS market_orders"
 
@@ -155,7 +155,7 @@ Expected output: SQL CREATE TABLE statement starting with "CREATE TABLE IF NOT E
 
 ### Step 4: Check if Database Has Any Market Orders
 ```bash
-docker exec eve-dashboard-app-1 sqlite3 /app/data/dashboard.db "SELECT COUNT(*) as order_count FROM market_orders;"
+docker exec eve-dashboard python3 -c "import sqlite3; c=sqlite3.connect('/app/data/dashboard.db'); print(c.execute('SELECT COUNT(*) as order_count FROM market_orders;').fetchall())"
 ```
 Expected: Should show a number > 0
 
@@ -164,7 +164,7 @@ Expected: Should show a number > 0
 
 ### Step 5: Check Character Sync is Running Market Sync
 ```bash
-docker exec eve-dashboard-app-1 sqlite3 /app/data/dashboard.db "SELECT character_id, character_name FROM characters LIMIT 5;"
+docker exec eve-dashboard python3 -c "import sqlite3; c=sqlite3.connect('/app/data/dashboard.db'); print(c.execute('SELECT character_id, character_name FROM characters LIMIT 5;').fetchall())"
 ```
 
 Get a character_id from output, then check logs for that character's sync:
@@ -190,16 +190,15 @@ curl -s http://localhost:8765/market/orders | jq . | head -50
 
 ### Step 7: Check ESI Scope Authorization
 
-Verify character has market scope authorized in ESI. This requires checking the character's token in the database:
+Verify the character has the market scope authorized. The query below only lists characters; it cannot show scopes. Instead confirm that esi-markets.read_character_orders.v1 is in SCOPES in app/config.py and is enabled on the EVE developer application, and re-authorize the character if the scope was added after they logged in:
 
 ```bash
-docker exec eve-dashboard-app-1 sqlite3 /app/data/dashboard.db \
-  "SELECT character_id, character_name FROM characters WHERE character_id IN (SELECT DISTINCT character_id FROM tokens) LIMIT 1;"
+docker exec eve-dashboard python3 -c "import sqlite3; c=sqlite3.connect('/app/data/dashboard.db'); print(c.execute('SELECT character_id, character_name FROM characters LIMIT 5').fetchall())"
 ```
 
 Then manually test ESI endpoint (inside container):
 ```bash
-docker exec eve-dashboard-app-1 python3 -c "
+docker exec eve-dashboard python3 -c "
 from app import esi, db
 char = db.list_characters()[0]
 token = db.get_character_token(char['character_id'])
@@ -268,33 +267,10 @@ File: app/sync.py around line 158 (in sync_character loop)
 Then rebuild: `docker compose up -d --build`
 
 ### Fix 2: Database Schema Missing
-If market_orders table doesn't exist, manually run schema:
+Check that the market_orders table exists (an empty list below means it is missing). Look for its CREATE TABLE in app/db.py, then restart the container (Compose Up) and check again:
 
 ```bash
-docker exec eve-dashboard-app-1 sqlite3 /app/data/dashboard.db << 'EOF'
-CREATE TABLE IF NOT EXISTS market_orders (
-    order_id INTEGER PRIMARY KEY,
-    character_id INTEGER NOT NULL,
-    character_name TEXT,
-    type_id INTEGER,
-    type_name TEXT,
-    location_id INTEGER,
-    location_name TEXT,
-    system_id INTEGER,
-    system_name TEXT,
-    is_buy_order BOOLEAN,
-    price REAL,
-    volume_total INTEGER,
-    volume_remaining INTEGER,
-    issued_at TEXT,
-    expires_at TEXT,
-    status TEXT DEFAULT 'active',
-    synced_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(order_id, character_id)
-);
-CREATE INDEX IF NOT EXISTS idx_market_character ON market_orders(character_id);
-CREATE INDEX IF NOT EXISTS idx_market_status ON market_orders(status);
-EOF
+docker exec eve-dashboard python3 -c "import sqlite3; c=sqlite3.connect('/app/data/dashboard.db'); print(c.execute('SELECT name FROM sqlite_master WHERE type=? AND name=?', ('table','market_orders')).fetchall())"
 ```
 
 Then trigger sync: Visit /dashboard, wait for sync to complete.
@@ -374,10 +350,10 @@ docker ps | grep eve-dashboard
 docker logs -n 200 $(docker ps -q -f name=eve-dashboard-app)
 
 # Check market table
-docker exec eve-dashboard-app-1 sqlite3 /app/data/dashboard.db "SELECT COUNT(*) FROM market_orders;"
+docker exec eve-dashboard python3 -c "import sqlite3; c=sqlite3.connect('/app/data/dashboard.db'); print(c.execute('SELECT COUNT(*) FROM market_orders;').fetchall())"
 
 # List characters
-docker exec eve-dashboard-app-1 sqlite3 /app/data/dashboard.db "SELECT character_id, character_name FROM characters LIMIT 5;"
+docker exec eve-dashboard python3 -c "import sqlite3; c=sqlite3.connect('/app/data/dashboard.db'); print(c.execute('SELECT character_id, character_name FROM characters LIMIT 5;').fetchall())"
 
 # Test API
 curl -s http://localhost:8765/market/orders | jq .
@@ -387,7 +363,7 @@ curl -s http://localhost:8765/market/stats | jq .
 docker compose down && docker compose up -d --build
 
 # Enter container shell
-docker exec -it eve-dashboard-app-1 /bin/bash
+docker exec -it eve-dashboard /bin/bash
 
 # Check Python syntax
 python3 -m py_compile app/market.py app/db.py app/sync.py app/main.py app/esi.py
@@ -401,6 +377,9 @@ python3 -m py_compile app/market.py app/db.py app/sync.py app/main.py app/esi.py
 
 ```markdown
 ## Task Completion Report: Market Orders Empty Page Bug
+
+**Status**: PARTIAL | PASS | FAIL (PASS requires every acceptance criterion evidenced)
+**Evidence basis**: direct verification | review of pasted evidence | reported by agent | human assertion
 
 ### Issue Diagnosis
 **Root Cause Identified**: [e.g., "Character sync not calling market.sync_character_market_orders() at sync.py line 158"]
@@ -423,13 +402,20 @@ python3 -m py_compile app/market.py app/db.py app/sync.py app/main.py app/esi.py
 - [Step B]: [Result]
 
 ### Verification
-- [x] Database has market orders (COUNT > 0)
-- [x] API endpoint /market/orders returns valid JSON with orders
-- [x] /market page displays orders in table
-- [x] Filters (status/character) work correctly
-- [x] Manual refresh fetches new data
-- [x] No errors in browser console
-- [x] No errors in Docker logs
+- [ ] Database has market orders (COUNT > 0)  
+evidence: [command + raw output, or 'verified by Tracy']
+- [ ] API endpoint /market/orders returns valid JSON with orders  
+evidence: [command + raw output, or 'verified by Tracy']
+- [ ] /market page displays orders in table  
+evidence: [command + raw output, or 'verified by Tracy']
+- [ ] Filters (status/character) work correctly  
+evidence: [command + raw output, or 'verified by Tracy']
+- [ ] Manual refresh fetches new data  
+evidence: [command + raw output, or 'verified by Tracy']
+- [ ] No errors in browser console  
+evidence: [command + raw output, or 'verified by Tracy']
+- [ ] No errors in Docker logs  
+evidence: [command + raw output, or 'verified by Tracy']
 
 ### Before/After Screenshots
 [If applicable: paste before (empty) and after (with data) screenshots]
