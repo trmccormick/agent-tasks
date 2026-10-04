@@ -453,3 +453,13 @@ All merge conflicts resolved. Docker/credentials/mining setup preserved. Market 
 2. Tal Beyond account/sync status
 3. market.js error handling for a failed /market/orders fetch
 4. invalid_scope diagnosis and fix for add-account flow
+
+## Session Log 2026-10-03
+
+- Logging fix in progress (eve-dashboard, branch local/improvements, uncommitted): print_exc shim in app/logging_config.py and market-sync logging in app/sync.py. The container was rebuilt on 2026-10-03 with the FIRST-DRAFT shim; the revised shim (reload guard, sys.exc_info check, named logger) and the market success/failure lines are not deployed yet.
+- Deploy facts: only config/ and data/ are bind-mounted; app/ is not, so code edits need a rebuild (Compose Up in VS Code, or docker compose up -d --build). PRAGMA integrity_check returned ok after the rebuild.
+- print_exc is also used outside sync.py: alerts.py, agenda.py, chain/kills.py, chain/api.py, chain/tracker.py, wallet_archive.py, main.py (the shim covers these).
+- dashboard.log has no entries between 2026-09-10 and 2026-10-01, so it cannot confirm Tal Beyond's recent syncs; use the dashboard card.
+- Unexplained 500 on /market/orders (2026-10-02, while the container showed unhealthy): unexamined hypothesis is the sort or row-building step failing on a None value; main.py lines 759-815 have not been reviewed. Check docker logs immediately if it recurs.
+- Task file restored to its original text after an overwrite; the planner's five corrections (criteria unchecked, container name, sqlite3 commands, git commit line, counts) are pending.
+- agent-tasks commit e5c501c (status log) is pushed. The synthesis report is still uncommitted pending review.
