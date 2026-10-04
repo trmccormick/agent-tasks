@@ -135,7 +135,7 @@ docker ps | grep eve-dashboard
 
 ### Step 2: Check Docker Logs for Errors
 ```bash
-docker logs $(docker ps -q -f name=eve-dashboard-app) 2>&1 | tail -200 | grep -i "market\|error\|exception"
+docker logs eve-dashboard 2>&1 | tail -200 | grep -i "market\|error\|exception"
 ```
 Look for:
 - "market" references in sync
@@ -169,12 +169,12 @@ docker exec eve-dashboard python3 -c "import sqlite3; c=sqlite3.connect('/app/da
 
 Get a character_id from output, then check logs for that character's sync:
 ```bash
-docker logs $(docker ps -q -f name=eve-dashboard-app) 2>&1 | grep -i "sync.*character" | tail -10
+docker logs eve-dashboard 2>&1 | grep -i "sync.*character" | tail -10
 ```
 
 Check if sync_character_market_orders is being called:
 ```bash
-docker logs $(docker ps -q -f name=eve-dashboard-app) 2>&1 | grep "market" | tail -20
+docker logs eve-dashboard 2>&1 | grep "market" | tail -20
 ```
 
 **If no market references**: Sync workflow isn't calling market sync. → Go to Step 8.
@@ -199,14 +199,16 @@ docker exec eve-dashboard python3 -c "import sqlite3; c=sqlite3.connect('/app/da
 Then manually test ESI endpoint (inside container):
 ```bash
 docker exec eve-dashboard python3 -c "
-from app import esi, db
+from app import esi, db, crypto, sync
 char = db.list_characters()[0]
-token = db.get_character_token(char['character_id'])
+refresh_plain = crypto.decrypt(char['refresh_token'])
+token, new_refresh = esi.get_access_token(char['character_id'], refresh_plain)
+sync._persist_rotated_token(char, refresh_plain, new_refresh)
 orders = esi.character_orders(char['character_id'], token)
-print(f'Character: {char[\"character_name\"]}')
-print(f'Orders fetched: {len(orders) if orders else 0}')
+print('Character:', char['character_name'])
+print('Orders fetched:', len(orders) if orders else 0)
 if orders:
-    print(f'Sample order: {orders[0]}')
+    print('Sample order:', orders[0])
 "
 ```
 
@@ -347,7 +349,7 @@ Should show line ~369. If not, check app/esi.py and ensure function exists.
 docker ps | grep eve-dashboard
 
 # View all logs (last 200 lines)
-docker logs -n 200 $(docker ps -q -f name=eve-dashboard-app)
+docker logs -n 200 eve-dashboard
 
 # Check market table
 docker exec eve-dashboard python3 -c "import sqlite3; c=sqlite3.connect('/app/data/dashboard.db'); print(c.execute('SELECT COUNT(*) FROM market_orders;').fetchall())"
