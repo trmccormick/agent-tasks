@@ -17,7 +17,7 @@ Current evidence (see summaries/2026-10-01-MARKET-BUG-SYNTHESIS.md and the statu
 
 Next steps, in order:
 1. In-game order counts per character (Tracy).
-2. Review the /market/orders view in main.py (about lines 759-815) for what could raise a 500, such as sorting on None values.
+2. Review the /market/orders view in main.py (about lines 759-815) for what could raise a 500. Current hypothesis (unconfirmed): JSONResponse fails to encode a bad value in one order row. The earlier 'sort on None values' idea is superseded. The Oct 1 DB corruption, cleared by restart, remains a candidate root cause with no evidence.
 3. After the logging fix is deployed, confirm per-sync "orders saved" lines in dashboard.log.
 Do NOT start from Step 9 (frontend debugging): no frontend fault has been found.
 

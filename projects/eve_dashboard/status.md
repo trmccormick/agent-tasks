@@ -63,6 +63,6 @@ History moved to `status-archive.md` (historical; may contain claims later corre
 - Deploy facts: only config/ and data/ are bind-mounted; app/ is not, so code edits need a rebuild (Compose Up in VS Code, or docker compose up -d --build). PRAGMA integrity_check returned ok after the rebuild.
 - print_exc is also used outside sync.py: alerts.py, agenda.py, chain/kills.py, chain/api.py, chain/tracker.py, wallet_archive.py, main.py (the shim covers these).
 - dashboard.log has no entries between 2026-09-10 and 2026-10-01, so it cannot confirm Tal Beyond's recent syncs; use the dashboard card.
-- Unexplained 500 on /market/orders (2026-10-02, while the container showed unhealthy): unexamined hypothesis is the sort or row-building step failing on a None value; main.py lines 759-815 have not been reviewed. Check docker logs immediately if it recurs.
+- Unexplained 500 on /market/orders (2026-10-02, while the container showed unhealthy): current hypothesis (unconfirmed) is JSONResponse failing to encode a bad value in one order row; the earlier 'sort on None values' idea is superseded. main.py lines 759-815 have not been reviewed. Check docker logs immediately if it recurs.
 - Task file restored to its original text after an overwrite; the planner's five corrections (criteria unchecked, container name, sqlite3 commands, git commit line, counts) are pending.
 - agent-tasks commit e5c501c (status log) is pushed. The synthesis report is still uncommitted pending review.
