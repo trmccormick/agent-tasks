@@ -237,3 +237,13 @@ At session end, confirm:
 - Data changes are clearly separated from implementation tasks.
 - Handoff information is ready for the next session.
 - The work remains aligned with the Luna-first objective and the AI Manager/NPC simulation goal.
+
+## Task-file defect-correction policy
+
+1. If Claude identifies bounded task-text defects, Claude returns a complete corrected `.md` replacement in the same response.
+2. The human owner places that replacement at the canonical task location.
+3. Qwen performs one read-only local validation: Markdown structure, canonical path, concrete current-artifact references, named markers, and non-writing Git status.
+4. Qwen does not rewrite, expand, reinterpret, or conduct a new substantive review of Claude's replacement.
+5. Another substantive review cycle requires new repository evidence, a changed human requirement, malformed structure, a broken path reference, or a demonstrated internal contradiction.
+6. Small, direct, or surgical fixes may use a concise implementation handoff when task tracking or cross-agent review adds no material safety value.
+7. Human approval remains required for dispatch and lifecycle decisions.
