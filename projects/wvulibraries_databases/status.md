@@ -1,21 +1,49 @@
 # WVU Libraries Databases — Project Status & Task Tracking
-**Last Update:** 2026-10-01 — ✅ Admin offcanvas navigation fully fixed and verified on dev VM
+**Last Update:** 2026-10-05 — ✅ Hiraku Bootstrap refactor task moved to active (ready for Qwen dispatch)
 
 ---
 
 ## Project Overview
 Databases — WVU Libraries resource discovery and catalog indexing system (Ruby on Rails).
 
-**Context**: Rails 7 modernization in progress. Admin panel offcanvas navigation bug fully resolved. Option B (Bootstrap 5 native refactoring) planned as future long-term improvement.
+**Context**: Rails 7 modernization in progress. Admin panel offcanvas navigation works but uses unreliable Hiraku.js. Bootstrap 5 native refactoring task ready for implementation.
 
 ---
 
 ## Current Status
-- **Status:** ✅ **OFFCANVAS NAV FUNCTIONAL** — Menu opens/closes correctly, all links work
-- **Remaining:** ⏳ **OVERLAY VIEWPORT COVERAGE** — Dark backdrop doesn't cover full viewport (visual polish only)
+- **Status:** 🔄 **HIRAKU → BOOTSTRAP REFACTOR IN PROGRESS** — Task active, ready for dispatch
+- **Focus:** Replace Hiraku admin offcanvas with Bootstrap 5.3 native component (full viewport overlay, preserve dark theme)
 - **Active Branch:** `rails7-circleci-test`
-- **Last Session:** 2026-10-01 (ongoing)
-- **Last Update:** 2026-10-01 — Offcanvas menu works; overlay viewport coverage needs Qwen debugging & fix
+- **Last Session:** 2026-10-05 (completed governance work, prepped Hiraku task for dispatch)
+- **Last Update:** 2026-10-05 — Task moved to active/, synthesis report created, ready for Qwen
+
+---
+
+## ✅ COMPLETED — Session 2026-10-05: Repository Sync & Task Prep
+
+**Summary**: Resolved git conflicts in agent-tasks repo, successfully synced governance documentation (MAG-1 through MAG-6), committed wvulibraries_databases task files and handoffs, moved Hiraku refactor task to active status.
+
+### Governance Work (Perplexity Sessions)
+- ✅ MAG-1 through MAG-6 task files created and committed
+- ✅ Phase 1 review extract documented
+- ✅ All governance files pushed to remote (commit 372010b, c827a02, and earlier)
+- ✅ Symlink issues resolved and documented in .gitignore
+
+### Repository Infrastructure
+- ✅ Resolved git rebase conflict with untracked overlay viewport files
+- ✅ Committed 4 new wvulibraries_databases files:
+  - `handoffs/2026-10-01-overlay-fix-handoff.md`
+  - `summaries/2026-10-01-MEDIUM-overlay-viewport-fix.md`
+  - `tasks/active/2026-10-01-MEDIUM-overlay-viewport-coverage.md`
+  - `tasks/active/2026-10-01-overlay-viewport-fix-plan.md`
+- ✅ Successfully pushed all changes to remote
+- ✅ Verified repo state is clean and in sync
+
+### Hiraku Refactor Task Prep
+- ✅ Moved task from backlog → active
+- ✅ Created comprehensive synthesis report (2026-10-03-SYNTHESIS-bootstrap-replace-hiraku.md)
+- ✅ Task file includes all prerequisites, gotchas, and acceptance criteria
+- ✅ Ready for Qwen dispatch
 
 ---
 
@@ -144,7 +172,26 @@ Hiraku library applies `transform: translateX(-300px)` to body when menu opens, 
 ---
 
 ## Active Tasks
-_No active tasks._
+
+### 2026-09-25: HIGH — Replace Hiraku Admin Offcanvas with Bootstrap 5 Native Offcanvas
+**Status**: ACTIVE (ready for dispatch)  
+**Assigned**: Qwen local via Copilot  
+**Task File**: `tasks/active/2026-09-25-HIGH-refactor-bootstrap-replace-hiraku-admin-offcanvas.md`  
+**Synthesis Report**: `summaries/2026-10-03-SYNTHESIS-bootstrap-replace-hiraku.md`  
+
+**What it does:**
+- Replace Hiraku.js dependency with Bootstrap 5.3 native offcanvas component
+- Preserve dark theme styling, right-side slide-in animation, and full-viewport dark backdrop
+- Remove all Hiraku artifacts from codebase (JS, SCSS, package.json)
+- Maintain all existing admin nav links
+
+**Critical gotchas to avoid:**
+1. Must use full Bootstrap offcanvas HTML structure (`.offcanvas` + `.offcanvas-header` + `.offcanvas-body`)
+2. Rails app nested at `databases/databases/app/...` (not `databases/app/...`)
+3. Must remove ALL Hiraku references and run `yarn install` after package.json change
+4. Dark theme must be explicitly preserved via SCSS overrides
+
+**Dispatch ready**: ✅ Synthesis complete, all prerequisites documented
 
 ---
 
@@ -161,11 +208,18 @@ _No active tasks._
 
 ---
 
+---
+
 ## Backlog
-- **UI Team Refinement**: Flash message banner spacing/width can be tuned by UI team
+
+### Overlay Viewport Coverage (Merged into Hiraku Refactor)
+- **Status**: Now part of the active Hiraku → Bootstrap refactor task
+- **Rationale**: Original Hiraku overlay was incomplete. Full Bootstrap refactor eliminates the problem entirely by using native `offcanvas` component with proper backdrop
+- **No separate action needed**: Covered by 2026-09-25 task
+
+### UI Team Refinement
+- **Flash message banner spacing/width** can be tuned by UI team (no code changes needed)
   - Currently displays with Bootstrap 5.3.0 default styling
   - Colors and functionality are restored
-  - UI may want to adjust padding, margin, or banner width for visual consistency
-  - No code changes needed, only CSS/styling adjustments
   - Files: `app/views/utilities/_alerts.html.erb` (if layout changes needed)
 
