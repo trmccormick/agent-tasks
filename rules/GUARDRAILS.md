@@ -385,6 +385,18 @@ If asked to analyze test failures:
 Fabricated output that looks real is more dangerous than obvious failure.
 A model that says "I can't do this" is always preferable to one that invents results.
 
+### Rule 20a — Evidence Basis for Material Claims
+**Applies to all agents, all roles, and all supervision tiers.**
+
+When reporting a material claim about repository state, source or diff scope, Git commit/history/push state, command or test execution/results, task lifecycle status, or completion, identify the evidence basis when the claim was not directly verified through the agent's current repository or tool session:
+
+- **Direct verification** — the agent ran the relevant command, read the relevant file, or checked the relevant state in its current session.
+- **Pasted evidence** — the agent reviewed raw logs, diffs, or source excerpts supplied in chat without independently inspecting the current repository/tool state. Describe this as "review of pasted evidence," not independent verification of the live repository.
+- **Agent report** — the claim comes from another agent's report without raw supporting output or independent verification. Describe it as "reported by [agent/session]."
+- **Human assertion** — the human states repository state, test results, or completion without attached supporting evidence. Describe the repository fact as asserted unless independently verified; this does not limit the human's authority to authorize, accept, dispatch, or decide work.
+
+This rule concerns how evidence is characterized; it does not change Rule 20's prohibition on fabrication, MAG-2 human authority, or any other governing rule. If an unverified claim is material to safe task execution and no authorized basis exists to proceed, stop and escalate rather than represent it as verified.
+
 ### Rule 21 — Qwen3.5 Triage Phase Requirements
 **Applies to Continue-based Qwen3.5 models during task triage.**
 
@@ -705,14 +717,6 @@ Universal governance rules (MAG-1 through MAG-5) apply equally across all projec
 
 **Project guidance may refine how an authorized task is understood within that project only when it does not conflict with the selected task file, applicable governance rules, or an explicit human instruction.** It cannot justify ignoring task steps, inventing lifecycle transitions, bypassing gates, or continuing past explicit stop conditions. Project `SESSION_GUIDANCE.md` must not become a duplicate task tracker, replace backlog/active/completed lifecycle records, supplant task acceptance criteria, duplicate architecture-decision records, or replace durable/repeatable cross-project governance patterns.
 
-**Durable universal rules belong in `rules/GUARDRAILS.md`; task-specific authority belongs in the selected task file.** Project guidance must remain concise, current, and project-scoped. If project guidance conflicts with a controlling source or the appropriate location for information is materially unclear, the agent must stop and escalate to Tracy rather than silently treating `SESSION_GUIDANCE.md` as controlling authority. The mere presence of non-conflicting project guidance does not require escalation. This rule does not mandate `SESSION_GUIDANCE.md` for every project or task, does not authorize bulk creation, and does not duplicate task lifecycle, templating, or precedence details.
-
-### MAG-6 — Per-Project Implementation via SESSION_GUIDANCE.md
-
-Universal governance rules (MAG-1 through MAG-5) apply equally across all projects in the agent-tasks repository. A project may maintain project-specific operating guidance in its own `SESSION_GUIDANCE.md` when that guidance is useful for the project's active or anticipated work. The presence or absence of a `SESSION_GUIDANCE.md` does not itself grant authority, change task eligibility, or require escalation.
-
-**A project `SESSION_GUIDANCE.md` provides local, current, strategic, and advisory context appropriate to that project — active experiments, current blockers, project-specific routing notes, and agent preferences.** It must implement and operationalize applicable universal governance rules; it must not override MAG-1 through MAG-5, a selected task file, an explicit human instruction, human approval/dispatch gates, ownership/dependency boundaries, stop conditions, or escalation requirements.
-
-**Project guidance may refine how an authorized task is understood within that project only when it does not conflict with the selected task file, applicable governance rules, or an explicit human instruction.** It cannot justify ignoring task steps, inventing lifecycle transitions, bypassing gates, or continuing past explicit stop conditions. Project `SESSION_GUIDANCE.md` must not become a duplicate task tracker, replace backlog/active/completed lifecycle records, supplant task acceptance criteria, duplicate architecture-decision records, or replace durable/repeatable cross-project governance patterns.
+**A project may establish narrower ownership lanes for its own development work**—for example, identifying a designated owner or primary coordination role for a subsystem—to reduce overlapping or competing solutions. Such lanes are project-scoped coordination constraints only: they do not grant dispatch authority, override a selected task file or universal governance, displace Tracy’s authority under MAG-2, or change MAG-3's task-first eligibility requirements.
 
 **Durable universal rules belong in `rules/GUARDRAILS.md`; task-specific authority belongs in the selected task file.** Project guidance must remain concise, current, and project-scoped. If project guidance conflicts with a controlling source or the appropriate location for information is materially unclear, the agent must stop and escalate to Tracy rather than silently treating `SESSION_GUIDANCE.md` as controlling authority. The mere presence of non-conflicting project guidance does not require escalation. This rule does not mandate `SESSION_GUIDANCE.md` for every project or task, does not authorize bulk creation, and does not duplicate task lifecycle, templating, or precedence details.
