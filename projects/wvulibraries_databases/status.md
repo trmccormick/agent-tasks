@@ -1,5 +1,5 @@
 # WVU Libraries Databases — Project Status & Task Tracking
-**Last Update:** 2026-10-05 — ✅ Hiraku Bootstrap refactor task moved to active (ready for Qwen dispatch)
+**Last Update:** 2026-10-06 — ⚠️ Bootstrap 5 offcanvas visual parity remains unresolved; manual frontend review requested
 
 ---
 
@@ -11,11 +11,33 @@ Databases — WVU Libraries resource discovery and catalog indexing system (Ruby
 ---
 
 ## Current Status
-- **Status:** 🔄 **HIRAKU → BOOTSTRAP REFACTOR IN PROGRESS** — Task active, ready for dispatch
-- **Focus:** Replace Hiraku admin offcanvas with Bootstrap 5.3 native component (full viewport overlay, preserve dark theme)
+- **Status:** ⚠️ **BOOTSTRAP OFFCANVAS VISUAL MATCH STILL UNRESOLVED** — issue requires deeper frontend inspection
+- **Focus:** Match the legacy production admin menu exactly: close button placement, X centering, white seam, menu typography, header proportions
 - **Active Branch:** `rails7-circleci-test`
-- **Last Session:** 2026-10-05 (completed governance work, prepped Hiraku task for dispatch)
-- **Last Update:** 2026-10-05 — Task moved to active/, synthesis report created, ready for Qwen
+- **Last Session:** 2026-10-06 (compared against legacy Rails 5 production HTML/CSS, iterated SCSS changes, confirmed remaining mismatch persists)
+- **Last Update:** 2026-10-06 — frontend review requested; deeper UI investigation task queued for Qwen
+
+---
+
+## ✅ COMPLETED — Session 2026-10-06: Frontend Mismatch Comparison & Task Handoff
+
+**Summary**: Compared current Bootstrap 5 offcanvas against the legacy Rails 5 production implementation from the main branch. Re-applied the original structural rules (header layout, close button position, dashed divider, typography scale) and pushed the latest work to `rails7-circleci-test`. The visual mismatch still remains, and the issue has been narrowed to a Bootstrap offcanvas rendering difference rather than simple SCSS values.
+
+### What We Verified
+- ✅ Original Rails 5 admin menu structure was read from `main` branch and compared directly
+- ✅ Legacy CSS patterns were restored in `databases/app/assets/stylesheets/interface/elements/_nav.scss`
+- ✅ Header and close button logic were aligned with production-era layout conventions
+- ✅ Current branch was committed and pushed for VM pull testing
+- ⚠️ The user still observes mismatch: close-button lift, white seam/band, and menu text not matching production
+
+### What This Indicates
+- The issue is not simply caused by a single CSS property value
+- The mismatch likely involves Bootstrap’s offcanvas internals, browser rendering, or a structural difference in the way the menu is mounted/positioned in the Rails 7 app
+- A second frontend pass is needed with the original production screen as the benchmark
+
+### Decision
+- Qwen should continue investigating the Bootstrap 5 offcanvas rendering mismatch with a fresh, narrow UI-focused task
+- Frontend dev should also be asked to compare markup and computed styles against the production page
 
 ---
 
