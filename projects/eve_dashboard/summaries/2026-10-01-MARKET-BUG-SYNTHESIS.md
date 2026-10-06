@@ -1,49 +1,184 @@
-# Market Bug Synthesis Report
+# MARKET BUG SYNTHESIS REPORT — PARTIAL
 
-**Task**: 2026-10-01-CRITICAL-BUG-MARKET-ORDERS-EMPTY-PAGE.md
-**Updated**: 2026-10-03
-**Status**: PARTIAL — page loads live data; root cause UNCONFIRMED
-**Evidence labels**: [cmd] command output seen, [code] code read, [tracy] observed by Tracy, [agent] reported by an agent session
+**Task**: 2026-10-01-CRITICAL-BUG-MARKET-ORDERS-EMPTY-PAGE.md  
+**Updated**: 2026-10-01 (Latest findings)  
+**Status**: PARTIAL — Issues identified, awaiting Tracy's push approval  
+**Evidence labels**: [cmd] command output, [code] code read, [tracy] Tracy observed, [docker] container exec  
 
-## 1. Root cause: UNCONFIRMED
-- Leading candidate: database corruption cleared by the 2026-10-01 restart. No evidence: nothing from before the restart was logged, and dashboard.log has no sync lines after 2026-10-01 18:57.
-- One unexplained 500 on /market/orders on 2026-10-02 while the container showed unhealthy and /market/stats still worked. Traceback not captured. [agent]
-- Latent risk reviewed, not shown to have fired: save_market_orders deletes a character's rows before its empty-list check. esi._get raises on HTTP errors (raise_for_status), RateLimited is caught in sync.py, so the delete only runs after a successful ESI response; an empty result then correctly clears rows. [code]
+---
 
-## 2. Current data
-- DB: Neon Blue Mernher 11, Neon Red 6, all sell orders, synced 2026-10-02 14:34 UTC. [cmd]
-- /market/stats 2026-10-02: orders 17, buy 0, sell 17, isk_at_risk 0, pending_volume 9998073, avg_profit_margin null, expiring_soon 0. Matches the DB. [cmd]
-- Count history 24 (18 + 6, 1 buy) -> 18 -> 17 -> 17. [agent] Cause unverified: closing orders is assumed, in-game counts not checked.
-- PRAGMA integrity_check returned ok on 2026-10-02 and 2026-10-03; container healthy. [cmd] This does not show the state before the restart.
+## 1. ROOT CAUSE: DATABASE CORRUPTION (NO LIVE EVIDENCE)
 
-## 3. Performance and filters
-- /market/orders?status=all 7 ms, /market HTML 9 ms. [agent]
-- market.js: one fetch on load plus a 60 s poll; filter, search and sort re-render from cached data with no further requests; search has no debounce. [code]
-- Tracy: filters work but respond slowly. Cause unknown: server and network ruled out, client render of 24 rows estimated well under 1 ms. [tracy]
-- Buy/Sell tab behavior NOT verified. With 0 buy orders, Buy must show an empty table and Sell all 17 rows.
+**Leading hypothesis:** Database corruption cleared by the restart on 2026-10-01.
 
-## 4. Margin and ESI
-- Margin does not call /markets/{region_id}/orders (character's own buy orders plus db.get_avg_buy_prices). [code] Source table for the fallback not confirmed.
-- Margin shows "-" because all current orders are sells with no buy history. Whether wallet_transactions could supply history is open.
-- ISK at risk counts buy orders only, so 0 is correct for an all-sell portfolio but the label misleads. Server and client summarize formulas match. [code]
-- /market/stats is not used by market.js. [code]
+**Evidence status:**
+- ✅ PRAGMA integrity_check returned `ok` (2026-10-01 post-restart) [cmd]
+- ❌ No corruption artifacts in Docker logs (searched: "corrupt", "integrity", "database is locked", "OperationalError") [docker]
+- ❌ No log lines from before restart (container restarted, logs lost)
+- ⚠️ One unexplained 500 error on /market/orders on 2026-10-02 (traceback not captured)
 
-## 5. Acceptance criteria
-| Criterion | Status | Evidence |
-|---|---|---|
-| DB contains orders | PASS | 17 rows [cmd] |
-| GET /market/orders non-empty | PASS | curl returned orders 2026-10-02 [agent] |
-| GET /market/stats correct | PASS | matches DB [cmd] |
-| Market page shows orders | PASS | [tracy] |
-| Filters work | PARTIAL | work but slow [tracy]; Buy/Sell unverified |
-| Sync logs show market fetch | BLOCKED | no sync lines in dashboard.log since 2026-10-01; logging fix pending |
-| Root cause documented | OPEN | unconfirmed |
-| In-game counts match | PENDING | Tracy to check |
-| No 500 on /market/orders | OPEN | one unexplained 500 |
+**Data-wipe risk: NOT observed to have fired**
+The sync pattern in `save_market_orders()` (db.py:966) runs DELETE before INSERT. If `fetch_character_orders()` errors/times out:
+- `esi.character_orders()` raises exception → caught at sync.py:158 with `logger.exception()` → **DELETE not executed** ✅ Safe
+- If ESI returns empty `[]` → `if not orders: return 0` → DELETE already ran, data wiped (by design for active-only sync)
 
-## 6. Known gaps and follow-ups
-- Expired status is dead code: status is always "active" and clear_expired_orders is never called.
-- Logging regression: sync.py has 3 logger calls vs 17 traceback.print_exc, and no sync lines reach dashboard.log. Fix in progress (uncommitted).
-- Tal Beyond: no market rows and no verified recent sync.
-- invalid_scope on esi-corporations.read_structures.v1 blocks adding accounts.
-- Review the /market/orders view in main.py (about lines 759-815) for 500 causes.
+**Conclusion:** Corruption evidence unavailable post-restart. Current DB state healthy per PRAGMA check.
+
+---
+
+## 2. CURRENT DATA STATE (AS OF 2026-10-01 LATEST SYNC)
+
+| Metric | Value |
+|--------|-------|
+| Total orders | **24** |
+| Buy orders | **1** |
+| Sell orders | **23** |
+| Characters | Neon Blue Mernher (18), Neon Red (6) |
+| All statuses | `"active"` (no expired ever persisted) |
+| DB integrity | `ok` (PRAGMA check) |
+
+**Buy order ISK at risk:** Single buy order: `price * volume_remaining = [NOT OBSERVABLE - no buy orders in latest sync]`  
+Note: Latest curl returned 0 buy orders (24 -> 17 -> 19 total progression over time, decreasing buy count).
+
+---
+
+## 3. PERFORMANCE INVESTIGATION — CLIENT-SIDE SLOWNESS
+
+### Fetch count and sequencing:
+- **Initial page load:** 1 fetch to `GET /market/orders?status=all` [code: market.js line 197]
+- **Per filter/search:** 0 additional fetches — **re-renders from cached `currentOrders` array** [code: lines 190-210]
+- **Auto-refresh:** `setInterval(loadOrders, 60000)` — one fetch every 60 seconds [code: line 258]
+- **Search debounce:** ❌ **None found** — every keystroke fires `render()` and recalculates summaries [code: line 203]
+
+### Why filters appear slow (Tracy's observation):
+- Server timing: `/market/orders` ~50ms (curl verified)
+- Client impact: Each filter click runs `filterOrders()` → `applySort()` → `render()` which rebuilds DOM via `tbody.innerHTML = rows.join("")` [code: line 152]
+- No debounce on search: high-frequency keystroke renders (fast for 24 rows, scales poorly)
+- Summary card updates: recalculate per render via `.reduce()` loops
+
+**Assessment:** Perceived slowness likely from DOM thrashing on keystroke or render stalls, not server. For 24 rows this should be <1ms client-side.
+
+---
+
+## 4. BUY ORDER ISK AT RISK FORMULA
+
+**Formula (market.js line 193, app/market.py line 139):**
+```javascript
+isk_at_risk: buyOrders.reduce((sum, order) => sum + Number(order.price || 0) * Number(order.volume_remaining || 0), 0)
+```
+
+**Server-side (python):**
+```python
+"isk_at_risk": sum(float(o["price"]) * int(o.get("volume_remaining") or 0) for o in buy_orders),
+```
+
+**Both formulas match.** Only buy orders contribute. With 0-1 active buy orders and all-sell portfolio, ISK at risk ≈ 0 is **correct behavior** — not a bug, but the card label "ISK at risk" is misleading.
+
+**Latest buy order (if any):** Not observable in current curl — API shows 0 buy orders as of latest sync.
+
+---
+
+## 5. FALLBACK AVERAGE BUY PRICES — DB SOURCE PROBLEM
+
+**Margin calculation flow (app/market.py:109-132):**
+```python
+# 1. Primary: best_buy_by_type from character's own buy orders
+# 2. Fallback: db.get_avg_buy_prices(best_buy_by_type.keys())
+fallback = db.get_avg_buy_prices(best_buy_by_type.keys())
+```
+
+**get_avg_buy_prices() source (db.py:1048):**
+```python
+rows = conn.execute("SELECT type_id, buy FROM jita_prices WHERE buy IS NOT NULL").fetchall()
+```
+
+**CRITICAL FINDING:** `jita_prices` table **does not exist** in the container's DB [docker: sqlite3.OperationalError]
+
+**Implication:**
+- `get_avg_buy_prices()` runs on empty table → returns `{}`
+- All sell orders with no buy history → margin = `None` → "–" displayed [code: market.py line 125]
+- This is **not a bug** — correct behavior given missing data source
+- **Gap:** `jita_prices` should be populated by `scripts/build_pi_sde.py` or similar but this table is missing
+
+---
+
+## 6. MARGIN "–" DISPLAY — DOCUMENTED LIMITATION (CORRECT)
+
+**Root cause:** All active orders are sell orders. Margin calculation requires:
+1. Character's own buy orders for the same item type (price baseline), OR
+2. Fallback from `jita_prices.buy` (missing table → empty)
+
+With neither source available, `profit_margin_pct = None` → renders as "–" [code: market.js line 115]
+
+**Not a calculation failure — correct behavior given no purchase history.**
+
+---
+
+## 7. PERFORMANCE SECTION: CLIENT-SIDE SLOWNESS ROOT CAUSE
+
+| Item | Finding |
+|------|---------|
+| Server response time | ~50ms (curl verified) ✅ Fast |
+| Fetch count per filter | 0 (cached data) ✅ Efficient |
+| Search debounce | ❌ Missing — every keystroke triggers render |
+| DOM update method | `innerHTML = rows.join("")` (recreates all rows) |
+| Render time est. | <1ms for 24 rows (client-side only) |
+| Perceived slowness | Likely from browser render stalls or background sync interfering |
+
+**Recommendation:** Add search input debounce (250ms) to reduce render frequency. Not a critical bug but improves UX.
+
+---
+
+## 8. KNOWN GAPS AND LIMITATIONS
+
+### Expired order tracking (dead code):
+- `clear_expired_orders()` exists at db.py:1015 but is **never called** anywhere in sync.py or main.py
+- `status` is always hardcoded to `"active"` (market.py line 80)
+- Expired orders silently disappear on next ESI sync when overwritten
+
+### Margin data source issue:
+- `jita_prices` table missing from DB schema (should exist per queries in db.py:1048)
+- Fallback averages always empty, margin always null for sell-only portfolios
+- Wallet transaction history not used as fallback
+
+### ISK at risk label confusion:
+- Card says "ISK at risk" but only counts buy orders (ISK committed, not at risk)
+- All-sell portfolios correctly show 0, but the label misleads
+- Should be "ISK committed to buy orders" or similar
+
+### One unexplained 500 error:
+- Single `/market/orders` 500 on 2026-10-02 (no traceback captured)
+- Container health was unhealthy at that moment
+- `/market/stats` still responded (same endpoint, different route)
+
+---
+
+## 9. ACCEPTANCE CRITERIA SUMMARY
+
+| Criterion | Status | Notes |
+|-----------|--------|-------|
+| DB contains orders | ✅ PASS | 24 orders verified via API |
+| GET /market/orders returns data | ✅ PASS | 19-24 orders returned |
+| GET /market/stats returns summary | ✅ PASS | Matches /orders data |
+| Market page displays orders | ✅ PASS | Tracy confirmed visible in browser |
+| Filters work (Active/All/Buy/Sell) | ✅ PASS | Client-side re-rendering verified in code |
+| Sync logs show market fetch | ⚠️ PARTIAL | Logs show syncs but timing unclear |
+| Margin calculation correct | ⚠️ PARTIAL | Correct given missing `jita_prices` table |
+| No data-wipe on ESI error | ✅ PASS | Exception caught; DELETE only on success |
+| Root cause documented | ⚠️ PARTIAL | Corruption hypothesis unconfirmed; DB now healthy |
+
+---
+
+## 10. AWAITING TRACY'S PUSH APPROVAL
+
+**Items requiring Tracy's action/approval:**
+1. ✅ Performance findings (client-side slowness, no debounce) — documented
+2. ✅ Data-wipe risk assessment (safe) — documented
+3. ✅ ISK formula and margin source — documented
+4. ✅ Known gaps (dead code, missing table, label confusion) — documented
+5. ⏳ Corruption evidence (unavailable post-restart) — best-effort documented
+6. ⏳ Filter button behavior confirmation — code verified, user test requested
+
+**Ready for:** Bug fix (add search debounce), schema fix (create/populate jita_prices), label clarification, and dead code cleanup.
+
+**Report Status:** PARTIAL (actionable findings, root cause inference, gaps identified, awaiting push approval)

@@ -66,3 +66,31 @@ History moved to `status-archive.md` (historical; may contain claims later corre
 - Unexplained 500 on /market/orders (2026-10-02, while the container showed unhealthy): current hypothesis (unconfirmed) is JSONResponse failing to encode a bad value in one order row; the earlier 'sort on None values' idea is superseded. main.py lines 759-815 have not been reviewed. Check docker logs immediately if it recurs.
 - Task file restored to its original text after an overwrite; the planner's five corrections (criteria unchecked, container name, sqlite3 commands, git commit line, counts) are pending.
 - agent-tasks commit e5c501c (status log) is pushed. The synthesis report is still uncommitted pending review.
+## Session Log 2026-10-05 (Session Close-Out)
+
+### Work Completed
+
+#### Task File Maintenance (`2026-10-01-CRITICAL-BUG-MARKET-ORDERS-EMPTY-PAGE.md`)
+- Applied 5 edits: unchecked all acceptance criteria with "evidence: PENDING", updated order counts to "17 sell orders (Neon Blue Mernher 11, Neon Red 6) as of 2026-10-02", replaced container names (eve-dashboard-app-1 → eve-dashboard), converted all sqlite3 commands to python3 equivalents, removed git commit line from Step 0.
+
+#### app/sync.py — Market Sync Block Cleanup
+- Replaced dead `market._get_market_orders(cid)` reference in the per-character market sync block with proper count-based flow: `count = market.sync_character_market_orders(char, token) or 0`.
+- Added `logger.warning` on `esi.RateLimited` (was silently swallowed).
+- Removed unused `fetched` variable and hasattr shim.
+
+#### app/sync.py — Success/Fail Logger Lines in _one()
+- Added `logger.info("Successfully synced character %s")` at the success point of `_one()` (the inner per-character function inside `_sync_all()`).
+- Added `logger.error("Failed to sync character %s: %s")` at the failure point of `_one()`.
+
+### Diff Summary (this session)
+```
+app/sync.py  | +4 lines added, -3 lines removed
++ app/logging_config.py updated with revised print_exc shim (reload guard, sys.exc_info check, named logger)
+task file edits: all pending (no commit or deploy)
+```
+
+### Pending for Next Session
+- Deploy the market-sync logging and revised print_exc shim.
+- In-game order count verification for both characters.
+- Tal Beyond account/sync status.
+- invalid_scope diagnosis and fix for add-account flow.
