@@ -17,27 +17,26 @@ local_worker_safe: true
 
 ## Problem Statement
 
-The admin menu is functionally working, but the visual styling still does not match the original Rails 5 production version. The current Bootstrap 5 offcanvas is still off in several areas:
+The admin menu is functionally working, and the remaining mismatch is narrow: the left-side shading does not sit flush against the menu panel. Instead, there is a visible light band between the dark menu background and the shaded overlay area.
 
-- close button is lifted or mispositioned
-- the red circle is not visually centered around the X
-- a white seam / band remains visible
-- menu text and header proportions are not aligned with the original
+The closest working comparison is the original Rails 5 production menu. The fix likely does not require a broad style rewrite. The remaining issue is specifically the shading boundary at the left edge of the menu panel.
 
-We have already compared against the legacy code in the production `main` branch and restored the classic layout patterns, but the mismatch remains. This indicates a deeper rendering mismatch in the Bootstrap 5 offcanvas implementation rather than a simple CSS value issue.
+This task should focus only on that mismatch and not reopen unrelated styling issues unless they directly affect the left-edge shading behavior.
 
 ---
 
 ## Why This Task Exists
 
-The previous iterations attempted CSS-only fixes based on the legacy Rails 5 markup and styling. Those fixes did not resolve the remaining mismatch. The issue likely involves a more subtle interaction between:
+The previous iterations mostly targeted general menu styling, but the remaining issue is narrower: the left-side shading needs to sit directly against the menu panel without a white gap.
 
-- Bootstrap 5 offcanvas internals
-- surrounding app layout / transformed container behavior
-- browser-rendered box model differences
-- default Bootstrap padding, border, and flex rules
+This likely involves one of the following:
 
-The goal is to continue the investigation and determine whether the mismatch is caused by markup structure, the offcanvas container, CSS variables, or a rendering artifact that requires a different implementation approach.
+- Bootstrap 5 offcanvas border or shadow defaults
+- a parent or wrapper background bleeding through
+- a border-box/rendering artifact on the left edge
+- a mismatch between the menu panel width and the overlay/shade offset
+
+The goal is not a broad visual redesign. The goal is to fix the left-edge shading seam so it matches the original production menu as closely as possible.
 
 ---
 
@@ -56,47 +55,47 @@ Also compare with production behavior from the old main-branch implementation an
 
 ## Investigation Questions
 
-1. Is the offcanvas header using the same box model as the legacy production menu?
-2. Is the white seam caused by Bootstrap offcanvas border, box-shadow, or a leftover parent/container background?
-3. Is the close button being affected by context-specific absolute positioning or the offcanvas header flex defaults?
-4. Are the menu typography values differing because of Bootstrap defaults or because the layout is not using the same DOM structure?
-5. Is there another CSS rule elsewhere in the Rails 7 app overriding the intended menu styles?
-6. Does the mismatch persist only in the browser, or also in a clean local render without cached CSS?
+1. What part of the Bootstrap 5 offcanvas element is creating the left-side light band?
+2. Is the band caused by a border, shadow, or background bleed on the menu panel itself?
+3. Is the shading offset wrong, or is the menu panel slightly narrower than the original?
+4. Is there a CSS rule on the parent/admin layout that creates the visible seam?
+5. Does the issue persist on the dev VM even when local cache is cleared?
+
+Only answer these questions and fix the seam itself; do not reopen unrelated typography or close-button issues unless the seam fix requires one of those values to change.
 
 ---
 
 ## Proposed Research Steps
 
-1. Compare the live DOM and computed styles of the actual offcanvas element against the original production page.
-2. Inspect whether any Bootstrap default variable or class is still forcing padding, border, or flex behavior.
-3. Check if the issue is tied to the parent admin layout or wrapper elements around the offcanvas.
-4. Review whether the close button is being affected by `position: relative` container behavior or the header flex alignment.
-5. Test a minimal alternative markup path that more closely mirrors the legacy production structure while still using Bootstrap 5 offcanvas.
-6. Document the actual root cause before any additional code changes.
+1. Inspect the computed styles on the actual offcanvas panel and the left-edge boundary.
+2. Determine whether the seam is caused by a border, shadow, box model, or parent background.
+3. Compare the width and offset of the offcanvas panel to the dark shading area.
+4. Confirm whether the issue is local caching or a real rendering mismatch.
+5. Apply the minimal fix that removes the light seam while leaving the rest of the menu untouched.
+6. Verify the fix against the production reference before concluding.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] Root cause identified for the remaining visual mismatch
-- [ ] At least one concrete hypothesis is validated against computed styles or markup inspection
-- [ ] Recommendation is documented for either a CSS fix or a markup/structure change
-- [ ] Next action is explicit and ready for frontend follow-up or another coding pass
+- [ ] Root cause identified for the left-edge shading seam
+- [ ] The seam is fixed or a specific structural cause is proven
+- [ ] The fix is minimal and limited to the left-edge shading issue, not a broad visual redesign
+- [ ] The result is verified against the production reference and documented clearly
 
 ---
 
 ## Notes / Context from This Session
 
 - Production `main` branch was used as the benchmark.
-- Legacy menu structure was compared directly against current Bootstrap 5 markup.
-- Legacy CSS rules were restored in the offcanvas header and close-button area.
-- The visual mismatch still persists, which suggests the issue is not just value-level CSS drift.
-- User also plans to involve a frontend dev for a second opinion.
+- The remaining issue is specifically the left-edge shading seam, not the whole menu.
+- There is evidence that local cache effects can distort the comparison.
+- The dev VM appears closer to the original, so the investigation should compare real rendered styles rather than rely on localhost-only judgment.
 
 ---
 
 ## Dispatch Notes for Qwen
 
-Use the legacy Rails 5 main branch as the reference, but do not keep guessing at CSS values. Do a focused investigation of the actual computed styles and the offcanvas element structure. Prefer one fact-based hypothesis at a time and validate it before making more changes.
+Use the legacy Rails 5 main branch as the reference and stay focused on the left-edge shading seam. Do not reopen unrelated typography or close-button problems unless they directly affect the seam.
 
-This is a UI investigation task, not a broad refactor. The goal is to find the precise rendering mismatch and propose the correct implementation direction.
+The core task is: determine what in the Bootstrap 5 offcanvas structure or styling is leaving a visible light band between the dark panel and the overlay, and fix only that.
