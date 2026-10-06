@@ -8,5 +8,3 @@ Thumbs.db
 
 # Time Machine backup copy (not source of truth)
 projects/galaxy_game 2/
-# Local symlink for dispatch convenience
-agent-tasks

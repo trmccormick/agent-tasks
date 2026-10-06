@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-10-01 — Session closeout: transit_engine_contract.md created; topology task revised with verified facts; session closing for clean start
+**Last Updated:** 2026-10-04 — Session closeout: TransitEngine topology final read-only clarification pass completed; findings delivered in chat (no edits)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -722,7 +722,46 @@
 
 ---
 
-## 📋 NEEDS_REVIEW — OPEN Entries (Summary)
+## � Session Closeout (2026-10-04)
+
+### TransitEngine Topology Containment — Final Read-Only Clarification Pass ✅
+- **Task**: `2026-09-30-HIGH-ARCHITECTURE-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT.md` (backlog/current/)
+- **Work**: Complete read-only clarification pass resolving remaining gaps from prior planning sessions
+- **Findings delivered** (chat only, no edits):
+
+#### 1. Solver and Fallback Evidence
+- `calculate_transfer_window` flow verified: `orbital_data` lookup → nil check (line 67) → `fallback_transfer_window` (line 69) → route table → 365
+- Guard must insert between lines 64–68, BEFORE the nil check on line 67
+- Two-tier fallback confirmed: (a) `fallback_transfer_window` → route table when orbital data nil; (b) nested `fallback_transit_days` → rough Hohmann via MU_SUN → 365 when radii zero/missing
+- No topology checks exist anywhere in the call chain — all three gaps are real
+
+#### 2. Earth–Luna Rake Dependency Map
+- Exact invocation at `lunar_precursor_mission_validation.rake` lines 759–762
+- `schedule_departure` return shape: 10-key hash (craft_id, status, from_body, to_body, departure_date, arrival_date, transit_days, phase_angle, delta_v_km_s, payload)
+- **Only downstream consumer**: `precursor_departure[:transit_days]` — used as display value and scalar timeline anchor
+- Static `{ transit_days: 7 }` hash satisfies the observed contract; no other keys required
+- No state persisted from return value; no abort/check depends on status/phase_angle/delta_v/payload
+
+#### 3. docs/wiki_reorganization Destination Map
+- Structure confirmed at `docs/wiki_reorganization/` (not `docs/wiki/`)
+- Transportation hub (`transportation/`) already exists as active domain with gap-tracking conventions
+- **Best home for transit topology content**: Extend `transportation/GAPS.md` or add `transportation/transit-engine-topology.md` — consistent with established patterns, no structural approval needed
+- Celestial classification vocabulary maps to proposed `02_SIMULATION/celestial_body_hierarchy.md` (proposal only)
+- Future orbital-frame/multi-leg architecture: no existing page; would require Phase 2 reorganization approval
+
+#### 4. Unresolved Facts / Stop Conditions
+- No per-body μ API exists — only `mass` and `radius` available on CelestialBody records
+- Legacy top-level classes (`CelestialBodies::GasGiant`, `CelestialBodies::IceGiant`) coexist with namespaced variants — would bypass namespaced-only allowlist
+- Star is NOT a CelestialBody (separate ApplicationRecord)
+- No station/artificial-object CelestialBody class exists
+- Earth→Luna pre-change return is `transit_days: 0` (not ~104 as claimed in task file)
+
+#### 5. Recommendation
+- **Needs narrowly scoped architecture clarification** — allowlist must include legacy types; μ API assumption invalid; Earth→Luna evidence claim contradicted by source behavior
+
+---
+
+## �📋 NEEDS_REVIEW — OPEN Entries (Summary)
 | # | Date | Issue | Status |
 |---|------|-------|--------|
 | 1 | 07-31 | Sprite/biome/unit assets replaced with placeholders + mount architecture bug | **OPEN** — mount verified working; real sprites restored from Time Machine |
@@ -790,3 +829,44 @@
 | Multi-System Resource Coordination | Not implemented, legitimate future feature | Moved to `backlog/ai-manager/` for Grok review |
 
 **Grok needs to incorporate**: Material sourcing convention + acquisition logic into his Foothold Planner work. The multi-system coordination task is deferred but should be reviewed when footholds are established.
+
+---
+
+## 🔍 Session Closeout (2026-10-04)
+
+### TransitEngine Topology Containment — Final Read-Only Clarification Pass ✅
+- **Task**: `2026-09-30-HIGH-ARCHITECTURE-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT.md` (backlog/current/)
+- **Work**: Complete read-only clarification pass resolving remaining gaps from prior planning sessions
+- **Findings delivered** (chat only, no edits):
+
+#### 1. Solver and Fallback Evidence
+- `calculate_transfer_window` flow verified: `orbital_data` lookup → nil check (line 67) → `fallback_transfer_window` (line 69) → route table → 365
+- Guard must insert between lines 64–68, BEFORE the nil check on line 67
+- Two-tier fallback confirmed: (a) `fallback_transfer_window` → route table when orbital data nil; (b) nested `fallback_transit_days` → rough Hohmann via MU_SUN → 365 when radii zero/missing
+- No topology checks exist anywhere in the call chain — all three gaps are real
+
+#### 2. Earth–Luna Rake Dependency Map
+- Exact invocation at `lunar_precursor_mission_validation.rake` lines 759–762
+- `schedule_departure` return shape: 10-key hash (craft_id, status, from_body, to_body, departure_date, arrival_date, transit_days, phase_angle, delta_v_km_s, payload)
+- **Only downstream consumer**: `precursor_departure[:transit_days]` — used as display value and scalar timeline anchor
+- Static `{ transit_days: 7 }` hash satisfies the observed contract; no other keys required
+- No state persisted from return value; no abort/check depends on status/phase_angle/delta_v/payload
+
+#### 3. docs/wiki_reorganization Destination Map
+- Structure confirmed at `docs/wiki_reorganization/` (not `docs/wiki/`)
+- Transportation hub (`transportation/`) already exists as active domain with gap-tracking conventions
+- **Best home for transit topology content**: Extend `transportation/GAPS.md` or add `transportation/transit-engine-topology.md` — consistent with established patterns, no structural approval needed
+- Celestial classification vocabulary maps to proposed `02_SIMULATION/celestial_body_hierarchy.md` (proposal only)
+- Future orbital-frame/multi-leg architecture: no existing page; would require Phase 2 reorganization approval
+
+#### 4. Unresolved Facts / Stop Conditions
+- No per-body μ API exists — only `mass` and `radius` available on CelestialBody records
+- Legacy top-level classes (`CelestialBodies::GasGiant`, `CelestialBodies::IceGiant`) coexist with namespaced variants — would bypass namespaced-only allowlist
+- Star is NOT a CelestialBody (separate ApplicationRecord)
+- No station/artificial-object CelestialBody class exists
+- Earth→Luna pre-change return is `transit_days: 0` (not ~104 as claimed in task file)
+
+#### 5. Recommendation
+- **Needs narrowly scoped architecture clarification** — allowlist must include legacy types; μ API assumption invalid; Earth→Luna evidence claim contradicted by source behavior
+
+---
