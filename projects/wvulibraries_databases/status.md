@@ -11,33 +11,34 @@ Databases — WVU Libraries resource discovery and catalog indexing system (Ruby
 ---
 
 ## Current Status
-- **Status:** ⚠️ **BOOTSTRAP OFFCANVAS VISUAL MATCH STILL UNRESOLVED** — issue requires deeper frontend inspection
-- **Focus:** Match the legacy production admin menu exactly: close button placement, X centering, white seam, menu typography, header proportions
+- **Status:** ⚠️ **BOOTSTRAP OFFCANVAS LEFT-SIDE SHADING SEAM REMAINS THE ONLY ACTIVE VISUAL ISSUE**
+- **Focus:** Match the legacy left-edge shading seam against the production menu; no broad style rewrite unless required by the seam fix
 - **Active Branch:** `rails7-circleci-test`
-- **Last Session:** 2026-10-06 (compared against legacy Rails 5 production HTML/CSS, iterated SCSS changes, confirmed remaining mismatch persists)
-- **Last Update:** 2026-10-06 — frontend review requested; deeper UI investigation task queued for Qwen
+- **Last Session:** 2026-10-06 (compared against legacy Rails 5 production HTML/CSS, restored legacy layout patterns, observed a likely local cache effect on localhost)
+- **Last Update:** 2026-10-06 — narrowed task to the left-edge shading seam; Qwen investigation task queued
 
 ---
 
-## ✅ COMPLETED — Session 2026-10-06: Frontend Mismatch Comparison & Task Handoff
+## ✅ COMPLETED — Session 2026-10-06: Visual Comparison, Cache Check, and Task Narrowing
 
-**Summary**: Compared current Bootstrap 5 offcanvas against the legacy Rails 5 production implementation from the main branch. Re-applied the original structural rules (header layout, close button position, dashed divider, typography scale) and pushed the latest work to `rails7-circleci-test`. The visual mismatch still remains, and the issue has been narrowed to a Bootstrap offcanvas rendering difference rather than simple SCSS values.
+**Summary**: Compared the current Bootstrap 5 offcanvas against the legacy Rails 5 production implementation from the `main` branch, restored the original structural rules, and narrowed the remaining issue to a single mismatch: the left-edge shading band between the dark menu panel and the shaded overlay area. The dev VM appears visually closer to the production menu, which suggests local browser or asset cache may be distorting the localhost comparison.
 
 ### What We Verified
 - ✅ Original Rails 5 admin menu structure was read from `main` branch and compared directly
 - ✅ Legacy CSS patterns were restored in `databases/app/assets/stylesheets/interface/elements/_nav.scss`
-- ✅ Header and close button logic were aligned with production-era layout conventions
-- ✅ Current branch was committed and pushed for VM pull testing
-- ⚠️ The user still observes mismatch: close-button lift, white seam/band, and menu text not matching production
+- ✅ The issue was narrowed from a broad style mismatch to the left-edge shading seam specifically
+- ✅ The Qwen follow-up task was created and scoped to the seam rather than the whole menu
+- ⚠️ Localhost may still be showing stale CSS or cached assets, so the dev VM is the more reliable comparison point right now
 
 ### What This Indicates
-- The issue is not simply caused by a single CSS property value
-- The mismatch likely involves Bootstrap’s offcanvas internals, browser rendering, or a structural difference in the way the menu is mounted/positioned in the Rails 7 app
-- A second frontend pass is needed with the original production screen as the benchmark
+- The mismatch is no longer treated as a broad visual redesign problem
+- The remaining issue is likely a rendering artifact or offset/shade boundary issue at the menu edge
+- The next agent should focus on the seam itself and verify against production reference before making further changes
 
 ### Decision
-- Qwen should continue investigating the Bootstrap 5 offcanvas rendering mismatch with a fresh, narrow UI-focused task
-- Frontend dev should also be asked to compare markup and computed styles against the production page
+- Qwen should investigate the left-edge shading seam only
+- Frontend dev should compare the rendered offcanvas panel and computed styles on the dev VM against production
+- Local browser cache should be cleared before making any more assumptions about the localhost view
 
 ---
 
