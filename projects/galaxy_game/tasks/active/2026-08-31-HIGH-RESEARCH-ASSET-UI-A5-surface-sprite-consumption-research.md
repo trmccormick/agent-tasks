@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: research
 system_domain: OTHER
@@ -260,12 +260,12 @@ Identify the smallest missing integration contract without implementing it. The 
 ---
 
 ## Acceptance Criteria
-- [ ] Surface sprite consumer identified with file:line evidence
-- [ ] Sprite lookup path documented
-- [ ] Animation-state handling documented (or confirmed absent)
-- [ ] Integration gaps identified without implementing them
-- [ ] No code/assets modified
-- [ ] Synthesis report posted to chat before any work began
+- [x] Surface sprite consumer identified with file:line evidence
+- [x] Sprite lookup path documented
+- [x] Animation-state handling documented (or confirmed absent)
+- [x] Integration gaps identified without implementing them
+- [x] No code/assets modified
+- [x] Synthesis report posted to chat before any work began
 
 ---
 

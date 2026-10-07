@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: research
 system_domain: OTHER
@@ -268,13 +268,13 @@ State concrete options/evidence without selecting an architecture. The report sh
 ---
 
 ## Acceptance Criteria
-- [ ] Blueprint retrieval path identified with file:line evidence
-- [ ] Operational Data retrieval path identified with file:line evidence
-- [ ] Visual Definition relationship identified with file:line evidence
-- [ ] Production/Presentation split explicitly documented as unresolved (not decided)
-- [ ] Icon Bible gap flagged if relevant to icon handling
-- [ ] No implementation performed
-- [ ] Synthesis report posted to chat before any work began
+- [x] Blueprint retrieval path identified with file:line evidence
+- [x] Operational Data retrieval path identified with file:line evidence
+- [x] Visual Definition relationship identified with file:line evidence
+- [x] Production/Presentation split explicitly documented as unresolved (not decided)
+- [x] Icon Bible gap flagged if relevant to icon handling
+- [x] No implementation performed
+- [x] Synthesis report posted to chat before any work began
 
 ---
 
