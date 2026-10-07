@@ -1,151 +1,37 @@
 # Quick Start — Planning Session Dispatch
-**Your go-to tile for dispatching planning/review agents**
+
+A short copy-paste dispatch prompt for planning/review sessions.
 
 ---
 
-## Copy-Paste Dispatch Template
+## Dispatch Prompt
 
 ```
-You are the PLANNING/REVIEW Agent for [PROJECT] in this session.
+You are a planning or review agent for [PROJECT] in this session.
 
-Read these files IN ORDER:
-1. /Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md
-2. /Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/README.md
-3. [Paste NEEDS_REVIEW.md] — check for open entries before starting new triage/planning work. If any entry is OPEN, address or explicitly carry it forward before moving on.
-4. [Paste status.md]
-5. [Paste previous handoff]
+Read /Users/tam0013/Documents/git/agent-tasks/PLANNING_AGENT_SESSION_START.md and follow it using your actual access capabilities.
 
-YOUR ASSIGNMENT TODAY:
-[e.g., "Triage 50 GitHub issues and prioritize top 5 for next sprint"]
-[e.g., "Review synthesis reports for issues #2990 and #2991"]
-[e.g., "Plan task queue for Luna Phase - Game AI implementation"]
+YOUR ASSIGNMENT: [e.g., "Triage backlog issues" / "Review synthesis reports for #2990"]
+or: "Establish current state and await assignment."
 
-Start by creating a STATUS REPORT in chat confirming your understanding.
-```
+[Optional: Tracy's current agent availability/preferences — e.g., "Qwen available, Claude on hold"]
 
-Replace:
-- `[PROJECT]` → galaxy_game, samvera_hyku, wvulibraries_knapsack, etc.
-- `[YOUR ASSIGNMENT TODAY]` → specific work (triage, review, plan, etc.)
-
----
-
-## What Planning Agent Does
-
-1. **Reads** generic guide + project context + status + handoff
-2. **Creates STATUS REPORT** in chat (confirms understanding)
-3. **You approve** or clarify understanding
-4. **Performs work**: Triages, reviews, plans, identifies risks
-5. **Creates task files** for implementation (using TASK_TEMPLATE.md)
-6. **Creates SESSION HANDOFF** document (saved to `projects/[PROJECT]/handoffs/session_handoff_YYYY-MM-DD_[TOPIC].md`)
-
----
-
-## What You Get Back
-
-- ✅ Synthesis reviews (with approval gates)
-- ✅ New task files (ready for executor)
-- ✅ Updated status.md (progress notes)
-- ✅ SESSION HANDOFF document (continuity for next session)
-
----
-
-## Task File Format (What Agent Generates)
-
-Planning agents create minimal task files using [TASK_TEMPLATE.md](TASK_TEMPLATE.md):
-
-```markdown
----
-title: [PRIORITY-TYPE-BRIEF-TITLE]
-status: backlog  # or active/completed
-priority: HIGH | MEDIUM | LOW
-type: BUGFIX | FEATURE | REFACTOR | RESEARCH
-assigned_to: [qwen27b | tbd]
-created: YYYY-MM-DD
-updated: YYYY-MM-DD
----
-
-# [Title]
-
-## Prerequisites
-- Read: [File 1]
-- Read: [File 2]
-- Understand: [Architecture concept]
-
-## Problem Statement
-[2-3 sentences: what's broken or needed]
-
-## Acceptance Criteria
-- [ ] [Must do X]
-- [ ] [Must verify Y]
-- [ ] [Must test Z]
-
-## Implementation Notes
-[Any gotchas, architecture decisions, edge cases]
-
-## STATUS SYNTHESIS REPORT
-[Executor fills this in before implementing]
-
-Executor must post this to chat and WAIT for approval before coding.
+Provide a concise opening briefing before substantive assigned work.
 ```
 
 ---
 
-## Quick Checklist — Before You Dispatch
+## Usage Notes
 
-- [ ] Know what PROJECT you're working on
-- [ ] Know what ASSIGNMENT (triage / review / plan / etc.)
-- [ ] Have NEEDS_REVIEW.md ready to paste — check it for open entries first
-- [ ] Have status.md ready to paste
-- [ ] Have previous handoff ready to paste
-- [ ] Generic guide available at: `/Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md`
-- [ ] Project README available at: `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/README.md`
+- **Replace** `[PROJECT]` and `[YOUR ASSIGNMENT]` with your values.
+- **Sessions without repository access**: Tracy supplies the referenced startup instructions (`PLANNING_AGENT_SESSION_START.md`) and relevant project evidence (README, status.md, handoffs) as pasted content.
+- **Do not** make task creation or a fresh full-suite run automatic — Tracy decides.
+- For detailed startup procedure, evidence standards, and closeout rules, follow the referenced startup file rather than this quick-start guide.
 
 ---
 
-## Session Output — What to Save
+## Files Referenced
 
-After planning session completes, save:
-
-1. **Task files** agent created → `projects/[PROJECT]/tasks/backlog/YYYY-MM/YYYY-MM-DD-PRIORITY-TYPE-NAME.md`
-2. **Updated status.md** → `projects/[PROJECT]/status.md` (agent provides updated version)
-3. **Session handoff** → `projects/[PROJECT]/handoffs/session_handoff_YYYY-MM-DD_[TOPIC].md`
-
----
-
-## Next: Dispatch Implementation
-
-Once planning session is done:
-
-```
-You are IMPLEMENTATION Agent for [PROJECT].
-
-Read these files IN ORDER:
-1. /Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md
-2. /Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/README.md
-3. [Paste task file from planning session]
-
-REQUIRED: Create STATUS SYNTHESIS REPORT before coding (template in task file).
-
-Post your synthesis to chat and wait for approval before implementing.
-```
-
----
-
-## Common Projects
-
-- `galaxy_game` — Luna Phase AI manager implementation
-- `samvera_hyku` — Multi-tenant repository platform (Hyrax, Fedora, Solr)
-- `wvulibraries_knapsack` — Similar to Hyku, WVU-specific
-- `samvera_hyrax` — Core Hyrax framework work
-
----
-
-## Files This References
-
-- [REVIEW_AGENT_GUIDE.md](REVIEW_AGENT_GUIDE.md) — Generic guide planning agents read first
-- [TASK_TEMPLATE.md](TASK_TEMPLATE.md) — Template for minimal task files
-- [REVIEW_AGENT_WORKFLOW.md](REVIEW_AGENT_WORKFLOW.md) — Full workflow (for reference)
-- `projects/[PROJECT]/README.md` — Project-specific context
-- `projects/[PROJECT]/NEEDS_REVIEW.md` — Short, active list of items needing a second opinion; check for open entries at the start of every session
-- `projects/[PROJECT]/status.md` — Current state (progress tracking)
-- `projects/[PROJECT]/handoffs/` — Session handoffs (continuity)
+- `/Users/tam0013/Documents/git/agent-tasks/PLANNING_AGENT_SESSION_START.md` — Full startup procedure (state reconciliation, test-log check, closeout)
+- `/Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md` — Responsibilities and evidence standards
+- `/Users/tam0013/Documents/git/agent-tasks/SESSION_CLOSEOUT.md` — Closeout procedure
