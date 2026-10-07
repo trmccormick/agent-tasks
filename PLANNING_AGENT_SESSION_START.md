@@ -65,7 +65,7 @@ If a listed blocker is still unresolved, leave the task in `backlog/` and note t
 ## Step 3.6 — Verify status.md's own claims before reporting or building on them
 
 Before writing a new status.md entry or handoff, or relying on a prior entry to decide what's already done, independently re-check the specific claims rather than carrying them forward as fact:
-- "Pushed" / "all commits pushed" → run `git log origin/main..HEAD` (or equivalent) yourself
+- "Pushed" / "all commits pushed" → run `git fetch origin` first, then `git log origin/main..HEAD` yourself. Without a fetch, origin/main may be a stale local ref and a false "nothing unpushed" is possible. Report the result as of the fetch time.
 - "active/ is empty" / task location claims → `ls` it directly
 - "tests pass" / a specific pass-fail count → only report a count you ran yourself this session; dated historical counts are fine as historical evidence
 - A prior handoff's summary of state → treat it as a lead to verify, not a confirmed fact
