@@ -1,14 +1,9 @@
 # Agent-Tasks — Project Status & Task Tracking
-**Last Updated:** 2026-10-05 — Governance rules cleanup, routing alignment, and evidence-basis convention completed; Galaxy Game task system audit delivered; TransitEngine topology read-only clarification pass (uncommitted)
+**Last Updated:** 2026-10-06 — Governance rules cleanup, routing alignment, and evidence-basis convention completed
 
 ---
 
 ## 🔍 In Flight — Open Sessions & Staged Tasks
-
-### TransitEngine Topology Read-Only Clarification Pass — IN PROGRESS (uncommitted)
-- **Task**: `2026-09-30-HIGH-ARCHITECTURE-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT.md` (backlog/current/)
-- **Work**: Complete read-only clarification pass resolving remaining gaps from prior planning sessions
-- **Status**: Findings delivered in chat (no edits to repository); `rules/GUARDRAILS.md` and `projects/galaxy_game/status.md` modified but not yet committed
 
 ### None Currently Active (committed)
 
@@ -38,13 +33,6 @@ No active tasks. All recent work has been committed.
 - All phase15 files (3/3) match their phase17 twins byte-for-byte
 - Deleted folders confirmed: fabrication plant, blueprints-operational-data, phase14-venus-mars-terraforming
 
-### Galaxy Game Task System Audit — DELIVERED ✅
-- **Standalone asset-generation task**: `projects/galaxy_game/tasks/active/asset-ui/2026-09-06-HIGH-FEATURE-ASSET-GENERATION-STANDALONE-EXECUTION.md` — `status: active`
-- **GCC Mining task**: `projects/galaxy_game/tasks/backlog/current/2026-09-14-HIGH-FEATURE-GCC-MINING-SATELLITE-FITTING-DRIVEN-OUTPUT-GAMELOOP-INTEGRATION.md` — `status: backlog`
-- **galaxy_game tasks/active/**: 2 files (GCC Mining Scheduler + Asset Generation)
-- **data/json-data lunar_production**: No files found matching `*lunar_production*`
-- **methane.json pricing**: Primary at `data/json-data/resources/materials/gases/compound/methane.json` — `"pricing": { "base_price_per_kg": 1.85 }`
-
 ---
 
 ## 📋 Backlog Tasks (10 files)
@@ -62,20 +50,7 @@ No active tasks. All recent work has been committed.
 | `2026-07-03-MEDIUM-AUDIT-STANDARDIZE-AGENT-TASK-WORKFLOW.md` | MEDIUM | audit |
 | `2026-07-02-HIGH-DOCUMENTATION-GUARDRAILS-CONSOLIDATION.md` | HIGH | documentation |
 
----
 
-## 📝 Recent Git Activity
-
-| Commit | Summary |
-|--------|---------|
-| `88dfdd9` | status: purge to recent/pending work, history moved verbatim to status-archive.md |
-| `13a5275` | summary: market bug synthesis rewritten as PARTIAL, root cause unconfirmed |
-| `34ae635` | task: fix Step 7 ESI snippet (real token flow) and docker logs commands |
-| `8affb7e` | task: market bug file corrected (status partial, criteria unchecked, container and commands fixed) |
-| `6d9b6f4` | DOCS: add task-file correction workflow |
-| `af91db4` | REORG: remove obsolete duplicate phased task paths |
-| `4282e0e` | status: 2026-10-03 session log (logging fix in progress, deploy facts, pending corrections) |
-| `2fefea7` | status: 2026-10-02 session log (market bug partial, root cause unconfirmed, open items) |
 
 ---
 
@@ -84,7 +59,6 @@ No active tasks. All recent work has been committed.
 - **Active tasks**: 0
 - **Backlog tasks**: 10 (6 governance drafts, 4 documentation/audit/planning)
 - **Recent commits**: 8 substantive changes in last 5 days
-- **Working tree**: 2 modified files uncommitted (`rules/GUARDRAILS.md`, `projects/galaxy_game/status.md`); all prior session work committed
 
 ---
 
@@ -98,7 +72,6 @@ No active tasks. All recent work has been committed.
 3. **Durable summaries** (afac53b) — Added 2 investigation summaries to `projects/galaxy_game/summaries/`
 4. **Backlog tasks** (70968d5) — Added 2 new backlog tasks (Consortium Profits, Sabatier Reactor spec refactor)
 5. **Phase reorganization deletions** (bb6bf80) — Removed 18 obsolete duplicate phased task paths (all verified via SHA-256 against HEAD destinations)
-
 ---
 
 ## 📝 Session Log — 2026-10-05 (MAG-3 through MAG-6 Implementation)
@@ -113,8 +86,6 @@ No active tasks. All recent work has been committed.
 6. **Session notes update** — This entry
 
 **Scope Restrictions Honored**: No handoff files, no untracked summaries/backlog tasks committed; only metadata, findings, summaries, backlog additions, and phase deletions touched.
-
-**Remaining Working Tree State**: 1 modified (`PERPLEXITY_SESSION_START_GALAXY_GAME.md`), 1 deleted (blueprint move), 20 untracked files (handoffs/summaries/backlog tasks).
 
 ---
 
