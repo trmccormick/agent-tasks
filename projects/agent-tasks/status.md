@@ -1,5 +1,5 @@
 # Agent-Tasks — Project Status & Task Tracking
-**Last Updated:** 2026-10-06 — Governance rules cleanup, routing alignment, and evidence-basis convention completed
+**Last Updated:** 2026-10-07 — Samvera reorg planning (read-only); governance conflict register and facts committed
 
 ---
 
@@ -199,3 +199,12 @@ No active tasks. All recent work has been committed.
 
 **Scope Restrictions Honored**: Zero repository changes. No edits, stages, commits, pushes, or dispatches.
 
+---
+
+## 📝 Session Log — 2026-10-07 (Samvera reorg planning, read-only)
+
+- Plan: `summaries/2026-10-07-PLAN-SAMVERA-REORG.md` — uncommitted. Section 6 (governance classification) done; sections 1, 5, 7 to be rewritten from the facts file.
+- Facts from Tracy: `summaries/2026-10-07-PROJECT-FACTS-FROM-TRACY.md` — committed `93fddbc`.
+- Governance conflict register: `summaries/2026-10-07-GOVERNANCE-CONFLICT-REGISTER.md` — committed `93fddbc`.
+- Repo changes: summaries added only; no rules or task files changed.
+- Longer entries for 2026-10-06 and 2026-10-07 were moved to `archive/status-log-2026-10.md` (curated 2026-10-08).
