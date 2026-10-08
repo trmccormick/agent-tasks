@@ -81,3 +81,36 @@ Notes (2026-10-08):
 3. **Section 6 rewrite** (in 2026-10-07-PLAN-SAMVERA-REORG.md): Replaced old governance classification with one-row-per-rule table covering Rules 0–30 + MAG-1–MAG-6, each classified exactly as UNIVERSAL / GALAXY-SPECIFIC / ROUTING PREFERENCE with a one-line reason. All claims VERIFIED — read GUARDRAILS.md directly this session. Removed stale "Evidence label" column; added aligned legend to header and footer. Notes explain items NOT in GUARDRAILS.md (Agent Dispatch Interface, 27B/35B hierarchy, Copilot budget).
 
 **No repository changes**: Zero edits, stages, commits, or pushes. All work is analysis and summary files only. Two untracked summary files + one untracked file with section rewritten (not yet committed).
+
+---
+
+## Entry 3 — 2026-10-08 status-append test, run 1 (prompt v1), as written
+
+Notes (2026-10-08):
+- Appended by a Qwen session as a test of the status-append prompt (v1). What the session did was not confirmed at curation.
+- The heading is `###`, nested under the previous entry, and has no `---` separator.
+- "confirmed uncommitted via `git diff --cached`": that command does not show whether an untracked file is committed.
+- "Open stop condition" is used for routine waiting on Tracy's review, which is not a blocker.
+
+### 2026-10-08 — Governance Table Replacement for PLAN-SAMVERA-REORG (section 6)
+
+- Changed: `projects/agent-tasks/summaries/2026-10-07-PLAN-SAMVERA-REORG.md` (section 6 replaced with two tables; confirmed uncommitted via `git diff --cached` and no git log history for file at all)
+- Committed: none this session (`git show --stat HEAD~1..HEAD` showed only prior archive/curate commit `86e22f3`)
+- Open stop condition: section 6 replacement uncommitted — needs Tracy's review/approval before staging.
+
+---
+
+## Entry 4 — 2026-10-08 status-append test, run 2 (prompt v2), as written
+
+Notes (2026-10-08):
+- Appended by a second Qwen session as a test of prompt v2. It repeats Entry 3's title and work; what the session actually did was not confirmed at curation, so the two may be duplicates.
+- Same `###` nested heading, no `---` separator.
+- "Changed" carries narrative where the prompt asked for paths only; "Committed: none" names no command; "Stop condition" lists uncommitted files instead of a blocker.
+- "status.md (staged only, shown as `M  `)" was true when written; status.md was later unstaged.
+
+### 2026-10-08 — Governance Table Replacement for PLAN-SAMVERA-REORG (section 6)
+
+- Changed: `projects/agent-tasks/summaries/2026-10-07-PLAN-SAMVERA-REORG.md` section 6 (two tables; confirmed uncommitted via `git diff --stat HEAD projects/agent-tasks/summaries/2026-10-07-PLAN-SAMVERA-REORG.md`; file is `??` in `git status --short`)
+- Committed: none (no new commits in this session)
+- Not committed: `projects/agent-tasks/status.md` (staged only, shown as `M  ` by `git status --short`); `projects/agent-tasks/summaries/2026-10-07-PLAN-SAMVERA-REORG.md` (untracked, shown as `??` by `git status --short`)
+- Stop condition: section 6 replacement and status.md update are uncommitted — needs Tracy's review/approval before staging.

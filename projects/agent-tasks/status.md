@@ -208,3 +208,12 @@ No active tasks. All recent work has been committed.
 - Governance conflict register: `summaries/2026-10-07-GOVERNANCE-CONFLICT-REGISTER.md` — committed `93fddbc`.
 - Repo changes: summaries added only; no rules or task files changed.
 - Longer entries for 2026-10-06 and 2026-10-07 were moved to `archive/status-log-2026-10.md` (curated 2026-10-08).
+
+---
+
+## 📝 Session Log — 2026-10-08 (Plan section 6 corrections; status.md curation)
+
+- Changed: `summaries/2026-10-07-PLAN-SAMVERA-REORG.md` (section 6 corrected: one legend, STALE/MERGED classes added, rows fixed; final pass by direct edit); `status.md` and `archive/status-log-2026-10.md` (curated) (git commit output, `86e22f3`)
+- Committed: `86e22f3` — status.md curation and archive file (git commit output)
+- Not committed: the plan file (untracked), and this entry (git status --short, run by Tracy 2026-10-08 12:59)
+- Stop condition: none
