@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-10-04 — Session closeout: TransitEngine topology final read-only clarification pass completed; findings delivered in chat (no edits)
+**Last Updated:** 2026-10-07 — C1 Asset Registry implementation completed
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -870,3 +870,51 @@
 - **Needs narrowly scoped architecture clarification** — allowlist must include legacy types; μ API assumption invalid; Earth→Luna evidence claim contradicted by source behavior
 
 ---
+
+## ✅ C1 — Asset Registry / Development-Time Orchestration — COMPLETE ✅
+
+**Date**: 2026-10-07
+**Task File**: `projects/galaxy_game/tasks/active/2026-08-31-HIGH-FEATURE-ASSET-UI-C1-implement-asset-registry-mapping.md`
+**Status**: backlog → active → completed
+
+### What Was Implemented (per B1 approved design)
+
+**New Files Created:**
+1. `galaxy_game/app/services/asset_registry.rb` — Asset Registry/orchestration service (430 lines)
+2. `galaxy_game/spec/services/asset_registry_spec.rb` — Focused tests (600 lines)
+
+**Implementation Details:**
+- `asset_id` as canonical shared identity across all artifacts (primary lookup key)
+- `asset_id → blueprint_path` resolution (exact match, _bp suffix, recursive search)
+- `asset_id → operational_data_path` resolution (base name matching)
+- `asset_id → visual_definition_path` resolution (JSON/MD discovery)
+- `asset_id → render_template_path` resolution
+- `asset_id → visual_profile_id` association stored in registry (resolved by orchestration, NOT Blueprint)
+- Representation manifest with status per render profile: exists / missing / experimental / planned
+- Pre-computed `catalog_manifest_path` bridge (development-time → runtime)
+- Pre-computed `surface_manifest_path` bridge (development-time → runtime)
+- RH-400 concrete example: all three identifiers preserved (`regolith_harvester_rover`, `VEHICLE_HARVESTER_ROVER_RH400`, `rh400_`)
+- Valid asset_family enforcement (8 families from Visual Definition template)
+- Auto-discovery from filesystem when asset not explicitly registered
+
+**Test Results:**
+```
+59 examples, 0 failures
+```
+
+Tests cover: canonical lookup, RH-400 resolution, artifact path resolution, missing/experimental representation handling, PromptCompiler API compatibility (5 keyword args unchanged), no `visual_profile_path:` on public API.
+
+### Guardrails Verified
+- ✅ No Visual Profile changes
+- ✅ No Render Template changes  
+- ✅ No docs/ runtime dependencies
+- ✅ No unrelated files changed
+- ✅ Blueprint does NOT own visual fields
+- ✅ PromptCompiler receives already-resolved inputs (no repository search by asset_id)
+
+### Git Commits
+| Repo | Commit | Message |
+|------|--------|---------|
+| galaxyGame | `4361fbc3` | feat: implement Asset Registry/orchestration per B1 design |
+| agent-tasks | `ea6130f` | chore: mark C1 task as completed |
+
