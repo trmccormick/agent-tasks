@@ -1,6 +1,6 @@
 ---
-status: backlog
-priority: MEDIUM
+status: completed
+priority: HIGH
 type: research
 system_domain: OTHER
 mvp_alignment: SPEC_HEALTH
@@ -16,11 +16,11 @@ Agents receive this exact text as the startup contract. Every word matters.
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-MEDIUM-RESEARCH-ASSET-UI-A6-icon-bible-dependency-research.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-MEDIUM-RESEARCH-ASSET-UI-A6-icon-bible-dependency-research.md \
-         projects/galaxy_game/tasks/active/2026-08-31-MEDIUM-RESEARCH-ASSET-UI-A6-icon-bible-dependency-research.md
+  git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md \
+         projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
@@ -29,7 +29,7 @@ LIFECYCLE: backlog → active → completed
   - Tracked file: git mv (never cp or plain mv)
   - New/untracked file: mv then git add the final path
   - Never leave stale copies in the source folder
-  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-08-31-MEDIUM-RESEARCH-ASSET-UI-A6-icon-bible-dependency-research.md"
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md"
     Only ONE result should exist. Paste this output before committing.
 
 READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
@@ -64,9 +64,9 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 ---
 
-# TASK: A6 — Icon Bible Dependency Research
+# TASK: A2 — Static Asset Storage and Presentation Research
 **Status**: BACKLOG
-**Priority**: MEDIUM
+**Priority**: HIGH
 **Type**: research
 **Created**: 2026-08-31
 **Last Updated**: 2026-08-31
@@ -77,8 +77,8 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 - **Template Conformance**: PASS
 - **Docker Wrapper Check**: N/A — research task, no RSpec execution required.
-- **MVP Alignment**: VALID — Icon Bible status affects B2's catalog presentation contract and C3/C4's UI implementation.
-- **MVP Impact Note**: If the Icon Bible is a blocking dependency, it must be flagged before catalog icon work proceeds.
+- **MVP Alignment**: VALID — catalog presentation depends on knowing how assets are stored and referenced.
+- **MVP Impact Note**: Asset/UI foundation for the Luna + Earth-import MVP; catalog work needs presentation assets, not surface sprites.
 - **Action Line**: READY FOR LOCAL DISPATCH
 
 ---
@@ -86,7 +86,7 @@ The dispatch interface above is ONLY the bootstrap instructions.
 ## Agent Assignment (Human-filled, not seen by agents)
 
 **Assigned To**: Qwen local via Copilot (primary)
-**Why This Agent**: Repository inspection to locate references and assess blocking status.
+**Why This Agent**: Repository inspection and implementation access.
 **Local attempts before cloud**: N/A
 **Supervision Level**: watched carefully
 
@@ -102,7 +102,7 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 ## Context
 
-Determine whether the referenced Icon Bible is a blocking dependency for catalog/inventory icon work or a documentation gap that can remain unresolved. Several canonical documents reference an Icon Bible, but its absence has been reported. We need evidence before allowing it to shape B2. Do not create the missing Icon Bible. Do not invent icon rules. If the catalog can proceed from existing canonical fields, say so with evidence.
+Determine how generated static assets are currently stored, named, referenced, and served, focusing specifically on the RH-400 catalog render and inventory icon. The RH-400 family contains multiple representations — catalog work needs the presentation assets, not the surface sprite. Catalog presentation is development/UI work; production runtime must continue using established game-data lookup architecture.
 
 **Relevant Architecture Docs** — read before starting:
 - `docs/new_agent/rules/DECISIONS.md` — locked architectural decisions.
@@ -120,15 +120,15 @@ None required.
 
 ### Architecture Gotchas (Critical to understand BEFORE starting)
 
-⚠️ **GOTCHA 1**: Do not create the missing Icon Bible.
-- ❌ Wrong: Generate icon rules or create an Icon Bible document as part of this task.
-- ✅ Right: Document what exists, flag the gap, and assess whether existing canonical fields are sufficient for catalog work.
-- Why: This is a research/assessment task, not a documentation creation task.
+⚠️ **GOTCHA 1**: Do not treat the RH-400 family as one image.
+- ❌ Wrong: Treat "RH-400's asset" as a single generic image field.
+- ✅ Right: Distinguish catalog render, inventory icon, encyclopedia render, blueprint, exploded view, surface sprite, animation frames, wrecked sprite, and thumbnail as separate representations with separate consumers.
+- Why: Each representation has a different consumer and technical contract. Collapsing them loses critical information.
 
-⚠️ **GOTCHA 2**: Do not invent icon rules from thin air.
-- ❌ Wrong: Propose icon design rules or standards without evidence from existing specifications.
-- ✅ Right: Search for any existing icon rules in canonical documents; if none exist, report that the gap is unresolvable without a product decision.
-- Why: Icon rules are a product/design decision, not an implementation detail.
+⚠️ **GOTCHA 2**: Do not move generated assets into runtime data merely to make them discoverable.
+- ❌ Wrong: Add Docker mounts for docs/ or treat documentation as application data.
+- ✅ Right: Asset-generation documentation remains development-time source material; catalog presentation uses existing game-data lookup architecture.
+- Why: The Production/Presentation split is intentional — production runtime and catalog UI have different data contracts.
 
 ### Multi-Domain / Multi-Tenant Routing (if applicable)
 Not applicable — this is a repository inspection task.
@@ -141,18 +141,18 @@ Not applicable — this is a repository inspection task.
 ```markdown
 ## STATUS SYNTHESIS REPORT
 
-**Task**: A6 — Icon Bible Dependency Research
+**Task**: A2 — Static Asset Storage and Presentation Research
 **Status**: backlog → active → completed
 **Date**: YYYY-MM-DD
 
 ### What I'm About to Do
-Determine whether the Icon Bible is a blocking dependency for catalog/inventory icon work or a documentation gap. Classify as blocking, non-blocking, or stale-reference documentation gap.
+Determine how generated static assets are stored, named, referenced, and served, focusing on the RH-400 catalog render and inventory icon. Distinguish these from surface sprites and other RH-400 representations.
 
 ### Files I'll Reference
 | File | Purpose | Status |
 |---|---|---|
-| Documents referencing "Icon Bible" | Reference locations | pending |
-| Existing icon/asset specifications | Substitute rules evidence | pending |
+| Repository asset/image directories | Storage location evidence | pending |
+| Code/spec references to RH-400 assets | Consumption path evidence | pending |
 
 ### Prerequisites Completed
 - ✅ Step 0: Task file moved to active/ with git mv (find output pasted in chat)
@@ -163,11 +163,11 @@ Determine whether the Icon Bible is a blocking dependency for catalog/inventory 
 - ✅ Understand architecture gotchas above
 
 ### Expected Outcomes
-Icon Bible references identified; existing substitute rules checked; blocking status explicitly classified (blocking/non-blocking/stale-reference); no documentation created.
+Exact paths for catalog render and inventory icon identified; existing storage/reference mechanism documented; no runtime Docker/docs dependency introduced.
 
 ### Critical Gotchas I Will Avoid
-- ❌ Creating the Icon Bible or inventing icon rules — instead ✅ Documenting what exists and flagging the gap
-- ❌ Allowing the Icon Bible to block B2 without evidence — instead ✅ Assessing whether existing canonical fields suffice
+- ❌ Treating RH-400 as one image — instead ✅ Separately identifying each representation (catalog render, icon, surface sprite, etc.)
+- ❌ Adding docs/ as runtime data — instead ✅ Documenting existing storage mechanism without modifying it
 
 ---
 
@@ -178,10 +178,10 @@ Icon Bible references identified; existing substitute rules checked; blocking st
 
 ## Problem Statement
 
-Determine whether the referenced Icon Bible is a blocking dependency for catalog/inventory icon work or a documentation gap that can remain unresolved.
+Determine how generated static assets are currently stored, named, referenced, and served, focusing specifically on the RH-400 catalog render and inventory icon.
 
-**Current behavior**: Several canonical documents reference an Icon Bible, but its absence has been reported. We need evidence before allowing it to shape B2.
-**Expected behavior**: Classify the Icon Bible as blocking, non-blocking, or stale-reference documentation gap with evidence. Do not create documentation.
+**Current behavior**: Repository state must be established by evidence; do not assume the planned architecture exists in code.
+**Expected behavior**: Produce only the evidence result explicitly requested — identify exact paths, naming conventions, and reference mechanisms for catalog presentation assets.
 
 ---
 
@@ -190,14 +190,14 @@ Determine whether the referenced Icon Bible is a blocking dependency for catalog
 ### Primary Files — inspect or edit only as specified by this task
 | File | Purpose | Key Method/Section |
 |---|---|---|
-| Documents referencing "Icon Bible" | Reference locations | N/A (read-only) |
-| Existing icon/asset specifications | Substitute rules evidence | N/A (read-only) |
+| Repository asset/image directories | Storage location evidence | N/A (read-only) |
+| Code/spec references to RH-400 assets | Consumption path evidence | N/A (read-only) |
 
 ### Reference Files — read but do not edit
 | File | Why You Need It |
 |---|---|
-| A2 (Static asset storage research) | Catalog render/icon paths |
-| A3 (RH-400 asset family mapping) | Icon representation in asset family |
+| Existing asset-generation specifications in `docs/` | Establish canonical asset roles and naming conventions |
+| Blueprint/Operational Data examples for RH-400 | Establish canonical game-data relationship |
 
 ### Migration
 - [x] No migration needed
@@ -211,8 +211,8 @@ Determine whether the referenced Icon Bible is a blocking dependency for catalog
 ### Step 0 — Move task file to active/ and update status (MANDATORY FIRST STEP)
 
 ```bash
-git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-MEDIUM-RESEARCH-ASSET-UI-A6-icon-bible-dependency-research.md \
-       projects/galaxy_game/tasks/active/2026-08-31-MEDIUM-RESEARCH-ASSET-UI-A6-icon-bible-dependency-research.md
+git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md \
+       projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md
 ```
 
 Then open the moved file and change: `status: backlog → status: active`
@@ -220,55 +220,55 @@ Then open the moved file and change: `status: backlog → status: active`
 Verify only one copy exists:
 ```bash
 find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks \
-     -name "2026-08-31-MEDIUM-RESEARCH-ASSET-UI-A6-icon-bible-dependency-research.md"
+     -name "2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md"
 ```
 
 **Paste the output in chat before proceeding.** Expected: exactly one result at `active/` path.
 
-### Step 1 — Search references
+### Step 1 — Locate asset roots
 
-Find every current reference to the Icon Bible and the expected location/name. Search for:
-- "Icon Bible" or "icon_bible" or "icon-bible" in all docs and code
-- Any document that specifies icon design rules or standards
-- The expected file path or format of the Icon Bible
+Find the existing asset/image directories and relevant configuration. Search for:
+- `public/assets/`, `app/assets/images/`, or similar Rails asset paths
+- Any custom asset storage directories
+- Configuration files that reference asset paths
 
-### Step 2 — Search for replacement rules
+### Step 2 — Inspect RH-400 presentation assets
 
-Determine whether icon rules exist elsewhere. Specifically:
-- Do Visual Profiles contain icon specifications?
-- Do asset-generation specs define icon rules?
-- Are there any existing icon images with implicit rules?
+Identify actual catalog-render and inventory-icon files and their naming/path conventions. Specifically:
+- What is the exact file path for the RH-400 catalog render?
+- What is the exact file path for the RH-400 inventory icon?
+- Are these separate files or derived from a single source?
 
-### Step 3 — Assess blocking status
+### Step 3 — Trace references
 
-Identify exactly which planned catalog behavior would depend on the missing document. Classify as:
-- **Blocking**: Catalog icon work cannot proceed without Icon Bible rules
-- **Non-blocking**: Existing canonical fields are sufficient for catalog icon work
-- **Stale-reference documentation gap**: The Icon Bible was planned but is no longer relevant
+Find existing code/spec references that consume or identify these files. Search for:
+- References to "RH-400" in controllers, services, views
+- Asset path resolution logic
+- Any catalog-related code that currently displays RH-400 imagery
 
 ### Step 4 — Report
 
-Classify the Icon Bible status with evidence. The report should answer:
-1. Where is the Icon Bible referenced (file:line)?
-2. What icon rules exist elsewhere (if any)?
-3. Is it blocking, non-blocking, or a stale reference?
-4. What does B2 need to know about this gap?
+Record exact paths and file:line evidence. Do not alter files. The report should answer:
+1. Where are catalog render and inventory icon stored?
+2. How are they named (naming convention)?
+3. How does existing code reference them?
+4. What is the smallest next design question for B2 to resolve?
 
 ---
 
 ## Acceptance Criteria
-- [ ] Icon Bible references identified with file:line evidence
-- [ ] Existing substitute rules checked and documented
-- [ ] Blocking status explicitly classified (blocking/non-blocking/stale-reference)
-- [ ] No documentation created (no Icon Bible generated)
+- [ ] Catalog render and inventory icon are separately identified with exact file paths
+- [ ] Existing storage/reference mechanism is documented with file:line evidence
+- [ ] No runtime Docker/docs dependency introduced
+- [ ] Findings identify the smallest next design question for B2
 - [ ] Synthesis report posted to chat before any work began
 
 ---
 
 ## Stop Conditions — escalate to user immediately if:
-- References conflict materially with existing icon behavior
-- A product decision is required to define icon rules (beyond research scope)
-- The Icon Bible reference cannot be located anywhere in the repository
+- Asset files are missing or ambiguous (cannot determine which file is which representation)
+- Existing serving architecture requires an architectural decision beyond this task's scope
+- Proposed change would affect shared asset infrastructure
 
 ---
 
@@ -283,9 +283,9 @@ No commit is authorized by this task unless explicitly stated in the task steps.
 ---
 
 ## Dependencies
-**Blocked by**: none
-**Blocks**: B2
-**Related tasks**: A2 (static asset storage — icon paths)
+**Blocked by**: A1
+**Blocks**: A3, A4, B2
+**Related tasks**: RH-400 Run 06 asset family
 
 ---
 
@@ -311,4 +311,4 @@ Research/design findings only unless implementation is explicitly authorized.
 ---
 
 ## Handoff Summary
-HANDOFF SUMMARY: A6 | [result] | [next action]
+HANDOFF SUMMARY: A2 | [result] | [next action]

@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 priority: HIGH
 type: research
 system_domain: OTHER
@@ -16,7 +16,7 @@ Agents receive this exact text as the startup contract. Every word matters.
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A3-rh-400-asset-family-mapping.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A3-rh-400-asset-family-mapping.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
   git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A3-rh-400-asset-family-mapping.md \

@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 priority: HIGH
 type: research
 system_domain: OTHER
@@ -16,11 +16,11 @@ Agents receive this exact text as the startup contract. Every word matters.
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md \
-         projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md
+  git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md \
+         projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
@@ -29,7 +29,7 @@ LIFECYCLE: backlog → active → completed
   - Tracked file: git mv (never cp or plain mv)
   - New/untracked file: mv then git add the final path
   - Never leave stale copies in the source folder
-  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md"
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md"
     Only ONE result should exist. Paste this output before committing.
 
 READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
@@ -64,7 +64,7 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 ---
 
-# TASK: A2 — Static Asset Storage and Presentation Research
+# TASK: A5 — Surface Sprite Consumption Research
 **Status**: BACKLOG
 **Priority**: HIGH
 **Type**: research
@@ -77,8 +77,8 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 - **Template Conformance**: PASS
 - **Docker Wrapper Check**: N/A — research task, no RSpec execution required.
-- **MVP Alignment**: VALID — catalog presentation depends on knowing how assets are stored and referenced.
-- **MVP Impact Note**: Asset/UI foundation for the Luna + Earth-import MVP; catalog work needs presentation assets, not surface sprites.
+- **MVP Alignment**: VALID — surface asset integration (C5/D3) depends on knowing how sprites are currently consumed.
+- **MVP Impact Note**: Surface representation is a separate consumer from catalog presentation; this task must stay precise about which RH-400 asset it means (surface sprite, not catalog render).
 - **Action Line**: READY FOR LOCAL DISPATCH
 
 ---
@@ -102,7 +102,7 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 ## Context
 
-Determine how generated static assets are currently stored, named, referenced, and served, focusing specifically on the RH-400 catalog render and inventory icon. The RH-400 family contains multiple representations — catalog work needs the presentation assets, not the surface sprite. Catalog presentation is development/UI work; production runtime must continue using established game-data lookup architecture.
+Determine how the surface renderer currently consumes transparent sprites and animation frames, specifically for the RH-400 surface representation. Surface assets have a different consumer and technical contract from catalog renders — they must eventually work in Civ4/FreeCiv-style layers and TerrainForge/SimCity-style views. Inspect the surface sprite and animation representations only. Do not design the catalog contract here.
 
 **Relevant Architecture Docs** — read before starting:
 - `docs/new_agent/rules/DECISIONS.md` — locked architectural decisions.
@@ -120,15 +120,15 @@ None required.
 
 ### Architecture Gotchas (Critical to understand BEFORE starting)
 
-⚠️ **GOTCHA 1**: Do not treat the RH-400 family as one image.
-- ❌ Wrong: Treat "RH-400's asset" as a single generic image field.
-- ✅ Right: Distinguish catalog render, inventory icon, encyclopedia render, blueprint, exploded view, surface sprite, animation frames, wrecked sprite, and thumbnail as separate representations with separate consumers.
-- Why: Each representation has a different consumer and technical contract. Collapsing them loses critical information.
+⚠️ **GOTCHA 1**: Surface sprites are transparent-background gameplay assets.
+- ❌ Wrong: Introduce baked terrain backgrounds into generated surface images or treat them as catalog renders.
+- ✅ Right: Keep surface sprites as transparent PNGs; background/composition is the renderer's responsibility.
+- Why: The surface renderer composes assets dynamically based on terrain, lighting, and game state.
 
-⚠️ **GOTCHA 2**: Do not move generated assets into runtime data merely to make them discoverable.
-- ❌ Wrong: Add Docker mounts for docs/ or treat documentation as application data.
-- ✅ Right: Asset-generation documentation remains development-time source material; catalog presentation uses existing game-data lookup architecture.
-- Why: The Production/Presentation split is intentional — production runtime and catalog UI have different data contracts.
+⚠️ **GOTCHA 2**: Catalog renders and surface sprites have fundamentally different consumers.
+- ❌ Wrong: Use catalog render as surface sprite or vice versa; assume they are interchangeable.
+- ✅ Right: Treat them as separate representations with separate paths, formats, and consumers.
+- Why: Catalog renders have backgrounds for documentation/UI; surface sprites are transparent for game rendering.
 
 ### Multi-Domain / Multi-Tenant Routing (if applicable)
 Not applicable — this is a repository inspection task.
@@ -141,18 +141,19 @@ Not applicable — this is a repository inspection task.
 ```markdown
 ## STATUS SYNTHESIS REPORT
 
-**Task**: A2 — Static Asset Storage and Presentation Research
+**Task**: A5 — Surface Sprite Consumption Research
 **Status**: backlog → active → completed
 **Date**: YYYY-MM-DD
 
 ### What I'm About to Do
-Determine how generated static assets are stored, named, referenced, and served, focusing on the RH-400 catalog render and inventory icon. Distinguish these from surface sprites and other RH-400 representations.
+Determine how the surface renderer currently consumes transparent sprites and animation frames for the RH-400 surface representation. Stay precise about surface sprite (not catalog render). Identify integration gaps without implementing them.
 
 ### Files I'll Reference
 | File | Purpose | Status |
 |---|---|---|
-| Repository asset/image directories | Storage location evidence | pending |
-| Code/spec references to RH-400 assets | Consumption path evidence | pending |
+| Surface-layer/rendering services | Sprite consumer code | pending |
+| RH-400 surface sprite file | Actual asset path and format | pending |
+| Animation frame files (if any) | State representation evidence | pending |
 
 ### Prerequisites Completed
 - ✅ Step 0: Task file moved to active/ with git mv (find output pasted in chat)
@@ -163,11 +164,12 @@ Determine how generated static assets are stored, named, referenced, and served,
 - ✅ Understand architecture gotchas above
 
 ### Expected Outcomes
-Exact paths for catalog render and inventory icon identified; existing storage/reference mechanism documented; no runtime Docker/docs dependency introduced.
+Surface sprite consumer identified; sprite lookup path documented; animation-state handling documented; integration gaps identified without implementing them.
 
 ### Critical Gotchas I Will Avoid
-- ❌ Treating RH-400 as one image — instead ✅ Separately identifying each representation (catalog render, icon, surface sprite, etc.)
-- ❌ Adding docs/ as runtime data — instead ✅ Documenting existing storage mechanism without modifying it
+- ❌ Using catalog render as surface sprite — instead ✅ Keeping them separate with distinct paths and consumers
+- ❌ Introducing baked terrain backgrounds — instead ✅ Documenting existing renderer behavior
+- ❌ Designing the catalog contract here — instead ✅ Focusing only on surface rendering
 
 ---
 
@@ -178,10 +180,10 @@ Exact paths for catalog render and inventory icon identified; existing storage/r
 
 ## Problem Statement
 
-Determine how generated static assets are currently stored, named, referenced, and served, focusing specifically on the RH-400 catalog render and inventory icon.
+Determine how the surface renderer currently consumes transparent sprites and animation frames, specifically for the RH-400 surface representation.
 
 **Current behavior**: Repository state must be established by evidence; do not assume the planned architecture exists in code.
-**Expected behavior**: Produce only the evidence result explicitly requested — identify exact paths, naming conventions, and reference mechanisms for catalog presentation assets.
+**Expected behavior**: Produce only the evidence result explicitly requested — identify sprite consumer, lookup path, animation handling, and integration gaps without implementing anything.
 
 ---
 
@@ -190,14 +192,15 @@ Determine how generated static assets are currently stored, named, referenced, a
 ### Primary Files — inspect or edit only as specified by this task
 | File | Purpose | Key Method/Section |
 |---|---|---|
-| Repository asset/image directories | Storage location evidence | N/A (read-only) |
-| Code/spec references to RH-400 assets | Consumption path evidence | N/A (read-only) |
+| Surface-layer/rendering services | Sprite consumer code | N/A (read-only) |
+| RH-400 surface sprite file | Actual asset path and format | N/A (read-only) |
+| Animation frame files (if any) | State representation evidence | N/A (read-only) |
 
 ### Reference Files — read but do not edit
 | File | Why You Need It |
 |---|---|
-| Existing asset-generation specifications in `docs/` | Establish canonical asset roles and naming conventions |
-| Blueprint/Operational Data examples for RH-400 | Establish canonical game-data relationship |
+| Existing asset-generation specifications in `docs/` | Establish canonical surface sprite format requirements |
+| A3 (RH-400 asset family mapping) | Distinguish surface sprite from catalog render |
 
 ### Migration
 - [x] No migration needed
@@ -211,8 +214,8 @@ Determine how generated static assets are currently stored, named, referenced, a
 ### Step 0 — Move task file to active/ and update status (MANDATORY FIRST STEP)
 
 ```bash
-git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md \
-       projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md
+git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md \
+       projects/galaxy_game/tasks/active/2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md
 ```
 
 Then open the moved file and change: `status: backlog → status: active`
@@ -220,55 +223,56 @@ Then open the moved file and change: `status: backlog → status: active`
 Verify only one copy exists:
 ```bash
 find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks \
-     -name "2026-08-31-HIGH-RESEARCH-ASSET-UI-A2-static-asset-storage-research.md"
+     -name "2026-08-31-HIGH-RESEARCH-ASSET-UI-A5-surface-sprite-consumption-research.md"
 ```
 
 **Paste the output in chat before proceeding.** Expected: exactly one result at `active/` path.
 
-### Step 1 — Locate asset roots
+### Step 1 — Locate surface rendering code
 
-Find the existing asset/image directories and relevant configuration. Search for:
-- `public/assets/`, `app/assets/images/`, or similar Rails asset paths
-- Any custom asset storage directories
-- Configuration files that reference asset paths
+Find the surface-layer/rendering services and sprite consumers. Search for:
+- Surface rendering services or controllers
+- Sprite loading/consumption logic
+- Any Civ4/FreeCiv-style layer rendering code
 
-### Step 2 — Inspect RH-400 presentation assets
+### Step 2 — Trace asset lookup
 
-Identify actual catalog-render and inventory-icon files and their naming/path conventions. Specifically:
-- What is the exact file path for the RH-400 catalog render?
-- What is the exact file path for the RH-400 inventory icon?
-- Are these separate files or derived from a single source?
+Determine how a sprite path/identifier reaches the renderer. Specifically:
+- What is the RH-400 surface sprite file path?
+- How does the renderer resolve sprite paths?
+- Is there an asset registry or direct path reference?
 
-### Step 3 — Trace references
+### Step 3 — Inspect animation handling
 
-Find existing code/spec references that consume or identify these files. Search for:
-- References to "RH-400" in controllers, services, views
-- Asset path resolution logic
-- Any catalog-related code that currently displays RH-400 imagery
+Determine whether idle/moving/harvesting/damage states have an existing representation. Specifically:
+- Are animation frames generated for RH-400?
+- How are they named/stored?
+- Does the renderer support state-based sprite switching?
 
 ### Step 4 — Report
 
-Record exact paths and file:line evidence. Do not alter files. The report should answer:
-1. Where are catalog render and inventory icon stored?
-2. How are they named (naming convention)?
-3. How does existing code reference them?
-4. What is the smallest next design question for B2 to resolve?
+Identify the smallest missing integration contract without implementing it. The report should answer:
+1. What surface sprite consumer exists?
+2. How does sprite lookup work?
+3. What animation states are supported (if any)?
+4. What is the smallest gap C5 must address?
 
 ---
 
 ## Acceptance Criteria
-- [ ] Catalog render and inventory icon are separately identified with exact file paths
-- [ ] Existing storage/reference mechanism is documented with file:line evidence
-- [ ] No runtime Docker/docs dependency introduced
-- [ ] Findings identify the smallest next design question for B2
-- [ ] Synthesis report posted to chat before any work began
+- [x] Surface sprite consumer identified with file:line evidence
+- [x] Sprite lookup path documented
+- [x] Animation-state handling documented (or confirmed absent)
+- [x] Integration gaps identified without implementing them
+- [x] No code/assets modified
+- [x] Synthesis report posted to chat before any work began
 
 ---
 
 ## Stop Conditions — escalate to user immediately if:
-- Asset files are missing or ambiguous (cannot determine which file is which representation)
-- Existing serving architecture requires an architectural decision beyond this task's scope
-- Proposed change would affect shared asset infrastructure
+- Surface rendering depends on a shared asset system that does not yet exist
+- Sprite transparency/format assumptions conflict with existing renderer behavior
+- The RH-400 surface sprite cannot be located or identified
 
 ---
 
@@ -283,9 +287,9 @@ No commit is authorized by this task unless explicitly stated in the task steps.
 ---
 
 ## Dependencies
-**Blocked by**: A1
-**Blocks**: A3, A4, B2
-**Related tasks**: RH-400 Run 06 asset family
+**Blocked by**: A3
+**Blocks**: B3, C5
+**Related tasks**: Civ4/FreeCiv/TerrainForge surface layers
 
 ---
 
@@ -311,4 +315,4 @@ Research/design findings only unless implementation is explicitly authorized.
 ---
 
 ## Handoff Summary
-HANDOFF SUMMARY: A2 | [result] | [next action]
+HANDOFF SUMMARY: A5 | [result] | [next action]
