@@ -1,0 +1,5 @@
+=== ERROR CLASS ANCESTORS ===
+[Mission::UnsupportedTransferError, StandardError]
+=== ZEITWERK CHECK ===
+expected file app/services/game_service.rb to define constant GameService
+Hold on, I am eager loading the application.

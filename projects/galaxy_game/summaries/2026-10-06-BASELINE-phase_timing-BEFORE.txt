@@ -1,0 +1,66 @@
+BASELINE BEFORE CHANGE
+Tue Oct  6 19:21:56 EDT 2026
+HEAD: 358624a076845a0750b085823f7b79922d0207ad
+ENV: docker exec web, RAILS_ENV=test, unset DATABASE_URL
+CMD: bundle exec rake luna_mission:phase_timing
+================================================================================
+LUNA PRECURSOR MISSION — PHASE TIMING VALIDATION
+================================================================================
+
+--- Day 0: Precursor Launch from Earth ---
+  [1m[36mCelestialBodies::CelestialBody Load (1.3ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "EARTH-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:194:in 'Mission::TransitEngine.orbital_data'
+  [1m[36mCelestialBodies::CelestialBody Load (0.8ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "LUNA-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:194:in 'Mission::TransitEngine.orbital_data'
+  ✓ Precursor departed Earth → Luna (0d transit)
+
+--- Day 0: Venus Skimmer Launch from Earth ---
+  [1m[36mCelestialBodies::CelestialBody Load (0.6ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "EARTH-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:194:in 'Mission::TransitEngine.orbital_data'
+  [1m[36mCelestialBodies::CelestialBody Load (0.5ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "VENUS-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:194:in 'Mission::TransitEngine.orbital_data'
+  ✓ Venus skimmer departed Earth → Venus (0d transit)
+
+--- Day 0: Precursor Arrives at Luna ---
+  ✓ Landing pad construction starts (2 pads)
+  ✓ Comms deployed
+  ✓ Power grid (RTG) deployed
+
+--- Day 30: Landing Pads Complete ---
+  ✓ Pad Alpha ready for HLT landing
+  ✓ Pad Beta ready for HLT landing
+
+--- Day 30: HLT #1 Lands (Inflatable Tanks) ---
+  ✓ Inflatable tanks deployed (empty, awaiting N₂)
+
+--- Day 45: Tank Farm Ready ---
+  ✓ Tank farm infrastructure complete
+  ✓ Ready for N₂ offload
+
+--- Day 0: Venus Skimmer Arrives at Venus ---
+  ✓ Atmospheric harvesting begins (CO₂ + N₂ extraction)
+
+--- Day 30: Venus Skimmer Departs Venus → Luna ---
+
+--- Day 176: Venus Skimmer Arrives at Luna ---
+  ✓ Tank farm ready (completed day 45)
+  ✓ N₂ offload: 30,000 kg N₂ + 75,000 kg CO₂ delivered
+  ✓ HABITAT PRESSURIZATION GATE OPENED
+
+================================================================================
+TIMELINE SUMMARY
+================================================================================
+Day      Event
+------------------------------------------------------------
+0        Precursor launches Earth → Luna
+0        Venus skimmer launches Earth → Venus
+      0   Precursor arrives at Luna
+     45   Landing pads complete (30d construction)
+     45   HLT #1 lands with inflatable tanks
+     45   Tank farm ready (15d setup)
+      0   Venus skimmer arrives at Venus
+     30   Venus skimmer departs Venus → Luna
+    176   Venus skimmer arrives at Luna (N₂ offload ✓)
+================================================================================
+TIMING VALIDATION COMPLETE — All windows and arrivals verified
+================================================================================

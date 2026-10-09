@@ -1,10 +1,14 @@
 ---
 title: "TransitEngine Topology Containment — Phase 1"
-status: backlog
-priority: high
+status: active
+priority: HIGH
+type: architecture
 work_type: architecture_containment
+system_domain: OTHER
+mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
+local_worker_safe: true
 created: 2026-09-30
-revised: 2026-10-03
+revised: 2026-10-06
 supersedes: null
 related_tasks:
   - 2026-09-29-HIGH-REFACTOR-TRANSIT-ENGINE.md
@@ -13,7 +17,178 @@ dispatch_ready: false
 
 **Claude disposition**: REVISE (not approved). This revision incorporates Claude's required changes per human authorization. A fresh Qwen read-only task-text verification and Claude re-review are required after this revision.
 
-# TransitEngine Topology Containment — Phase 1
+## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
+
+**STOP. Do not send this task to an agent until ALL boxes are checked.**
+
+- [ ] Agent Dispatch Interface section below is complete and accurate (no placeholders)
+- [ ] All Step 0-N instructions are clear and actionable (not vague)
+- [ ] Synthesis report template is provided (copy/paste ready, not as example)
+- [ ] No placeholder text remains in Implementation Steps
+- [ ] All file paths are verified to exist
+- [ ] Architecture Gotchas are specific (not generic)
+- [ ] Acceptance Criteria are measurable
+- [ ] Dependencies and Blocked/Blocks relationships are clear
+
+**Task is NOT READY until all checkboxes are completed.** Every `[FILL IN]` marker in this file must be resolved by a read-only Fill-the-Gaps pass (local agent with terminal access) before the "All file paths are verified to exist" box can be checked.
+
+---
+
+## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
+
+**This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
+Agents receive this exact text as the startup contract. Every word matters.
+
+```
+You are **Implementation Agent**.
+
+Project: galaxy_game
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/current/2026-09-30-HIGH-ARCHITECTURE-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/current/2026-09-30-HIGH-ARCHITECTURE-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT.md \
+         projects/galaxy_game/tasks/active/2026-09-30-HIGH-ARCHITECTURE-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-09-30-HIGH-ARCHITECTURE-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+```
+
+**IMPORTANT: Do not modify or abbreviate the text above.**
+Copy it exactly as-is when dispatching this task to an agent.
+
+Dispatch authorization boundary: the human owner's dispatch approval (Status and authority, item 2) authorizes Step 0 for THIS task file only (the `git mv` to `active/` and the status change). It does not authorize committing, pushing, staging any other file, or any lifecycle action on `2026-09-29-HIGH-REFACTOR-TRANSIT-ENGINE.md`.
+
+Everything else (details, gotchas, acceptance criteria, implementation steps) is in the sections below.
+
+---
+
+# TASK: TransitEngine Topology Containment — Phase 1
+**Status**: BACKLOG
+**Priority**: HIGH
+**Type**: architecture
+**Created**: 2026-09-30
+**Last Updated**: 2026-10-06
+
+---
+
+## Agent Assignment (Human-filled, not seen by agents)
+
+**Assigned To**: Qwen local via Copilot (primary)
+**Why This Agent**: Primary executor per workflow; has terminal access for the read-only audit and narrow verification commands.
+**Local attempts before cloud**: N/A
+**Supervision Level**: watched carefully (first dispatch of this task)
+
+---
+
+## Prerequisites — READ FIRST (Sequential Order)
+
+1. **Workflow**: `/Users/tam0013/Documents/git/agent-tasks/README.md` (EXECUTOR Role section) — [FILL IN: confirm path exists]
+2. **Project Guide**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/README.md` — [FILL IN: confirm path exists]
+3. **This Task File**: Everything below
+
+> Agent MUST read in this order. Do not skip. The synthesis report is saved as an MD file (see Dispatch Interface), not pasted in chat.
+
+---
+
+## Context
+
+`Mission::TransitEngine#calculate_transfer_window` applies a fixed-`MU_SUN` heliocentric approximation to any pair of bodies whose orbital data resolves, including moon/parent-centric routes such as Earth→Luna. This task adds a narrow topology containment guard and removes the one precursor-rake call that depends on the unsupported route. It does not make the calculator physically correct for any system (see Objective).
+
+**Relevant Architecture Docs** — read before starting:
+- `docs/new_agent/rules/DECISIONS.md` — locked architectural decisions — [FILL IN: confirm path]
+- `docs/new_agent/rules/GUARDRAILS.md` — execution rules — [FILL IN: confirm path]
+- `docs/wiki_reorganization/transportation/` — active transportation domain hub, gap-tracking convention (documentation target)
+
+> If a doc doesn't exist for this area, do not create one during this task. Flag the gap in your completion report instead.
+
+---
+
+## Critical Information for This Task
+
+### Architecture Gotchas (Critical to understand BEFORE starting)
+
+⚠️ **GOTCHA 1**: Guard placement and rescue scopes
+- ❌ Wrong: raise `Mission::UnsupportedTransferError` inside the existing rescue-wrapped dynamic block, where it can be swallowed into `fallback_transfer_window`.
+- ✅ Right: validate before and outside every rescue scope in `calculate_transfer_window`.
+- Why: a swallowed error silently reproduces the exact wrong-route behavior this task contains.
+
+⚠️ **GOTCHA 2**: How eligibility is decided
+- ❌ Wrong: check for a Sol name/identifier, a non-Sol/multi-star exclusion, or a concrete world-type allowlist.
+- ✅ Right: lineage (`is_a?(CelestialBodies::Planets::Planet)`), `parent_celestial_body_id.nil?`, non-nil resolving `solar_system`, and equal `solar_system_id` as a PAIR condition.
+- Why: GalaxyGame must support Eden, procedural/partial systems, and multi-star systems; the proxy is necessary containment, never a physical-correctness claim.
+
+⚠️ **GOTCHA 3**: Test environment
+- ❌ Wrong: bare `docker exec ... rspec` or `rake`, which can run in the container's default development env against the development DB.
+- ✅ Right: use the wrapper in Step 6 (`unset DATABASE_URL && RAILS_ENV=test`) directly on the command.
+- Why: unprefixed runs have produced untrustworthy baselines in this project.
+
+⚠️ **GOTCHA 4**: Searching and git state
+- ❌ Wrong: workspace-wide editor search for counts/callers (it returns matches from unrelated files); `git diff` being empty as proof something is committed; bare `app/...` paths in `git log` (false-empty).
+- ✅ Right: shell `grep -n` against resolved paths from the repo root; `git status --short` and `git log -- galaxy_game/<path>`.
+- Why: each has produced a false "clean/complete" reading in this project.
+
+⚠️ **GOTCHA 5**: Green tests vs. live behavior
+- ❌ Wrong: treating passing specs as proof the rake timeline still works.
+- ✅ Right: also run the `luna_mission:phase_timing` verification under a fixed/frozen date and compare against the captured baseline.
+- Why: the rake path is what consumes `:transit_days`.
+
+---
+
+## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
+
+After Step 0 and before running any other command or modifying anything, create the synthesis report below, **save it as an MD file in the summaries folder (do NOT paste it in chat)**, then STOP and wait for approval. This is Gate 1 (human approval is sufficient).
+
+**Synthesis Report Template** (copy, fill in, save as MD):
+```markdown
+### STATUS SYNTHESIS REPORT
+
+**Task**: 2026-09-30-HIGH-ARCHITECTURE-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT
+**Status**: backlog → active
+**Date**: YYYY-MM-DD
+
+### What I'm About to Do
+[2-3 sentences: the goal, the verification method, the success criteria]
+
+### Files I'll Reference
+| File | Purpose | Status |
+|---|---|---|
+| `path/to/file` | [description] | [not started / pending / done] |
+
+### Prerequisites Completed
+- ✅ Step 0: Task file moved to active/ with git mv (find output pasted in chat)
+- ✅ Step 0: YAML status updated from backlog → active
+- ✅ Read README.md EXECUTOR section
+- ✅ Read project guide
+- ✅ Read this task file in full
+- ✅ Understand architecture gotchas above
+
+### Expected Outcomes
+[Exact description of what "done" looks like]
+
+### Critical Gotchas I Will Avoid
+- ❌ [wrong approach] — instead ✅ [right approach]
+- ❌ [wrong approach] — instead ✅ [right approach]
+
+---
+
+**SYNTHESIS COMPLETE.** Waiting for Gate 1 approval before Step 2.
+```
+
+---
 
 ## Status and authority
 
@@ -95,7 +270,7 @@ This task is **containment**, not a general orbital-routing implementation. Gala
    - non-nil `solar_system_id`;
    - the `solar_system` association resolves.
 
-When both endpoints resolve, their `solar_system_id` values must be equal. This is a **pair condition**, not an individual endpoint property.
+   When both endpoints resolve, their `solar_system_id` values must be equal. This is a **pair condition**, not an individual endpoint property.
 
 4. Raise `Mission::UnsupportedTransferError` for any **resolved** `CelestialBodies::CelestialBody` endpoint that fails the Phase 1 topology proxy.
 
@@ -143,8 +318,8 @@ When both endpoints resolve, their `solar_system_id` values must be equal. This 
 - Parentless planet system A + parentless planet system B (different `solar_system_id`) → raise `Mission::UnsupportedTransferError`.
 - Planet → moon → raise.
 - Moon → planet → raise.
-- Moon → unknown → raise (resolved moon fails proxy).
-- Eligible planet → unknown → preserve legacy fallback.
+- Moon → unknown, or unknown → moon (unknown in either position) → raise (resolved moon fails proxy).
+- Eligible planet → unknown, or unknown → eligible planet (unknown in either position) → preserve legacy fallback.
 - Unknown → unknown → preserve legacy fallback.
 
 ### Phase 1 interpretation
@@ -172,18 +347,18 @@ For the current `CelestialBody` input contract, reject resolved endpoints that a
 - planet-lineage records with no usable solar-system context (`solar_system_id` nil or `solar_system` association not resolving);
 - resolved endpoint pairs whose `solar_system_id` values differ.
 
-Do not add special Star or station handling/tests unless source evidence during implementation demonstrates that these types can reach this TransitEngine API. They are not established `CelestialBody` endpoints for this task.
+Do not add special Star or station handling/tests. They are not established `CelestialBody` endpoints for this task. If source evidence demonstrates that these types can reach this TransitEngine API, stop and report; do not add handling in this task.
 
 ## Error and compatibility contract
 
 - Use `Mission::UnsupportedTransferError` for a **resolved but unsupported topology**.
-- The error must make clear that the requested dynamic transfer topology is unsupported by the Phase 1 legacy single-μ calculator. Include offending identifier(s) and a stable fragment describing the limitation, for example:
+- The error must make clear that the requested dynamic transfer topology is unsupported by the Phase 1 legacy single-μ calculator. Include offending identifier(s) (for a different-system pair, both identifiers) and a stable fragment describing the limitation, for example:
   `unsupported topology for legacy transfer calculation`
 
 At least one unsupported-topology test must assert all of the following:
 - `Mission::UnsupportedTransferError` is raised;
 - the stable message fragment `unsupported topology for legacy transfer calculation` appears in the error message;
-- the offending resolved identifier appears in the error message;
+- the offending resolved identifier appears in the error message (both identifiers for the different-system pair);
 - the error propagates from `calculate_transfer_window` with no returned result.
 
 Do not require a full exact error message string.
@@ -267,6 +442,90 @@ Keep public direct legacy helpers unchanged, including:
 
 These direct helpers remain a documented Phase 1 containment gap. This task must neither represent them as fully topology-safe nor refactor them into a broader routing API.
 
+## Files Involved
+
+All paths below are [FILL IN] by a read-only terminal pass. Do not guess; confirm each with `find`/`grep` from the repo root and record the result.
+
+### Primary Files — you will edit these
+| File | Purpose | Key Method/Section |
+|---|---|---|
+| [FILL IN] `Mission::TransitEngine` source file | Phase 1 guard | `calculate_transfer_window` |
+| [FILL IN] `Mission::UnsupportedTransferError` (new) | Domain error | follows verified error-class/autoload convention |
+| [FILL IN] `luna_mission:phase_timing` rake file | Static 7-game-day Earth→Luna scenario | Earth→Luna `schedule_departure` call |
+| [FILL IN] TransitEngine spec file(s) | Tests 1–15, 17 | — |
+| [FILL IN] rake spec or narrow-command convention | Test 16 | — |
+| `docs/wiki_reorganization/transportation/` (+ its `GAPS.md`) | Limited documentation update | per Documentation requirement |
+
+### Reference Files — read but do not edit
+| File | Why You Need It |
+|---|---|
+| [FILL IN] celestial-body model/factory/spec support files | Fixture feasibility for Tests 2–11 |
+| [FILL IN] `CelestialBodies::Planets::Planet` and `CelestialBodies::CelestialBody` | Lineage and attribute verification |
+| `2026-09-29-HIGH-REFACTOR-TRANSIT-ENGINE.md` | Protected related task; read-only, never modified |
+
+### Migration
+No migration needed (see Explicit non-goals: no schema change). If one appears necessary, stop and escalate.
+
+---
+
+## Implementation Steps
+
+> ⚠️ **BEFORE YOU START**: Complete Step 0, then Step 1 (synthesis report, Gate 1). Do not proceed to Step 2 until Gate 1 is approved.
+
+All agents: follow these steps exactly in order.
+- Do not skip steps or reorder them.
+- Do not proceed to the next step if the current step has not produced a clean result.
+- Any listed escalation trigger (Stop conditions, Verification) stops the work before the next step.
+
+### Step 0 — Move task file to active/ and update status (MANDATORY FIRST STEP)
+
+Exactly as written in the Agent Dispatch Interface. Paste the `git mv` and `find` outputs in chat. Expected: exactly one result, at the `active/` path. Do not use `cp` or plain `mv`.
+
+### Step 1 — Synthesis report (Gate 1)
+
+Save the Status Synthesis Report (template above) to the summaries folder. Stop and wait for approval.
+
+### Step 2 — Pre-implementation verification (read-only) and six-group report (Gate 2)
+
+Perform the six checks in the Verification section. No code, spec, rake, or documentation changes. Save the six-group report to the summaries folder (filename pattern from the Dispatch Interface, suffix `-PREIMPL`), then STOP. Gate 2 approval comes from Claude review. If any escalation trigger is found, stop and report it in that same file.
+
+### Step 3 — Guard and error class
+
+Implement per Required behavior and Error and compatibility contract. Touch nothing listed in Explicit non-goals or the Legacy-helper boundary.
+
+### Step 4 — Rake static scenario
+
+Implement per Rake baseline and static scenario. Earth→Venus stays dynamic.
+
+### Step 5 — Tests
+
+Add the 17 cases listed in Tests, following existing project test style and factories.
+
+### Step 6 — Verify
+
+> CRITICAL EXECUTION MANDATE: All RSpec commands must use the Docker wrapper below.
+> The container working directory is already /home/galaxy_game — do NOT add cd /home/galaxy_game.
+> Never run bare local test commands. Never fabricate test results. Actually run the specs.
+> Run only narrow commands; do not run the full suite (the human runs it separately). Never run two RSpec processes concurrently.
+
+```bash
+docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec [SPEC_PATH] 2>&1 | tail -20'
+```
+
+[FILL IN: exact narrow spec paths and the rake verification command, under a fixed/frozen date]
+
+Expected result: all new/modified examples pass, 0 failures; the rake output matches the captured baseline except the Earth→Luna transit value, which is 7 game days.
+
+### Step 7 — Documentation
+
+Limited update per Documentation requirement, after Step 6 establishes actual behavior.
+
+### Step 8 — Closing report (before committing anything)
+
+Save a closing report to the summaries folder: commands run, pass/fail counts, changed files, expected baseline failures, unexpected findings, stop conditions reached, and proof no unrelated scope changed (see Verification, General verification). Do not commit until the user explicitly approves.
+
+---
+
 ## Tests
 
 Follow the current project’s test style, factories, helpers, and official narrow test commands. Do not redesign factories or broaden test infrastructure merely to satisfy these cases.
@@ -291,15 +550,15 @@ Add or update narrow tests proving each of the following as a separate case:
 
 8. **Different-system pair**: two parentless planet-lineage bodies with different `solar_system_id` raise.
 
-9. **Moon → unknown identifier** raises (the resolved moon fails the proxy).
+9. **Moon → unknown identifier** raises, with the unknown identifier in either position (the resolved moon fails the proxy).
 
-10. **Eligible planet → unknown identifier** preserves the existing fallback and does not raise.
+10. **Eligible planet → unknown identifier** preserves the existing fallback and does not raise, with the unknown identifier in either position.
 
 11. **Unknown → unknown** preserves the existing fallback and does not raise.
 
 12. **Eligible pair with missing/empty orbital data** preserves the existing eligible-pair fallback.
 
-13. **Error assertion**: at least one raising test (cases 2–9) asserts all of: `Mission::UnsupportedTransferError` class; message contains `unsupported topology for legacy transfer calculation`; message contains the offending resolved identifier; the error propagates from `calculate_transfer_window` with no returned result. Do not require a full exact message.
+13. **Error assertion**: at least one raising test (test cases 2–9 above) asserts all of: `Mission::UnsupportedTransferError` class; message contains `unsupported topology for legacy transfer calculation`; message contains the offending resolved identifier (both identifiers if the asserting test is case 8); the error propagates from `calculate_transfer_window` with no returned result. Do not require a full exact message.
 
 14. **Ordering / no fallback leakage**: for resolved unsupported cases, verify the error occurs before `fallback_transfer_window`, `compute_transit_days_dynamic`, nested `fallback_transit_days`, and `compute_transit_days`. Use established project conventions; avoid private-method coupling where observable behavior proves the boundary.
 
@@ -323,7 +582,7 @@ Follow the existing active-domain hub, cross-link, current/planned/deferred, and
 
 Document only verified Phase 1 behavior and explicit limitations:
 
-- Dynamic transfer support is currently limited to the same-system, parentless planet-lineage topology proxy.
+- The retained legacy dynamic path is reachable only for the same-system, parentless planet-lineage topology proxy; passing the proxy is not a claim of support or physical correctness.
 - The precursor Earth→Luna scenario uses an explicitly labeled static 7-game-day duration.
 - Moon/satellite, parented, non-planet, dwarf/minor-body, and otherwise nonconforming resolved celestial-body topologies are rejected by this dynamic path.
 - The proxy is temporary containment, not a complete orbital route-planning system.
@@ -399,6 +658,7 @@ The implementer must perform these read-only checks before changing code, specs,
    - Verify the existing resolver can be reused with the same identifier and case semantics.
    - Verify the error class's expected file/path, inheritance, and autoload conventions.
    - Verify `Mission::UnsupportedTransferError` is neither swallowed nor transformed by internal rescue scopes or production caller rescues.
+   - Verify that every method name referenced in the Tests section (including `fallback_transfer_window`, `compute_transit_days_dynamic`, `fallback_transit_days`, and `compute_transit_days`) exists in the current checkout. If any name differs, report the difference in the pre-implementation report and use the actual names in the tests.
    - Stop if this cannot be established without broader behavior changes.
 
 5. **Fixed-date rake baseline capture**
@@ -483,9 +743,24 @@ Stop implementation, make no speculative extension, and escalate if any of the f
 - [ ] Documentation under `docs/wiki_reorganization/transportation/` reflects verified Phase 1 behavior and clear deferrals only, and GAPS records all six residual gaps without framing any intended system as invalid.
 - [ ] Required narrow verification commands pass, or any baseline/unrelated failure is documented with evidence.
 - [ ] No unrelated code, data, test, or wiki-reorganization work is included.
-- [ ] No move, stage, commit, push, or lifecycle action is taken on this task or on `2026-09-29-HIGH-REFACTOR-TRANSIT-ENGINE.md` without explicit human approval.
+- [ ] No staging, commit, push, or lifecycle action is taken beyond the Step 0 rename of this task file (authorized by dispatch approval), and no lifecycle action is taken on `2026-09-29-HIGH-REFACTOR-TRANSIT-ENGINE.md`, without explicit human approval.
+
+## Commit Instructions
+
+Do not stage (beyond the Step 0 rename), commit, or push anything. After Step 8, stop and report; the human owner authorizes any commit separately. When authorized, run git commands on **host only** — never inside the Docker container — and `git add` specific files only (never `git add .`). On completion, move the task file to `completed/` per the repository convention (tracked file: `git mv`).
+
+---
+
+## Dependencies
+**Blocked by**: none known (Verification item 6 overlapping-task check must confirm)
+**Blocks**: none known. Governing-primary/frame-aware routing, simulation-time authority, and legacy-helper guarding are human-filed follow-up work, not created by this task.
+**Related tasks**: `2026-09-29-HIGH-REFACTOR-TRANSIT-ENGINE.md` (protected; do not modify)
+
+---
 
 ## Readiness checklist — intentionally incomplete
+
+The dispatch-time rechecks below are performed by whoever gives final dispatch approval, immediately before dispatch. They supplement, and do not replace, the implementer's mandatory pre-implementation Verification.
 
 - [ ] Local evidence reconfirmed against the current checkout immediately before dispatch.
 - [ ] Error-class path/inheritance and autoload convention rechecked.
@@ -495,3 +770,32 @@ Stop implementation, make no speculative extension, and escalate if any of the f
 - [ ] Claude final technical disposition received.
 - [ ] Human owner approved dispatch.
 - [ ] Related 2026-09-29 task lifecycle explicitly deferred and recorded.
+
+---
+
+## Completion Report
+*Filled in by the implementing agent after completion*
+
+**Completed by**: [agent name]
+**Completion date**: YYYY-MM-DD
+**Final test result**: X examples, Y failures
+**Evidence basis:** [direct verification / review of pasted evidence / reported by agent / human assertion] — [one-line source or note when not direct verification]
+
+### What was changed
+- `[file]` — [description of change]
+
+### Issues discovered
+[Any problems found during implementation that weren't in the original task]
+
+### Follow-up tasks needed
+[Any new backlog items identified — do not create the files, just list them here]
+
+### Lessons learned
+[What worked, what didn't, what future tasks in this area should know]
+
+---
+
+## Handoff Summary
+*Filled in at end of session — one scannable line for next agent*
+
+HANDOFF SUMMARY: [files updated] | [structural changes] | [next action needed]

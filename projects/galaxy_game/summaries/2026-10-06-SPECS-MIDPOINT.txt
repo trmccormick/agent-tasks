@@ -1,0 +1,186 @@
+  [1m[36mActiveRecord::InternalMetadata Pluck (0.6ms)[0m  [1m[34mSELECT "ar_internal_metadata"."value" FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "schema_sha1"], ["LIMIT", 1]]
+  [1m[36mActiveRecord::SchemaMigration Pluck (1.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (10.3ms)[0m  [1m[35mALTER TABLE "accounts" DISABLE TRIGGER ALL;ALTER TABLE "ai_decision_logs" DISABLE TRIGGER ALL;ALTER TABLE "atmospheres" DISABLE TRIGGER ALL;ALTER TABLE "adapted_features" DISABLE TRIGGER ALL;ALTER TABLE "base_locations" DISABLE TRIGGER ALL;ALTER TABLE "base_crafts" DISABLE TRIGGER ALL;ALTER TABLE "base_modules" DISABLE TRIGGER ALL;ALTER TABLE "base_rigs" DISABLE TRIGGER ALL;ALTER TABLE "base_units" DISABLE TRIGGER ALL;ALTER TABLE "biospheres" DISABLE TRIGGER ALL;ALTER TABLE "blueprints" DISABLE TRIGGER ALL;ALTER TABLE "biomes" DISABLE TRIGGER ALL;ALTER TABLE "biology_life_forms" DISABLE TRIGGER ALL;ALTER TABLE "bonds" DISABLE TRIGGER ALL;ALTER TABLE "celestial_bodies" DISABLE TRIGGER ALL;ALTER TABLE "celestial_bodies_materials" DISABLE TRIGGER ALL;ALTER TABLE "celestial_bodies_spheres_cryospheres" DISABLE TRIGGER ALL;ALTER TABLE "celestial_locations" DISABLE TRIGGER ALL;ALTER TABLE "claims_claim_denials" DISABLE TRIGGER ALL;ALTER TABLE "claims_claim_payouts" DISABLE TRIGGER ALL;ALTER TABLE "celestial_bodies_alien_life_forms" DISABLE TRIGGER ALL;ALTER TABLE "currencies" DISABLE TRIGGER ALL;ALTER TABLE "construction_jobs" DISABLE TRIGGER ALL;ALTER TABLE "cyclers" DISABLE TRIGGER ALL;ALTER TABLE "consortium_memberships" DISABLE TRIGGER ALL;ALTER TABLE "dwarf_planets" DISABLE TRIGGER ALL;ALTER TABLE "colonies" DISABLE TRIGGER ALL;ALTER TABLE "equipment_requests" DISABLE TRIGGER ALL;ALTER TABLE "game_states" DISABLE TRIGGER ALL;ALTER TABLE "geological_materials" DISABLE TRIGGER ALL;ALTER TABLE "galaxies" DISABLE TRIGGER ALL;ALTER TABLE "exchange_rates" DISABLE TRIGGER ALL;ALTER TABLE "gases" DISABLE TRIGGER ALL;ALTER TABLE "hydrospheres" DISABLE TRIGGER ALL;ALTER TABLE "inventories" DISABLE TRIGGER ALL;ALTER TABLE "insurance_policies" DISABLE TRIGGER ALL;ALTER TABLE "jobs" DISABLE TRIGGER ALL;ALTER TABLE "liquid_materials" DISABLE TRIGGER ALL;ALTER TABLE "logistics_contracts" DISABLE TRIGGER ALL;ALTER TABLE "logistics_import_requests" DISABLE TRIGGER ALL;ALTER TABLE "logistics_manifests" DISABLE TRIGGER ALL;ALTER TABLE "market_marketplaces" DISABLE TRIGGER ALL;ALTER TABLE "market_orders" DISABLE TRIGGER ALL;ALTER TABLE "market_price_histories" DISABLE TRIGGER ALL;ALTER TABLE "market_settings" DISABLE TRIGGER ALL;ALTER TABLE "market_supply_chains" DISABLE TRIGGER ALL;ALTER TABLE "material_piles" DISABLE TRIGGER ALL;ALTER TABLE "market_transaction_fees" DISABLE TRIGGER ALL;ALTER TABLE "mega_projects" DISABLE TRIGGER ALL;ALTER TABLE "material_requests" DISABLE TRIGGER ALL;ALTER TABLE "market_trades" DISABLE TRIGGER ALL;ALTER TABLE "missions" DISABLE TRIGGER ALL;ALTER TABLE "mining_logs" DISABLE TRIGGER ALL;ALTER TABLE "multi_wormhole_events" DISABLE TRIGGER ALL;ALTER TABLE "orbital_construction_projects" DISABLE TRIGGER ALL;ALTER TABLE "migration_logs" DISABLE TRIGGER ALL;ALTER TABLE "orbital_relationships" DISABLE TRIGGER ALL;ALTER TABLE "planet_biomes" DISABLE TRIGGER ALL;ALTER TABLE "plant_environments" DISABLE TRIGGER ALL;ALTER TABLE "player_contracts" DISABLE TRIGGER ALL;ALTER TABLE "plants" DISABLE TRIGGER ALL;ALTER TABLE "resource_deposits" DISABLE TRIGGER ALL;ALTER TABLE "route_proposal_votes" DISABLE TRIGGER ALL;ALTER TABLE "rigs" DISABLE TRIGGER ALL;ALTER TABLE "route_proposals" DISABLE TRIGGER ALL;ALTER TABLE "scheduled_arrivals" DISABLE TRIGGER ALL;ALTER TABLE "players" DISABLE TRIGGER ALL;ALTER TABLE "scheduled_departures" DISABLE TRIGGER ALL;ALTER TABLE "skylights" DISABLE TRIGGER ALL;ALTER TABLE "spatial_locations" DISABLE TRIGGER ALL;ALTER TABLE "scheduled_imports" DISABLE TRIGGER ALL;ALTER TABLE "sponsorships" DISABLE TRIGGER ALL;ALTER TABLE "solar_systems" DISABLE TRIGGER ALL;ALTER TABLE "segment_components" DISABLE TRIGGER ALL;ALTER TABLE "special_missions" DISABLE TRIGGER ALL;ALTER TABLE "star_distances" DISABLE TRIGGER ALL;ALTER TABLE "structures_planetary_umbilical_hubs" DISABLE TRIGGER ALL;ALTER TABLE "stars" DISABLE TRIGGER ALL;ALTER TABLE "surface_storages" DISABLE TRIGGER ALL;ALTER TABLE "structures" DISABLE TRIGGER ALL;ALTER TABLE "access_points" DISABLE TRIGGER ALL;ALTER TABLE "wormholes" DISABLE TRIGGER ALL;ALTER TABLE "base_settlements" DISABLE TRIGGER ALL;ALTER TABLE "biology_life_form_parents" DISABLE TRIGGER ALL;ALTER TABLE "bond_repayments" DISABLE TRIGGER ALL;ALTER TABLE "materials" DISABLE TRIGGER ALL;ALTER TABLE "organizations" DISABLE TRIGGER ALL;ALTER TABLE "environments" DISABLE TRIGGER ALL;ALTER TABLE "geospheres" DISABLE TRIGGER ALL;ALTER TABLE "items" DISABLE TRIGGER ALL;ALTER TABLE "ledger_entries" DISABLE TRIGGER ALL;ALTER TABLE "logistics_providers" DISABLE TRIGGER ALL;ALTER TABLE "market_conditions" DISABLE TRIGGER ALL;ALTER TABLE "worldhouse_segments" DISABLE TRIGGER ALL;ALTER TABLE "transactions" DISABLE TRIGGER ALL;ALTER TABLE "schema_migrations" DISABLE TRIGGER ALL;ALTER TABLE "ar_internal_metadata" DISABLE TRIGGER ALL[0m
+  [1m[36mTRANSACTION (4.4ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (2.8ms)[0m  [1m[34m            SELECT schemaname || '.' || tablename
+            FROM pg_tables
+            WHERE
+              tablename !~ '_prt_' AND
+              tablename <> 'schema_migrations'
+  AND tablename <> 'ar_internal_metadata'
+ AND
+              schemaname = ANY (current_schemas(false))
+[0m
+  [1m[35m (1.1ms)[0m  [1m[34mselect table_name from information_schema.views where table_schema = 'galaxy_game_test'[0m
+  [1m[35m (0.7ms)[0m  [1m[31mDELETE FROM "accounts" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "ai_decision_logs" WHERE 1=1[0m
+  [1m[35m (1.0ms)[0m  [1m[31mDELETE FROM "adapted_features" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "base_locations" WHERE 1=1[0m
+  [1m[35m (0.8ms)[0m  [1m[31mDELETE FROM "base_crafts" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "base_modules" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "base_rigs" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "base_units" WHERE 1=1[0m
+  [1m[35m (0.7ms)[0m  [1m[31mDELETE FROM "biospheres" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "blueprints" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "biomes" WHERE 1=1[0m
+  [1m[35m (0.7ms)[0m  [1m[31mDELETE FROM "biology_life_forms" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "bonds" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "celestial_bodies_materials" WHERE 1=1[0m
+  [1m[35m (0.7ms)[0m  [1m[31mDELETE FROM "celestial_bodies_spheres_cryospheres" WHERE 1=1[0m
+  [1m[35m (0.7ms)[0m  [1m[31mDELETE FROM "celestial_locations" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "claims_claim_denials" WHERE 1=1[0m
+  [1m[35m (0.4ms)[0m  [1m[31mDELETE FROM "claims_claim_payouts" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "celestial_bodies_alien_life_forms" WHERE 1=1[0m
+  [1m[35m (0.7ms)[0m  [1m[31mDELETE FROM "construction_jobs" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "cyclers" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "consortium_memberships" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "dwarf_planets" WHERE 1=1[0m
+  [1m[35m (0.8ms)[0m  [1m[31mDELETE FROM "colonies" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "equipment_requests" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "game_states" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "geological_materials" WHERE 1=1[0m
+  [1m[35m (0.8ms)[0m  [1m[31mDELETE FROM "exchange_rates" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "inventories" WHERE 1=1[0m
+  [1m[35m (0.8ms)[0m  [1m[31mDELETE FROM "insurance_policies" WHERE 1=1[0m
+  [1m[35m (0.7ms)[0m  [1m[31mDELETE FROM "jobs" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "liquid_materials" WHERE 1=1[0m
+  [1m[35m (0.8ms)[0m  [1m[31mDELETE FROM "logistics_contracts" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "logistics_import_requests" WHERE 1=1[0m
+  [1m[35m (0.7ms)[0m  [1m[31mDELETE FROM "logistics_manifests" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "market_marketplaces" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "market_orders" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "market_price_histories" WHERE 1=1[0m
+  [1m[35m (0.4ms)[0m  [1m[31mDELETE FROM "market_settings" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "market_supply_chains" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "material_piles" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "market_transaction_fees" WHERE 1=1[0m
+  [1m[35m (0.8ms)[0m  [1m[31mDELETE FROM "mega_projects" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "material_requests" WHERE 1=1[0m
+  [1m[35m (0.8ms)[0m  [1m[31mDELETE FROM "market_trades" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "missions" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "mining_logs" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "multi_wormhole_events" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "orbital_construction_projects" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "migration_logs" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "orbital_relationships" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "planet_biomes" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "plant_environments" WHERE 1=1[0m
+  [1m[35m (0.8ms)[0m  [1m[31mDELETE FROM "player_contracts" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "plants" WHERE 1=1[0m
+  [1m[35m (0.7ms)[0m  [1m[31mDELETE FROM "resource_deposits" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "route_proposal_votes" WHERE 1=1[0m
+  [1m[35m (0.4ms)[0m  [1m[31mDELETE FROM "rigs" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "route_proposals" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "scheduled_arrivals" WHERE 1=1[0m
+  [1m[35m (0.4ms)[0m  [1m[31mDELETE FROM "players" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "scheduled_departures" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "skylights" WHERE 1=1[0m
+  [1m[35m (0.7ms)[0m  [1m[31mDELETE FROM "spatial_locations" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "scheduled_imports" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "sponsorships" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "segment_components" WHERE 1=1[0m
+  [1m[35m (0.8ms)[0m  [1m[31mDELETE FROM "special_missions" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "star_distances" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "structures_planetary_umbilical_hubs" WHERE 1=1[0m
+  [1m[35m (0.7ms)[0m  [1m[31mDELETE FROM "surface_storages" WHERE 1=1[0m
+  [1m[35m (0.8ms)[0m  [1m[31mDELETE FROM "structures" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "access_points" WHERE 1=1[0m
+  [1m[35m (0.7ms)[0m  [1m[31mDELETE FROM "wormholes" WHERE 1=1[0m
+  [1m[35m (0.8ms)[0m  [1m[31mDELETE FROM "base_settlements" WHERE 1=1[0m
+  [1m[35m (0.9ms)[0m  [1m[31mDELETE FROM "biology_life_form_parents" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "bond_repayments" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "environments" WHERE 1=1[0m
+  [1m[35m (0.7ms)[0m  [1m[31mDELETE FROM "items" WHERE 1=1[0m
+  [1m[35m (1.0ms)[0m  [1m[31mDELETE FROM "ledger_entries" WHERE 1=1[0m
+  [1m[35m (1.1ms)[0m  [1m[31mDELETE FROM "logistics_providers" WHERE 1=1[0m
+  [1m[35m (0.9ms)[0m  [1m[31mDELETE FROM "market_conditions" WHERE 1=1[0m
+  [1m[35m (0.6ms)[0m  [1m[31mDELETE FROM "worldhouse_segments" WHERE 1=1[0m
+  [1m[35m (0.5ms)[0m  [1m[31mDELETE FROM "transactions" WHERE 1=1[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (6.6ms)[0m  [1m[35mALTER TABLE "accounts" ENABLE TRIGGER ALL;ALTER TABLE "ai_decision_logs" ENABLE TRIGGER ALL;ALTER TABLE "atmospheres" ENABLE TRIGGER ALL;ALTER TABLE "adapted_features" ENABLE TRIGGER ALL;ALTER TABLE "base_locations" ENABLE TRIGGER ALL;ALTER TABLE "base_crafts" ENABLE TRIGGER ALL;ALTER TABLE "base_modules" ENABLE TRIGGER ALL;ALTER TABLE "base_rigs" ENABLE TRIGGER ALL;ALTER TABLE "base_units" ENABLE TRIGGER ALL;ALTER TABLE "biospheres" ENABLE TRIGGER ALL;ALTER TABLE "blueprints" ENABLE TRIGGER ALL;ALTER TABLE "biomes" ENABLE TRIGGER ALL;ALTER TABLE "biology_life_forms" ENABLE TRIGGER ALL;ALTER TABLE "bonds" ENABLE TRIGGER ALL;ALTER TABLE "celestial_bodies" ENABLE TRIGGER ALL;ALTER TABLE "celestial_bodies_materials" ENABLE TRIGGER ALL;ALTER TABLE "celestial_bodies_spheres_cryospheres" ENABLE TRIGGER ALL;ALTER TABLE "celestial_locations" ENABLE TRIGGER ALL;ALTER TABLE "claims_claim_denials" ENABLE TRIGGER ALL;ALTER TABLE "claims_claim_payouts" ENABLE TRIGGER ALL;ALTER TABLE "celestial_bodies_alien_life_forms" ENABLE TRIGGER ALL;ALTER TABLE "currencies" ENABLE TRIGGER ALL;ALTER TABLE "construction_jobs" ENABLE TRIGGER ALL;ALTER TABLE "cyclers" ENABLE TRIGGER ALL;ALTER TABLE "consortium_memberships" ENABLE TRIGGER ALL;ALTER TABLE "dwarf_planets" ENABLE TRIGGER ALL;ALTER TABLE "colonies" ENABLE TRIGGER ALL;ALTER TABLE "equipment_requests" ENABLE TRIGGER ALL;ALTER TABLE "game_states" ENABLE TRIGGER ALL;ALTER TABLE "geological_materials" ENABLE TRIGGER ALL;ALTER TABLE "galaxies" ENABLE TRIGGER ALL;ALTER TABLE "exchange_rates" ENABLE TRIGGER ALL;ALTER TABLE "gases" ENABLE TRIGGER ALL;ALTER TABLE "hydrospheres" ENABLE TRIGGER ALL;ALTER TABLE "inventories" ENABLE TRIGGER ALL;ALTER TABLE "insurance_policies" ENABLE TRIGGER ALL;ALTER TABLE "jobs" ENABLE TRIGGER ALL;ALTER TABLE "liquid_materials" ENABLE TRIGGER ALL;ALTER TABLE "logistics_contracts" ENABLE TRIGGER ALL;ALTER TABLE "logistics_import_requests" ENABLE TRIGGER ALL;ALTER TABLE "logistics_manifests" ENABLE TRIGGER ALL;ALTER TABLE "market_marketplaces" ENABLE TRIGGER ALL;ALTER TABLE "market_orders" ENABLE TRIGGER ALL;ALTER TABLE "market_price_histories" ENABLE TRIGGER ALL;ALTER TABLE "market_settings" ENABLE TRIGGER ALL;ALTER TABLE "market_supply_chains" ENABLE TRIGGER ALL;ALTER TABLE "material_piles" ENABLE TRIGGER ALL;ALTER TABLE "market_transaction_fees" ENABLE TRIGGER ALL;ALTER TABLE "mega_projects" ENABLE TRIGGER ALL;ALTER TABLE "material_requests" ENABLE TRIGGER ALL;ALTER TABLE "market_trades" ENABLE TRIGGER ALL;ALTER TABLE "missions" ENABLE TRIGGER ALL;ALTER TABLE "mining_logs" ENABLE TRIGGER ALL;ALTER TABLE "multi_wormhole_events" ENABLE TRIGGER ALL;ALTER TABLE "orbital_construction_projects" ENABLE TRIGGER ALL;ALTER TABLE "migration_logs" ENABLE TRIGGER ALL;ALTER TABLE "orbital_relationships" ENABLE TRIGGER ALL;ALTER TABLE "planet_biomes" ENABLE TRIGGER ALL;ALTER TABLE "plant_environments" ENABLE TRIGGER ALL;ALTER TABLE "player_contracts" ENABLE TRIGGER ALL;ALTER TABLE "plants" ENABLE TRIGGER ALL;ALTER TABLE "resource_deposits" ENABLE TRIGGER ALL;ALTER TABLE "route_proposal_votes" ENABLE TRIGGER ALL;ALTER TABLE "rigs" ENABLE TRIGGER ALL;ALTER TABLE "route_proposals" ENABLE TRIGGER ALL;ALTER TABLE "scheduled_arrivals" ENABLE TRIGGER ALL;ALTER TABLE "players" ENABLE TRIGGER ALL;ALTER TABLE "scheduled_departures" ENABLE TRIGGER ALL;ALTER TABLE "skylights" ENABLE TRIGGER ALL;ALTER TABLE "spatial_locations" ENABLE TRIGGER ALL;ALTER TABLE "scheduled_imports" ENABLE TRIGGER ALL;ALTER TABLE "sponsorships" ENABLE TRIGGER ALL;ALTER TABLE "solar_systems" ENABLE TRIGGER ALL;ALTER TABLE "segment_components" ENABLE TRIGGER ALL;ALTER TABLE "special_missions" ENABLE TRIGGER ALL;ALTER TABLE "star_distances" ENABLE TRIGGER ALL;ALTER TABLE "structures_planetary_umbilical_hubs" ENABLE TRIGGER ALL;ALTER TABLE "stars" ENABLE TRIGGER ALL;ALTER TABLE "surface_storages" ENABLE TRIGGER ALL;ALTER TABLE "structures" ENABLE TRIGGER ALL;ALTER TABLE "access_points" ENABLE TRIGGER ALL;ALTER TABLE "wormholes" ENABLE TRIGGER ALL;ALTER TABLE "base_settlements" ENABLE TRIGGER ALL;ALTER TABLE "biology_life_form_parents" ENABLE TRIGGER ALL;ALTER TABLE "bond_repayments" ENABLE TRIGGER ALL;ALTER TABLE "materials" ENABLE TRIGGER ALL;ALTER TABLE "organizations" ENABLE TRIGGER ALL;ALTER TABLE "environments" ENABLE TRIGGER ALL;ALTER TABLE "geospheres" ENABLE TRIGGER ALL;ALTER TABLE "items" ENABLE TRIGGER ALL;ALTER TABLE "ledger_entries" ENABLE TRIGGER ALL;ALTER TABLE "logistics_providers" ENABLE TRIGGER ALL;ALTER TABLE "market_conditions" ENABLE TRIGGER ALL;ALTER TABLE "worldhouse_segments" ENABLE TRIGGER ALL;ALTER TABLE "transactions" ENABLE TRIGGER ALL;ALTER TABLE "schema_migrations" ENABLE TRIGGER ALL;ALTER TABLE "ar_internal_metadata" ENABLE TRIGGER ALL[0m
+  [1m[36mTRANSACTION (1.5ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mCelestialBodies::Star Exists? (0.8ms)[0m  [1m[34mSELECT 1 AS one FROM "stars" WHERE "stars"."name" = $1 LIMIT $2[0m  [["name", "Sol"], ["LIMIT", 1]]
+  [1m[36mFinancial::Currency Load (0.7ms)[0m  [1m[34mSELECT "currencies".* FROM "currencies" WHERE "currencies"."symbol" = $1 LIMIT $2[0m  [["symbol", "GCC"], ["LIMIT", 1]]
+  [1m[36mFinancial::Currency Load (0.5ms)[0m  [1m[34mSELECT "currencies".* FROM "currencies" WHERE "currencies"."symbol" = $1 LIMIT $2[0m  [["symbol", "USD"], ["LIMIT", 1]]
+  [1m[36mOrganizations::BaseOrganization Load (0.7ms)[0m  [1m[34mSELECT "organizations".* FROM "organizations" WHERE "organizations"."identifier" = $1 LIMIT $2[0m  [["identifier", "LDC"], ["LIMIT", 1]]
+  [1m[36mOrganizations::BaseOrganization Load (0.6ms)[0m  [1m[34mSELECT "organizations".* FROM "organizations" WHERE "organizations"."identifier" = $1 LIMIT $2[0m  [["identifier", "ASTROLIFT"], ["LIMIT", 1]]
+  [1m[36mFinancial::Currency Load (0.4ms)[0m  [1m[34mSELECT "currencies".* FROM "currencies" WHERE "currencies"."symbol" = $1 LIMIT $2[0m  [["symbol", "GCC"], ["LIMIT", 1]]
+  [1m[36mFinancial::Currency Load (0.5ms)[0m  [1m[34mSELECT "currencies".* FROM "currencies" WHERE "currencies"."symbol" = $1 LIMIT $2[0m  [["symbol", "USD"], ["LIMIT", 1]]
+.................FF.F.FF...............[TransitEngine] Orbital data unavailable for EARTH-01 or UNKNOWN-BODY — using fallback transit-days estimate, not real phase-angle calculation
+.[TransitEngine] Orbital data unavailable for UNKNOWN-A or UNKNOWN-B — using fallback transit-days estimate, not real phase-angle calculation
+..F.....
+
+Failures:
+
+  1) Mission::TransitEngine.schedule_departure returns a transit record with correct structure
+     Failure/Error: expect(record[:arrival_date]).to eq(launch_date + 146)
+
+       expected: Mon, 10 Jun 2030
+            got: Tue, 15 Jan 2030
+
+       (compared using ==)
+
+       Diff:
+       @@ -1 +1 @@
+       -Mon, 10 Jun 2030
+       +Tue, 15 Jan 2030
+     # ./spec/services/mission/transit_engine_spec.rb:122:in 'block (3 levels) in <top (required)>'
+
+  2) Mission::TransitEngine.schedule_departure handles Titan transit
+     Failure/Error: raise UnsupportedTransferError, "unsupported topology for legacy transfer calculation: #{body.identifier} fails Phase 1 proxy"
+
+     Mission::TransitEngine::UnsupportedTransferError:
+       unsupported topology for legacy transfer calculation: TITAN-01 fails Phase 1 proxy
+     # ./app/services/mission/transit_engine.rb:70:in 'block in Mission::TransitEngine.calculate_transfer_window'
+     # ./app/services/mission/transit_engine.rb:65:in 'Array#each'
+     # ./app/services/mission/transit_engine.rb:65:in 'Mission::TransitEngine.calculate_transfer_window'
+     # ./app/services/mission/transit_engine.rb:143:in 'Mission::TransitEngine.schedule_departure'
+     # ./spec/services/mission/transit_engine_spec.rb:128:in 'block (3 levels) in <top (required)>'
+
+  3) Mission::TransitEngine.has_arrived? returns false when sim_day < transit_days
+     Failure/Error: expect(described_class.has_arrived?(transit_record, 145)).to be false
+
+       expected false
+            got true
+     # ./spec/services/mission/transit_engine_spec.rb:146:in 'block (3 levels) in <top (required)>'
+
+  4) Mission::TransitEngine.days_remaining returns positive days when before arrival
+     Failure/Error: expect(remaining).to be > 0
+
+       expected: > 0
+            got:   -100
+     # ./spec/services/mission/transit_engine_spec.rb:162:in 'block (3 levels) in <top (required)>'
+
+  5) Mission::TransitEngine.days_remaining returns zero on arrival day
+     Failure/Error: expect(remaining).to eq(0)
+
+       expected: 0
+            got: -146
+
+       (compared using ==)
+     # ./spec/services/mission/transit_engine_spec.rb:167:in 'block (3 levels) in <top (required)>'
+
+  6) Mission::TransitEngine.calculate_transfer_window — Phase 1 topology guard error propagates from calculate_transfer_window with no returned result
+     Failure/Error: raise UnsupportedTransferError, "unsupported topology for legacy transfer calculation: #{body.identifier} fails Phase 1 proxy"
+
+     Mission::TransitEngine::UnsupportedTransferError:
+       unsupported topology for legacy transfer calculation: LUNA-01 fails Phase 1 proxy
+     # ./app/services/mission/transit_engine.rb:70:in 'block in Mission::TransitEngine.calculate_transfer_window'
+     # ./app/services/mission/transit_engine.rb:65:in 'Array#each'
+     # ./app/services/mission/transit_engine.rb:65:in 'Mission::TransitEngine.calculate_transfer_window'
+     # ./spec/services/mission/transit_engine_spec.rb:291:in 'block (4 levels) in <top (required)>'
+     # ./spec/services/mission/transit_engine_spec.rb:292:in 'block (3 levels) in <top (required)>'
+
+Finished in 1.36 seconds (files took 22.32 seconds to load)
+48 examples, 6 failures
+
+Failed examples:
+
+rspec ./spec/services/mission/transit_engine_spec.rb:114 # Mission::TransitEngine.schedule_departure returns a transit record with correct structure
+rspec ./spec/services/mission/transit_engine_spec.rb:127 # Mission::TransitEngine.schedule_departure handles Titan transit
+rspec ./spec/services/mission/transit_engine_spec.rb:145 # Mission::TransitEngine.has_arrived? returns false when sim_day < transit_days
+rspec ./spec/services/mission/transit_engine_spec.rb:160 # Mission::TransitEngine.days_remaining returns positive days when before arrival
+rspec ./spec/services/mission/transit_engine_spec.rb:165 # Mission::TransitEngine.days_remaining returns zero on arrival day
+rspec ./spec/services/mission/transit_engine_spec.rb:289 # Mission::TransitEngine.calculate_transfer_window — Phase 1 topology guard error propagates from calculate_transfer_window with no returned result
+

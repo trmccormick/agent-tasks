@@ -1,0 +1,32 @@
+=== EARTH-01 ===
+  [1m[36mCelestialBodies::CelestialBody Load (1.0ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "EARTH-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:214:in 'Mission::TransitEngine.orbital_data'
+orbital_data class: Hash
+orbital_data keys: ["inclination", "eccentricity", "mean_anomaly", "semi_major_axis"]
+orbit_radius_km: 0.0
+=== VENUS-01 ===
+  [1m[36mCelestialBodies::CelestialBody Load (0.5ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "VENUS-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:214:in 'Mission::TransitEngine.orbital_data'
+orbital_data class: Hash
+orbital_data keys: ["inclination", "eccentricity", "mean_anomaly", "semi_major_axis"]
+orbit_radius_km: 0.0
+=== LUNA-01 ===
+  [1m[36mCelestialBodies::CelestialBody Load (0.6ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "LUNA-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:214:in 'Mission::TransitEngine.orbital_data'
+orbital_data class: Hash
+orbital_data keys: ["inclination", "eccentricity", "mean_anomaly", "semi_major_axis"]
+orbit_radius_km: 0.0
+=== EARTH-01 -> VENUS-01 ===
+  [1m[36mCelestialBodies::CelestialBody Load (0.7ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "EARTH-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:56:in 'Mission::TransitEngine.calculate_transfer_window'
+  [1m[36mCelestialBodies::CelestialBody Load (0.5ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "VENUS-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:57:in 'Mission::TransitEngine.calculate_transfer_window'
+  [1m[36mSolarSystem Load (0.7ms)[0m  [1m[34mSELECT "solar_systems".* FROM "solar_systems" WHERE "solar_systems"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:64:in 'block in Mission::TransitEngine.calculate_transfer_window'
+  [1m[36mSolarSystem Load (0.5ms)[0m  [1m[34mSELECT "solar_systems".* FROM "solar_systems" WHERE "solar_systems"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:64:in 'block in Mission::TransitEngine.calculate_transfer_window'
+  [1m[36mCelestialBodies::CelestialBody Load (0.5ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "EARTH-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:214:in 'Mission::TransitEngine.orbital_data'
+  [1m[36mCelestialBodies::CelestialBody Load (0.4ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "VENUS-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:214:in 'Mission::TransitEngine.orbital_data'
+{departure_date: Tue, 15 Jan 2030, arrival_date: Tue, 15 Jan 2030, transit_days: 0, phase_angle_deg: 0.0, delta_v_km_s: 0.0, synodic_period_days: Infinity}
