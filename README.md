@@ -671,7 +671,7 @@ below — it is the same Qwen instance, and `NEEDS_REVIEW.md` maintenance is
 part of ordinary Planning Agent duties, not an optional add-on role that
 only activates in some special "coordinator" context. Any session
 operating in PLANNING or STRATEGIST mode (including sessions dispatched
-via `QUICK_START_PLANNING_SESSION.md`) is responsible for reading and
+via `PLANNING_AGENT_SESSION_START.md`) is responsible for reading and
 maintaining `NEEDS_REVIEW.md`. This section previously read as if it
 described a distinct, optional role, which is very likely why it was
 getting skipped by ordinary planning sessions — corrected here.

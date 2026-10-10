@@ -75,7 +75,7 @@
 - REVIEW_AGENT_WORKFLOW.md
 - ROUTING_LOGIC.md
 - TASK_TEMPLATE.md
-- QUICK_START_PLANNING_SESSION.md
+- PLANNING_AGENT_SESSION_START.md
 
 **Projects** (6 projects — each has own workspace):
 - galaxy_game/ (README + tasks + handoffs)
@@ -142,7 +142,7 @@ Read prerequisites, create synthesis, wait for approval.
 - `README.md` — How to use the system
 - `REVIEW_AGENT_GUIDE.md` — Role definition for review agents
 - `REVIEW_AGENT_WORKFLOW.md` — Complete workflow documentation
-- `QUICK_START_PLANNING_SESSION.md` — Cheat sheet for dispatch
+- `PLANNING_AGENT_SESSION_START.md` — Planning session startup and dispatch prompt
 
 **Templates**:
 - `TASK_TEMPLATE.md` — Blueprint for creating tasks
