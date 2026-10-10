@@ -35,7 +35,7 @@ Evidence label: everything below is **REPORTED** (carried over from the original
 | Context docs | `<agent-tasks>/projects/galaxy_game/context/` (including `PATTERNS.md`) |
 | Handoffs | `<agent-tasks>/projects/galaxy_game/handoffs/` |
 | Docker commands | `<agent-tasks>/projects/galaxy_game/DOCKER_COMMAND_GUIDE.md` |
-| RSpec | `docker exec -it web bash -c 'cd /home/galaxy_game && unset DATABASE_URL && RAILS_ENV=test bundle exec rspec [SPEC_PATH] 2>&1 \| tail -30'` |
+| RSpec | Full suite: `docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec > /home/galaxy_game/log/rspec_full_$(date +%s).log 2>&1'` — Specific file: same, with path before `>`. Inspect with `tail -50` on the log; do not paste the full log into chat. Host log dir is `data/logs/` (container `log/`). |
 | Git | On the host only, never inside Docker |
 
 **Symlink:** `docs/new_agent/` inside the `<galaxyGame>` repo is a symlink to `<agent-tasks>`. For git operations always use the real `<agent-tasks>` path, never the symlink. Agents get confused by it and create stray duplicate files.
