@@ -176,7 +176,7 @@ under a DIFFERENT name than it has on the host — see below).
 1. Confirm which context you're actually in — a host shell, or
    `docker exec`/`docker compose exec` into a specific container.
 2. Check that project's path-mapping reference (each project's own
-   session-start doc, e.g. `CLAUDE_SESSION_START.md`) for its actual
+   `SESSION_GUIDANCE.md` in `projects/<project>/`) for its actual
    host↔container mount table before assuming a path is missing.
 3. Use that context's prefix consistently for the rest of the command —
    don't blend host-relative and container-relative segments.
@@ -511,7 +511,7 @@ This rule (formerly project-specific host/container path guidance) has been
 merged into **Rule 10 — Host vs. Container Path Prefixes** above, which
 states the general principle for all projects. Project-specific path
 mapping tables (e.g. Galaxy Game's `data/json-data/` ↔ `app/data/` mount)
-now live in that project's own `CLAUDE_SESSION_START.md`, not here — this
+now live in that project's own `SESSION_GUIDANCE.md`, not here — this
 file states the pattern, each project documents its own specifics.
 
 ---

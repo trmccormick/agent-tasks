@@ -4,7 +4,7 @@ Project-specific guidance for any agent working on Galaxy Game, read at startup 
 
 Moved and adjusted from `GALAXY_GAME_CONTEXT.md` (last updated 2026-07-08). The original is preserved verbatim at `projects/galaxy_game/archive/GALAXY_GAME_CONTEXT-2026-07-08.md`, including the sections not carried over (dated state, machine and model setup, tool-use troubleshooting).
 
-Evidence label: everything below is **REPORTED** (carried over from the original, or from `CLAUDE_SESSION_START.md` for the path-mapping table) unless an agent re-checks it and says so. Where this file and the live repo disagree, the live repo wins; report the difference.
+Evidence label: everything below is **REPORTED** (carried over from the original, from the former `CLAUDE_SESSION_START.md` for the path-mapping table, or from the former `GROK_SESSION_START.md` for section 8; both former docs are in git history) unless an agent re-checks it and says so. Where this file and the live repo disagree, the live repo wins; report the difference.
 
 ---
 
@@ -130,6 +130,20 @@ Source of truth: `projects/galaxy_game/context/PATTERNS.md`. The short list carr
 
 ---
 
-## 8. Keeping this file current
+## 8. AI Manager work
+
+Which agent does this is a preference, not a fixed assignment. AI Manager design work has usually gone to Grok, and any web agent can take it. These constraints apply to whichever agent does it.
+
+Items 1-4 are carried over from the archived Grok start doc (2026-09-06) and have not been re-checked; check them against the latest handoff. Item 5 was stated by the human on 2026-10-09.
+
+1. The FootholdPlanner architecture and the Super-Mars test case are done. Extend them only for an explicit new mission; do not redo them.
+2. No location-keyed material sourcing (`lunar`, `martian` or `earth` blocks on JSON).
+3. The acquisition follow-on extends `EscalationService` and the existing spine, after a read-only code inventory. Do not build a parallel procurement system.
+4. AI Manager task files live under `tasks/backlog/ai-manager/`, outside the phase settlement folders.
+5. Live game-loop wiring is in progress and is being tested with rake tasks. Check the latest handoff and `status.md` for where it stands before treating any part of it as unstarted.
+
+---
+
+## 9. Keeping this file current
 
 This file holds stable guidance only. Dated state (suite counts, active queues, what was last built) belongs in `status.md` and handoffs, never here. The planning agent proposes changes to this file; the human approves them.
