@@ -70,12 +70,15 @@ A live check this session always outranks a written claim.
 
 ## Step 6 — Startup closeout check
 
-Check whether the previous session's closeout was completed, using `SESSION_CLOSEOUT.md`:
+Check whether the previous session's closeout was completed, using `SESSION_CLOSEOUT.md` (read its section 0 first):
 - Does `status.md` have a dated entry in the required format?
 - Are task files in the right folders?
-- If closeout was missed, reconcile the clear cases within your authorization before proceeding. Do not do two full cleanups in one session.
+- **A missing closeout means paused, not abandoned.** Sessions are often cut off by a usage limit and resumed later. Do not move, archive, delete or "reconcile" the files of a session you do not know to be finished, including tasks in `active/`. Report what you see (the task, where it sits, what the last entry says) and ask the human.
+- Reconcile only a session the human tells you is finished, and only that session's own files. Do not do two full cleanups in one session.
 
 The planning agent also curates `status.md` here (header, stale claims, archiving) as `SESSION_CLOSEOUT.md` section 1c describes.
+
+**Maintenance is your job, not the session agents'.** Session closeout covers only the task work done in that session. You help the human keep everything else in order: stale or duplicate files, tasks in the wrong folder, untracked drafts, archive housekeeping. Follow `SESSION_CLOSEOUT.md` section 7: inventory first, classify by owner, propose, wait for approval, then act on the approved items only.
 
 ---
 

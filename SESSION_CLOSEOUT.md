@@ -6,6 +6,19 @@ Project-specific guidance lives in `projects/<project>/SESSION_GUIDANCE.md`.
 
 ---
 
+## 0. Scope: only what this session touched
+
+Closeout covers only the files this session created or changed. Another session's work is off limits, whether that session is running, paused or finished: its task files, drafts, reports, uncommitted changes and untracked files.
+
+- **How to tell what is yours.** Compare `git status --short` at closeout with the state at session start, or use the session's own record of the files it changed. Anything outside your own changes is not yours. An untracked file is not yours just because nobody has committed it.
+- **Not yours: leave it alone.** Do not stage, move, rename, archive, delete or "clean up" it. List it under "Not committed" in your status entry as "left as-is, not this session" and stop.
+- **Only exception:** the human names the file and says what to do with it.
+- **Unsure whether a file is yours:** leave it and ask.
+- **Stage explicit paths only.** Never `git add .`, `git add -A` or `git commit -a`. Before committing, `git diff --cached --stat` must list only your files.
+- **The planning agent's startup closeout check** (see `PLANNING_AGENT_SESSION_START.md`, Step 6) applies only to sessions known to be finished, and only to that session's own files. Paused or in-progress sessions are skipped.
+
+---
+
 ## 1. Status.md Maintenance (mandatory)
 
 ### 1a. Roles
@@ -42,6 +55,7 @@ Do this at session start or at closeout, never in the middle of other work.
 4. Move the original entries verbatim to `archive/status-log-YYYY-MM.md`, with a short note above each saying why it moved, and leave a one-line pointer in status.md.
 5. Never silently drop a claim. It is either verified live, or preserved in the archive.
 6. An entry appended to the wrong project goes to the archive with a note, not into the right project's file.
+7. Curation covers `status.md` only. It does not move, archive or delete another session's task files, drafts or reports (section 0).
 7. Show the human the diff. The human commits.
 
 ### 1d. Evidence labels
@@ -63,18 +77,18 @@ Move canonical task files using `git mv`. Verify one canonical copy exists with 
 
 **Do not**:
 - Copy tasks — use `git mv` for tracked moves
-- Change tasks owned by another running session
+- Change tasks owned by another session, running or paused
 - Leave completed or held tasks in `active/`
 
 ---
 
-## 3. Artifact Cleanup
+## 3. Cleanup of This Session's Own Artifacts
 
-Clean up relevant stale drafts, superseded reports, and duplicate artifacts:
-- Archive useful history; remove confirmed disposable material
+Clean up the stale drafts, superseded reports and duplicate artifacts that **this session created** (section 0 decides what that means):
+- Archive useful history; remove only disposable material this session itself created
 - Task files are never deleted without verification and human approval (Rule 29)
-- Age alone is not grounds for deletion — ask when ownership or retention is genuinely uncertain
-- Do not turn cleanup into a broad audit
+- Age, or being untracked, is not grounds for touching a file. Ownership decides.
+- Do not turn cleanup into a broad audit, and do not tidy anything outside this session's changes
 
 ---
 
@@ -82,7 +96,7 @@ Clean up relevant stale drafts, superseded reports, and duplicate artifacts:
 
 Leave a brief statement of:
 - Maintenance performed (what was updated, moved, archived)
-- Exceptions (tasks owned by another session, unresolved restrictions, anything left as-is with reason)
+- Exceptions (files that belong to other sessions and were left as-is, unresolved restrictions, anything else left as-is with reason)
 
 ---
 
