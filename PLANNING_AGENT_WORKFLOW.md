@@ -45,8 +45,8 @@ Optional and requires a concrete need. No automatic Qwen → Gemini → Claude c
 
 ## Shared Rules Reference
 
-- **Responsibilities and evidence standards**: `/Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md`
-- **Closeout procedure**: `/Users/tam0013/Documents/git/agent-tasks/SESSION_CLOSEOUT.md`
+- **Responsibilities and evidence standards**: `<agent-tasks>/REVIEW_AGENT_GUIDE.md`
+- **Closeout procedure**: `<agent-tasks>/SESSION_CLOSEOUT.md`
 
 Do not repeat shared rules here.
 

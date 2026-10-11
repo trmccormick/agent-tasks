@@ -2,6 +2,10 @@
 
 **Goal**: Audit stale tasks, identify overlaps, refactor with research, get Claude approval
 
+**Paths**: `<galaxyGame>` is the root of your clone of the Galaxy Game code repo; `<agent-tasks>` is the root of this repo. Never use another machine's absolute path.
+
+**Check before moving a refined task:** the Phase 5 and Phase 6+ destinations below (`<galaxyGame>/galaxy_game/lib/tasks/...`) look like an older layout. The live task folders are `projects/galaxy_game/tasks/backlog`, `active` and `completed` in this repo. Confirm the destination with the human before you move a file.
+
 ---
 
 ## WORKFLOW AT A GLANCE
@@ -9,14 +13,14 @@
 ```
 1. PLANNING AGENT (Local - You provide stale task file)
    ↓
-   Creates: /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/
+   Creates: <galaxyGame>/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/
    - ANALYSIS.md (issues + phase routing gate)
    - RESEARCH_ASSIGNMENT.md (concrete research questions)
    ↓
 2. QWEN (Local - Separate session)
    ↓
    Determines: What phase does this belong in?
-   Research results → /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/qwen-research/
+   Research results → <galaxyGame>/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/qwen-research/
    ↓
 3. GEMINI (Web - Single session)
    ↓
@@ -97,7 +101,7 @@
 
 **Time**: ~30-45 min
 
-**Location**: `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/gemini-draft/`
+**Location**: `<galaxyGame>/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/gemini-draft/`
 
 ---
 
@@ -125,17 +129,17 @@ mv /tasks/review/TASK_NAME.md /tasks/reference/TASK_NAME.md
 
 If Phase 5 Luna MVP:
 ```bash
-mv /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/gemini-draft/REFINED_TASK.md /Users/tam0013/Documents/git/galaxyGame/galaxy_game/lib/tasks/active/phase5/YYYY-MM-DD-TASK-NAME.md
+mv <galaxyGame>/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/gemini-draft/REFINED_TASK.md <galaxyGame>/galaxy_game/lib/tasks/active/phase5/YYYY-MM-DD-TASK-NAME.md
 ```
 
 If Phase 6+:
 ```bash
-mv /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/gemini-draft/REFINED_TASK.md /Users/tam0013/Documents/git/galaxyGame/galaxy_game/lib/tasks/backlog/phase6+/YYYY-MM-DD-TASK-NAME.md
+mv <galaxyGame>/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/gemini-draft/REFINED_TASK.md <galaxyGame>/galaxy_game/lib/tasks/backlog/phase6+/YYYY-MM-DD-TASK-NAME.md
 ```
 
 If Design/Reference:
 ```bash
-mv /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/gemini-draft/REFINED_TASK.md /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/design/YYYY-MM-DD-CONCEPT-NAME.md
+mv <galaxyGame>/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/gemini-draft/REFINED_TASK.md <galaxyGame>/docs/new_agent/projects/galaxy_game/design/YYYY-MM-DD-CONCEPT-NAME.md
 ```
 
 **Day folder**: Stays in place as audit trail
@@ -147,11 +151,11 @@ mv /Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/t
 | File | Location | Status |
 |------|----------|--------|
 | Original task | `/tasks/review/` | Before audit |
-| Planning analysis | `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/ANALYSIS.md` | Audit work |
-| Research assignment | `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/RESEARCH_ASSIGNMENT.md` | Audit work |
-| Qwen research | `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/qwen-research/` | Audit work |
-| Refined task | `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/gemini-draft/REFINED_TASK.md` | Draft |
-| Final summary | `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/gemini-draft/FINAL_SUMMARY.md` | Claude review |
+| Planning analysis | `<galaxyGame>/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/ANALYSIS.md` | Audit work |
+| Research assignment | `<galaxyGame>/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/RESEARCH_ASSIGNMENT.md` | Audit work |
+| Qwen research | `<galaxyGame>/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/qwen-research/` | Audit work |
+| Refined task | `<galaxyGame>/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/gemini-draft/REFINED_TASK.md` | Draft |
+| Final summary | `<galaxyGame>/docs/new_agent/projects/galaxy_game/tasks/refactored-task-files/YYYY-MM-DD/gemini-draft/FINAL_SUMMARY.md` | Claude review |
 | **After approval:** | | |
 | Original (reference) | `/tasks/reference/` | Design archival |
 | Refined (Phase 5) | `/tasks/active/phase5/` | Ready to work |
