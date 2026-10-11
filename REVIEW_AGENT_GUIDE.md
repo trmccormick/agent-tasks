@@ -31,9 +31,9 @@ Escalate consequential risks and decisions: architectural conflicts, material sc
 
 ## Referenced Procedures
 
-- **Startup**: `/Users/tam0013/Documents/git/agent-tasks/PLANNING_AGENT_SESSION_START.md` — state reconciliation, test-log check, opening briefing
-- **Review workflow**: `/Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_WORKFLOW.md` — assignment → evidence → targeted review → disposition
-- **Closeout**: `/Users/tam0013/Documents/git/agent-tasks/SESSION_CLOSEOUT.md` — status.md maintenance, task lifecycle reconciliation, artifact cleanup
+- **Startup**: `<agent-tasks>/PLANNING_AGENT_SESSION_START.md` — state reconciliation, test-log check, opening briefing
+- **Review workflow**: `<agent-tasks>/REVIEW_AGENT_WORKFLOW.md` — assignment → evidence → targeted review → disposition
+- **Closeout**: `<agent-tasks>/SESSION_CLOSEOUT.md` — status.md maintenance, task lifecycle reconciliation, artifact cleanup
 
 Do not duplicate these procedures in this guide.
 

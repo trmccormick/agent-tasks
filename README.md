@@ -2,7 +2,9 @@
 **Last Updated**: 2026-06-23
 
 **Purpose**: Generic workflow guidance for ANY project (Galaxy Game, Samvera, WVU Libraries, etc.)  
-**Shared Infrastructure**: Lives in `/Users/tam0013/Documents/git/agent-tasks/` (rules, routing, task templates for all projects)
+**Shared Infrastructure**: Lives in `<agent-tasks>/` (rules, routing, task templates for all projects)
+
+**Paths**: `<agent-tasks>` means the root of your clone of this repository, on whichever machine you are working (for example `/Users/<you>/Documents/git/agent-tasks`). Run commands from that folder. `<project-repo>` means your clone of the project's own repository. Do not copy another machine's absolute path.
 
 ---
 
@@ -12,9 +14,9 @@
 
 1. **Identify your role** — You are assigned ONE of: PLANNING / STRATEGIST / EXECUTOR / REVIEWER / DOMAIN EXPERT (see roles below)
 2. **Read your role section** — Find your assigned role in this README and understand your scope (in-scope ✅ vs out-of-scope ❌)
-3. **If your role is PLANNING or STRATEGIST: read `NEEDS_REVIEW.md`** — Located at `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/NEEDS_REVIEW.md`. This is the primary interface for anything flagged as needing a second opinion — check it before starting new triage, analysis, or task drafting. See "Persistent Coordination Role (Qwen)" below for who maintains it and when.
-4. **Read the task file** (if assigned) — Located at `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/tasks/active/[TASKFILE].md`
-5. **Read project context** (if needed) — Located at `/Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/README.md`
+3. **If your role is PLANNING or STRATEGIST: read `NEEDS_REVIEW.md`** — Located at `<agent-tasks>/projects/[PROJECT]/NEEDS_REVIEW.md`. This is the primary interface for anything flagged as needing a second opinion — check it before starting new triage, analysis, or task drafting. See "Persistent Coordination Role (Qwen)" below for who maintains it and when.
+4. **Read the task file** (if assigned) — Located at `<agent-tasks>/projects/[PROJECT]/tasks/active/[TASKFILE].md`
+5. **Read project context** (if needed) — Located at `<agent-tasks>/projects/[PROJECT]/README.md`
 6. **Execute the task** — Use terminal tools to verify, implement, test
 
 **This keeps you targeted and prevents scope creep.**
@@ -32,7 +34,7 @@ Without reading this first, agents get scope-creep, fabricate results, or miss c
 ## File Organization Pattern
 
 ### Shared Infrastructure Across Projects
-**Location**: `/Users/tam0013/Documents/git/agent-tasks/`  
+**Location**: `<agent-tasks>/`  
 **Scope**: Rules, task templates, routing, and core execution protocols for ALL projects.  
 **Ownership**: Agent tooling (updated when core workflow rules change)[cite: 3].
 
@@ -43,19 +45,19 @@ Without reading this first, agents get scope-creep, fabricate results, or miss c
 **Key File**: `status.md` — Living document tracking test baselines, completed work, in-progress tasks, and blockers[cite: 3].
 
 ### Task Files (Shared Backlog Repository)
-**Location**: `/Users/tam0013/Documents/git/agent-tasks/projects/[project_name]/tasks/[backlog|active|completed]/`[cite: 3]  
+**Location**: `<agent-tasks>/projects/[project_name]/tasks/[backlog|active|completed]/`[cite: 3]  
 **Scope**: Formal feature or refactor assignments containing detailed technical specifications[cite: 3].  
 **Status**: Lifecycle tracked via YAML header (`status: backlog` ➔ `status: active` ➔ `status: completed`)[cite: 3].
 
 ### Summaries Folder (Agent Session Data)
-**Location**: `/Users/tam0013/Documents/git/agent-tasks/projects/[project_name]/summaries/`  
+**Location**: `<agent-tasks>/projects/[project_name]/summaries/`  
 **Scope**: Synthesis reports, test results, and data that agents need to pass to other agents.  
 **Why**: Summaries are saved as MD files and shared via the agent-tasks repo — avoids copy-pasting from chat and preserves formatting.  
 **Pattern**: Each agent creating a synthesis report saves it here as `SYNTHESIS-[DESCRIPTION].md` before starting work.  
 **Ownership**: Agents (created during task execution, never manually edited afterward).
 
 ## Symlinked Task Repo — Managing Task Files
-NOTE: In this workspace `docs/new_agent` is a filesystem symlink that points to the shared task repository at `/Users/tam0013/Documents/git/agent-tasks`. Editing files under `docs/new_agent` is fine, but commits and pushes must be performed from the `agent-tasks` repository on the host.
+NOTE: In this workspace `docs/new_agent` is a filesystem symlink that points to the shared task repository at `<agent-tasks>`. Editing files under `docs/new_agent` is fine, but commits and pushes must be performed from the `agent-tasks` repository on the host.
 
 Recommended workflow for executors and strategists:
 
@@ -63,7 +65,7 @@ Recommended workflow for executors and strategists:
 - When ready to commit, operate from the `agent-tasks` repo root to ensure correct Git metadata and remotes are used. Use quoted paths to avoid shell globbing. Example commands:
 
 ```bash
-cd /Users/tam0013/Documents/git/agent-tasks
+cd <agent-tasks>
 git add 'projects/galaxy_game/tasks/completed/2026-06/2026-06-03-HIGH-BUGFIX-EXAMPLE.md'
 git commit -m "Add completed task: 2026-06-03 spec health"
 git push
@@ -81,7 +83,7 @@ Why this matters:
 ## Where to Find Agent Guidance
 
 ### ⭐ Shared Agent Workspace (All Projects)
-**Location**: `/Users/tam0013/Documents/git/agent-tasks/`[cite: 3]  
+**Location**: `<agent-tasks>/`[cite: 3]  
 **Contains:**
 - `README.md` — Main agent workspace guide (READ THIS FIRST)[cite: 3]
 - `ROUTING_LOGIC.md` — Quick-reference routing table and model stack
@@ -180,7 +182,7 @@ When you finish implementing a task, follow this **exact sequence**:
 
 **Step 1: Move task from active/ → completed/** (using git mv, CRITICAL)
 ```bash
-cd /Users/tam0013/Documents/git/agent-tasks
+cd <agent-tasks>
 git mv projects/[project]/tasks/active/[TASKFILE].md \
        projects/[project]/tasks/completed/[TASKFILE].md
 ```
@@ -197,20 +199,20 @@ rm -f projects/[project]/tasks/active/[TASKFILE].md projects/[project]/tasks/bac
 Post the find output to chat before proceeding.
 
 **Step 3: Update project status.md** (located in agent-tasks)
-File: `/Users/tam0013/Documents/git/agent-tasks/projects/[project]/status.md`
+File: `<agent-tasks>/projects/[project]/status.md`
 - Add completed task summary (1-2 lines under appropriate section or ARCHIVE)
 - Update "Last Updated" timestamp to today's date
 - Note any deferred work or Phase 2 items
 
 **Step 4: Save synthesis report to summaries folder**
-File: `/Users/tam0013/Documents/git/agent-tasks/projects/[project]/summaries/YYYY-MM-DD-[TYPE]-[DESCRIPTION].md`
+File: `<agent-tasks>/projects/[project]/summaries/YYYY-MM-DD-[TYPE]-[DESCRIPTION].md`
 - Contains detailed results of your testing/implementation
 - Do NOT paste full synthesis into chat (post path + 3-line summary instead)
 - This allows next agent to review your work
 
 **Step 5: Commit all changes**
 ```bash
-cd /Users/tam0013/Documents/git/agent-tasks
+cd <agent-tasks>
 git add projects/[project]/tasks/completed/[TASKFILE].md
 git add projects/[project]/status.md
 git add projects/[project]/summaries/YYYY-MM-DD-[TYPE]-[DESCRIPTION].md
@@ -237,7 +239,7 @@ Post success confirmation to chat.
 
 **Step 4: Commit status.md update**
 ```bash
-cd /Users/tam0013/Documents/git/[project]
+cd <project-repo>
 git add doc/status.md
 ```
 🛑 **STOP. Post the exact commit message and `git diff --stat` output to chat.
@@ -398,7 +400,7 @@ Premium tokens: ~1,000 / task  ← 10x reduction
    ```
    You are **Implementation Agent**.
    Project: [project]
-   Task: /Users/tam0013/Documents/git/agent-tasks/projects/[project]/tasks/active/[TASKFILE].md
+   Task: <agent-tasks>/projects/[project]/tasks/active/[TASKFILE].md
    ```
 
 2. Qwen reads task file prerequisites in order (no planning agent involvement)
@@ -449,7 +451,7 @@ Premium tokens: ~1,000 / task  ← 10x reduction
 
 3. **Commit & Push**
    ```bash
-   cd /Users/tam0013/Documents/git/agent-tasks
+   cd <agent-tasks>
    git add 'projects/[project]/tasks/active/[FILENAME].md'
    git commit -m "task: [descriptive message]"
    git push
@@ -590,11 +592,11 @@ You are **Implementation Agent**.
 
 Project: [PROJECT_NAME]
 
-Agent-tasks repository: /Users/tam0013/Documents/git/agent-tasks/
+Agent-tasks repository: <agent-tasks>/
 
-Task file (move from backlog to active): /Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT_NAME]/tasks/backlog/[TASKFILE].md
+Task file (move from backlog to active): <agent-tasks>/projects/[PROJECT_NAME]/tasks/backlog/[TASKFILE].md
 
-Workflow reference: /Users/tam0013/Documents/git/agent-tasks/README.md (see "Task Completion Workflow" section)
+Workflow reference: <agent-tasks>/README.md (see "Task Completion Workflow" section)
 
 Implement [TASK_DESCRIPTION].
 ```

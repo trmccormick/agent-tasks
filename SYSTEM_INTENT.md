@@ -98,8 +98,8 @@
 You are PLANNING Agent for [PROJECT].
 
 Read in order:
-1. /Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md
-2. /Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/README.md
+1. <agent-tasks>/REVIEW_AGENT_GUIDE.md
+2. <agent-tasks>/projects/[PROJECT]/README.md
 3. [Paste status.md]
 4. [Paste previous handoff]
 
