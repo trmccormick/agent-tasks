@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-10-08 — C4 Visual Profile Resolution completed
+**Last Updated:** 2026-10-11 — C3 RH-400 catalog image serving COMPLETE: Implemented fallback when AssetRegistry fails, added controller image serving action, verified end-to-end path resolution works, all tests passing (21/21)
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
