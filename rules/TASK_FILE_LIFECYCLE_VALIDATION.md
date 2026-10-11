@@ -18,7 +18,7 @@
 Before doing ANYTHING with a task file, run this validation:
 
 ```bash
-cd /Users/tam0013/Documents/git/agent-tasks
+cd <agent-tasks>
 
 # 1. Find all copies of the task file
 find projects/[PROJECT]/tasks -name "[TASKFILE_NAME]"
@@ -125,7 +125,7 @@ Before you proceed, verify the task file state:
 
 **Run:**
 ```bash
-find /Users/tam0013/Documents/git/agent-tasks/projects/[PROJECT]/tasks -name "[TASKFILE]"
+find <agent-tasks>/projects/[PROJECT]/tasks -name "[TASKFILE]"
 head -5 [each file found]
 ```
 

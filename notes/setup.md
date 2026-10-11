@@ -1,12 +1,12 @@
 # Application Setup Notes
 
-The project's root directory is located at `/Users/tam0013/Documents/git/galaxyGame/galaxy_game`. This directory contains the application's source code.
+The project's root directory is located at `<galaxyGame>/galaxy_game`. This directory contains the application's source code.
 
 To run the application, follow these steps:
 
 1. Navigate to the project's root directory:
 ```
-cd /Users/tam0013/Documents/git/galaxyGame/galaxy_game
+cd <galaxyGame>/galaxy_game
 ```
 
 2. Install the required dependencies by running the following command:
