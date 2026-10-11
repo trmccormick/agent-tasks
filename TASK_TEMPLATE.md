@@ -90,11 +90,13 @@ local_worker_safe: true | false
 **This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
 Agents receive this exact text as the startup contract. Every word matters.
 
+**One allowed substitution:** before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root). Fill `[project]`, `[SUBFOLDER]` and `[FILENAME]` as usual. Change nothing else.
+
 ```
 You are **Implementation Agent**.
 
 Project: [project_name]
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md
+Task: <agent-tasks>/projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
   git mv projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md \
@@ -113,7 +115,7 @@ LIFECYCLE: backlog → active → completed
 READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
 CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
-  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/[project]/summaries/
+  Summaries path: <agent-tasks>/projects/[project]/summaries/
   Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
   Chat is for questions only — never paste synthesis into chat (formatting breaks).
 ```
@@ -337,7 +339,7 @@ status: backlog  →  status: active
 
 Then verify only one copy exists:
 ```bash
-find /Users/tam0013/Documents/git/agent-tasks/projects/[project]/tasks \
+find <agent-tasks>/projects/[project]/tasks \
      -name "[FILENAME].md"
 ```
 

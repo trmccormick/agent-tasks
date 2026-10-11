@@ -5,16 +5,18 @@
 
 ---
 
+Before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root), and fill the bracketed fields.
+
 ```
 You are the [ROLE: Research/Architecture | Implementation | Planning | Review] Agent.
 
 Project: [project_name]
 
-Task file (backlog): /Users/tam0013/Documents/git/agent-tasks/projects/[project_name]/tasks/backlog/[FOLDER_IF_ANY]/[TASKFILE].md
+Task file (backlog): <agent-tasks>/projects/[project_name]/tasks/backlog/[FOLDER_IF_ANY]/[TASKFILE].md
 
 READ FIRST:
-1) /Users/tam0013/Documents/git/agent-tasks/README.md
-2) /Users/tam0013/Documents/git/agent-tasks/rules/GUARDRAILS.md
+1) <agent-tasks>/README.md
+2) <agent-tasks>/rules/GUARDRAILS.md
 3) The task file above, then move it to active/ and update status to active.
 
 REQUIRED: Create the STATUS SYNTHESIS REPORT in the task file before making any changes, then wait for human approval.
@@ -105,11 +107,11 @@ You are the Implementation Agent.
 
 Project: galaxy_game
 
-Task file (backlog): /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/2026-06-28-HIGH-FEATURE-CYCLER-HITCHHIKER-OPTIMIZATION.md
+Task file (backlog): <agent-tasks>/projects/galaxy_game/tasks/backlog/2026-06-28-HIGH-FEATURE-CYCLER-HITCHHIKER-OPTIMIZATION.md
 
 READ FIRST:
-1) /Users/tam0013/Documents/git/agent-tasks/README.md
-2) /Users/tam0013/Documents/git/agent-tasks/rules/GUARDRAILS.md
+1) <agent-tasks>/README.md
+2) <agent-tasks>/rules/GUARDRAILS.md
 3) The task file above, then move it to active/ and update status to active.
 
 REQUIRED: Create the STATUS SYNTHESIS REPORT in the task file before making any changes, then wait for human approval.

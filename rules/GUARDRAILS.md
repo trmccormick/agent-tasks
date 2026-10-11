@@ -236,7 +236,7 @@ git add destination_path
 
 **After moving, always verify with find:**
 ```bash
-find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks \
+find <agent-tasks>/projects/galaxy_game/tasks \
      -name "[FILENAME].md"
 ```
 Only ONE result should exist. If two appear, a stale copy exists — remove it before committing.
@@ -278,14 +278,14 @@ Note that you'll need to handle the cryo port issue... [❌ NO - belongs in task
 Make sure to test with docker exec... [❌ NO - belongs in task file]
 ```
 
-**CORRECT PATTERN ✅:**
+**CORRECT PATTERN ✅:** (`<agent-tasks>` is the absolute path of the agent-tasks clone on the machine that will run the task; fill it in at dispatch.)
 ```
 You are the Implementation Agent.
 Project: galaxy_game
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/tasks/backlog/[FOLDER]/[FILENAME].md
+Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/[FOLDER]/[FILENAME].md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  cd /Users/tam0013/Documents/git/agent-tasks
+  cd <agent-tasks>
   git mv projects/galaxy_game/tasks/backlog/[FOLDER]/[FILENAME].md \
          projects/galaxy_game/tasks/active/[FILENAME].md
   Then open the moved file and change: status: backlog → status: active
@@ -294,8 +294,8 @@ STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
   If git mv fails (untracked file): use plain mv then git add at final path.
 
 READ FIRST (after Step 0):
-1) /Users/tam0013/Documents/git/agent-tasks/README.md
-2) /Users/tam0013/Documents/git/agent-tasks/rules/GUARDRAILS.md
+1) <agent-tasks>/README.md
+2) <agent-tasks>/rules/GUARDRAILS.md
 3) The task file (now at active/ path)
 
 CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
