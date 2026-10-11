@@ -8,6 +8,8 @@
 
 > **Advisory status:** This document records current operational preferences and observed model capabilities. It does not override `rules/GUARDRAILS.md`, a selected task file, or explicit human instruction. Routing should begin with task requirements, required access, capability, verification needs, risk, and current availability; cost and preferences are secondary considerations among eligible agents.
 
+> **Historical (dated June 2026).** This describes the Qwen3.5-era setup (Continue, Copilot-based escalation) and has not been reconciled with the current stack. Current agent notes are in `notes/AGENT_NOTES.md`; where the two disagree, that file is more recent. Nothing here is a fixed routing ladder (MAG-3, MAG-5): the human chooses the agent at dispatch.
+
 ---
 
 ## 🔴 NEW: Cross-Project GitHub Copilot Budget Strategy (June 2026)

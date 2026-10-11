@@ -86,10 +86,10 @@ Why this matters:
 **Location**: `<agent-tasks>/`[cite: 3]  
 **Contains:**
 - `README.md` — Main agent workspace guide (READ THIS FIRST)[cite: 3]
-- `ROUTING_LOGIC.md` — Quick-reference routing table and model stack
+- `ROUTING_LOGIC.md` — Quick-reference routing table and model stack *(historical, June 2026; current notes in `notes/AGENT_NOTES.md`)*
 - `rules/GUARDRAILS.md` — Core execution and security rules[cite: 3]
 - `rules/DECISIONS.md` — Locked cross-project architectural decisions[cite: 3]
-- `rules/AGENT_ROUTING.md` — Full routing table matrices[cite: 3]
+- `rules/AGENT_ROUTING.md` — Full routing table matrices *(historical, June 2026)*[cite: 3]
 - `TASK_TEMPLATE.md` — Template blueprint for constructing new tasks[cite: 3]
 - `SIMPLE_HANDOFF_TEMPLATE.md` — Concise agent task dispatch format (copy-paste ready)
 - `COMMUNICATION_PROTOCOL.md` — Agent output formatting rules[cite: 3]
