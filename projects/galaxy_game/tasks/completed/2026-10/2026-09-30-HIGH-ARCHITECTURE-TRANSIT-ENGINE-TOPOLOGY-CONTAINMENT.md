@@ -1,6 +1,6 @@
 ---
 title: "TransitEngine Topology Containment — Phase 1"
-status: active
+status: completed
 priority: HIGH
 type: architecture
 work_type: architecture_containment
@@ -15,7 +15,7 @@ related_tasks:
 dispatch_ready: false
 ---
 
-**Claude disposition**: REVISE (not approved). This revision incorporates Claude's required changes per human authorization. A fresh Qwen read-only task-text verification and Claude re-review are required after this revision.
+**Claude disposition**: APPROVED as implemented (2026-10-10), by review of pasted evidence (raw spec output, rake BEFORE/AFTER diff, code and docs diffs) and the pre-change code read from GitHub; not independently re-run by Claude. Commit and push decisions remain with the human owner.
 
 ## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
 
@@ -77,11 +77,11 @@ Everything else (details, gotchas, acceptance criteria, implementation steps) is
 ---
 
 # TASK: TransitEngine Topology Containment — Phase 1
-**Status**: BACKLOG
+**Status**: COMPLETED
 **Priority**: HIGH
 **Type**: architecture
 **Created**: 2026-09-30
-**Last Updated**: 2026-10-06
+**Last Updated**: 2026-10-10
 
 ---
 
@@ -776,26 +776,38 @@ The dispatch-time rechecks below are performed by whoever gives final dispatch a
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**: [agent name]
-**Completion date**: YYYY-MM-DD
-**Final test result**: X examples, Y failures
-**Evidence basis:** [direct verification / review of pasted evidence / reported by agent / human assertion] — [one-line source or note when not direct verification]
+**Completed by**: Qwen local via GitHub Copilot, with Claude review and Perplexity guidance. **Completion date**: 2026-10-10.
+**Final test result**: transit_engine_spec.rb 51 examples, 6 failures (all six pre-existing; see Issues).
+**Evidence basis:** direct verification: raw spec output and rake BEFORE/AFTER captures saved under summaries/ (2026-10-06-SPECS-FINAL.txt, 2026-10-06-BASELINE-phase_timing-BEFORE.txt, -AFTER.txt, 2026-10-06-BASELINE-DIFF.txt).
 
 ### What was changed
-- `[file]` — [description of change]
+- `galaxy_game/app/services/mission/transit_engine.rb` — Phase 1 topology guard before any orbital-data, dynamic, fallback, or route-table logic.
+- `galaxy_game/app/services/mission/unsupported_transfer_error.rb` — new, `Mission::UnsupportedTransferError`.
+- `galaxy_game/lib/tasks/lunar_precursor_mission_validation.rake` — Earth→Luna precursor is now a labeled static 7-game-day scenario; Earth→Venus unchanged.
+- `galaxy_game/spec/services/mission/transit_engine_spec.rb` — 17 topology-containment cases; five existing examples changed to expect the raise.
+- `docs/wiki_reorganization/transportation/GAPS.md` (Gap D) and README.md — documented Phase 1 behavior and residual gaps.
 
 ### Issues discovered
-[Any problems found during implementation that weren't in the original task]
+(1) `orbit_radius_km` reads `orbitals[:semi_major_axis]` (symbol key) from the string-keyed hash returned by `orbital_data`; for EARTH-01 in the test DB the string key is 149597870700.0, the symbol key is nil, and the radius is 0.0, so eligible routes return `transit_days` 0 via the nested `fallback_transit_days`. Confirmed for EARTH-01 in the test DB only.
+(2) Six pre-existing failing examples in `transit_engine_spec.rb` (Earth→Venus, Earth→Mars, `schedule_departure` structure, `has_arrived?`, two `days_remaining`) are caused by (1).
+(3) `luna_mission:phase_timing` prints Landing Pads Complete and Tank Farm Ready on different days in its body than in its TIMELINE SUMMARY (pre-existing).
+(4) Mid-task, uncommitted edits in the galaxyGame working tree were lost; the reflog shows two `reset: moving to HEAD` entries from another session, cause not confirmed; the work was rebuilt.
 
 ### Follow-up tasks needed
-[Any new backlog items identified — do not create the files, just list them here]
+- Fix the orbit_radius_km key mismatch (HIGH, separate task).
+- Governing-primary / reference-frame / per-primary mu design for multi-star, Eden, and generated systems.
+- Simulation-time authority for the `Time.current.to_date` default.
+- Guard or retire the direct legacy route-table helpers (e.g. `luna_to_venus_transit_days`).
+- The rake body-vs-summary timeline inconsistency.
 
 ### Lessons learned
-[What worked, what didn't, what future tasks in this area should know]
+- Commit task work promptly (an uncommitted tree shared by sessions was wiped once).
+- Run specs and rake only with `unset DATABASE_URL && RAILS_ENV=test`.
+- Verify agent summaries against the raw files before accepting them.
 
 ---
 
 ## Handoff Summary
 *Filled in at end of session — one scannable line for next agent*
 
-HANDOFF SUMMARY: [files updated] | [structural changes] | [next action needed]
+HANDOFF SUMMARY: transit_engine.rb, unsupported_transfer_error.rb, luna rake, transit_engine_spec.rb, transportation GAPS/README updated | Phase 1 containment guard added, static 7-day Earth→Luna scenario | next: file the orbit_radius_km key-mismatch task, then primary/frame-aware routing design.

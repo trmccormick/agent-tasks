@@ -1,0 +1,64 @@
+1,3c1,3
+< BASELINE BEFORE CHANGE
+< Tue Oct  6 19:21:56 EDT 2026
+< HEAD: 358624a076845a0750b085823f7b79922d0207ad
+---
+> AFTER CHANGE
+> Sat Oct 10 08:01:21 EDT 2026
+> HEAD: 849b546df36047c8400b202cce82c58e419b8433
+11,15c11
+<   [1m[36mCelestialBodies::CelestialBody Load (1.3ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "EARTH-01"], ["LIMIT", 1]]
+<   ↳ app/services/mission/transit_engine.rb:194:in 'Mission::TransitEngine.orbital_data'
+<   [1m[36mCelestialBodies::CelestialBody Load (0.8ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "LUNA-01"], ["LIMIT", 1]]
+<   ↳ app/services/mission/transit_engine.rb:194:in 'Mission::TransitEngine.orbital_data'
+<   ✓ Precursor departed Earth → Luna (0d transit)
+---
+>   ✓ Precursor departed Earth → Luna (7d transit, static scenario)
+18,19c14,23
+<   [1m[36mCelestialBodies::CelestialBody Load (0.6ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "EARTH-01"], ["LIMIT", 1]]
+<   ↳ app/services/mission/transit_engine.rb:194:in 'Mission::TransitEngine.orbital_data'
+---
+>   [1m[36mCelestialBodies::CelestialBody Load (0.8ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "EARTH-01"], ["LIMIT", 1]]
+>   ↳ app/services/mission/transit_engine.rb:59:in 'Mission::TransitEngine.calculate_transfer_window'
+>   [1m[36mCelestialBodies::CelestialBody Load (0.7ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "VENUS-01"], ["LIMIT", 1]]
+>   ↳ app/services/mission/transit_engine.rb:60:in 'Mission::TransitEngine.calculate_transfer_window'
+>   [1m[36mSolarSystem Load (0.6ms)[0m  [1m[34mSELECT "solar_systems".* FROM "solar_systems" WHERE "solar_systems"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+>   ↳ app/services/mission/transit_engine.rb:66:in 'block in Mission::TransitEngine.calculate_transfer_window'
+>   [1m[36mSolarSystem Load (0.6ms)[0m  [1m[34mSELECT "solar_systems".* FROM "solar_systems" WHERE "solar_systems"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+>   ↳ app/services/mission/transit_engine.rb:66:in 'block in Mission::TransitEngine.calculate_transfer_window'
+>   [1m[36mCelestialBodies::CelestialBody Load (0.5ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "EARTH-01"], ["LIMIT", 1]]
+>   ↳ app/services/mission/transit_engine.rb:217:in 'Mission::TransitEngine.orbital_data'
+21c25
+<   ↳ app/services/mission/transit_engine.rb:194:in 'Mission::TransitEngine.orbital_data'
+---
+>   ↳ app/services/mission/transit_engine.rb:217:in 'Mission::TransitEngine.orbital_data'
+24c28
+< --- Day 0: Precursor Arrives at Luna ---
+---
+> --- Day 7: Precursor Arrives at Luna ---
+29c33
+< --- Day 30: Landing Pads Complete ---
+---
+> --- Day 37: Landing Pads Complete ---
+33c37
+< --- Day 30: HLT #1 Lands (Inflatable Tanks) ---
+---
+> --- Day 37: HLT #1 Lands (Inflatable Tanks) ---
+36c40
+< --- Day 45: Tank Farm Ready ---
+---
+> --- Day 52: Tank Farm Ready ---
+46c50
+<   ✓ Tank farm ready (completed day 45)
+---
+>   ✓ Tank farm ready (completed day 52)
+57,60c61,64
+<       0   Precursor arrives at Luna
+<      45   Landing pads complete (30d construction)
+<      45   HLT #1 lands with inflatable tanks
+<      45   Tank farm ready (15d setup)
+---
+>       7   Precursor arrives at Luna
+>      52   Landing pads complete (30d construction)
+>      52   HLT #1 lands with inflatable tanks
+>      52   Tank farm ready (15d setup)

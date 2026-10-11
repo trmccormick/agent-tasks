@@ -1,0 +1,11 @@
+Sat Oct 10 07:46:11 EDT 2026
+849b546df36047c8400b202cce82c58e419b8433
+ M galaxy_game/app/services/mission/transit_engine.rb
+ M galaxy_game/lib/tasks/lunar_precursor_mission_validation.rake
+ M galaxy_game/spec/services/mission/transit_engine_spec.rb
+?? chatgpt-qwen-log.md
+?? galaxy_game/app/services/mission/unsupported_transfer_error.rb
+ galaxy_game/app/services/mission/transit_engine.rb |  23 +++
+ .../tasks/lunar_precursor_mission_validation.rake  |  11 +-
+ .../spec/services/mission/transit_engine_spec.rb   | 201 +++++++++++++++++++--
+ 3 files changed, 212 insertions(+), 23 deletions(-)

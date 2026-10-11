@@ -1,0 +1,70 @@
+AFTER CHANGE
+Sat Oct 10 08:01:21 EDT 2026
+HEAD: 849b546df36047c8400b202cce82c58e419b8433
+ENV: docker exec web, RAILS_ENV=test, unset DATABASE_URL
+CMD: bundle exec rake luna_mission:phase_timing
+================================================================================
+LUNA PRECURSOR MISSION — PHASE TIMING VALIDATION
+================================================================================
+
+--- Day 0: Precursor Launch from Earth ---
+  ✓ Precursor departed Earth → Luna (7d transit, static scenario)
+
+--- Day 0: Venus Skimmer Launch from Earth ---
+  [1m[36mCelestialBodies::CelestialBody Load (0.8ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "EARTH-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:59:in 'Mission::TransitEngine.calculate_transfer_window'
+  [1m[36mCelestialBodies::CelestialBody Load (0.7ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "VENUS-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:60:in 'Mission::TransitEngine.calculate_transfer_window'
+  [1m[36mSolarSystem Load (0.6ms)[0m  [1m[34mSELECT "solar_systems".* FROM "solar_systems" WHERE "solar_systems"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:66:in 'block in Mission::TransitEngine.calculate_transfer_window'
+  [1m[36mSolarSystem Load (0.6ms)[0m  [1m[34mSELECT "solar_systems".* FROM "solar_systems" WHERE "solar_systems"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:66:in 'block in Mission::TransitEngine.calculate_transfer_window'
+  [1m[36mCelestialBodies::CelestialBody Load (0.5ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "EARTH-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:217:in 'Mission::TransitEngine.orbital_data'
+  [1m[36mCelestialBodies::CelestialBody Load (0.5ms)[0m  [1m[34mSELECT "celestial_bodies".* FROM "celestial_bodies" WHERE "celestial_bodies"."identifier" = $1 LIMIT $2[0m  [["identifier", "VENUS-01"], ["LIMIT", 1]]
+  ↳ app/services/mission/transit_engine.rb:217:in 'Mission::TransitEngine.orbital_data'
+  ✓ Venus skimmer departed Earth → Venus (0d transit)
+
+--- Day 7: Precursor Arrives at Luna ---
+  ✓ Landing pad construction starts (2 pads)
+  ✓ Comms deployed
+  ✓ Power grid (RTG) deployed
+
+--- Day 37: Landing Pads Complete ---
+  ✓ Pad Alpha ready for HLT landing
+  ✓ Pad Beta ready for HLT landing
+
+--- Day 37: HLT #1 Lands (Inflatable Tanks) ---
+  ✓ Inflatable tanks deployed (empty, awaiting N₂)
+
+--- Day 52: Tank Farm Ready ---
+  ✓ Tank farm infrastructure complete
+  ✓ Ready for N₂ offload
+
+--- Day 0: Venus Skimmer Arrives at Venus ---
+  ✓ Atmospheric harvesting begins (CO₂ + N₂ extraction)
+
+--- Day 30: Venus Skimmer Departs Venus → Luna ---
+
+--- Day 176: Venus Skimmer Arrives at Luna ---
+  ✓ Tank farm ready (completed day 52)
+  ✓ N₂ offload: 30,000 kg N₂ + 75,000 kg CO₂ delivered
+  ✓ HABITAT PRESSURIZATION GATE OPENED
+
+================================================================================
+TIMELINE SUMMARY
+================================================================================
+Day      Event
+------------------------------------------------------------
+0        Precursor launches Earth → Luna
+0        Venus skimmer launches Earth → Venus
+      7   Precursor arrives at Luna
+     52   Landing pads complete (30d construction)
+     52   HLT #1 lands with inflatable tanks
+     52   Tank farm ready (15d setup)
+      0   Venus skimmer arrives at Venus
+     30   Venus skimmer departs Venus → Luna
+    176   Venus skimmer arrives at Luna (N₂ offload ✓)
+================================================================================
+TIMING VALIDATION COMPLETE — All windows and arrivals verified
+================================================================================
