@@ -1,10 +1,14 @@
 # Session Closeout — Shared Procedure
 
-Applicable to planning, research, implementation, review, or any combination.
+For research and implementation sessions (and review sessions). One session, one role: a session keeps its role for its whole life, and new work in another role starts a new session.
 Model-neutral. Applies regardless of which agent ran the session.
 Project-specific guidance lives in `projects/<project>/SESSION_GUIDANCE.md`.
 
-**Session closeout covers the task work done in that session, and nothing else.** Maintenance of everything else (stale or duplicate files, other sessions' drafts, archive housekeeping) belongs to the planning agent and the human (section 7).
+**Planning sessions do not use this file.** They use `PLANNING_AGENT_CLOSEOUT.md`. If you are a research or implementation session, the planning and maintenance duties are not yours.
+
+**Session closeout covers the task work done in that session, and nothing else.** Maintenance of everything else (stale or duplicate files, other sessions' drafts, archive housekeeping, `status.md` curation) belongs to the planning agent and the human.
+
+**Which exit applies?** If the task is finished, use sections 1-4. If you are stopping before it is finished and no one will resume in this same session, use section 2a (stop early). If this same session will resume after a usage limit, it is paused: see section 1b item 7.
 
 ---
 
@@ -34,7 +38,7 @@ Closeout covers only the files this session created or changed. Another session'
 | Role | Owns |
 |---|---|
 | Session agent (does the work) | Appends one entry to the end of its own project's `status.md`. Nothing else in that file. |
-| Planning agent | The `status.md` header, trimming and archiving. Cleans at session start or at closeout. |
+| Planning agent | The `status.md` header, trimming and archiving (see `PLANNING_AGENT_CLOSEOUT.md`). |
 | Human | Commits and pushes (Rule 26). Approves any deletion (Rule 29). |
 
 ### 1b. Session agent: append one entry
@@ -56,18 +60,9 @@ Closeout covers only the files this session created or changed. Another session'
 
 8. If you cannot write your entry (for example `status.md` already has another session's uncommitted changes), say so in your report and stop on that item. Do not skip it silently, and do not stage the file as it stands.
 
-### 1c. Planning agent: curate
+### 1c. Planning-agent curation
 
-Do this at session start or at closeout, never in the middle of other work.
-
-1. Update the header: `Last Updated: YYYY-MM-DD — <what happened>`.
-2. Check every claim that could be stale (for example "None Currently Active", "All recent work has been committed", cited commit hashes) with a live command. Keep it only if the command confirms it.
-3. Fold entries older than roughly a week into a short summary block. Keep what shipped (commit hashes), open blockers and follow-ups, and standing guardrails and lessons.
-4. Move the original entries verbatim to `archive/status-log-YYYY-MM.md`, with a short note above each saying why it moved, and leave a one-line pointer in status.md.
-5. Never silently drop a claim. It is either verified live, or preserved in the archive.
-6. An entry appended to the wrong project goes to the archive with a note, not into the right project's file.
-7. Curation covers `status.md` only. It does not move, archive or delete another session's task files, drafts or reports (section 0).
-8. Show the human the diff. The human commits.
+Curation of `status.md` (header, stale claims, archiving) is the planning agent's job and is described in `PLANNING_AGENT_CLOSEOUT.md`. Do not do it.
 
 ### 1d. Evidence labels
 
@@ -90,6 +85,18 @@ Move canonical task files using `git mv`. Verify one canonical copy exists with 
 - Copy tasks — use `git mv` for tracked moves
 - Change tasks owned by another session, running or paused
 - Leave completed or held tasks in `active/`
+
+### 2a. Stop early (unfinished, to be picked up later)
+
+Use this when you end a session with the task unfinished and a different session or agent will continue it (window closed, agent swapped, out of budget for the day). It replaces the full closeout. Do only these steps, and only for your own task:
+
+1. Update the task file's **Progress / Resume** block: done so far, next step, last verified fact (with the command), and any commits that exist only locally (`git log --oneline origin/main..HEAD`).
+2. In the task file's YAML set `status: backlog` and `resume: true`.
+3. Move the task from `active/` to `backlog/` with `git mv`. Run `find . -name "<task file name>"` and confirm exactly one copy exists. If more than one exists, stop and report (section 0).
+4. Add one `status.md` Session Log entry (section 1b) with **Stop condition** set to `INCOMPLETE`, a pointer to the task file, and the next action. Detail lives in the task file, not in `status.md`.
+5. Do not stage or commit other files, and do not clean up anything else (section 0). Commit only your own explicit paths if the human has asked you to commit; otherwise leave them uncommitted and say so.
+
+A session that is only **paused** (it will resume itself) does not do this. Its task stays in `active/` and it only notes the pause in the task's Progress block.
 
 ---
 
@@ -120,18 +127,8 @@ If the session has no filesystem access:
 
 ---
 
-## 6. Pausing or Closing a Project
-
-Put the project state in the first lines of its `status.md`: `Project state: active | paused | archived`, plus one sentence on why. Quiet tracking is not inactivity. Use `paused` rather than deleting, and never archive without the human's approval.
-
 ---
 
-## 7. Maintenance (planning agent, with the human)
+## 6. Not yours
 
-The planning agent keeps everything outside a single session's task work in order: stale or duplicate task files, tasks in the wrong folder, untracked drafts and reports, old summaries and handoffs, archive housekeeping, and `status.md` curation (section 1c). Session agents do not do this (section 0).
-
-1. **Inventory first and change nothing.** List what looks out of place, for example `git status --short`, a task that exists in two folders, or an `active/` task with no recent entry.
-2. **Classify each item by owner:** this planning session, a session the human says is finished, a paused or in-progress session, or unknown. Treat unknown as paused.
-3. **Propose, then wait.** Give the human the list with a recommended action for each item. Do not act on anything owned by a paused or unknown session unless the human names it and says what to do.
-4. **Act on the approved items only.** Use `git mv` into an archive location rather than deleting. Never delete a task file without verification and the human's approval (Rule 29). Keep one canonical copy per task. If two copies conflict, stop and ask, as the duplicate-copy rule in `rules/GUARDRAILS.md` requires.
-5. **Verify and report.** Run `git status --short` and the relevant listing, confirm the result is what was approved and nothing more, and list what was left alone and why.
+Pausing or closing a project, `status.md` curation, archiving, and workspace maintenance are the planning agent's, with the human (`PLANNING_AGENT_CLOSEOUT.md`). Do not do them.
