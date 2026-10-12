@@ -36,18 +36,18 @@ Without reading this first, agents get scope-creep, fabricate results, or miss c
 ### Shared Infrastructure Across Projects
 **Location**: `<agent-tasks>/`  
 **Scope**: Rules, task templates, routing, and core execution protocols for ALL projects.  
-**Ownership**: Agent tooling (updated when core workflow rules change)[cite: 3].
+**Ownership**: Agent tooling (updated when core workflow rules change).
 
 ### Project-Specific Data (Managed Inside Individual Repositories)
 **Location**: Look inside the respective project's documentation folder.  
 **Scope**: Project baseline, session status, blockers, and domain-specific context.  
 **Ownership**: Project-specific (updated during each development session).  
-**Key File**: `status.md` — Living document tracking test baselines, completed work, in-progress tasks, and blockers[cite: 3].
+**Key File**: `status.md` — Living document tracking test baselines, completed work, in-progress tasks, and blockers.
 
 ### Task Files (Shared Backlog Repository)
-**Location**: `<agent-tasks>/projects/[project_name]/tasks/[backlog|active|completed]/`[cite: 3]  
-**Scope**: Formal feature or refactor assignments containing detailed technical specifications[cite: 3].  
-**Status**: Lifecycle tracked via YAML header (`status: backlog` ➔ `status: active` ➔ `status: completed`)[cite: 3].
+**Location**: `<agent-tasks>/projects/[project_name]/tasks/[backlog|active|completed]/`  
+**Scope**: Formal feature or refactor assignments containing detailed technical specifications.  
+**Status**: Lifecycle tracked via YAML header (`status: backlog` ➔ `status: active` ➔ `status: completed`).
 
 ### Summaries Folder (Agent Session Data)
 **Location**: `<agent-tasks>/projects/[project_name]/summaries/`  
@@ -83,19 +83,19 @@ Why this matters:
 ## Where to Find Agent Guidance
 
 ### ⭐ Shared Agent Workspace (All Projects)
-**Location**: `<agent-tasks>/`[cite: 3]  
+**Location**: `<agent-tasks>/`  
 **Contains:**
-- `README.md` — Main agent workspace guide (READ THIS FIRST)[cite: 3]
+- `README.md` — Main agent workspace guide (READ THIS FIRST)
 - `ROUTING_LOGIC.md` — Quick-reference routing table and model stack *(historical, June 2026; current notes in `notes/AGENT_NOTES.md`)*
-- `rules/GUARDRAILS.md` — Core execution and security rules[cite: 3]
-- `rules/DECISIONS.md` — Locked cross-project architectural decisions[cite: 3]
+- `rules/GUARDRAILS.md` — Core execution and security rules
+- `rules/DECISIONS.md` — Locked cross-project architectural decisions
 - `SESSION_CLOSEOUT.md` — Closeout for research and implementation sessions, including stop-early for unfinished work
 - `PLANNING_AGENT_CLOSEOUT.md` — Planning session closeout and workspace maintenance (status curation, active-task checks)
-- `rules/AGENT_ROUTING.md` — Full routing table matrices *(historical, June 2026)*[cite: 3]
-- `TASK_TEMPLATE.md` — Template blueprint for constructing new tasks[cite: 3]
+- `rules/AGENT_ROUTING.md` — Full routing table matrices *(historical, June 2026)*
+- `TASK_TEMPLATE.md` — Template blueprint for constructing new tasks
 - `SIMPLE_HANDOFF_TEMPLATE.md` — Concise agent task dispatch format (copy-paste ready)
-- `COMMUNICATION_PROTOCOL.md` — Agent output formatting rules[cite: 3]
-- `SESSION_STRATEGIST.md` — Detailed strategist role definition and workflow[cite: 3]
+- `COMMUNICATION_PROTOCOL.md` — Agent output formatting rules
+- `SESSION_STRATEGIST.md` — Detailed strategist role definition and workflow
 
 ---
 
@@ -120,23 +120,23 @@ Why this matters:
 
 **STOP. Read this section first. Your entire session depends on understanding your role.**
 
-Roles are assigned per session, not per model[cite: 3]. The same model can act as strategist in one session and executor in another[cite: 3]. **Your role determines what tasks are in scope and what is NOT. If a task is marked "Out of Scope," do not attempt it — delegate to the correct agent or escalate to the human.**
+Roles are assigned per session, not per model. The same model can act as strategist in one session and executor in another. **Your role determines what tasks are in scope and what is NOT. If a task is marked "Out of Scope," do not attempt it — delegate to the correct agent or escalate to the human.**
 
 Roles are assigned explicitly in the handoff message you receive. When you see "You are **Implementation Agent**" or "You are **Planning Agent**", find that role section below and read it in full BEFORE starting work.
 
 ---
 
 ### 🧭 STRATEGIST Role
-**Typical Agent**: Qwen3.5-9B (Copilot Endpoint), Gemini (web)[cite: 3]  
-**What it means**: You are the human's thinking partner[cite: 3]. You triage failures, inspect logs via terminal tools, plan, delegate, and track status. You do not implement application code files in this role[cite: 3].
+**Typical Agent**: Qwen3.5-9B (Copilot Endpoint), Gemini (web)  
+**What it means**: You are the human's thinking partner. You triage failures, inspect logs via terminal tools, plan, delegate, and track status. You do not implement application code files in this role.
 
 | ✅ In Scope | ❌ Out of Scope — DELEGATE IMMEDIATELY |
 |---|---|
-| Use `run_in_terminal` to read failure logs and triage | Write or modify application production code[cite: 3] |
-| Maintain the session priority stack[cite: 3] | Apply direct patches or active fixes to codebases[cite: 3] |
-| Create and update project task files[cite: 3] | Move tasks without updating the tracking index[cite: 3] |
-| Move tasks between backlog/active/completed[cite: 3] | Make architectural decisions alone[cite: 3] |
-| Assign formal work to Executor agents via task files[cite: 3] | Commit or push version control changes[cite: 3] |
+| Use `run_in_terminal` to read failure logs and triage | Write or modify application production code |
+| Maintain the session priority stack | Apply direct patches or active fixes to codebases |
+| Create and update project task files | Move tasks without updating the tracking index |
+| Move tasks between backlog/active/completed | Make architectural decisions alone |
+| Assign formal work to Executor agents via task files | Commit or push version control changes |
 
 ---
 
@@ -172,11 +172,11 @@ Every EXECUTOR task follows this mandatory pattern:
 
 | ✅ In Scope | ❌ Out of Scope |
 |---|---|
-| Implement the assigned task file exactly[cite: 3] | Self-assign new work or cross boundaries[cite: 3] |
-| Create synthesis report before coding | Change task scope or requirements[cite: 3] |
-| Run **targeted tests ONLY** via terminal for your feature[cite: 3] | Run full, project-wide RSpec/test suites[cite: 3] |
-| Report blockers and file errors immediately[cite: 3] | Fabricate test results or "validation" on systems that aren't running[cite: 3] |
-| Ask for clarification on ambiguous requirements | Assume you understand the full context without reading project guide[cite: 3] |
+| Implement the assigned task file exactly | Self-assign new work or cross boundaries |
+| Create synthesis report before coding | Change task scope or requirements |
+| Run **targeted tests ONLY** via terminal for your feature | Run full, project-wide RSpec/test suites |
+| Report blockers and file errors immediately | Fabricate test results or "validation" on systems that aren't running |
+| Ask for clarification on ambiguous requirements | Assume you understand the full context without reading project guide |
 
 #### Task Completion Workflow (Executor Only)
 
