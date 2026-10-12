@@ -1,17 +1,38 @@
 # Agent-Tasks — Project Status & Task Tracking
-**Last Updated:** 2026-10-07 — Samvera reorg planning (read-only); governance conflict register and facts committed
+**Last Updated:** 2026-10-12 — header, In Flight and Recent Closures refreshed; closeout split into session and planning files (details in the session logs below)
 
 ---
 
 ## 🔍 In Flight — Open Sessions & Staged Tasks
 
-### None Currently Active (committed)
+**agent-tasks project tasks:** none active. (VERIFIED: `projects/agent-tasks/tasks/` has a `backlog/` folder and no `active/` folder at f5260b8.)
 
-No active tasks. All recent work has been committed.
+**Work in other projects** (for example Galaxy Game) is tracked in each project's own `status.md` and is not listed here.
+
+**Working-tree state differs per laptop.** Nothing here claims "everything is committed". Run `git status --short` and `git log --oneline origin/main..HEAD` on the machine you are on.
+
+| Window / session | Agent | Task | State | Last touched | Local-only commits |
+|---|---|---|---|---|---|
+| (none for agent-tasks work) | | | | | |
 
 ---
 
-## ✅ Recent Closures (2026-10-04 to 2026-10-05)
+## ✅ Recent Closures (2026-10-06 to 2026-10-11)
+
+All hashes VERIFIED on origin with `git log -1` at f5260b8.
+
+### Governance and workflow docs — COMPLETE ✅
+- **GUARDRAILS.md regression restored** (Rule 20a, ownership lanes, single MAG-6): `255e9e7` (2026-10-06)
+- **Planning and web-agent start docs reworked** (QUICK_START folded in, model-neutral web-agent doc, Grok start doc archived): `dd4d02e`, `a74b5f3` (2026-10-09)
+- **Galaxy `SESSION_GUIDANCE.md` added**, original context doc archived: `9e97dea` (2026-10-09)
+- **Closeout scope rewrite** (only the session's own files, paused sessions protected, maintenance moved to the planning agent): `1731b5e` (2026-10-10)
+- **`notes/AGENT_NOTES.md` added** (dated agent facts): `3d9f591` (2026-10-10)
+- **Machine-specific paths replaced with `<agent-tasks>` / `<galaxyGame>` placeholders:** `1f7e2a7`, `ab6547e`, `114c2ef`, `ac9f4eb` (2026-10-10)
+- **June routing docs marked historical:** `3309980` (2026-10-11)
+- **Closeout split** into `SESSION_CLOSEOUT.md` (research/implementation, with stop-early) and `PLANNING_AGENT_CLOSEOUT.md` (planning and maintenance); pointers, `resume` field and Progress / Resume block added to the task template: `b44b6c3`, `6462d0f`, `f5260b8` (2026-10-11)
+- **Samvera reorg plan, project facts and conflict register** committed under `summaries/` (see the 2026-10-07 and 2026-10-08 session logs)
+
+## ✅ Earlier Closures (2026-10-04 to 2026-10-05)
 
 ### Governance Rules Cleanup — COMPLETE ✅
 - **Duplicate MAG-6 removal**: Byte-for-byte duplicate block removed from `rules/GUARDRAILS.md` (commit `1d4da71`)
@@ -56,9 +77,8 @@ No active tasks. All recent work has been committed.
 
 ## 📊 Project Health
 
-- **Active tasks**: 0
+- **Active tasks**: 0 (VERIFIED: no `active/` folder at f5260b8)
 - **Backlog tasks**: 10 (6 governance drafts, 4 documentation/audit/planning)
-- **Recent commits**: 8 substantive changes in last 5 days
 
 ---
 
