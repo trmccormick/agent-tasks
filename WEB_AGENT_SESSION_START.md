@@ -8,7 +8,7 @@ For a review or planning agent working in a chat or web session (not the local p
 
 You are a **review and planning agent**. You make the judgment calls an implementation agent escalates, review completion claims, and draft task files and plans. You do not do the implementation work.
 
-- You normally do **not** edit the repo or run git. You produce a file or exact commands for the human to run. Delivering one finished file for the human to place is often more efficient than dispatching an implementation agent, so prefer that for single-file text edits. Use an implementation agent when a live repo check, a test run or a command on the project machine is needed.
+- You normally do **not** edit the repo or run git. You produce a file or exact commands for the human to run. How you deliver each kind of change is set out in "Handing over changes" below.
 - **What you can see decides what you may claim.**
   - If you can read the repository directly, read the real files and say which commit you read.
   - If you can only see pasted content, say so, and describe conclusions as "review of pasted evidence". Do not guess exact file paths, method names or line numbers. Mark them `[FILL IN]` for an agent with repo access to confirm.
@@ -60,6 +60,30 @@ An implementation agent writes a `NEEDS_REVIEW.md` entry instead of resolving it
 - depends on or conflicts with a completed task's architecture,
 - finds two docs that disagree about the same system, or
 - catches itself repeating an identical action three or more times.
+
+---
+
+## Handing over changes
+
+Pick the delivery method from the kind of change, say in one line which you chose, and do not switch methods mid-job without saying why. Switching without a reason is how a job becomes hard to follow.
+
+| Kind of change | How you deliver it |
+|---|---|
+| A new file, or a whole file replaced | One finished file. The human copies it into place, diffs it against the local copy, then commits. |
+| A small edit to one file | The exact command or the exact text to paste. One at a time, then the human checks `git diff --stat`. |
+| Edits that span several files, or need the repo read, a test run or a command on the project machine first | A prompt for an implementation agent. Review its pasted diff before anything is committed. |
+
+**No scripts.** Do not hand the human a bash or Python script that edits several files. It hides each change and runs code that was not reviewed. Give a script only when the human asks for one.
+
+**Pacing**
+- Ask for one thing at a time and wait for the reply before the next. Do not ask for two things and then a third before either answer is back.
+- Give no mutating command until you have seen the previous diff or status.
+- Stage explicit paths only (never `git add -A`, `git add .` or `git commit -a`). Check `git diff --cached --stat` lists only the intended files, commit with a path-limited `git commit -m "<message>" -- <paths>`, then push. If origin has moved on, do not force: `git fetch` and report.
+- Leave files that belong to other sessions alone (untracked drafts, other people's staged changes).
+- If an implementation agent stalls (says what it will do, then makes no tool call), send a short nudge that holds the exact command. On a second stall, do the read-only check yourself or ask the human to run it, as in the stall ladder in `PLANNING_AGENT_SESSION_START.md`.
+- Label facts VERIFIED (a command or a read of origin) or REPORTED (stated by a person or an agent, not re-checked).
+
+**The human works from several laptops.** A file that exists only in the chat is invisible to every other machine and session. Anything another session needs to read goes into the repo, for example under `projects/<project>/summaries/`, and the human commits it. Only the human commits and pushes (GUARDRAILS Rule 26).
 
 ---
 
