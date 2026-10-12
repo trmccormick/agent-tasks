@@ -77,11 +77,24 @@ ls projects/wvulibraries_knapsack/handoffs/ 2>/dev/null || echo "No handoffs fol
 - Once a change is merged upstream, update the submodule reference and remove the local patch if no longer needed.
 
 ### Local Development Rules
-- Primary dev workflow: **Stack Car** (`sc`) — `sc up -d` to start, `sc sh` for shell access.
-- Alternative smoke test: `docker-compose.local.yml` (production parity on Mac arm64).
-- VM production: `up.sh` / `down.sh` scripts (RHEL amd64 target).
-- Domains use `*.localhost.direct` via Stack Car's Traefik proxy — verify at https://traefik.localhost.direct/dashboard/#/`.
-- Never modify `.env.development` (committed with correct Stack Car values).
+
+**Stack Car Workflow (Primary):**
+- **Start**: `sh up.sc.local.sh` (runs full rebuild: docker build + sc up, includes all services)
+- **Stop**: `sh down.sc.local.sh` (stops containers AND proxy, preserves named volumes)
+- **Shell**: `sc sh` (access container shell for manual debugging)
+- **Direct sc commands**: `sc up -d`, `sc down`, `sc logs web -f` (if needed for advanced use)
+- **NEVER use**: `docker compose down -v` (destroys database!) — always use `down.sc.local.sh`
+
+**Domains & Routing:**
+- Domains use `*.localhost.direct` via Stack Car's Traefik proxy
+- Admin tenant: `https://admin-wvu-knapsack.localhost.direct`
+- Default tenant: `https://wvu-knapsack.localhost.direct`
+- Verify proxy at: https://traefik.localhost.direct/dashboard/#/
+
+**Alternative Development Setups:**
+- Smoke test locally: `docker-compose.local.yml` (no-cache, http://localhost:3000 only, no TLS)
+- VM production testing: `up.sh` / `down.sh` scripts (RHEL amd64 target, uses docker-compose.production.yml)
+- Never modify `.env.development` (committed with Stack Car values)
 
 ### File Naming Conventions
 - Task files: `YYYY-MM-DD-PRIORITY-TYPE-DESCRIPTIVE-NAME.md`
