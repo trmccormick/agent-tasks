@@ -61,6 +61,7 @@
 
 ---
 status: backlog
+resume: false
 priority: HIGH
 type: bug-fix
 system_domain: AI_MANAGER | MANUFACTURING | TERRA_SIM | CONTROLLERS | UNITS | OTHER
@@ -105,6 +106,8 @@ STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
+If the task YAML has `resume: true`, read the Progress / Resume block first, continue from "Next step", and set `resume: false` when you move the file to `active/`. Do not restart the task.
+
 LIFECYCLE: backlog → active → completed
   - Tracked file: git mv (never cp or plain mv)
   - New/untracked file: mv then git add the final path
@@ -118,6 +121,8 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting a
   Summaries path: <agent-tasks>/projects/[project]/summaries/
   Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
   Chat is for questions only — never paste synthesis into chat (formatting breaks).
+
+Closeout: follow SESSION_CLOSEOUT.md only.
 ```
 
 **IMPORTANT: Do not modify or abbreviate the text above.**
@@ -455,6 +460,18 @@ git commit -m "chore: move [FILENAME] to completed/"
 **Blocked by**: [task file name or "none"]
 **Blocks**: [task file name or "none"]
 **Related tasks**: [task file name or "none"]
+
+---
+
+## Progress / Resume
+
+*Updated by the session whenever it stops before the task is finished (SESSION_CLOSEOUT.md section 2a).*
+
+- **Done so far:**
+- **Next step:**
+- **Last verified fact (with command):**
+- **Local-only commits (`git log --oneline origin/main..HEAD`):**
+- **Owning session / window label:**
 
 ---
 

@@ -70,15 +70,15 @@ A live check this session always outranks a written claim.
 
 ## Step 6 — Startup closeout check
 
-Check whether the previous session's closeout was completed, using `SESSION_CLOSEOUT.md` (read its section 0 first):
+Check whether the previous session's closeout was completed, using `PLANNING_AGENT_CLOSEOUT.md`:
 - Does `status.md` have a dated entry in the required format?
 - Are task files in the right folders?
 - **A missing closeout means paused, not abandoned.** Sessions are often cut off by a usage limit and resumed later. Do not move, archive, delete or "reconcile" the files of a session you do not know to be finished, including tasks in `active/`. Report what you see (the task, where it sits, what the last entry says) and ask the human.
 - Reconcile only a session the human tells you is finished, and only that session's own files. Do not do two full cleanups in one session.
 
-The planning agent also curates `status.md` here (header, stale claims, archiving) as `SESSION_CLOSEOUT.md` section 1c describes.
+The planning agent also curates `status.md` here (header, stale claims, archiving) as `PLANNING_AGENT_CLOSEOUT.md` section 5 describes.
 
-**Maintenance is your job, not the session agents'.** Session closeout covers only the task work done in that session. You help the human keep everything else in order: stale or duplicate files, tasks in the wrong folder, untracked drafts, archive housekeeping. Follow `SESSION_CLOSEOUT.md` section 7: inventory first, classify by owner, propose, wait for approval, then act on the approved items only.
+**Maintenance is your job, not the session agents'.** Session closeout covers only the task work done in that session. You help the human keep everything else in order: stale or duplicate files, tasks in the wrong folder, untracked drafts, archive housekeeping. Follow `PLANNING_AGENT_CLOSEOUT.md` sections 1-5: inventory first (read-only), classify by owner, propose, wait for approval, then act on the approved items only.
 
 ---
 
@@ -94,7 +94,7 @@ Standard planning and review duties: triage, review, draft task files (`TASK_TEM
 
 ## Step 8 — End of session
 
-- Follow `SESSION_CLOSEOUT.md`. It decides who writes what in `status.md`; do not repeat its rules here.
+- Follow `SESSION_CLOSEOUT.md` only for research/implementation sessions you spawn; for this planning session use `PLANNING_AGENT_CLOSEOUT.md`. It decides who writes what in `status.md`; do not repeat its rules here.
 - Leave `NEEDS_REVIEW.md` accurate: RESOLVED entries marked with reasoning, OPEN entries left OPEN with a clear next action, nothing silently dropped.
 - Save a session handoff to `projects/<project>/handoffs/session_handoff_YYYY-MM-DD_<TOPIC>.md`.
 
