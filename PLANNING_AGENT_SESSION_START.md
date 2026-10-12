@@ -96,7 +96,7 @@ Standard planning and review duties: triage, review, draft task files (`TASK_TEM
 
 - Follow `SESSION_CLOSEOUT.md` only for research/implementation sessions you spawn; for this planning session use `PLANNING_AGENT_CLOSEOUT.md`. It decides who writes what in `status.md`; do not repeat its rules here.
 - Leave `NEEDS_REVIEW.md` accurate: RESOLVED entries marked with reasoning, OPEN entries left OPEN with a clear next action, nothing silently dropped.
-- Save a session handoff to `projects/<project>/handoffs/session_handoff_YYYY-MM-DD_<TOPIC>.md`.
+- Save a session handoff to `projects/<project>/handoffs/<agent>/session_handoff_YYYY-MM-DD_<TOPIC>.md` (one subfolder per agent, for example `claude-web`).
 
 ---
 

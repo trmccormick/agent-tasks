@@ -44,7 +44,7 @@ You are the bridge: approving, carrying results between sessions, and setting pr
 Give it, in this order:
 1. The role: "planning agent", and which project.
 2. It reads `PLANNING_AGENT_SESSION_START.md`, then `PLANNING_AGENT_CLOSEOUT.md`, then `notes/AGENT_NOTES.md`.
-3. The most recent session handoff: `projects/<project>/handoffs/session_handoff_YYYY-MM-DD_<TOPIC>.md`.
+3. The most recent session handoff: `projects/<project>/handoffs/<agent>/session_handoff_YYYY-MM-DD_<TOPIC>.md`.
 4. Your priority for the day.
 
 For a web review session, give it `WEB_AGENT_SESSION_START.md` first.
@@ -96,7 +96,7 @@ Exactly one copy of a task file exists at any time. If you find two, nobody move
 
 At the end of a long or important session, the planning agent (or web agent) writes one and **you commit it**, because a file that exists only in chat is invisible to your other laptops.
 
-Path: `projects/<project>/handoffs/session_handoff_YYYY-MM-DD_<TOPIC>.md`
+Path: `projects/<project>/handoffs/<agent>/session_handoff_YYYY-MM-DD_<TOPIC>.md` (`<agent>` is one subfolder per agent, for example `claude-web`)
 
 A good handoff has: current state (verified or reported), what landed with commit hashes, what is open, decisions waiting on you, known pre-existing problems, files touched, and the first thing to do next session. Galaxy handoffs also carry the test baseline.
 
