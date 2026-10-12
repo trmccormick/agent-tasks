@@ -1,7 +1,37 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-09-28
+**Last Updated:** 2026-10-08
 
 ---
+
+## 🎯 Session 2026-10-08 — Facet Limiter Architecture Review & Redesign Planning
+
+**Purpose**: Investigated why PR #19's facet fix still leaves some catalog facets missing "more" links.
+
+**Key Finding — Architectural Mismatch**: 
+This is NOT a bug with specific fields. It's a fundamental mismatch between the multi-layer solution and M3 flexible-metadata profiles:
+- M3 profiles add/remove facets dynamically at runtime
+- Current solution uses `to_prepare` hooks that may run BEFORE M3 loads
+- Setting `facet.limit` alone doesn't tell Solr to request `limit+1` → Blacklight never shows "more" link
+- Per-facet configuration breaks when profiles change
+
+**Correct Approach Identified**:
+```ruby
+# Intercept at Solr request time (not config-build time)
+# Inject `limit + 1` globally for ALL facets
+# Works with any M3 profile dynamically
+# Upstream-compatible with Hyku/Hyrax
+```
+
+**Deliverables This Session**:
+- ✅ Task file created: `tasks/backlog/2026-09-30-HIGH-ARCHITECTURE-SIMPLIFY-FACET-LIMITER.md`
+- ✅ Documented investigation steps, architecture gotchas, and simplified approach
+- ✅ Ready for Qwen execution when moved to active/
+
+**Status**: Deferred to future session (move task to active/ and dispatch to Qwen)
+
+---
+
+## 🎯 2026-09-28 — Collections Button UX Fix (COMPLETE)
 
 ## 🎯 2026-09-28 — Collections Button UX Fix (COMPLETE)
 
@@ -387,3 +417,29 @@ Historical work from 2026-08-03 and earlier has been archived to keep status.md 
 - **Task Files**: [/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/](/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/) — Active, backlog, completed tasks
 - **Synthesis Reports**: [/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/summaries/](/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/summaries/) — Session results & findings
 ✅ Facet limiting on filtered results verified — all 6 facets show max 5 items when filters applied (confirmed via HTML rendering analysis)
+
+---
+
+## 📋 2026-10-08 — Session Closeout
+
+**Work Done**: No new work for wvulibraries_knapsack this session. Project state unchanged since 2026-09-17.
+- Branch `fix/hide-type-facet-add-show-more-facets` remains deployed to demo-hykudev; all facets configured correctly.
+- Next action: Production merge or upstream contribution when ready (see "Upstream Ready" note above).
+
+
+
+---
+
+## 📝 Session Log — 2026-10-12 (Facet Limiter Architecture Investigation)
+
+- **Changed:** 
+  - VERIFIED: `projects/wvulibraries_knapsack/status.md` (git diff: added 2026-10-08 investigation notes)
+  - VERIFIED: `projects/wvulibraries_knapsack/tasks/backlog/2026-09-30-HIGH-ARCHITECTURE-SIMPLIFY-FACET-LIMITER.md` (created, untracked — find . confirms single copy)
+
+- **Committed:** none
+
+- **Not committed:** 
+  - `projects/wvulibraries_knapsack/status.md` (git status --short shows modified)
+  - `projects/wvulibraries_knapsack/tasks/backlog/2026-09-30-HIGH-ARCHITECTURE-SIMPLIFY-FACET-LIMITER.md` (untracked new file)
+
+- **Stop condition:** Work is COMPLETE. Task file is ready for Qwen execution (next action: human moves to active/ and dispatches). All artifacts prepared and documented for future session.
