@@ -217,3 +217,12 @@ No active tasks. All recent work has been committed.
 - Committed: `86e22f3` — status.md curation and archive file (git commit output)
 - Not committed: the plan file (untracked), and this entry (git status --short, run by Tracy 2026-10-08 12:59)
 - Stop condition: none
+
+---
+
+## 📝 Session Log — 2026-10-11 (apply closeout-split edits)
+
+- **Changed**: README.md, PLANNING_AGENT_SESSION_START.md, TASK_TEMPLATE.md (commit 6462d0f).
+- **Committed**: 6462d0f, pushed (VERIFIED: git log origin/main).
+- **Not committed**: workflow-updates/qwen-session-closout-log.md (untracked, not this session, left as is).
+- **Stop condition**: none. Note for the planning agent: SESSION_CLOSEOUT.md section 2 still says held work goes to backlog/current/ while section 2a says backlog/; not changed here.
