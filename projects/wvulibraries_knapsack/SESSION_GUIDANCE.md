@@ -99,6 +99,33 @@ ls projects/wvulibraries_knapsack/handoffs/ 2>/dev/null || echo "No handoffs fol
 - **VM/production deployment**: `up.sh` / `down.sh` scripts (RHEL amd64 target, uses `docker-compose.production.yml`, requires reverse proxy for HTTPS)
 - **Stack Car locals**: `.env.development` (committed with correct Stack Car values — do not modify)
 
+### VM Operations (hykudev) — EXTREME CAUTION REQUIRED
+
+⚠️ **DANGER**: hykudev uses **symlinks, mounted shares, and Docker-managed volumes** throughout the file system. Standard git/filesystem cleanup commands can silently destroy critical infrastructure.
+
+**DO NOT RUN on hykudev**:
+- `git clean -fd` — Removes untracked directories that may be mounted shares or symlinks
+- `git reset --hard` without verification — Can destroy working state on a mounted filesystem
+- `rm -rf` on directories you don't fully understand — May remove symlink targets or mount points
+- Any Docker volume cleanup (`docker volume rm`, `docker volume prune`) without checking what's mounted
+
+**Before running ANY git/filesystem cleanup on hykudev**:
+1. **Contact DevOps** to verify what directories are safe to remove
+2. Check if there's a snapshot/backup available
+3. Understand the mount structure: `mount | grep -E 'nfs|cifs|fuse'` to see what's mounted
+4. When in doubt, ask — recovery from accidental deletions can be time-consuming
+
+**Safe operations on hykudev**:
+- `git pull origin [branch]` — Safe, only updates tracked files
+- `docker compose pull && docker compose build --no-cache` — Safe, rebuilds images
+- `sh down.sh && sh up.sh` — Safe, standard deployment cycle
+- `git checkout [file]` — Safe on tracked files, potentially risky on untracked dirs
+
+**If you accidentally run a destructive command**:
+- Contact DevOps immediately — a snapshot may be available
+- Do NOT run additional git commands trying to "fix" it
+- Do NOT power cycle the VM without checking with DevOps first
+
 ### File Naming Conventions
 - Task files: `YYYY-MM-DD-PRIORITY-TYPE-DESCRIPTIVE-NAME.md`
 - Synthesis reports: `SYNTHESIS-[DESCRIPTION].md` in `summaries/`
