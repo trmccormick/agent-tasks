@@ -529,3 +529,31 @@ Historical work from 2026-08-03 and earlier has been archived to keep status.md 
   - `projects/wvulibraries_knapsack/tasks/completed/2026-10-13-HIGH-BUG-FIX-HYKU-7.2.0-WEB-CONTAINER-CRASH.md` — moved and updated
 
 - **Stop condition:** COMPLETE — Work finished, ready for hykudev VM testing. All acceptance criteria met: no NameError, clean boot, stable container, task moved to completed, handoff documented. Next action: Commit agent-tasks changes and push to remote; then follow handoff procedure to deploy to hykudev.
+
+---
+
+## 📝 Session Log — 2026-10-13 (Implementation: Hyku 7.2.0 Upgrade VM Deployment & Closure)
+
+**Work Done**: Deployed Hyku 7.2.0 to hykudev, resolved dependency issues, verified working site, and completed upgrade task.
+
+- **Changed:**
+  - VERIFIED: `hyrax-webapp/config/application.rb` — Reverted VERSION override (no longer needed) via `git show HEAD:hyrax-webapp/config/application.rb` shows removed code
+  - VERIFIED: `config/initializers/zzz_temporary_hyku_version_override.rb` — Deleted (not needed) via `git log --name-status` shows D (deleted)
+  - VERIFIED: `config/initializers/blacklight_advanced_search_shim.rb` — Created to define missing module for hyrax-webapp compatibility via `ls -la config/initializers/` confirms file exists
+  - VERIFIED: `projects/wvulibraries_knapsack/tasks/active/HYKU-720-UPGRADE-TESTING.md` — Moved to completed/ via `git mv` (moved from active to completed directory)
+
+- **Committed:**
+  - VERIFIED: ac025ec — "chore: Remove Hyku VERSION override - upstream PR #3399 will fix it correctly" (removed VERSION workaround, reverted application.rb)
+  - VERIFIED: e313f91 — "fix: Add shim for BlacklightAdvancedSearch::RenderConstraintsOverride module" (added compatibility shim for hyrax-webapp 7.2.0)
+
+- **Not committed:** 
+  - agent-tasks git mv of task file (will be committed in next command)
+
+- **Stop condition:** COMPLETE — Hyku 7.2.0 upgrade deployed and verified live:
+  - ✅ Web container UP and responding 
+  - ✅ Site running at demo-hykudev.lib.wvu.edu with records displaying
+  - ✅ Feature branch (7.2-stable) successfully handling both known issues
+  - ✅ VERSION issue resolved when override removed (upstream PR #3399 in progress)
+  - ✅ BlacklightAdvancedSearch compatibility fixed via shim
+  - ✅ Task file moved to completed/
+  - Next action: Human commits agent-tasks changes (git mv of task file), waits for upstream PR #3399 merge, updates submodule reference, removes shim, merges to main.

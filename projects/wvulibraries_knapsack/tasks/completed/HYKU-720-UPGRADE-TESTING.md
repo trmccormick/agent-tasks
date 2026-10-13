@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: active
 priority: HIGH
 type: upgrade-testing
 system_domain: OTHER
