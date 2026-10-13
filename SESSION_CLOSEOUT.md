@@ -55,7 +55,7 @@ Closeout covers only the files this session created or changed. Another session'
    - **Stop condition:** why you stopped, or "none" if the work is finished. Include the next action and who owns it.
 4. Every fact must name a command that shows it (for example `git status --short`, `git log -1 --stat`). If you did not run a command that shows it, do not state it.
 5. Do not edit the header or any earlier entry. Do not condense, trim or archive. Do not stage or commit.
-6. If the session was read-only, still write the entry and say "Changed: none (read-only)".
+6. If the session was read-only, write the entry and say "Changed: none (read-only)" when it produced something another session needs: findings, a decision, an open question, or an open item with no owner. If the session changed nothing, found nothing new and left nothing for another session to act on (for example, closing out an inactive session that had no task), do not write an entry. Report "No work this session; no entry written" in your closeout statement (section 4), and list any files left as-is there instead of in `status.md`.
 7. If you stop before the work is finished (for example you hit a usage limit), still write the entry if you can. Set **Stop condition** to "paused", with the reason and the exact point to resume from. Leave your own files and tasks as they are: a task stays in `active/`, uncommitted work stays uncommitted, nothing is cleaned up.
 
 8. If you cannot write your entry (for example `status.md` already has another session's uncommitted changes), say so in your report and stop on that item. Do not skip it silently, and do not stage the file as it stands.
