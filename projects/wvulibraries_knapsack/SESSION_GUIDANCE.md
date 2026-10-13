@@ -78,23 +78,26 @@ ls projects/wvulibraries_knapsack/handoffs/ 2>/dev/null || echo "No handoffs fol
 
 ### Local Development Rules
 
-**Stack Car Workflow (Primary):**
+⚠️ **CRITICAL**: `up.sh` and `down.sh` are **PRODUCTION ONLY** scripts (for RHEL VM deployment to hykudev/staging). **DO NOT USE for local laptop development.** Always use the `up.sc.local.sh` / `down.sc.local.sh` Stack Car scripts instead.
+
+**Stack Car Workflow (Primary — Use This for Local Dev):**
 - **Start**: `sh up.sc.local.sh` (runs full rebuild: docker build + sc up, includes all services)
 - **Stop**: `sh down.sc.local.sh` (stops containers AND proxy, preserves named volumes)
 - **Shell**: `sc sh` (access container shell for manual debugging)
 - **Direct sc commands**: `sc up -d`, `sc down`, `sc logs web -f` (if needed for advanced use)
 - **NEVER use**: `docker compose down -v` (destroys database!) — always use `down.sc.local.sh`
+- **NEVER use**: `up.sh` / `down.sh` on your laptop (these deploy to production environments)
 
 **Domains & Routing:**
-- Domains use `*.localhost.direct` via Stack Car's Traefik proxy
-- Admin tenant: `https://admin-wvu-knapsack.localhost.direct`
-- Default tenant: `https://wvu-knapsack.localhost.direct`
-- Verify proxy at: https://traefik.localhost.direct/dashboard/#/
+- Domains use `*.localhost.direct` via Stack Car's Traefik proxy (provides valid HTTPS via self-signed certs)
+- Admin/superadmin tenant: `https://admin-wvu-knapsack.localhost.direct`
+- Repository tenants: `https://{tenant-prefix}-wvu-knapsack.localhost.direct` (e.g. `https://demo-wvu-knapsack.localhost.direct`)
+- Traefik dashboard: `https://traefik.localhost.direct/dashboard/#/`
 
 **Alternative Development Setups:**
-- Smoke test locally: `docker-compose.local.yml` (no-cache, http://localhost:3000 only, no TLS)
-- VM production testing: `up.sh` / `down.sh` scripts (RHEL amd64 target, uses docker-compose.production.yml)
-- Never modify `.env.development` (committed with Stack Car values)
+- **Local production smoke test**: `docker-compose.local.yml` with `up.prod.local.sh` (no Stack Car proxy, plain HTTP on `http://localhost:3000`, uses `lvh.me` domains for wildcard DNS)
+- **VM/production deployment**: `up.sh` / `down.sh` scripts (RHEL amd64 target, uses `docker-compose.production.yml`, requires reverse proxy for HTTPS)
+- **Stack Car locals**: `.env.development` (committed with correct Stack Car values — do not modify)
 
 ### File Naming Conventions
 - Task files: `YYYY-MM-DD-PRIORITY-TYPE-DESCRIPTIVE-NAME.md`

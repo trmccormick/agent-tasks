@@ -1,5 +1,31 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-10-08
+**Last Updated:** 2026-10-13
+
+---
+
+## 🎯 Session 2026-10-13 — Hyku 7.2.0 Upgrade Research & Planning
+
+**Purpose**: Investigate Hyku 7.2.0 upgrade path for dev VM testing before production deployment.
+
+**Key Findings**:
+- **Submodule state**: `hyrax-webapp/` pinned to SHA `2c49cfbb...` (samvera/hyku) via parent repo commit tracking
+- **Upstream confirmed**: `v7.2.0` tag at `1ccae4e6`, `7.2-stable` branch available on samvera/hyku
+- **Breaking changes cataloged**:
+  1. `hyrax-iiif_av` gem removed (46 references across 15 files) — IIIF functionality may have moved to Hyrax core
+  2. HTTP basic auth env var name changes (old → new variable names)
+  3. Bulkrax 9.3.x → 9.5.x upgrade
+  4. User activation password behavior change
+  5. New features: compound metadata, guided deposit wizard, URL redirects
+- **Upgrade approach**: SHA-pinning in parent repo → commit → push → `git pull` + `git submodule update --recursive` on VM
+- **Correct dev VM SSH**: `ssh username@hykudev.lib.wvu.edu` (NOT demo-hykudev)
+- **Dev VM app path**: NOT `/var/www` — user's custom setup
+
+**Task Files Created/Modified This Session**:
+- ✅ `tasks/active/HYKU-720-UPGRADE-TESTING.md` — Dev VM upgrade test task (scope: Phase 1 direct VM update, Phase 2 git workflow only if Phase 1 OK)
+- ⏳ `backlog/2026-09-30-HIGH-ARCHITECTURE-SIMPLIFY-FACET-LIMITER.md` — facet limiter redesign (from prior session, pending)
+- ⏳ `backlog/2026-10-12-HIGH-FEATURE-HTTPS-TERMINATION-LOCAL-SMOKETEST.md` — HTTPS termination for docker-compose.local.yml (from prior session, pending)
+
+**Next Steps**: Awaiting user decision on which backlog task to address first.
 
 ---
 
@@ -443,3 +469,63 @@ Historical work from 2026-08-03 and earlier has been archived to keep status.md 
   - `projects/wvulibraries_knapsack/tasks/backlog/2026-09-30-HIGH-ARCHITECTURE-SIMPLIFY-FACET-LIMITER.md` (untracked new file)
 
 - **Stop condition:** Work is COMPLETE. Task file is ready for Qwen execution (next action: human moves to active/ and dispatches). All artifacts prepared and documented for future session.
+
+---
+
+## 📝 Session Log — 2026-10-13 (stale-session closeout)
+
+- **Changed:** `projects/wvulibraries_knapsack/tasks/active/HYKU-720-UPGRADE-TESTING.md` (one-line status field change only; confirmed by `git diff projects/wvulibraries_knapsack/tasks/active/HYKU-720-UPGRADE-TESTING.md`)
+- **Committed:** none
+- **Not committed:** 
+  - `projects/wvulibraries_knapsack/tasks/active/HYKU-720-UPGRADE-TESTING.md` (staged change left uncommitted)
+  - `projects/wvulibraries_knapsack/tasks/backlog/2026-10-12-HIGH-FEATURE-HTTPS-TERMINATION-LOCAL-SMOKETEST.md` (untracked new file; path confirmed by `git status --short`)
+- **Stop condition:** Session stale — closing per `/Users/tam0013/Documents/git/agent-tasks/SESSION_CLOSEOUT.md`. No further work to report. Next action: human decides whether to commit, archive, or discard uncommitted artifacts from this session.
+
+
+---
+
+## 📝 Session Log — 2026-10-13 (Hyku 7.2.0 VERSION Override Fix & Diagnostic)
+
+**Work Done**: Fixed critical NameError in temporary version override initializer and diagnosed root cause of web container startup failure.
+
+- **Changed:** 
+  - VERIFIED: `config/initializers/temporary_hyku_version_override.rb` — Renamed to `zzz_temporary_hyku_version_override.rb` and fixed with guard clause (`git status --short` shows deletion and new untracked file)
+  - VERIFIED: `projects/wvulibraries_knapsack/tasks/active/HYKU-720-UPGRADE-TESTING.md` — Updated progress notes (git diff shows modifications)
+  - Created: `projects/wvulibraries_knapsack/handoffs/2026-10-13-HYKU-7.2.0-VERSION-OVERRIDE-FIX.md` (detailed handoff with next steps)
+
+- **Committed:** none (container rebuild pending verification before commit)
+
+- **Not committed:**
+  - `config/initializers/zzz_temporary_hyku_version_override.rb` (untracked — new fixed version)
+  - `projects/wvulibraries_knapsack/tasks/active/HYKU-720-UPGRADE-TESTING.md` (modified locally)
+  - `.lesshst` (untracked vim history — not ours)
+
+- **Stop condition:** INCOMPLETE — Paused for Stack Car rebuild. 
+  - ✅ Root cause identified: Initializer load-order issue (alphabetical execution)
+  - ✅ Fix implemented: Guard clause + filename prefix (zzz_ forces load after version.rb)
+  - ✅ Handoff documented: See `handoffs/2026-10-13-HYKU-7.2.0-VERSION-OVERRIDE-FIX.md`
+  - ⏳ Next action (for next session): Run `sh up.sc.local.sh` to rebuild web/worker images with fixed initializer, then verify web startup at https://admin-wvu-knapsack.localhost.direct
+  - Session context: Stale due to manual Docker debugging; fresh session recommended for continuation
+
+
+---
+
+## 📝 Session Log — 2026-10-13 (Implementation Agent: NameError Fix Verification & Closeout)
+
+**Work Done**: Completed implementation of Hyku VERSION constant guard clause fix, verified locally, moved task to completed, created session handoff, and updated project guidance.
+
+- **Changed:** 
+  - VERIFIED: `config/initializers/zzz_temporary_hyku_version_override.rb` — Fixed with defined?() guards; local boot successful (docker ps shows container Up 3+ minutes, docker compose logs shows Puma listening without NameError)
+  - VERIFIED: `projects/wvulibraries_knapsack/SESSION_GUIDANCE.md` — Updated to clarify Stack Car URLs and emphasize production-only scripts (git diff --cached shows changes)
+  - VERIFIED: `projects/wvulibraries_knapsack/tasks/completed/2026-10-13-HIGH-BUG-FIX-HYKU-7.2.0-WEB-CONTAINER-CRASH.md` — Moved from active/ and status set to completed (git status --short shows file in completed/)
+  - VERIFIED: `projects/wvulibraries_knapsack/handoffs/2026-10-13-HYKU-7.2.0-NAMEERROR-FIX-LOCAL-VERIFIED.md` — New handoff created with full hykudev deployment procedure (ls -la confirms file exists)
+
+- **Committed:** 
+  - VERIFIED: wvu_knapsack repo commit c8ccf24 — "fix: Guard Hyku VERSION constants against NameError in initializer" (git log --oneline -1 shows commit on feature/hyku-v7.2.0-upgrade)
+
+- **Not committed:** (awaiting push)
+  - `projects/wvulibraries_knapsack/SESSION_GUIDANCE.md` — modified locally
+  - `projects/wvulibraries_knapsack/handoffs/2026-10-13-HYKU-7.2.0-NAMEERROR-FIX-LOCAL-VERIFIED.md` — new file
+  - `projects/wvulibraries_knapsack/tasks/completed/2026-10-13-HIGH-BUG-FIX-HYKU-7.2.0-WEB-CONTAINER-CRASH.md` — moved and updated
+
+- **Stop condition:** COMPLETE — Work finished, ready for hykudev VM testing. All acceptance criteria met: no NameError, clean boot, stable container, task moved to completed, handoff documented. Next action: Commit agent-tasks changes and push to remote; then follow handoff procedure to deploy to hykudev.
