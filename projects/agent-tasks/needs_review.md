@@ -47,10 +47,10 @@ Implementation agents: add an entry here instead of just noting something in sta
 ### 2026-10-13 — Commit message conventions not specified
 **What happened**: Upgrade work used commit messages like "fix: Guard Hyku VERSION constants" + "chore: Remove override" + "fix: Add shim". Pattern emerged but not documented anywhere.
 **Observed in**: wvulibraries_knapsack project, implementation session
-**What I already checked**: No commit.md or CONTRIBUTING.md rules found in wvulibraries_knapsack root; agent-tasks has no commit convention guidelines
-**What needs a second opinion**: Should a CONTRIBUTING.md or commit.md be added to wvulibraries_knapsack documenting: (a) type prefixes (fix: / chore: / docs: / etc.), (b) when to mention upstream PR/issue numbers, (c) pattern for multi-commit fixes (e.g., VERSION override across 4 commits)?
+**What I already checked**: Corrected 2026-10-13 (web review): wvu_knapsack does have a CONTRIBUTING.md. Its "Git Workflow" section says only to commit with clear messages, with no type prefixes, no upstream-reference rule and no multi-commit pattern (REPORTED: pasted from GitHub; branch not confirmed). The earlier claim that no CONTRIBUTING rules exist was wrong. agent-tasks has no commit convention guidelines (original check, not re-verified).
+**What needs a second opinion**: Decided 2026-10-13 (Tracy): add a "Commit messages" subsection to the knapsack CONTRIBUTING.md (type prefixes; one logical change per commit; name the upstream issue or PR for workarounds; submodule bumps as their own commit). Not decided: whether agent-tasks needs its own convention. Its own commits already use `task:` and `complete:` prefixes (VERIFIED in README "Task Completion Workflow").
 **Priority**: LOW — not blocking, improves git log readability
-**Status**: OPEN
+**Status**: OPEN. Next action: run `projects/wvulibraries_knapsack/tasks/backlog/2026-10-13-LOW-DOCS-CONTRIBUTING-COMMIT-MESSAGES.md` (drafted, not dispatched). Mark RESOLVED when its diff is reviewed and committed.
 
 ### 2026-10-13 — Artifact categorization unclear
 **What happened**: SESSION_CLOSEOUT.md says "never delete without human approval" for everything. But intermediate synthesis report drafts, debugging notes, and working handoff versions clutter the repo. Unclear what stays vs gets archived.
