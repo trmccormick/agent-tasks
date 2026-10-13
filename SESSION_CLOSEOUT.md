@@ -78,7 +78,7 @@ Never label something VERIFIED without naming the command.
 Move canonical task files using `git mv`. Verify one canonical copy exists with no stale source copy.
 
 - **Completed work**: record outcome and verification, update status, move to `completed/`
-- **Held work**: record hold reason and restart condition, update status, move to `backlog/current/`
+- **Held work**: record hold reason and restart condition, update status, move to `backlog/` (or the folder the project's `SESSION_GUIDANCE.md` names instead, for example Galaxy's `backlog/current/`)
 - **Genuinely continuing**: keep in `active/` with an accurate next action
 
 **Do not**:
@@ -92,7 +92,7 @@ Use this when you end a session with the task unfinished and a different session
 
 1. Update the task file's **Progress / Resume** block: done so far, next step, last verified fact (with the command), and any commits that exist only locally (`git log --oneline origin/main..HEAD`).
 2. In the task file's YAML set `status: backlog` and `resume: true`.
-3. Move the task from `active/` to `backlog/` with `git mv`. Run `find . -name "<task file name>"` and confirm exactly one copy exists. If more than one exists, stop and report (section 0).
+3. Move the task from `active/` to `backlog/` (or the folder the project's `SESSION_GUIDANCE.md` names instead) with `git mv`. Run `find . -name "<task file name>"` and confirm exactly one copy exists. If more than one exists, stop and report (section 0).
 4. Add one `status.md` Session Log entry (section 1b) with **Stop condition** set to `INCOMPLETE`, a pointer to the task file, and the next action. Detail lives in the task file, not in `status.md`.
 5. Do not stage or commit other files, and do not clean up anything else (section 0). Commit only your own explicit paths if the human has asked you to commit; otherwise leave them uncommitted and say so.
 
