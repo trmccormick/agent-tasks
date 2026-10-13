@@ -53,6 +53,8 @@ Evidence label: everything below is **REPORTED** (carried over from the original
 
 `data/json-data/` and `galaxy_game/app/` are both at the repo root, not nested in each other. `galaxy_game/data/json-data/` and `galaxy_game/app/data/` do not exist on the host, so a search there always comes back empty. Search from the repo root.
 
+**Task folders (Galaxy specifics):** Galaxy's `tasks/backlog/` is organized into topic and phase subfolders (for example `asset-ui/`, `economy/`, `phase09-mars/`). Held or unfinished tasks from a closeout (`SESSION_CLOSEOUT.md` sections 2 and 2a) go to `tasks/backlog/current/`, not the top of `backlog/`. For a stop-early task, still set `status: backlog` and `resume: true` in the YAML.
+
 ---
 
 ## 3. Critical rules
