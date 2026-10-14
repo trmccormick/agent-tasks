@@ -1,3 +1,9 @@
+---
+status: superseded
+superseded_date: 2026-10-14
+superseded_reason: Sept 2026 branch work now superseded by Hyku 7.2.0 upgrade work on feature/hyku-v7.2.0-upgrade branch. Branch cleanup deferred until 7.2 is merged to main.
+---
+
 # Branch Cleanup After Merge (2026-09-28)
 
 ## Context

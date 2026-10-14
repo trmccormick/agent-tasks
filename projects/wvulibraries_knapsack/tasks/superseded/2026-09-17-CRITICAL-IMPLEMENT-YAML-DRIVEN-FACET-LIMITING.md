@@ -1,5 +1,5 @@
 ---
-status: in-progress
+status: superseded
 priority: CRITICAL
 type: implementation
 system_domain: M3_METADATA, FACETING, SEARCH, CONFIGURATION
@@ -13,6 +13,8 @@ discovery_phase: 2026-09-16-CRITICAL-DESIGN-PROPER-FACET-LIMITING-SOLUTION (COMP
 solution_branch: fix/hide-type-facet-add-show-more-facets
 implementation_commit: 8b3dff3 (YAML-driven facet limiting)
 deployment_status: DEPLOYED_TO_VM_RESTARTING_2026-09-17
+superseded_date: 2026-10-14
+superseded_reason: Sept branch work completed and deployed. Work has moved to feature/hyku-v7.2.0-upgrade for Hyku 7.2 compatibility. Original implementation integrated into 7.2 branch.
 ---
 
 ## Agent Dispatch Interface

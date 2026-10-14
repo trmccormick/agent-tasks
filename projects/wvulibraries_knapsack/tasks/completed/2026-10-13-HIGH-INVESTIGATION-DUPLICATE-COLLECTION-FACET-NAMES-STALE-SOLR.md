@@ -1,9 +1,20 @@
-# PRODUCTION-DUPLICATE-COLLECTION-FACET-NAMES
+---
+status: completed
+priority: HIGH
+type: investigation
+completed_date: 2026-10-13
+completed_by: Tracy, Steve
+resolution: Reindex executed 2026-10-13 evening. Jessica confirmed duplicate collection facet names resolved. VM snapshots verified and will be deleted 2026-10-15 (one day hold for safety).
+notes: Minor unrelated issue with Moore collection images (bulkrax import, not reindex-related) being addressed separately.
+---
+
+# 2026-10-13-HIGH-INVESTIGATION-DUPLICATE-COLLECTION-FACET-NAMES-STALE-SOLR
 
 **Date:** 2026-10-13  
 **Severity:** HIGH (Production)  
 **Source:** LibAnswers ticket 19322691  
 **Site:** https://digitalhistory.lib.wvu.edu  
+**Status:** ✅ COMPLETED — Reindex executed, duplicates resolved
 
 ---
 

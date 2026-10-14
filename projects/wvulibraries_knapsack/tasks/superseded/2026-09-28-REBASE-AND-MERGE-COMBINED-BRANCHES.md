@@ -1,3 +1,9 @@
+---
+status: superseded
+superseded_date: 2026-10-14
+superseded_reason: Sept 2026 branch work now superseded by Hyku 7.2.0 upgrade work. All active development has moved to feature/hyku-v7.2.0-upgrade branch. This merge task is no longer on the critical path.
+---
+
 # Combined Branch Merge to Main (2026-09-28)
 
 ## Context
