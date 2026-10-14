@@ -112,7 +112,9 @@ This path does not exist for any asset whose images are stored under `data/image
 
 1. **Registry-first**: Query AssetRegistry for the asset. If a registered entry exists with `representations['catalog_render']['files']` containing at least one file path:
    - Validate each path against the approved catalog root (`GalaxyGame::Paths::JSON_DATA.join('images', 'catalog')`). Reject any path that does not start with this root (path traversal protection).
-   - Verify the first validated path exists on disk. If it exists, use it as `thumbnail_path`.
+   - Use the deterministic primary-candidate selection rule established in Phase 1 and approved by the human.
+   - If multiple catalog_render files exist but no approved primary rule determines which one to use, treat the representation as unusable for this task. Report that as a prerequisite gap in Phase 1 synthesis and stop before implementation. Do not select the first file, closest match, or any unspecified candidate.
+   - If exactly one validated path exists (or the primary-candidate rule selects one), verify it exists on disk. If it exists, use it as `thumbnail_path`.
    - If no validated path exists on disk, proceed to step 2.
 
 2. **Validated fallback**: When registry is unavailable or has no usable manifest data:
@@ -125,6 +127,10 @@ This path does not exist for any asset whose images are stored under `data/image
    - Set `thumbnail_path` to `nil`.
    - Set `has_image` to `false`.
    - Do NOT produce a broken URL or placeholder image element.
+
+### Safe serving requirements:
+
+The generated thumbnail URL must use the existing safe catalog image serving route, not a raw filesystem path exposed to the browser. The implementation must preserve separation between validated filesystem paths used internally and the URL presented to the view. Path validation must enforce containment within the approved canonical catalog root, including protection against path traversal and symlink escape. HTTP verification must confirm that the generated URL serves the expected catalog image.
 
 ### Distinguishing missing data from architectural blockers:
 
@@ -148,17 +154,15 @@ This path does not exist for any asset whose images are stored under `data/image
 
 ### Step 1: Understand the registry entry available at index time
 
-Before modifying `build_entry`, run a quick diagnostic to confirm what AssetRegistry entries exist and what their `representations` contain. The registry is populated via `register_asset()` calls (development-time orchestration) or `discover_from_filesystem()` (auto-discovery from visual definition files). Check whether any assets are currently registered.
+Before modifying `build_entry`, inspect the AssetRegistry metadata that is available under the existing B2 contract at catalog index-rendering time. Determine whether the runtime architecture provides the registry metadata needed for the craft ground category.
 
-**Critical**: An empty registry cache at runtime is NOT automatically acceptable. Document whether the existing runtime architecture is expected to provide registry metadata for catalog index rendering. If it does not, that is a potential prerequisite/architectural blocker and must be reported for human review in Phase 1 synthesis — do not silently accept the legacy fallback as a substitute for resolving the registry/runtime contract.
+Do not invoke, extend, or rely on development-time registry discovery or orchestration as part of runtime catalog rendering. If the required runtime metadata is unavailable, document that as a potential prerequisite or architectural blocker in Phase 1 synthesis and stop for human review.
 
-### Step 2: Modify `build_entry` to try registry-first resolution
+### Step 2: Apply deterministic identity mapping and registry-first resolution
 
 In `build_entry`, after computing `relative` and before setting `thumbnail_path`:
 
-1. Try to resolve the asset via AssetRegistry. The entry's `:id` field (from `build_entry`) should match an `asset_id` in the registry, OR you may need to look up by `blueprint_id`.
-2. If a registry entry exists and has `representations['catalog_render']['files']` with at least one file, use that file's path as `thumbnail_path`.
-3. If no registry entry or no manifest data, fall through to the existing `.json → .png` derivation.
+Use only the deterministic blueprint-to-asset_id mapping established and documented in the approved Phase 1 synthesis. If Phase 1 finds no existing deterministic mapping, stop. Do not implement registry-first resolution or invent an alternative lookup. If the approved mapping resolves to an entry with a usable catalog_render representation, apply the validated path-selection procedure in Desired Behavior. Otherwise, use the approved fallback procedure.
 
 **Key constraint**: Do NOT hardcode RH-400-specific logic. The resolution must be generic — any registered asset with a catalog_render representation should benefit.
 
@@ -202,6 +206,7 @@ All existing examples must still pass. Record the actual pre-change count and po
 - [ ] **AC3: Missing/no-image behavior** — When neither registry nor fallback yields an existing file, `thumbnail_path` is nil and `has_image` is false. The index view does not render a broken image element.
 - [ ] **AC4: RH-400 verification** — For the craft ground category (where RH-400 lives), at least one entry's thumbnail resolves via registry manifest path to an existing file under `data/images/catalog/...`.
 - [ ] **AC5: Existing tests pass** — All existing `catalog_service_spec.rb` examples still pass. Record actual pre-change and post-change counts in the synthesis report. No regressions in catalog index or detail view behavior.
+- [ ] **AC6: HTTP and view verification** — The generated catalog thumbnail URL is verified through an HTTP-level request or equivalent controller/request test. The test confirms that the URL uses the safe catalog image serving route and serves the expected image. The view uses the generated URL rather than a raw filesystem path.
 
 ---
 
@@ -212,7 +217,7 @@ Use the craft ground category as the initial verification case. The following as
 - `rh400_regolith_harvesting_rover.png` (RGB, 1536×1024) — catalog render alternate
 - `rh400_sprite_test.png` (RGBA, 1536×1024) — sprite test candidate
 
-Verify that at least one of these resolves as a thumbnail_path when the registry has an entry for `VEHICLE_HARVESTER_ROVER_RH400`. Do NOT add RH-400-specific hardcoded paths to the general resolution logic.
+Verify that the primary catalog-render candidate for `VEHICLE_HARVESTER_ROVER_RH400` resolves as a thumbnail_path when the registry has an entry, using the deterministic primary-candidate rule established in Phase 1. If no approved primary rule exists, this is a prerequisite gap — do not select among candidates. Do NOT add RH-400-specific hardcoded paths to the general resolution logic.
 
 ---
 
@@ -225,7 +230,13 @@ Verify that at least one of these resolves as a thumbnail_path when the registry
 - Changes to B1 (`asset_registry.rb` class structure), B2 contract fields, or either C2 file
 - Transit engine topology or any transit-related work
 - **Revision 4 — B2 boundary preservation**: No new runtime discovery, filesystem scanning, docs mounts, manifest generation, or registry redesign. The development-time/runtime boundary established by B2 is fixed. This task operates within the existing boundary: AssetRegistry is a read-only data source at runtime; no orchestration or file-generation logic belongs here.
-- Any changes outside `catalog_service.rb`, `asset_registry.rb` (read-only inspection), `admin/catalog/index.html.erb`, and `catalog_service_spec.rb`
+- Permitted implementation files:
+  - `app/services/catalog_service.rb`
+  - `app/views/admin/catalog/index.html.erb`
+  - `spec/services/catalog_service_spec.rb`
+  - Existing or newly created controller/request/view specs needed to verify HTTP serving and view behavior.
+  - `app/models/asset_registry.rb` and related registry code may be inspected read-only, but must not be modified in this task.
+- If HTTP or view verification requires modifying a controller, route, or other application file, stop at the end of Phase 1 and request explicit human approval for that narrowly scoped change.
 
 ---
 
@@ -234,7 +245,7 @@ Verify that at least one of these resolves as a thumbnail_path when the registry
 1. **Registry may be empty at index time**: AssetRegistry entries are populated by `register_asset()` (development-time orchestration) or `discover_from_filesystem()` (auto-discovery from visual definition files). If neither has run for a given asset, the registry cache is empty.
 
    **An empty registry is NOT automatically acceptable.** The implementer must document whether the existing runtime architecture is expected to provide registry metadata for catalog index rendering. If it does not, that is a potential prerequisite/architectural blocker and must be reported for human review rather than silently accepted. The legacy fallback remains a compatibility path, not a substitute for resolving the registry/runtime contract.
-2. **`build_entry` does not have access to `asset_id`**: The entry's `:id` field is the blueprint-relative ID (e.g., `crafts/ground/regolith_harvester_rover`), NOT the Visual Definition asset_id (e.g., `VEHICLE_HARVESTER_ROVER_RH400`). You may need to look up by `blueprint_id` or iterate registry entries to find a match.
+2. **Blueprint and registry identities differ**: The catalog entry's `:id` may be a blueprint-relative identifier, while AssetRegistry uses a canonical `asset_id`. The implementation must use the deterministic mapping evidenced in Phase 1 and explicitly approved by the human. Do not introduce lookup alternatives, infer IDs, or iterate entries speculatively. If no suitable mapping exists, stop for human review.
 3. **Registry instantiation cost**: Creating `AssetRegistry.new` inside `build_entry` (called for every entry in the catalog) could be expensive. Consider caching or lazy initialization.
 4. **Path format mismatch**: Registry manifest files are absolute filesystem paths; the view expects relative paths suitable for `image_tag`. Convert appropriately.
 
@@ -247,8 +258,8 @@ Verify that at least one of these resolves as a thumbnail_path when the registry
 Save as `summaries/YYYY-MM-DD-PREIMPL-CATALOG-INDEX-IMAGE-RESOLUTION.md`. This is a **planning artifact**, not a completion report. It must evidence the following with code references, not assertions:
 
 1. **Identity mapping**: Show the exact code path where `blueprint_id` → `asset_id` is resolved. If no deterministic mapping exists in current code, document this as a blocker and stop.
-2. **Runtime metadata source**: Confirm which registry entries are populated at runtime (via `register_asset()` or `discover_from_filesystem()`) and what their `representations` contain for the craft ground category.
-3. **Safe serving**: Confirm the existing `catalog_image` controller action's approved-root validation (`file_path.to_s.start_with?(catalog_dir.to_s)`) is sufficient, or document what additional validation is needed.
+2. **Runtime metadata source**: Confirm, with code evidence, which registry metadata is available under the existing B2 contract at catalog index-rendering time for the craft ground category. Do not invoke or extend development-time discovery or orchestration to populate runtime rendering metadata. If the required runtime metadata is unavailable, document the prerequisite/architectural blocker and stop for human review.
+3. **Safe serving**: Document the existing catalog image controller action's path-containment behavior and URL-generation behavior. Confirm whether its existing validation is sufficient for the task's approved canonical catalog root, traversal/symlink protection, and filesystem-path versus browser-URL separation. Do not modify the controller in Phase 1. If the existing behavior is insufficient, document the required narrowly scoped change and stop for human approval before Phase 2.
 4. **Fallback analysis**: Document which assets in the current codebase have files at the derived `.json → .png` path (if any), and which rely on registry manifest paths.
 5. **Proposed tests**: List the exact test names and file locations for new tests, with brief descriptions of what each verifies.
 6. **Unresolved prerequisites**: Any missing data, mount issues, or orchestration gaps that block implementation.
