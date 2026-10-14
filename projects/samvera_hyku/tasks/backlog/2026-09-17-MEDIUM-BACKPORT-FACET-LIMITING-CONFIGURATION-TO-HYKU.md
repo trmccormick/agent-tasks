@@ -8,10 +8,10 @@ local_worker_safe: true
 requires_tenant_build: false
 tags: [facet-limiting, backport, hyku-upstream, configuration]
 created: 2026-09-17
-updated: 2026-09-17
+updated: 2026-10-14
 discovery_context: WVU Knapsack YAML-driven facet limiting verified working on demo-hykudev; ready for upstream backport after production validation
 related_projects: [wvulibraries_knapsack]
-blocking_issue: None - WVU production deployment must be verified first
+blocking_issue: ON HOLD - WVU production deployment must be verified first, and the approach must be compared with the Notch8 colleague's upstream-compatible solution before any work starts
 ---
 
 ## Agent Dispatch Interface
@@ -20,7 +20,7 @@ blocking_issue: None - WVU production deployment must be verified first
 **Project**: Hyku (samvera/hyku upstream backport)  
 **Task**: Backport WVU's facet limiting solution to Hyku main with tests
 
-**Step 0**: Do NOT start until WVU production (digitalhistory.lib.wvu.edu) validates the fix. Wait for handoff from Tracy with production validation.
+**Step 0**: Do NOT start until WVU production (digitalhistory.lib.wvu.edu) validates the fix. Wait for handoff from Tracy with production validation. **On hold (2026-10-14, per the 2026-10-07 reorg plan):** also wait for Tracy's decision after the comparison with the Notch8 colleague's solution. Do not dispatch.
 
 **Key Context**: 
 - WVU Knapsack solution is production-ready and verified on demo-hykudev
