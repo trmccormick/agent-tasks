@@ -1,14 +1,20 @@
 ---
-status: backlog
-resume: false
+status: superseded
 priority: HIGH
 type: bug-fix
 system_domain: SEARCH | DISPLAY
 mvp_alignment: OTHER
 local_worker_safe: true
+superseded_date: 2026-10-14
+superseded_by: 2026-10-14-HIGH-BUG-FACET-LIMITER-DEFAULTS-TO-10-ON-7.2.md
+superseded_reason: Consolidated into more focused diagnostic task with full workflow (fix + backport + LaRita collaboration).
 ---
 
-## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
+## 🔴 SUPERSEDED
+
+This task has been superseded. See instead: `2026-10-14-HIGH-BUG-FACET-LIMITER-DEFAULTS-TO-10-ON-7.2.md`
+
+Workflow: Fix our limiter on 7.2 → backport to hyku branch → share with LaRita for upstream comparison.
 
 **STOP. Do not send this task to an agent until ALL boxes are checked.**
 

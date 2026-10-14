@@ -43,12 +43,13 @@ After approval: implement the task exactly as specified, test locally, report re
 
 ---
 
-## 2026-10-14-HIGH-BUG-FACET-LIMITER-DEFAULTS-TO-10-INSTEAD-OF-5-ON-7.2
+## 2026-10-14-HIGH-BUG-FACET-LIMITER-DEFAULTS-TO-10-ON-7.2
 
 **Source:** hykudev.lib.wvu.edu after deploying `feature/hyku-v7.2.0-upgrade`  
 **Branch:** `feature/hyku-v7.2.0-upgrade`  
 **Environment:** hykudev (development VM)  
 **Blocked by:** None  
+**Workflow:** Fix our limiter → backport to hyku branch → share with LaRita for upstream comparison
 
 ---
 
@@ -60,6 +61,23 @@ After deploying Hyku 7.2.0 upgrade to hykudev, catalog facets show **10 items pe
 **Actual behavior (hykudev on 7.2):** Facets show 10 items (Blacklight default) with no pagination
 
 The gap: Production has Tracy's `limit+1` Solr signaling working correctly. hykudev's limiter is applying a limit, but either (a) it's not being set correctly, or (b) it's missing the `+1` increment needed for "More" link detection.
+
+### Three-Phase Workflow
+
+**Phase 1: Diagnose & Fix our limiter** (on feature/hyku-v7.2.0-upgrade)
+- Identify why 7.2 branch shows 10 facets instead of 5
+- Apply/correct the facet limiter configuration to ensure `limit+1` for Solr
+- Test on hykudev
+
+**Phase 2: Backport to hyku branch** (create new compare branch)
+- Once fixed on 7.2 and verified, create a branch off samvera/hyku
+- Backport our solution to show LaRita our approach
+- This allows her to compare with her upstream work
+
+**Phase 3: Collaborate with LaRita**
+- Share the hyku branch with LaRita for comparison
+- Discuss which approach (ours vs. her backport) is better for upstream contribution
+- Decide on final solution for hyrax/hyku
 
 ### Root Cause (To Be Diagnosed)
 
@@ -79,6 +97,8 @@ The gap: Production has Tracy's `limit+1` Solr signaling working correctly. hyku
 - With the `+1`: Solr receives `facet.limit=6`, returns up to 6, Blacklight can detect and show "More" link
 
 ### Implementation Steps
+
+**PHASE 1: Fix & Verify (Primary dispatch scope)**
 
 **Step 0:** Create a synthesis report with your plan (2 lines max) and post to chat. Wait for approval before proceeding.
 
@@ -143,14 +163,40 @@ so Blacklight can detect and display the More link when additional facet
 values are available beyond the display limit."
 ```
 
-### Acceptance Criteria
+---
+
+**PHASE 2: Backport to hyku branch** (after Phase 1 verified)
+
+Once Phase 1 is fixed and verified on hykudev:
+1. Create a new branch off `samvera/hyku`:
+   ```bash
+   cd /path/to/hyku
+   git checkout v7.2-stable
+   git pull origin
+   git checkout -b feature/wvu-facet-limiter-backport
+   ```
+2. Backport the facet limiter fix from wvu_knapsack to this hyku branch
+3. Test locally
+4. Document the changes for LaRita's review
+
+---
+
+**PHASE 3: Collaborate with LaRita** (after Phase 2)
+
+1. Share the `feature/wvu-facet-limiter-backport` branch with LaRita
+2. Discuss approaches: which is better for upstream contribution to Hyrax/Hyku?
+3. Decide on final solution path (her backport vs. ours vs. hybrid)
+
+### Acceptance Criteria (PHASE 1)
 
 - [ ] Root cause identified: Why is 7.2 branch showing 10 facets instead of 5?
 - [ ] Facet limiter configuration corrected on 7.2 branch (missing `limit+1` added or fixed)
 - [ ] `config/initializers/search_builder_facet_limits.rb` exists and correctly sets `facet.limit = limit + 1` for Solr requests
 - [ ] Local test on hykudev: catalog facets show exactly 5 items (not 10)
 - [ ] "More" link appears when there are more than 5 facet values available
-- [ ] Changes are committed (but NOT pushed until human approval)
+- [ ] Changes are committed to feature/hyku-v7.2.0-upgrade (but NOT pushed until human approval)
+
+**Phase 2 & 3 (backport + LaRita collaboration) will be separate follow-up tasks after Phase 1 is verified.**
 
 ### Architecture Gotchas
 
@@ -177,4 +223,6 @@ values are available beyond the display limit."
 - **Production (main) status:** Working correctly with 5 items + "More" link (Tracy's fix applied)
 - **Diagnosis needed:** Why is 7.2's limiter not working? Missing `limit+1` signal to Solr, or missing initializer entirely?
 - **Tracy's reference fix:** Commit `e42517c` on main—use as template if needed
-- **Next blocker:** Once this is fixed and verified on hykudev, unblocks 7.2 → main merge
+- **LaRita coordination:** Once our fix is verified on hykudev, backport to hyku branch for upstream comparison
+- **Workflow:** Phase 1 (fix + verify) → Phase 2 (backport to hyku) → Phase 3 (collaborate with LaRita on upstream approach)
+- **Next blocker:** Once Phase 1 is fixed and verified on hykudev, unblocks 7.2 → main merge consideration
