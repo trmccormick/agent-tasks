@@ -831,108 +831,41 @@
 **Grok needs to incorporate**: Material sourcing convention + acquisition logic into his Foothold Planner work. The multi-system coordination task is deferred but should be reviewed when footholds are established.
 
 ---
+## 🔍 Today's Session (2026-10-05) — TransitEngine Topology Task Final Revisions
 
-## 🔍 Session Closeout (2026-10-04)
-
-### TransitEngine Topology Containment — Final Read-Only Clarification Pass ✅
+### TransitEngine Topology Containment — Final Revision Passes ✅
 - **Task**: `2026-09-30-HIGH-ARCHITECTURE-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT.md` (backlog/current/)
-- **Work**: Complete read-only clarification pass resolving remaining gaps from prior planning sessions
-- **Findings delivered** (chat only, no edits):
-
-#### 1. Solver and Fallback Evidence
-- `calculate_transfer_window` flow verified: `orbital_data` lookup → nil check (line 67) → `fallback_transfer_window` (line 69) → route table → 365
-- Guard must insert between lines 64–68, BEFORE the nil check on line 67
-- Two-tier fallback confirmed: (a) `fallback_transfer_window` → route table when orbital data nil; (b) nested `fallback_transit_days` → rough Hohmann via MU_SUN → 365 when radii zero/missing
-- No topology checks exist anywhere in the call chain — all three gaps are real
-
-#### 2. Earth–Luna Rake Dependency Map
-- Exact invocation at `lunar_precursor_mission_validation.rake` lines 759–762
-- `schedule_departure` return shape: 10-key hash (craft_id, status, from_body, to_body, departure_date, arrival_date, transit_days, phase_angle, delta_v_km_s, payload)
-- **Only downstream consumer**: `precursor_departure[:transit_days]` — used as display value and scalar timeline anchor
-- Static `{ transit_days: 7 }` hash satisfies the observed contract; no other keys required
-- No state persisted from return value; no abort/check depends on status/phase_angle/delta_v/payload
-
-#### 3. docs/wiki_reorganization Destination Map
-- Structure confirmed at `docs/wiki_reorganization/` (not `docs/wiki/`)
-- Transportation hub (`transportation/`) already exists as active domain with gap-tracking conventions
-- **Best home for transit topology content**: Extend `transportation/GAPS.md` or add `transportation/transit-engine-topology.md` — consistent with established patterns, no structural approval needed
-- Celestial classification vocabulary maps to proposed `02_SIMULATION/celestial_body_hierarchy.md` (proposal only)
-- Future orbital-frame/multi-leg architecture: no existing page; would require Phase 2 reorganization approval
-
-#### 4. Unresolved Facts / Stop Conditions
-- No per-body μ API exists — only `mass` and `radius` available on CelestialBody records
-- Legacy top-level classes (`CelestialBodies::GasGiant`, `CelestialBodies::IceGiant`) coexist with namespaced variants — would bypass namespaced-only allowlist
-- Star is NOT a CelestialBody (separate ApplicationRecord)
-- No station/artificial-object CelestialBody class exists
-- Earth→Luna pre-change return is `transit_days: 0` (not ~104 as claimed in task file)
-
-#### 5. Recommendation
-- **Needs narrowly scoped architecture clarification** — allowlist must include legacy types; μ API assumption invalid; Earth→Luna evidence claim contradicted by source behavior
+- **Session work**: Three surgical revisions + multiple read-only verifications across two sessions
+  1. **Tests section** (Revision A): Expanded from 10 to 17 items per Claude authorization; all use Option A non-claim framing ("retained legacy dynamic behavior", "characterization only")
+  2. **Acceptance Criteria rewrite**: Replaced 18 items with 21 items using neutral topology-proxy terminology; removed all `direct-solar` language; added missing scenarios (differing solar_system_id, planet→unknown/unknown→unknown, dwarf/minor-body rejection, pre-dispatch caller audit, GAPS documentation)
+  3. **Duplicate header fix**: Removed duplicate `## Acceptance criteria` at lines 437–438 (introduced during Python-based AC rewrite)
+- **Prohibited terminology scan**: Zero instances of `direct-solar`, `solar-primary`, or `Sol-only` remain in the file
+- **Internal contradictions**: None found after duplicate header removal
+- **File state**: Untracked, `status: backlog`, `dispatch_ready: false`; Claude disposition remains REVISE
+- **No code/spec/rake/data/wiki/git action** — task-file edits only
 
 ---
 
-## ✅ C1 — Asset Registry / Development-Time Orchestration — COMPLETE ✅
+## 📝 Session Log — 2026-10-13 (Documentation: CURRENT_STATUS.md status banner)
 
-**Date**: 2026-10-07
-**Task File**: `projects/galaxy_game/tasks/active/2026-08-31-HIGH-FEATURE-ASSET-UI-C1-implement-asset-registry-mapping.md`
-**Status**: backlog → active → completed
-
-### What Was Implemented (per B1 approved design)
-
-**New Files Created:**
-1. `galaxy_game/app/services/asset_registry.rb` — Asset Registry/orchestration service (430 lines)
-2. `galaxy_game/spec/services/asset_registry_spec.rb` — Focused tests (600 lines)
-
-**Implementation Details:**
-- `asset_id` as canonical shared identity across all artifacts (primary lookup key)
-- `asset_id → blueprint_path` resolution (exact match, _bp suffix, recursive search)
-- `asset_id → operational_data_path` resolution (base name matching)
-- `asset_id → visual_definition_path` resolution (JSON/MD discovery)
-- `asset_id → render_template_path` resolution
-- `asset_id → visual_profile_id` association stored in registry (resolved by orchestration, NOT Blueprint)
-- Representation manifest with status per render profile: exists / missing / experimental / planned
-- Pre-computed `catalog_manifest_path` bridge (development-time → runtime)
-- Pre-computed `surface_manifest_path` bridge (development-time → runtime)
-- RH-400 concrete example: all three identifiers preserved (`regolith_harvester_rover`, `VEHICLE_HARVESTER_ROVER_RH400`, `rh400_`)
-- Valid asset_family enforcement (8 families from Visual Definition template)
-- Auto-discovery from filesystem when asset not explicitly registered
-
-**Test Results:**
-```
-59 examples, 0 failures
-```
-
-Tests cover: canonical lookup, RH-400 resolution, artifact path resolution, missing/experimental representation handling, PromptCompiler API compatibility (5 keyword args unchanged), no `visual_profile_path:` on public API.
-
-### Guardrails Verified
-- ✅ No Visual Profile changes
-- ✅ No Render Template changes  
-- ✅ No docs/ runtime dependencies
-- ✅ No unrelated files changed
-- ✅ Blueprint does NOT own visual fields
-- ✅ PromptCompiler receives already-resolved inputs (no repository search by asset_id)
-
-### Git Commits
-| Repo | Commit | Message |
-|------|--------|---------|
-| galaxyGame | `4361fbc3` | feat: implement Asset Registry/orchestration per B1 design |
-| agent-tasks | `ea6130f` | chore: mark C1 task as completed |
-
+- **Changed:** `galaxy_game/CURRENT_STATUS.md` (added warning banner pointing to current status in agent-tasks repo) — VERIFIED by `git show 4d99a1be --stat`
+- **Committed:** galaxyGame `4d99a1be` — VERIFIED by `git log -1 --oneline` showing commit message "docs: add status banner to CURRENT_STATUS.md pointing to agent-tasks"; pushed to origin/main
+- **Not committed:** none
+- **Stop condition:** none (work finished, documentation-only change deployed)
 
 ---
-## 📝 Session Log — 2026-10-10 (C2 Catalog Data Wiring + C4 Closeout)
 
-- **Changed:** `galaxy_game/app/services/catalog_service.rb` (+176 lines), `galaxy_game/spec/services/catalog_service_spec.rb` (+85 lines), `projects/galaxy_game/tasks/active/...C2-implement-catalog-data-wiring.md` (status active → completed), `projects/galaxy_game/summaries/2026-10-10-FEATURE-ASSET-UI-C2-CATALOG-DATA-WIRING.md` (new synthesis report)
-- **Committed:** galaxyGame `d614e4fa` (C2 implementation), agent-tasks `be2ba2c` (C2 closeout + synthesis)
-- **Not committed:** GalaxyGame has 3 pre-existing modified transit-engine files (`galaxy_game/app/services/mission/transit_engine.rb`, `galaxy_game/lib/tasks/lunar_precursor_mission_validation.rake`, `galaxy_game/spec/services/mission/transit_engine_spec.rb`) and 2 untracked files (`chatgpt-qwen-log.md`, `galaxy_game/app/services/mission/unsupported_transfer_error.rb`) — preserved per scope limit. agent-tasks has 2 modified summary files (`2026-10-06-IMPL-CHANGES-MIDPOINT.md`, `2026-10-06-PATH-EVIDENCE-2.txt`) and 7 untracked summary drafts from prior transit-engine session — not C2-related.
-- **Stop condition:** C2 implemented, tested (25 examples, 0 failures), committed, pushed, and closed out. C4 closeout verified (already committed/pushed). Next action: C3 (RH-400 Catalog Vertical Slice) is unblocked — requires human approval to start.
+## 📝 Session Log — 2026-10-10 (Documentation: TransitEngine Topology Containment Docs Pass + Corrections)
 
+- **Changed:** 
+  - `docs/wiki_reorganization/transportation/GAPS.md` (appended Gap D: TransitEngine topology containment findings) — VERIFIED by `git show 129b1a20 --stat`
+  - `docs/wiki_reorganization/transportation/README.md` (appended Phase 1 notes section) — VERIFIED by `git show 129b1a20 --stat`
+  - `projects/galaxy_game/summaries/2026-10-06-STATE-CHECK-DOCS-PASS.txt` (state capture) — created locally
+  - `projects/galaxy_game/summaries/2026-10-06-DOCS-CHANGES.md` (git diff of doc edits) — created locally
+  - `projects/galaxy_game/summaries/2026-10-06-CLOSING-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT.md` (with Corrections section appended) — created locally
 
----
-## 📝 Session Log — 2026-10-10 (TransitEngine topology containment closeout)
+- **Committed:** galaxyGame `129b1a20 docs: record TransitEngine Phase 1 topology containment and residual gaps (transportation hub)` — VERIFIED by `git log --oneline -- docs/wiki_reorganization/transportation/GAPS.md`
 
-- **Changed:** `projects/galaxy_game/tasks/active/2026-09-30-HIGH-ARCHITECTURE-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT.md` (frontmatter `status: active` → `completed`; body `**Status**: BACKLOG` → `COMPLETED`; Completion Report filled; Handoff Summary filled) — VERIFIED by reading file before and after edits with `read_file` tool; moved to `projects/galaxy_game/tasks/completed/2026-10/` via `git mv` — VERIFIED by `find projects/galaxy_game/tasks -name "2026-09-30-HIGH-ARCHITECTURE-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT.md"` returning exactly one result; this status entry (this session)
-- **Committed:** agent-tasks: none; galaxyGame: `7b298e0f` and `129b1a20` — VERIFIED by `git -C /Users/tam0013/Documents/git/galaxyGame log -2 --stat` showing both commits with their file lists
-- **Not committed:** this session's agent-tasks changes (task file edits + git mv); every other file from step-0 start state left as-is, not this session: `projects/galaxy_game/summaries/2026-10-06-IMPL-CHANGES-MIDPOINT.md` (modified), `projects/galaxy_game/summaries/2026-10-06-PATH-EVIDENCE-2.txt` (modified), `projects/galaxy_game/tasks/backlog/asset-ui/2026-08-31-HIGH-FEATURE-ASSET-UI-C2-implement-catalog-data-wiring.md` (deleted), `projects/galaxy_game/summaries/2026-10-06-BASELINE-DIFF.txt` (untracked), `projects/galaxy_game/summaries/2026-10-06-BASELINE-phase_timing-AFTER.txt` (untracked), `projects/galaxy_game/summaries/2026-10-06-CLOSING-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT.md` (untracked), `projects/galaxy_game/summaries/2026-10-06-DOCS-CHANGES.md` (untracked), `projects/galaxy_game/summaries/2026-10-06-GIT-DIFF-FINAL.txt` (untracked), `projects/galaxy_game/summaries/2026-10-06-IMPL-CHANGES-FINAL.md` (untracked), `projects/galaxy_game/summaries/2026-10-06-IMPL-STATE-FINAL.txt` (untracked), `projects/galaxy_game/summaries/2026-10-06-SPECS-FINAL.txt` (untracked), `projects/galaxy_game/summaries/2026-10-06-SPECS-ORIGINAL-ON-GUARDED.txt` (untracked), `projects/galaxy_game/summaries/2026-10-06-STATE-CHECK-DOCS-PASS.txt` (untracked), `projects/galaxy_game/summaries/2026-10-10-DOCS-CHANGES-2.md` (untracked) — all left as-is, not this session; galaxyGame untracked `chatgpt-qwen-log.md` and `qwen-session-closout-log.md`, left as-is, not this session
-- **Stop condition:** none for the task; next actions with owner: Tracy reviews and commits agent-tasks changes and decides pushes; file the orbit_radius_km key-mismatch task; other follow-ups as listed in Completion Report
+- **Not committed:** Summary files (`2026-10-06-*.txt`, `2026-10-06-CLOSING-*.md`) left as untracked in agent-tasks (documentation only, no task-blocking content)
 
+- **Stop condition:** none (work finished, documentation corrections verified and committed to galaxyGame)
