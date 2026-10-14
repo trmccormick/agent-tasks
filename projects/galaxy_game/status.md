@@ -869,3 +869,22 @@
 - **Not committed:** Summary files (`2026-10-06-*.txt`, `2026-10-06-CLOSING-*.md`) left as untracked in agent-tasks (documentation only, no task-blocking content)
 
 - **Stop condition:** none (work finished, documentation corrections verified and committed to galaxyGame)
+
+---
+
+## 📝 Session Log — 2026-10-13 (Documentation: README.md Development Status Pointer)
+
+- **Changed:** `galaxy_game/docs/README.md` (replaced "Development Phases" section with "Development Status" status pointer) — VERIFIED by comparing commit 4d99a1be..6e67f84e showing 8 insertions, 32 deletions
+- **Committed:** galaxyGame `6e67f84e docs: replace stale Phase 3 section in docs/README.md with status pointer` — VERIFIED by `git log -1 --oneline 6e67f84e` showing commit message and successful push to origin/main
+- **Not committed:** none
+- **Stop condition:** none (work finished, documentation-only change deployed)
+
+---
+
+## 📝 Session Log — 2026-10-09 (Documentation: SESSION_GUIDANCE RSpec log-file redirect)
+
+- **Changed:** `projects/galaxy_game/SESSION_GUIDANCE.md` — updated Paths table RSpec row (line 23) to require log-file redirect (to timestamped log file in `log/` container dir / `data/logs/` host) instead of piping to chat — VERIFIED by `git show abb2ab7 --stat -- projects/galaxy_game/SESSION_GUIDANCE.md`
+- **Committed:** agent-tasks `abb2ab7 docs: require log-file redirect for RSpec in SESSION_GUIDANCE` — VERIFIED by `git log -1 --oneline origin/main -- projects/galaxy_game/SESSION_GUIDANCE.md | grep abb2ab7`
+- **Not committed:** none
+- **Stop condition:** none (work finished, documentation-only change deployed to origin/main)
+
