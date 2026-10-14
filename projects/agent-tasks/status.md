@@ -296,3 +296,17 @@ All hashes VERIFIED on origin with `git log -1` at f5260b8.
 - Key local changes: `config/initializers/zzz_temporary_hyku_version_override.rb` (untracked, ready to be rebuilt into container)
 
 **Stop condition**: Documentation complete. Session handed off to Qwen planning agent for next-step coordination.
+
+---
+
+## 📝 Session Log — 2026-10-14 (web review: samvera_hyku folder merge)
+
+- **Changed:** moved the on-hold facet-limiting backport task from `projects/hyku/tasks/backlog/` to `projects/samvera_hyku/tasks/backlog/2026-09-17-MEDIUM-BACKPORT-FACET-LIMITING-CONFIGURATION-TO-HYKU.md` (`blocking_issue` set to ON HOLD, `updated: 2026-10-14`, Step 0 on-hold note); moved the stale `projects/hyku/status.md` unedited to `archive/projects/hyku/status.md`; appended "Pending Items (added 2026-10-14)" to `projects/samvera_hyku/status.md`; replaced a stale rule in that file's "Special Warnings & Conventions" (the "do not modify core Hyku" rule belongs to `wvulibraries_knapsack` only; Hyku is multitenant Hyrax and a fix may start in Hyrax); created `projects/samvera_hyku/SESSION_GUIDANCE.md`. (VERIFIED: `git show --stat <hash>`, `git diff` before each commit)
+- **Committed:** `3a7804c`, `6a7bcd2`, `59773ae`, `66f8f50`, `97c5d64`, all pushed (VERIFIED: `git push` output, last range `66f8f50..97c5d64`).
+- **Not committed:** none.
+- **Stop condition:** none for the edits above. Open, owner Tracy unless noted:
+  - `samvera_hyku/SESSION_GUIDANCE.md` has `[FILL IN]` for the source repo path, and its whole Stack Car section is `[CONFIRM]` (commands, domains, proxy, scripts). `projects/samvera_hyku/README.md` was not read.
+  - The `samvera_hyku/status.md` header and "Current Status" (last curated 2026-08-11) are stale; planning agent to refresh.
+  - `tasks/current/` and `tasks/active/` both hold `2026-07-10-MEDIUM-BUGFIX-VIEW-SPEC-DEVISE-WARDEN-ISOLATION.md`, and `tasks/active/` has three undated files. Not touched; planning agent with Tracy, per `2026-10-07-PLAN-SAMVERA-REORG.md` (a draft, not approved).
+  - Before the on-hold backport task is released: rewrite its Phase 2 test steps for Stack Car (it uses `docker compose up` and `localhost:3000`) and replace its custom Agent Dispatch Interface with the `TASK_TEMPLATE.md` one.
+  - The empty local folders `projects/hyku/tasks/backlog`, `projects/hyku/tasks` and `projects/hyku` may remain on Tracy's machine (git does not track empty folders); `rmdir` removes them if empty.
