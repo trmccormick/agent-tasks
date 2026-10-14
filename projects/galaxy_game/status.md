@@ -75,7 +75,38 @@
 - None found (`pgrep -fa rspec` returned exit code 1)
 
 ---
-## � Recent Closures (2026-09-29)
+
+# 📋 Historical Session Records & Archived Work
+
+This section preserves session records, known issues, and completed work from previous sessions. Current active work is documented in the "In Flight" sections above.
+
+---
+
+## 🔴 Known Issues & Blockers (ACTIVE)
+
+### Luna Mission:execute Phase Skip — BLOCKED
+- **Issue**: `luna_mission:execute` skips all 4 phases because the plan file drifted while gitignored
+- **Status**: BLOCKED — plan file drift needs resolution before task dispatch
+
+### Sabatier Disposition — READY FOR DISPATCH
+- **Task**: `2026-09-28-MEDIUM-REFACTOR-DISPOSITION-SABATIER-REACTOR-SPEC.md`
+- **Status**: READY FOR DISPATCH — file polish completed 2026-09-29
+- **Last update**: `last_updated` → `2026-09-29`; readiness checklist → `**READY FOR DISPATCH**`
+
+---
+
+## 🔍 Completed Session Records (2026-10-01 & Earlier)
+
+### TransitEngine Topology Containment Task — REVISION PASS (2026-10-01) ✅
+- **Task**: `2026-09-30-HIGH-ARCHITECTURE-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT.md`
+- **Summary**: Complete planning session revision pass — evolved from spec-alignment approach to topology containment after discovering shared-parent/moon-route engine defect
+- **Readiness**: All 8 readiness checklist boxes checked — task READY FOR DISPATCH (YAML status remains `backlog` pending human confirmation)
+- **Key finding**: Gate verdict — HOLD; shared-parent/moon-route engine defect blocks correct transit planning
+- **Documentation**: Planning session output at `docs/new_agent/projects/galaxy_game/handoffs/qwen(planning agent)/2026-10-01-transit-engine-topology-containment-planning-session.md`
+
+---
+
+## 🟢 Recent Closures (2026-09-29)
 
 ### B1 Dispatch Handoff — PREPARED ✅
 - **Task**: `2026-08-31-HIGH-ARCHITECTURE-ASSET-UI-B1-map-asset-registry-to-visual-definition.md`
