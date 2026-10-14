@@ -1,5 +1,5 @@
 ---
-status: active
+status: backlog
 resume: false
 priority: HIGH
 type: bug-fix
@@ -29,14 +29,14 @@ local_worker_safe: true
 You are **Implementation Agent**.
 
 Project: wvulibraries_knapsack
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/active/2026-10-14-HIGH-BUG-CHERRY-PICK-FACET-LIMITER-FIX-TO-7.2.md
+Task: /Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/backlog/2026-10-14-HIGH-BUG-FACET-LIMITER-DEFAULTS-TO-10-ON-7.2.md
 
 Synthesis Report Required Before Implementation (brief): "Read this task. Summarize your plan in 2 lines and post to chat. Wait for approval."
 After approval: implement the task exactly as specified, test locally, report results back to human via chat before committing any changes.
 
 ## Instructions for This Session
 
-- Step 0: Do NOT move or update this task file frontmatter yet.
+- Step 0: Move this task from backlog/ to active/ using git mv, then update YAML status from backlog → active
 - Read the full task file below (especially Implementation Steps, Architecture Gotchas, Acceptance Criteria).
 - Do NOT proceed past the synthesis report until approved by human.
 ```
