@@ -189,3 +189,14 @@ Most recent issues are accessibility-related from automated scans and manual tes
 - Ready for task assignment and handoff generation
 
 **Next Steps:** Select specific issue(s) to create formal task files in `tasks/backlog/`
+
+---
+
+## Pending Items (added 2026-10-14)
+
+Facts are REPORTED by Tracy (the 2026-10-07 facts file and 2026-10-14) unless a commit hash is shown, which is VERIFIED from push output. The header and Current Status above were last curated 2026-08-11 and are the planning agent's to refresh; this append does not change them.
+
+- **Facet-limiting backport (on hold):** `tasks/backlog/2026-09-17-MEDIUM-BACKPORT-FACET-LIMITING-CONFIGURATION-TO-HYKU.md` was carried in from the stray `projects/hyku/` folder (`3a7804c`) and marked on hold, pending a comparison with a Notch8 colleague's upstream-compatible solution. The old `hyku/status.md` is archived at `archive/projects/hyku/status.md` (`6a7bcd2`). Do not dispatch.
+- **GA multi-tenant fix:** Phase 1 is on branch `fix/ga-tenant-property-scoping` (Tracy's work for Samvera). Phase 2 waits on a VM with Google Analytics on both tenants, to be set up by the current Hyku product owner. As of 2026-10-07 Tracy planned to follow up directly ("likely next week"); the outcome is not confirmed here.
+- **Stack Car:** the Docker and Stack Car problems seen in wvu_knapsack also occur in this project, which uses Stack Car and has no submodule (Tracy, 2026-10-14). A `SESSION_GUIDANCE.md` for this project is planned and does not exist yet.
+- **Task folder cleanup (not done):** `tasks/current/` and `tasks/active/` both hold a file named `2026-07-10-MEDIUM-BUGFIX-VIEW-SPEC-DEVISE-WARDEN-ISOLATION.md` (VERIFIED by directory listing 2026-10-14; contents not compared), and `tasks/active/` holds three undated files: `facet_label_defaults_investigation.md`, `investigate_wings_modelregistry_fix.md` and `upstream-wings-defensive-checks.md`. Planning-agent cleanup with Tracy; see `projects/agent-tasks/summaries/2026-10-07-PLAN-SAMVERA-REORG.md`.
