@@ -246,3 +246,13 @@ All hashes VERIFIED on origin with `git log -1` at f5260b8.
 - **Committed**: 6462d0f, pushed (VERIFIED: git log origin/main).
 - **Not committed**: workflow-updates/qwen-session-closout-log.md (untracked, not this session, left as is).
 - **Stop condition**: none. Note for the planning agent: SESSION_CLOSEOUT.md section 2 still says held work goes to backlog/current/ while section 2a says backlog/; not changed here.
+
+
+---
+
+## 📝 Session Log — 2026-10-13 (web review: workflow tuning, closeout rules)
+
+- **Changed:** `projects/agent-tasks/needs_review.md` (commit-conventions entry corrected), `SESSION_CLOSEOUT.md` (1b item 6; sections 2 and 2a), `README.md` (Stale Active Task Protocol line), `projects/galaxy_game/SESSION_GUIDANCE.md` (Galaxy task-folder note), and new `projects/wvulibraries_knapsack/tasks/backlog/2026-10-13-LOW-DOCS-CONTRIBUTING-COMMIT-MESSAGES.md`. Also committed from an earlier web session: `projects/agent-tasks/handoffs/claude-web/session_handoff_2026-10-11_WORKFLOW-REVIEW.md`. Removed by Tracy outside git: untracked `summaries/agent-tasks-tuning.md` (deleted), untracked `workflow-updates/qwen-session-closout-log.md` (moved to `~/Documents`), and an uncommitted `status.md` entry from a stale closeout (`git restore`). (VERIFIED: `git log --oneline -8`, `git show --stat <hash>`, `git status -sb`)
+- **Committed:** `8eca82d`, `e9145bf`, `750c2b1`, `0640ca6`, `e79c255`, `6d0d80f`, `514dcce`, all pushed (VERIFIED: `git push` output, ranges `8eca82d..e9145bf` through `6d0d80f..514dcce`).
+- **Not committed:** none (VERIFIED: `git status -sb` after `514dcce` showed no modified or untracked files).
+- **Stop condition:** none for the edits above. Open, owner Tracy: the knapsack CONTRIBUTING task sits in `backlog/`, not dispatched, and its `needs_review.md` entry stays OPEN until it runs; the Hyku upgrade, submodule and Docker checklists for the knapsack `SESSION_GUIDANCE.md` are drafted but not applied; `needs_review.md` entries on handoff lifecycle, artifact categorization and the generic upgrade checklist are still OPEN; the read-only knapsack checks (the `up.sc.local.sh` vs `docker rmi` gotcha, the `*.localhost.direct` URL mismatch, a dead `status.md` link in the knapsack `CONTRIBUTING.md`) are not yet a task; Stack Car and Docker problems seen in wvu_knapsack also occur in samvera/hyku, which has no submodule, so the Docker and Stack Car checklist should be shared across both projects' guidance (REPORTED by Tracy, 2026-10-14); the "Not done yet" list in the 2026-10-11 handoff is unchanged except item 3 (section 2 vs 2a), resolved by `6d0d80f` and `514dcce`.
