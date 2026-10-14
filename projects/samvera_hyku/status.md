@@ -175,7 +175,7 @@ Most recent issues are accessibility-related from automated scans and manual tes
 
 ## Special Warnings & Conventions
 - Follow all agent workflow and commit protocols as documented in projects/samvera_hyku/README.md
-- Do NOT modify core Hyku code directly; use decorators or overrides for customizations
+- Hyku is multitenant Hyrax: a fix may start in Hyrax (change Hyrax core first, then override it correctly in Hyku) or be an override in Hyku, contributed to the Samvera community by pull request, one branch per PR. The rule against modifying core Hyku code belongs to wvulibraries_knapsack only.
 - All version control operations must be executed on the host node (not inside Docker)
 - Targeted testing only — never run full RSpec suite
 
