@@ -1,5 +1,5 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-10-13
+**Last Updated:** 2026-10-15
 
 ---
 
@@ -24,6 +24,48 @@
 - ✅ `tasks/active/HYKU-720-UPGRADE-TESTING.md` — Dev VM upgrade test task (scope: Phase 1 direct VM update, Phase 2 git workflow only if Phase 1 OK)
 - ⏳ `backlog/2026-09-30-HIGH-ARCHITECTURE-SIMPLIFY-FACET-LIMITER.md` — facet limiter redesign (from prior session, pending)
 - ⏳ `backlog/2026-10-12-HIGH-FEATURE-HTTPS-TERMINATION-LOCAL-SMOKETEST.md` — HTTPS termination for docker-compose.local.yml (from prior session, pending)
+
+**Next Steps**: Awaiting user decision on which backlog task to address first.
+
+---
+
+## 🎯 Session 2026-10-14 — Facet Limiter Regression on Hyku 7.2.0 (Backlog, READY TO DISPATCH)
+
+**Issue**: After deploying Hyku 7.2.0 to hykudev, catalog facets show **10 items per facet** instead of the expected **5**.
+**Task**: `tasks/backlog/2026-10-14-HIGH-BUG-FACET-LIMITER-DEFAULTS-TO-10-ON-7.2.md` (READY TO DISPATCH — all checklist items ✅)
+**Status**: Backlog — not yet dispatched to implementation agent
+**Workflow**: Fix limiter → backport to hyku branch → share with LaRita for upstream comparison
+**Catalog note**: Prod `date_created` limit is 5; hykudev on 7.2 shows 10.
+
+---
+
+## 🎯 Session 2026-10-15 — Prod Collection Facet Rename/Reindex (CLOSED)
+
+**Issue**: Prod Collection facet showed old + current collection names after renames (LibAnswers / Ashley Brooker).
+**Root Cause**: Solr still had old title strings; DB had new names.
+**Fix**: Solr reindex on prod.
+**Status**: ✅ CLOSED 2026-10-15 — Jessica confirmed; Sarah confirmed Moore files; ticket CLOSED.
+**Ops Follow-up**: Delete old prod snaps, take new baseline (Steve → Brian) — still pending as of 2026-10-15.
+
+---
+
+## HYKU-720 Progress Note (2026-10-15)
+
+Phase 1 dev testing is **IN PROGRESS** on hykudev. Task file moved from `tasks/completed/` to `tasks/active/` — frontmatter was already `status: active`, location was incorrect.
+
+**Not yet complete**: Prod upgrade decision, Phase 2 (proper git workflow).
+
+---
+
+## Production Context
+
+Only ~4 institutions use knapsack in production (per Rob). WVU is early; Notch8 did initial setup, Tracy completed production setup. WVU is a primary live reference for knapsack + flexible metadata/facet behavior.
+
+---
+
+## 2026-10-13 Backlog Task Added (after planning closeout)
+
+- `tasks/backlog/2026-10-13-LOW-DOCS-CONTRIBUTING-COMMIT-MESSAGES.md` — Drafted by web review agent; not dispatched. Add commit message conventions to knapsack CONTRIBUTING.md.
 
 **Next Steps**: Awaiting user decision on which backlog task to address first.
 
