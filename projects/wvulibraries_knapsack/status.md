@@ -51,7 +51,7 @@
 
 ## HYKU-720 Progress Note (2026-10-15)
 
-Phase 1 dev testing is **IN PROGRESS** on hykudev. Task file moved from `tasks/completed/` to `tasks/active/` — frontmatter was already `status: active`, location was incorrect.
+Phase 1 dev testing is **IN PROGRESS** on hykudev. Task file `tasks/backlog/HYKU-720-UPGRADE-TESTING.md` (frontmatter: `status: backlog`) — not in active/ because HYKU-720 is under human/hykudev testing, not dispatched to an agent this session. **active/ is reserved for tasks currently dispatched to an agent.**
 
 **Not yet complete**: Prod upgrade decision, Phase 2 (proper git workflow).
 
