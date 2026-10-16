@@ -14,6 +14,60 @@ This task remains in backlog. All readiness checklist boxes must remain unchecke
 
 ---
 
+## Phase 1 blocker disposition
+
+Phase 1 synthesis is complete:
+
+`summaries/2026-10-15-PREIMPL-CATALOG-INDEX-IMAGE-RESOLUTION.md`
+
+Phase 1 recommendation: **STOP — do not proceed to Phase 2.**
+
+This task is blocked by four unresolved prerequisites. Do not implement
+registry-first resolution, select among multiple catalog-render candidates,
+extend runtime discovery, or modify the catalog image-serving controller or
+routes under this task.
+
+### Blocking prerequisites
+
+1. **Deterministic catalog identity mapping** — No existing deterministic
+   blueprint identity to AssetRegistry `asset_id` mapping exists.
+   `find_asset_by_blueprint_id` is referenced by the catalog controller but
+   is not implemented. A separate contract/design task is required.
+
+2. **Runtime metadata availability** — The registry is empty at boot, and
+   the existing B2 boundary does not establish a general runtime metadata
+   source for catalog requests. A separate runtime-metadata contract task
+   is required.
+
+3. **Primary catalog-render selection** — No existing general rule selects
+   one primary catalog-render candidate when multiple valid candidates
+   exist. Current `files.first` behavior is prohibited by this task. A
+   separate representation-selection contract task is required.
+
+4. **Catalog image-serving safety** — The existing `start_with?`
+   containment check does not establish symlink handling, regular-file
+   validation, or sufficient canonical-root containment. A separate
+   serving-security assessment and, if approved, narrowly scoped hardening
+   task is required.
+
+### Required before Phase 2
+
+Phase 2 may be considered only after all of the following are true:
+
+- An approved deterministic blueprint-to-asset mapping exists.
+- An approved B2-compliant runtime metadata source is available during a
+  normal catalog request.
+- An approved deterministic primary catalog-render selection rule exists.
+- Catalog image-serving containment, traversal/symlink protection,
+  regular-file validation, and URL behavior are verified or separately
+  approved for hardening.
+- This task's permitted file scope and acceptance criteria are reconciled
+  with the approved prerequisite changes.
+
+Until then, this task remains in backlog and is not authorized for Phase 2.
+
+---
+
 ## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
 
 **STOP. Do not send this task to an agent until ALL boxes are checked.**
@@ -360,4 +414,8 @@ Do not claim acceptance of a criterion that was not verified by the correspondin
 
 - **Prerequisite**: B1 (`asset_registry.rb`) implemented and committed as `4361fbc3`
 - **Prerequisite**: C2/C3 (`catalog_data`, RH-400 fallback) implemented and committed as `d614e4fa` / `d7894ca3`
+- **Blocked by**: `HIGH-ARCHITECTURE-CATALOG-BLUEPRINT-ASSET-IDENTITY`
+- **Blocked by**: `HIGH-ARCHITECTURE-ASSET-REGISTRY-RUNTIME-METADATA`
+- **Blocked by**: `HIGH-ARCHITECTURE-CATALOG-REPRESENTATION-SELECTION`
+- **Blocked by**: `HIGH-SECURITY-CATALOG-IMAGE-PATH-VALIDATION`
 - **Blocks**: None — this task unblocks the catalog index page from showing broken images
