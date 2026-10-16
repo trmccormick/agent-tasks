@@ -84,8 +84,8 @@ ls projects/wvulibraries_knapsack/handoffs/ 2>/dev/null || echo "No handoffs fol
 - **Start**: `sh up.sc.local.sh` (runs full rebuild: docker build + sc up, includes all services)
 - **Stop**: `sh down.sc.local.sh` (stops containers AND proxy, preserves named volumes)
 - **Shell**: `sc sh` (access container shell for manual debugging)
-- **Direct sc commands**: `sc up -d`, `sc down`, `sc logs web -f` (if needed for advanced use)
-- **NEVER use**: `docker compose down -v` (destroys database!) — always use `down.sc.local.sh`
+- **Direct sc commands**: `sc up -d`, `sc down` (if needed for advanced use). **Logs**: read files in `./data/logs` when it exists, otherwise use `docker compose logs -f web`. `sc logs` is not a Stack Car command (it is not in the Stack Car README).
+- **NEVER use**: `docker compose down -v` (destroys database!) — always use `down.sc.local.sh`. Agents never run `docker compose down -v` or `scripts/cleanup-dev.sh`: Tracy runs them herself when the build guide calls for it (for example when switching branches).
 - **NEVER use**: `up.sh` / `down.sh` on your laptop (these deploy to production environments)
 
 **Domains & Routing:**
@@ -95,7 +95,7 @@ ls projects/wvulibraries_knapsack/handoffs/ 2>/dev/null || echo "No handoffs fol
 - Traefik dashboard: `https://traefik.localhost.direct/dashboard/#/`
 
 **Alternative Development Setups:**
-- **Local production smoke test**: `docker-compose.local.yml` with `up.prod.local.sh` (no Stack Car proxy, plain HTTP on `http://localhost:3000`, uses `lvh.me` domains for wildcard DNS)
+- **Local production smoke test**: `docker-compose.local.yml` with `up.prod.local.sh` (no Stack Car proxy, plain HTTP on `http://localhost:3000`, uses `lvh.me` domains for wildcard DNS). **Paused**: it runs over HTTP, so the IIIF viewer does not work, and it may be removed unless it can run over HTTPS. Do not use, change or remove it without approval from Tracy.
 - **VM/production deployment**: `up.sh` / `down.sh` scripts (RHEL amd64 target, uses `docker-compose.production.yml`, requires reverse proxy for HTTPS)
 - **Stack Car locals**: `.env.development` (committed with correct Stack Car values — do not modify)
 
