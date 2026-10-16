@@ -310,3 +310,19 @@ All hashes VERIFIED on origin with `git log -1` at f5260b8.
   - `tasks/current/` and `tasks/active/` both hold `2026-07-10-MEDIUM-BUGFIX-VIEW-SPEC-DEVISE-WARDEN-ISOLATION.md`, and `tasks/active/` has three undated files. Not touched; planning agent with Tracy, per `2026-10-07-PLAN-SAMVERA-REORG.md` (a draft, not approved).
   - Before the on-hold backport task is released: rewrite its Phase 2 test steps for Stack Car (it uses `docker compose up` and `localhost:3000`) and replace its custom Agent Dispatch Interface with the `TASK_TEMPLATE.md` one.
   - The empty local folders `projects/hyku/tasks/backlog`, `projects/hyku/tasks` and `projects/hyku` may remain on Tracy's machine (git does not track empty folders); `rmdir` removes them if empty.
+
+---
+
+## 📝 Session Log — 2026-10-15 (web review: knapsack and samvera_hyku guidance)
+
+- **Changed:** `projects/wvulibraries_knapsack/SESSION_GUIDANCE.md` (Stack Car logs and `down -v` wording; paused `up.prod.local.sh` note; no-VM-access rule in "VM Operations"; submodule pinning note; stale gotchas corrected: the `docker rmi` bullet, the removed VERSION override and the #3399 status; new "Checklists for Routine Tasks" with A, Hyku version upgrade, and B, submodule update; test, cleanup and troubleshooting notes in "Local Development Rules"); `projects/samvera_hyku/SESSION_GUIDANCE.md` (section 5 rewritten for Hyku: Stack Car for the proxy and certificate, Docker Compose for the stack, Tracy's local script copies, the URL, logs). (VERIFIED: `git diff` before each commit, `git status -sb` after each push)
+- **Committed:** `56e8731`, `1d0606f`, `9db1414`, `792b5de`, `66ae0e6`, all pushed (VERIFIED: push output, ranges `41e77b1..56e8731` through `792b5de..66ae0e6`).
+- **Not committed:** none.
+- **Also done by Tracy in `wvu_knapsack` (REPORTED; read from origin by the web agent through a summarising tool, branch `feature/hyku-v7.2.0-upgrade`, not on `main`):** log mounts added to `docker-compose.yml` (`./data/logs/rails`, `./data/logs/solr`); `scripts/cleanup-dev.sh` restart hint and header comments corrected.
+- **Stop condition:** none. Open, owner Tracy unless noted:
+  - On the laptop: `sc help` (is `sc sh` valid); `docker compose config | grep -n -i -E 'var/solr|logs'` (did the Solr log mount replace Solr's inherited volumes); the rspec command (does it need `web`); the container names for the `docker ps` grep; `ls hyrax-webapp/log`.
+  - The Hyku local steps in `samvera_hyku/SESSION_GUIDANCE.md` section 5 are unconfirmed (all marked CONFIRM), including whether Hyku writes logs to the host. The on-hold backport task's Phase 2 steps need their URL checked before release.
+  - The 2026-10-13b entry above and `projects/wvulibraries_knapsack/handoffs/2026-10-13-PLANNING-AGENT-CLOSEOUT.md` say HYKU-720 is paused or active; it is in `completed/` (VERIFIED: `git ls-files`). Not corrected: other sessions' entries. "Current Project State (as of 2026-10-12)" in the knapsack guidance is stale for the same reason; planning agent.
+  - `samvera/hyku#3399` (Tracy's PR, approved) waits on an adjustment from Rob. When it merges, remove the BlacklightAdvancedSearch shim (`e313f91`, REPORTED) in its own commit.
+  - Still OPEN from 2026-10-13a: the checklists are now applied (`9db1414`, `792b5de`), but the knapsack CONTRIBUTING task is still in `backlog/`; the `needs_review.md` entries on handoff lifecycle, artifact categorization and the generic upgrade checklist; the other three `status.md` Pending Items appends (`wvulibraries_acda_portal`, `wvulibraries_databases`, `wvulibraries_knapsack`); the 2026-10-11 handoff "Not done yet" list.
+  - The facet-limiter regression after 7.2.0 (10 items instead of 5 on hykudev) is unresolved. The duplicate-collection-facet task needs snapshots of both VMs confirmed first.
