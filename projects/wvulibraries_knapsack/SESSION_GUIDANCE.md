@@ -103,6 +103,8 @@ ls projects/wvulibraries_knapsack/handoffs/ 2>/dev/null || echo "No handoffs fol
 
 ⚠️ **DANGER**: hykudev uses **symlinks, mounted shares, and Docker-managed volumes** throughout the file system. Standard git/filesystem cleanup commands can silently destroy critical infrastructure.
 
+**Agents have no access to any VM (hykudev or hyku.lib.wvu.edu).** Agents work only on the laptop. They never log in to, run commands on, or ask for access to a VM. If a task seems to need VM access, stop and write a NEEDS_REVIEW.md entry. DevOps does most VM work and Tracy is the backup. When Tracy asks for help with a VM error, write the commands for a human to run and say what each one checks or changes. The cautions and operations below are for DevOps and Tracy. Agents may read the public live site with web tools (for example digitalhistory.lib.wvu.edu), but Cloudflare bot blocking may block parts of it: treat a blocked page as not checked, not as proof the site is down.
+
 **DO NOT RUN on hykudev**:
 - `git clean -fd` — Removes untracked directories that may be mounted shares or symlinks
 - `git reset --hard` without verification — Can destroy working state on a mounted filesystem
@@ -174,15 +176,17 @@ The current local production smoke test (`docker-compose.local.yml`) runs contai
 - **7.1-stable**: Hyku::VERSION is defined early in boot, allows override in initializers
 - **7.2-stable**: Hyku::VERSION access moved earlier (during `Rails.application.initialize!`), can fail if not pre-defined
 
+**Submodule pinning (REPORTED by Tracy, 2026-10-14)**: production (hyku.lib.wvu.edu) pins `hyrax-webapp` to a specific commit SHA until Samvera locks stable releases (they are working on this for 7.2). The upgrade branch tracks `7.2-stable` through `.gitmodules`, and `main` tracks `7.1-stable`. Say which mode you are in, and never change it without approval from Tracy.
+
 **Cached Docker images hide real problems**:
 - Local `up.sc.local.sh` with cached images from main branch won't catch 7.2-specific issues
 - Fresh VM build (`up.sh`) with clean layer cache WILL reveal timing bugs
-- Always rebuild without cache when testing submodule upgrades: `docker rmi ghcr.io/wvulibraries/wvu_knapsack/web:latest`
+- `sh up.sc.local.sh` already rebuilds `web` and `worker` with `--no-cache` (`docker compose build --no-cache web worker`), so no `docker rmi` step is needed locally. Use it, not `sc up -d`, when testing submodule upgrades
 
 **Initializer load order is alphabetical**:
 - Hyku loads `config/initializers/version.rb` first (processes VERSION constant)
 - Custom overrides that depend on VERSION must use filename prefix like `zzz_*` to load AFTER version.rb
-- Named `config/initializers/zzz_temporary_hyku_version_override.rb` for this reason (forces execution after version.rb)
+- The temporary VERSION override used the name `config/initializers/zzz_temporary_hyku_version_override.rb` for this reason. It was removed because it was crashing hykudev (REPORTED: `ac025ec`). Do not re-add it
 
 **Third-party gem compatibility**:
 - BlacklightAdvancedSearch removed `RenderConstraintsOverride` module in newer versions
@@ -192,9 +196,9 @@ The current local production smoke test (`docker-compose.local.yml`) runs contai
 
 **Upstream PR monitoring**:
 - Hyku 7.2-stable has known bug: VERSION constant not bumped to 7.2.0 (samvera/hyku#3397)
-- A PR is pending to fix this upstream (samvera/hyku#3399)
-- Avoid maintaining local VERSION overrides if upstream fix is imminent — prefer waiting for PR merge
-- Once PR merges, update submodule reference and remove workaround
+- A PR is pending to fix this upstream (samvera/hyku#3399). Tracy submitted it. It is approved and waiting on an adjustment from Rob, the Hyku lead (REPORTED, 2026-10-14)
+- Do not spend time on a local VERSION workaround: wait for the PR merge
+- Once the PR merges, update the submodule reference and remove the remaining workaround in its own commit (per status.md that is the BlacklightAdvancedSearch shim, REPORTED: `e313f91`)
 
 ### Facet Limiting / Search
 - M3 (Marc Metadata Profiles) dynamically adds/removes facets at runtime. Static `to_prepare` hooks may run before M3 loads.
