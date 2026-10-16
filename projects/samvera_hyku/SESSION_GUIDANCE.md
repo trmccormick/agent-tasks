@@ -60,20 +60,23 @@ The `tasks/current/` folder is not part of the standard layout (see section 6).
 
 `samvera/hyku` uses Stack Car, and the Docker and Stack Car problems seen in `wvu_knapsack` also occur here (REPORTED by Tracy, 2026-10-14).
 
-Commands below are copied from the knapsack guidance. They are **not yet confirmed for this repo**:
+Upstream docs (`docs/getting-started.md`, REPORTED, read through a summarising tool) use Stack Car only for the proxy and certificate, and Docker Compose for the stack itself. Not yet confirmed on the laptop:
 
 ```bash
-sc up -d            # start the stack
-sc down             # stop the stack
-sc logs web -f      # follow web logs
-sc sh               # shell into the web container
+sc proxy cert            # once per machine (needs two passwords)
+sc proxy up              # start the shared proxy
+docker compose build
+docker compose up web
+docker compose stop
+docker compose down
 ```
 
-- Never `docker compose down -v`: it destroys the database.
-- Domains and the local proxy setup (`*.localhost.direct`, `sc proxy cert`, `sc proxy up`) may or may not match this repo. [CONFIRM]
-- Do not copy the knapsack's `up.sc.local.sh` / `down.sc.local.sh` scripts into assumptions about Hyku. [CONFIRM whether Hyku has its own.]
-- **Known gap in the on-hold backport task:** its Phase 2 test steps use `docker compose up` and `http://localhost:3000`, which are probably wrong for a Stack Car project. Rewrite them with the confirmed Stack Car steps before that task is released.
-- A shared Stack Car and Docker checklist for both projects is planned and not written yet. When it exists, point to it from here and do not duplicate it.
+- Agents never run `docker compose down -v` or the cleanup script (they destroy the local database). Tracy runs them herself (REPORTED, 2026-10-14).
+- Local URL: `https://admin-hyku.localhost.direct`. If the `APP_NAME` variable is changed it becomes `https://admin-APP_NAME.localhost.direct` (default `APP_NAME` is `hyku`). **[CONFIRM]**
+- Tracy uses her own copies of `up.sc.local.sh`, `down.sc.local.sh` and `scripts/cleanup-dev.sh` in Hyku, kept on her laptop and gitignored (REPORTED, 2026-10-14). They are not in the upstream repo: do not stage or commit them, and do not assume anyone else has them.
+- **Known gap in the on-hold backport task:** its Phase 2 test steps use `docker compose up` and `http://localhost:3000`. Upstream docs also use Docker Compose for the stack, so the commands may be fine, but the URL is probably `https://admin-hyku.localhost.direct`. **[CONFIRM]** and fix before that task is released.
+- Logs: `sc logs` is not a Stack Car command (it is not in the Stack Car README, https://github.com/notch8/stack_car). Read logs with `docker compose logs -f web`. **[CONFIRM]** whether Hyku writes log files to the host.
+- The Stack Car and Docker notes for the knapsack are in `projects/wvulibraries_knapsack/SESSION_GUIDANCE.md` (Local Development Rules). Tracy reports the problems are the same here, but the Hyku steps above are unconfirmed, so do not copy knapsack commands without checking.
 
 ---
 
