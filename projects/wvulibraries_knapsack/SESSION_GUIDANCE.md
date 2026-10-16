@@ -221,6 +221,61 @@ The current local production smoke test (`docker-compose.local.yml`) runs contai
 
 ---
 
+## Checklists for Routine Tasks
+
+Use these in order. Each item is a check or an action; if a check fails, stop and write a `NEEDS_REVIEW.md` entry rather than working around it. Items marked **[CONFIRM]** are not yet verified and need an agent with repo access, or Tracy, to confirm before the checklist is treated as settled. Claims labelled REPORTED come from Tracy or from project files read second-hand, not from a command run by the author.
+
+### A. Hyku Version Upgrade (for example 7.1-stable to 7.2-stable)
+
+**Before changing anything**
+- [ ] Work on a feature branch, never on `main` (example: `feature/hyku-v7.2.0-upgrade`). Say which branch you are on at the top of the session notes, because `main` and the upgrade branch differ.
+- [ ] Record the current submodule pointer: `git submodule status` (paste the output into the session notes).
+- [ ] Say which pinning mode applies, and write it in the session notes. There are two (REPORTED by Tracy, 2026-10-14):
+  - **SHA-pinned:** `hyrax-webapp` is locked to a specific commit SHA. This is mostly used on the production VM, until Samvera locks stable releases (they are working on this for 7.2). Do not move the pin to a branch tip.
+  - **Branch-following:** `.gitmodules` tracks a stable branch. On the upgrade branch it tracked `7.2-stable`, while `main` was on `7.1-stable` (read from GitHub; re-check on the branch you are on).
+  - Never change the pinning mode on your own. If the mode in the task file and the mode in `.gitmodules` disagree, stop and write a `NEEDS_REVIEW.md` entry.
+- [ ] Read the upstream release notes or changelog for the target version. List anything that touches boot order, constants, routes, auth or gems.
+- [ ] Check the known upstream issues listed under "Upstream PR monitoring" above. The temporary VERSION override was removed because it was crashing hykudev (REPORTED by Tracy, 2026-10-14). The correct fix is `samvera/hyku#3399`, Tracy's own small pull request that fixes the VERSION file. It is approved but not merged: it is waiting on an adjustment from Rob, the Hyku lead (REPORTED by Tracy, 2026-10-14). Do not re-add the override or spend time on a local workaround for it. Per `status.md` (REPORTED, not re-checked), the removal was `ac025ec` and a `BlacklightAdvancedSearch` compatibility shim went in (`e313f91`). Is #3399 merged yet? If it is, plan the shim removal as its own commit. **[CONFIRM]** the hashes against `git log` before relying on them.
+- [ ] List every local override that could be affected: decorators (`*_decorator.rb`), initializers in `config/initializers/`, shims, and anything in `bundler.d/`. Note each one against the changelog.
+- [ ] Confirm you are using the Stack Car scripts for local work (`up.sc.local.sh`, `down.sc.local.sh`), not `up.sh` / `down.sh`.
+
+**During the upgrade**
+- [ ] Bump the submodule pointer only (steps in the repo README, "Updating the Hyku submodule"). Make no edits to any file inside `hyrax-webapp/`. In SHA-pinned mode, set the pointer to the named SHA and record it. In branch-following mode, record the SHA the branch resolved to, so the run can be reproduced.
+- [ ] After the bump, `git -C hyrax-webapp status` must show a clean tree.
+- [ ] Fix boot failures from the first error in the log, not the last. Re-run after each fix.
+- [ ] Put fixes in the knapsack as decorators or initializers only.
+- [ ] If the cause of a failure is in Hyrax, not Hyku, say so in the session notes. A fix for Hyku sometimes needs Hyrax core changed first and then correctly overridden in Hyku (REPORTED by Tracy, 2026-10-14). The knapsack never edits `hyrax-webapp/`: keep a temporary override here, and record the upstream change that would replace it in a `NEEDS_REVIEW.md` entry. The upstream change is made by pull request to `samvera/hyrax` or `samvera/hyku`.
+- [ ] If a fix must run after a Hyku initializer, prefix the filename (`zzz_...`) so it loads later. Alphabetical load order decides this.
+- [ ] If an upstream gem removed something Hyku still references, add a shim in `config/initializers/` and name the gem and version in a comment.
+- [ ] Every temporary workaround gets a comment with the upstream issue or PR link and the condition for removing it.
+- [ ] One fix per commit, with a message that says what it guards or restores.
+
+**After the upgrade (validation)**
+- [ ] Rebuild without cached layers (see "Local Development Rules" above) and start with `sh up.sc.local.sh`.
+- [ ] Watch the logs (see "Local Development Rules" above) through boot. No stack traces.
+- [ ] Open the admin tenant and one repository tenant over HTTPS (`*.localhost.direct`).
+- [ ] Check the pages that have broken before: search results with facet "more" links, the search history page (the BlacklightAdvancedSearch shim), and the IIIF viewer (HTTPS only).
+- [ ] Check facet counts. After the 7.2.0 upgrade, hykudev showed 10 items per facet instead of 5 (REPORTED in the backlog task `2026-10-14-HIGH-BUG-FACET-LIMITER-REGRESSION-HYKU-7.2.0.md`; cause not confirmed). Do not assume it is fixed.
+- [ ] Confirm the displayed Hyku version is what you expect.
+- [ ] Remember a green local run on cached images is not proof. Both VMs run in production mode, and production mode does not test correctly on a laptop, so a local pass says nothing about production behavior. A clean build on the dev VM (`hykudev`) with a fresh layer cache is the real test.
+- [ ] Know which VM you mean (REPORTED by Tracy, 2026-10-14):
+  - **`hyku.lib.wvu.edu`** is production. Hyku is multitenant, so this one machine serves an admin tenant, a demo tenant and the main tenant, whose public DNS name is `digitalhistory.lib.wvu.edu`.
+  - **`hykudev.lib.wvu.edu`** is the dev VM. It is not public. It serves an admin tenant and a demo tenant (`demo-hykudev.lib.wvu.edu` appears to be that demo tenant, not a separate VM; **[CONFIRM]**).
+  - Both run the knapsack build of Hyku (the knapsack embeds Hyku as `hyrax-webapp/`). WVU does not run upstream Hyku or Hyrax directly; work on those projects feeds the knapsack.
+  - Both run in production mode, because production mode does not test correctly on a laptop.
+- [ ] VM access: no agent has access to either VM, and agents never run anything on one. See "VM Operations (hykudev)" above. Tracy must confirm snapshots of both VMs before any reindex, Solr delete or recovery work (REPORTED, from the production duplicate-collection-facet task).
+- [ ] Update `status.md`, labelling each claim VERIFIED (you ran it) or REPORTED (someone told you). List every workaround still in place with its removal condition.
+
+### B. Submodule Update (pointer bump, no version change planned)
+
+- [ ] `git submodule status` before and after. Paste both.
+- [ ] State the pinning mode (see checklist A). Bump the pointer only (README steps). Never edit inside `hyrax-webapp/`.
+- [ ] Review what changed between the old and new pointer: `git -C hyrax-webapp log --oneline <old>..<new>`. Look for anything touching files the knapsack overrides.
+- [ ] Check each decorator and override against its upstream file. The `# OVERRIDE Hyku v<version>` comments mark the ones to check.
+- [ ] Commit the pointer change alone, with a message such as `chore: Bump Hyku submodule to <version>`. In SHA-pinned mode, put the SHA in the message.
+- [ ] Run the validation list from checklist A.
+- [ ] If a local patch is now fixed upstream, remove the patch in a separate commit.
+
 ## Current Project State (as of 2026-10-12)
 
 ### Active Tasks
