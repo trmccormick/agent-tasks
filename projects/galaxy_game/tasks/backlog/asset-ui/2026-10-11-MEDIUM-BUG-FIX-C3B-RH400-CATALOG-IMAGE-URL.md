@@ -198,6 +198,12 @@ Verify the current route and path conventions in code before implementation. Do 
 
 ---
 
+### Known issue found in review of `d7894ca3` (verified)
+
+The `catalog_image` action's path check (`start_with?` on an unnormalized `Pathname#join`) accepts `images/catalog/../../../etc/passwd` and `images/catalog-private/x.png`. The existing traversal test only covers `../../etc/passwd`, which is blocked lexically, so the suite passes while the bypass exists. Verified by a Ruby check of the path-building logic (not an end-to-end request). Not yet verified: whether routing or the web server normalizes `..` before the controller, and whether the `/admin` namespace requires authentication.
+
+Fix in `galaxy_game/app/controllers/admin/catalog_controller.rb` (action at line 39): resolve the requested path to its real location, then compare against the catalog directory with a trailing separator. Add regression tests for both bypass cases in `galaxy_game/spec/controllers/admin/catalog_controller_spec.rb` (existing traversal test at line 208).
+
 ## Files Involved
 
 Inspect these existing files first. Confirm exact paths and any additional required files before editing.
