@@ -84,12 +84,12 @@ ls projects/wvulibraries_knapsack/handoffs/ 2>/dev/null || echo "No handoffs fol
 - **Start**: `sh up.sc.local.sh` (runs full rebuild: docker build + sc up, includes all services)
 - **Stop**: `sh down.sc.local.sh` (stops containers AND proxy, preserves named volumes)
 - **Shell**: `sc sh` (access container shell for manual debugging)
-- **Direct sc commands**: `sc up -d`, `sc down` (if needed for advanced use). **Logs**: read files in `./data/logs` when it exists, otherwise use `docker compose logs -f web`. `sc logs` is not a Stack Car command (it is not in the Stack Car README).
+- **Direct sc commands**: `sc up -d`, `sc down` (if needed for advanced use). **Logs**: read files in `./data/logs` when it exists, otherwise use `docker compose logs -f web`. `sc logs` is not a Stack Car command (`sc help` does not list it, and running it prints Could not find command; VERIFIED 2026-10-15).
 - **NEVER use**: `docker compose down -v` (destroys database!) — always use `down.sc.local.sh`. Agents never run `docker compose down -v` or `scripts/cleanup-dev.sh`: Tracy runs them herself when the build guide calls for it (for example when switching branches).
 - **NEVER use**: `up.sh` / `down.sh` on your laptop (these deploy to production environments)
 
 **Tests, logs and cleanup (local only; REPORTED from the knapsack README, `HYKU_BUILD_GUIDE.md` and `scripts/cleanup-dev.sh`, 2026-10-14):**
-- **Tests**: `sc exec bundle exec rspec spec/path` (a single file or a directory). **[CONFIRM]** whether `web` is needed after `sc exec`.
+- **Tests**: `sc exec bundle exec rspec spec/path` (a single file or a directory). `sc exec` already runs in the `web` service (per `sc help`, VERIFIED 2026-10-15), so do not add `web` after it. **[CONFIRM]** by running one spec.
 - **Local agents** may run `sh up.sc.local.sh` and `sh down.sc.local.sh`. These are preferred over raw docker commands. Agents mostly help with code fixes and reading logs.
 - **`down.sc.local.sh` also stops the shared proxy** (`sc proxy down`). If the knapsack and Hyku stacks are both running, stopping one makes the other's admin URL unreachable until `sc proxy up`.
 - **`scripts/cleanup-dev.sh`** runs `docker compose down --rmi local -v --remove-orphans`, then `docker image prune -f` and `docker builder prune -f`, with no confirmation. The two prune commands clear dangling images and build cache for every Docker project on the machine. The `./data` bind mounts (bundle, ingest, logs) are not removed. Agents never run it.
