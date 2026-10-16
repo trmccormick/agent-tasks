@@ -88,6 +88,19 @@ ls projects/wvulibraries_knapsack/handoffs/ 2>/dev/null || echo "No handoffs fol
 - **NEVER use**: `docker compose down -v` (destroys database!) — always use `down.sc.local.sh`. Agents never run `docker compose down -v` or `scripts/cleanup-dev.sh`: Tracy runs them herself when the build guide calls for it (for example when switching branches).
 - **NEVER use**: `up.sh` / `down.sh` on your laptop (these deploy to production environments)
 
+**Tests, logs and cleanup (local only; REPORTED from the knapsack README, `HYKU_BUILD_GUIDE.md` and `scripts/cleanup-dev.sh`, 2026-10-14):**
+- **Tests**: `sc exec bundle exec rspec spec/path` (a single file or a directory). **[CONFIRM]** whether `web` is needed after `sc exec`.
+- **Local agents** may run `sh up.sc.local.sh` and `sh down.sc.local.sh`. These are preferred over raw docker commands. Agents mostly help with code fixes and reading logs.
+- **`down.sc.local.sh` also stops the shared proxy** (`sc proxy down`). If the knapsack and Hyku stacks are both running, stopping one makes the other's admin URL unreachable until `sc proxy up`.
+- **`scripts/cleanup-dev.sh`** runs `docker compose down --rmi local -v --remove-orphans`, then `docker image prune -f` and `docker builder prune -f`, with no confirmation. The two prune commands clear dangling images and build cache for every Docker project on the machine. The `./data` bind mounts (bundle, ingest, logs) are not removed. Agents never run it.
+- **Troubleshooting** (from `HYKU_BUILD_GUIDE.md`):
+  - Admin host unreachable: `sc proxy up`, then check `https://traefik.localhost.direct/dashboard`.
+  - Puma not starting: read the logs for bundle or migration errors.
+  - Port 3000 already in use: `lsof -i :3000`, then stop the process.
+  - `Apartment::TenantNotFound`: the guide says `docker compose down -v`, then restart. That is a destructive step: ask Tracy, do not run it.
+  - Puma never starts and `sleep infinity` is in the logs: remove or rename `docker-compose.override.yml`.
+  - `up.sc.local.sh` is slow: expected with `--no-cache`. Use `sc up -d` when a clean rebuild is not needed.
+
 **Domains & Routing:**
 - Domains use `*.localhost.direct` via Stack Car's Traefik proxy (provides valid HTTPS via self-signed certs)
 - Admin/superadmin tenant: `https://admin-wvu-knapsack.localhost.direct`
