@@ -12,16 +12,16 @@ local_worker_safe: true
 
 **STOP. Do not send this task to an agent until ALL boxes are checked.**
 
-- [ ] Agent Dispatch Interface section below is complete and accurate (no placeholders)
-- [ ] All Step 0-N instructions are clear and actionable (not vague)
-- [ ] Synthesis report template is provided (copy/paste ready, not as example)
-- [ ] No placeholder text remains in Implementation Steps
-- [ ] All file paths are verified to exist
-- [ ] Architecture Gotchas are specific (not generic)
-- [ ] Acceptance Criteria are measurable
+- [ ] Agent Dispatch Interface section is complete and accurate, with only the documented machine-specific path substitution required
+- [ ] Research procedure and stop conditions are explicit and actionable
+- [ ] Phase 1 synthesis report requirements are complete and copy/paste ready
+- [ ] No production implementation steps or implied implementation authorization remain
+- [ ] All repository paths and referenced task paths have been verified by the human before dispatch
+- [ ] Architecture constraints explicitly preserve the existing AssetRegistry and B2 boundaries
+- [ ] Acceptance criteria are measurable and distinguish research completion from contract approval
 - [ ] Dependencies and Blocked/Blocks relationships are clear
 
-**Task is NOT READY until all checkboxes are completed.**
+**Task is NOT READY until all applicable readiness checks are completed.**
 
 ---
 
@@ -51,7 +51,7 @@ LIFECYCLE: backlog → active → completed
   - Tracked file: git mv (never cp or plain mv)
   - New/untracked file: mv then git add the final path
   - Never leave stale copies in the source folder
-  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-10-16-HIGH-ARCHITECTURE-CATALOG-BLUEPRINT-ASSET-IDENTITY.md"
+  - Verify with: find projects/galaxy_game/tasks -name "2026-10-16-HIGH-ARCHITECTURE-CATALOG-BLUEPRINT-ASSET-IDENTITY.md"
     Only ONE result should exist. Paste this output before committing.
 
 READ FIRST (after Step 0): Task file contains all prerequisites, gotchas, and acceptance criteria.
@@ -81,11 +81,31 @@ This is a **research/contract-design task only**. It must not implement producti
 
 ## Problem Statement
 
-The admin catalog index page requires resolving a catalog blueprint identity (e.g., `VEHICLE_HARVESTER_ROVER_RH400`) to an `AssetRegistry` `asset_id` before any registry-first image resolution can proceed. No existing deterministic mapping mechanism has been established or approved.
+The admin catalog index page requires resolving the catalog's actual blueprint identity to the canonical `AssetRegistry` `asset_id` before any registry-first image resolution can proceed. The authoritative source of the catalog blueprint identity has not yet been established, and no deterministic mapping mechanism has been established or approved. `VEHICLE_HARVESTER_ROVER_RH400` is an example identifier to investigate, not an assumed authoritative input identity or canonical `asset_id`.
 
-Without this contract, the catalog image-resolution task cannot implement registry-first resolution because it has no authoritative rule for identity resolution. The blocker is architectural, not implementation-level.
+Research must first establish where the catalog obtains its blueprint identity, then trace whether and how that identity relates to an `AssetRegistry` `asset_id`. Do not assume the input identity and canonical output are equal or derive one from the other based on naming similarity. Without this contract, the catalog image-resolution task has no authoritative rule for identity resolution. The blocker is architectural, not implementation-level.
 
 ## Research Scope
+
+### Phase 1 Procedure and Mandatory Stop Conditions
+
+Phase 1 is read-only repository research and contract design. Follow this sequence:
+
+1. Identify the catalog's actual blueprint identity source and enumerate the identities in scope.
+2. Trace all existing code and data paths that could associate those identities with canonical `AssetRegistry` `asset_id` values.
+3. Assess each existing path for determinism, generality, ownership, uniqueness, and compatibility with the existing runtime and B2 boundaries.
+4. If an existing mapping satisfies the required contract, document the evidence and its limitations. Do not modify it.
+5. If no existing mapping satisfies the requirement, prepare a proposed general mapping contract for human review. Label it as a proposal, not as an existing capability or an implemented solution.
+6. Save the synthesis report to the required summaries path. Include the evidence, proposed contract if needed, unresolved questions, test strategy, and recommendation.
+7. Stop and request explicit human review of the saved report.
+
+**Mandatory stop conditions:**
+
+- Do not create or modify application code, tests, registry entries, mapping data, task scope, routes, or runtime configuration.
+- Do not claim that a proposed contract is implemented or verified by tests unless existing code or tests actually demonstrate that behavior.
+- Do not choose an identity mapping based solely on naming similarity or a single asset example.
+- If identity ownership, uniqueness, or cardinality cannot be established, record the gap rather than inventing a resolution.
+- Do not begin implementation after saving the report. Contract approval and authorization of implementation are separate human decisions.
 
 ### Required Synthesis Documentation
 
@@ -116,10 +136,11 @@ The Phase 1 synthesis report must document the following with exact code evidenc
      - Missing-mapping behavior (what happens when no match exists)
      - Ambiguous-mapping behavior (what happens when multiple matches exist)
 
-6. **Evidence of determinism** — Demonstrate that the proposed mapping:
-   - Is deterministic and not based on filename inference, normalization, fuzzy matching, first-match behavior, or an RH-400-specific exception
-   - Can be verified through existing code inspection or test execution
-   - Does not introduce new runtime discovery or modify B2 boundaries
+6. **Evidence and verification of determinism** — Separate evidence for existing behavior from reasoning and enforcement requirements for any proposed mapping:
+   - For existing behavior, cite repository code or existing tests that directly demonstrate the behavior; do not treat a proposed contract as existing capability.
+   - For a proposed mapping, explain why its specified rule would be deterministic and unambiguous, identify the mechanism that future implementation must use to enforce that rule, and describe concrete future tests or checks. Label these as design reasoning, enforcement requirements, and future verification—not as behavior verified by current code or tests.
+   - Explain how the proposed contract avoids filename inference, normalization as a substitute for mapping, fuzzy matching, first-match behavior, or an RH-400-specific exception.
+   - Explain how the proposal preserves the existing AssetRegistry and B2 boundaries without introducing runtime discovery. Cite existing code for current boundaries and label any future enforcement as proposed.
 
 ### Prohibited Actions
 
@@ -132,27 +153,43 @@ The Phase 1 synthesis report must document the following with exact code evidenc
 
 ## Acceptance Criteria
 
-- [ ] **AC1: Existing mapping assessment** — The report establishes whether an existing deterministic mapping already meets the requirement, with exact code evidence. If one exists, document it and recommend proceeding to the catalog image-resolution task.
+- [ ] **AC1: Existing mapping assessment** — The report establishes whether an existing deterministic mapping already meets the requirement, with exact code evidence. If one exists, document it and recommend proceeding to the catalog image-resolution task, subject to the other independent blockers documented in that task.
 
 - [ ] **AC2: Proposed contract (if no existing mapping)** — If no existing mapping is found, the report proposes a general mapping contract that defines:
-  - The mapping rule (exact transformation or lookup mechanism)
-  - The owner component responsible for maintaining the mapping
-  - The storage location for mapping data
-  - Uniqueness rules for one-to-one relationships
-  - Missing-mapping behavior (explicit error or blocker; no fallback,
-  inference, or ambiguous resolution)
-  - Ambiguous-mapping behavior (how multiple matches are handled)
 
-- [ ] **AC3: Determinism evidence** — The proposed contract is demonstrated to be deterministic through code inspection or test execution. It does not rely on filename inference, string normalization, fuzzy matching, first-match behavior, or an RH-400-specific exception.
+  - **Authoritative input:** The exact source of the catalog blueprint identity and the conditions under which that identity is considered valid.
+  - **Canonical output:** The authoritative source and validation rules for the target `AssetRegistry` `asset_id`.
+  - **Mapping mechanism:** An explicit lookup or other precisely defined rule. Filename inference, string normalization as a substitute for a mapping, fuzzy matching, and first-match selection are prohibited.
+  - **Ownership:** The component or data owner responsible for creating, validating, and maintaining mappings.
+  - **Storage and lifecycle:** The authoritative mapping location, how entries are added or changed, and how stale or conflicting mappings are detected.
+  - **Cardinality and uniqueness:** Whether the relationship is one-to-one or supports a defined alternative; how uniqueness is enforced; and how duplicates or conflicting assignments are handled.
+  - **Missing-mapping behavior:** An explicit unresolved result, error, or blocker. No inferred fallback identity.
+  - **Ambiguous-mapping behavior:** An explicit failure or review-required result. No automatic candidate selection.
+  - **Runtime boundary:** How the proposed contract respects the existing AssetRegistry and B2 architecture without introducing runtime discovery or an unapproved metadata-generation mechanism.
+  - **Verification strategy:** Concrete proposed tests or checks covering valid mappings, unknown identities, duplicate mappings, conflicting mappings, and invalid canonical asset IDs.
 
-- [ ] **AC4: Human approval gate** — The synthesis report is saved as a file and explicit human approval is obtained before any production code implementation is authorized. A chat summary does not substitute for approval of the saved contract document.
+  The report must distinguish requirements supported by existing code from proposed behavior that would require future implementation.
+
+- [ ] **AC3: Determinism and design evidence** — The report provides repository evidence for all claims about existing behavior and explicitly identifies which contract requirements are proposed rather than implemented. For a proposed contract, the report explains why the specified rule would produce an unambiguous result, identifies the enforcement mechanism, and supplies a concrete future test plan. It does not claim that the proposed behavior has been implemented or tested. The contract must not rely on filename inference, string normalization as a substitute for mapping, fuzzy matching, first-match behavior, or an RH-400-specific exception. It must preserve the existing AssetRegistry and B2 boundaries unless a separately approved architecture decision changes them.
+
+- [ ] **AC4: Human review and implementation separation** — The Phase 1 synthesis report is saved as a file and presented for explicit human review. The agent stops after producing the report and does not implement the mapping contract. Human approval must identify the approved contract and any conditions or limitations. Approval of the contract is not, by itself, authorization to implement it; implementation requires a separate explicit human decision and an appropriately scoped task. If the proposed contract is rejected or requires further design, the task remains blocked pending that decision. A chat summary does not substitute for approval of the saved contract document.
 
 ## Dependencies
 
-**Blocked by**: none
-**Blocks**: `2026-10-13-HIGH-BUGFIX-CATALOG-INDEX-IMAGE-RESOLUTION.md` (catalog image-resolution task cannot proceed without an approved deterministic blueprint-to-asset identity mapping)
-**Related tasks**: `HIGH-ARCHITECTURE-ASSET-REGISTRY-RUNTIME-METADATA`, `HIGH-ARCHITECTURE-CATALOG-REPRESENTATION-SELECTION`, `HIGH-SECURITY-CATALOG-IMAGE-PATH-VALIDATION`
+**Blocked by:** None.
 
+**Blocks:** `2026-10-13-HIGH-BUGFIX-CATALOG-INDEX-IMAGE-RESOLUTION.md`
+
+The catalog image-resolution task remains blocked until a deterministic blueprint-to-asset identity mapping contract has been explicitly approved and any separately authorized implementation needed to make that contract available has been completed and verified.
+
+Approval of this task's mapping contract does **not** resolve the separate runtime metadata, primary-representation selection, or safe-serving blockers. Those prerequisites must be addressed and approved independently before the catalog image-resolution task can proceed to implementation.
+
+**Related prerequisite tasks:**
+- `HIGH-ARCHITECTURE-ASSET-REGISTRY-RUNTIME-METADATA`
+- `HIGH-ARCHITECTURE-CATALOG-REPRESENTATION-SELECTION`
+- `HIGH-SECURITY-CATALOG-IMAGE-PATH-VALIDATION`
+
+Do not assume that a related task is completed or approved merely because it is listed here.
 ## Progress / Resume
 
 *Updated by the session whenever it stops before the task is finished (SESSION_CLOSEOUT.md section 2a).*
