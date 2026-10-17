@@ -104,8 +104,6 @@ The core containment fix is assigned to Task A, `2026-10-17-HIGH-BUG-FIX-CATALOG
 
 ## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
 
-## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
-
 Before navigating to any URLs, running any commands, or modifying any files, you MUST create and post a **synthesis report** in chat. This report demonstrates you understand the task before executing.
 
 **Synthesis Report Template** (save as MD file, do NOT paste in chat):
