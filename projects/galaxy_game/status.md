@@ -8,7 +8,7 @@
 - **agent-tasks**: clean; `main` == `origin/main` at `98d200e`
 - **galaxyGame**: clean; `main` == `origin/main`; no divergence
 - **Active tasks**: 1 file (`active/asset-ui/2026-09-06-HIGH-FEATURE-ASSET-GENERATION-STANDALONE-EXECUTION.md`)
-- **Drafts**: 4 files under `tasks/drafts/` (catalog_image containment parent + A/B/C split, all `status: backlog`, `resume: false`)
+- **Drafts**: 14 files under `tasks/drafts/` (includes 4 catalog_image containment drafts: parent + A/B/C; all backlog, resume false)
 - **Untracked**: 5 items from paused sessions (left untouched per PLANNING_AGENT_CLOSEOUT.md Rule 6)
 
 ---
