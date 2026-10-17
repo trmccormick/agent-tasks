@@ -111,8 +111,6 @@ The PARENT's core finding is that the controller's current string-prefix guard c
 
 ## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
 
-## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
-
 Before navigating to any URLs, running any commands, or modifying any files, you MUST create and post a **synthesis report** in chat. This report demonstrates you understand the task before executing.
 
 **Synthesis Report Template** (save as MD file, do NOT paste in chat):
@@ -165,7 +163,7 @@ Produce a report only, based on live HTTP observations, that records whether a p
 | `galaxy_game/app/controllers/admin/catalog_controller.rb` | Read only, to understand the action being exercised and identify what evidence can show controller reachability | **VERIFIED FROM PARENT:** origin read 2026-10-16; action line 39, guard line 45 |
 | `galaxy_game/spec/controllers/admin/catalog_controller_spec.rb` | Read only, to distinguish controller-spec evidence from live HTTP evidence; existing traversal test at line 208 | **VERIFIED FROM PARENT:** origin read 2026-10-16 |
 | `projects/galaxy_game/summaries/` | Save the report-only findings in Markdown | Summary directory is named in the PARENT's synthesis-report requirement; exact output filename is to be chosen by the agent |
-| Running application and request client | Make one valid-image request and one bypass request; record the raw request targets and responses | Application base URL/request construction is not supplied; use the configured environment. If it cannot be identified safely, stop and report `[FILL IN: application base URL and request construction for catalog_image]` rather than inventing it. |
+| Running application and request client | Make one valid-image request and one bypass request; record the raw request targets and responses | Route verified in `galaxy_game/config/routes.rb` line 126: `get 'catalog/image/*path', to: 'catalog#catalog_image'` inside `namespace :admin`, so the full path pattern is `/admin/catalog/image/*path` and the URL helper is `admin_catalog_image_path(path:)`. Base URL verified in `docker-compose.dev.yml` web service port mapping `3000:3000` → `http://localhost:3000`. |
 
 No source, test, route, or configuration files may be changed. This is a report-only task.
 
@@ -173,7 +171,7 @@ No source, test, route, or configuration files may be changed. This is a report-
 
 - **Step 0:** Move the task file per the copied Agent Dispatch Interface; update status only after moving and verify only one copy exists.
 - **Step 1:** Save the Status Synthesis Report template above as required by the project workflow before verification.
-- **Step 2:** Identify the configured running application base URL and how to construct requests to the existing `catalog_image` endpoint without changing routes or helpers. If the correct target cannot be established from the environment, stop and report `[FILL IN: application base URL and request construction for catalog_image]`; do not invent a URL or command.
+- **Step 2:** Identify the configured running application base URL and construct requests to `catalog_image` using the known path pattern `/admin/catalog/image/*path` (URL helper: `admin_catalog_image_path(path:)`). The compose file (`docker-compose.dev.yml`, web service) maps port 3000:3000, so the base URL is `http://localhost:3000`. If the app is not running on that URL, stop and report the actual base URL rather than inventing one.
 - **Step 3:** Make one valid-image request and one bypass-path request. Record the exact raw request target as sent, response status, relevant response headers (including content type for the valid image), and a concise response observation. Use a traversal form grounded in the PARENT's verified path-building table, such as `images/catalog/../../../etc/passwd`, for the bypass request.
 - **Step 4:** Exercise a percent-encoded traversal target containing `%2e%2e` (mixed-case encoding if practical) and determine, from available request/controller evidence, whether the encoded form reaches the controller unchanged, is transformed, or is rejected upstream. Separately observe whether `/admin` requires authentication. Do not change auth or routing to make these checks easier.
 - **Step 5:** Save a Markdown report under `projects/galaxy_game/summaries/` with each observation, exact request/response evidence, the distinction between verified and unverified facts, and any limitations. If any live check cannot be performed, state it explicitly and leave the corresponding acceptance criterion unmet.
@@ -189,7 +187,7 @@ No source, test, route, or configuration files may be changed. This is a report-
 
 ## Stop Conditions — escalate to user immediately if:
 
-- The running application's base URL or safe request construction cannot be established from the available environment; stop and report `[FILL IN: application base URL and request construction for catalog_image]`.
+- The running application's base URL cannot be established from the available environment; stop and report the actual base URL. Request construction is known: `admin_catalog_image_path(path: '...')` → `/admin/catalog/image/...`. (Verified in `docker-compose.dev.yml`: web service maps port 3000:3000 → `http://localhost:3000`.)
 - `/admin` appears not to require authentication; record the observed evidence and stop. Do not fix authentication.
 - A requested check would require changing a route, URL helper, authentication, response shape, app configuration, source code, tests, or canonical-image selection.
 - The application is unavailable, a valid image cannot be identified safely, or the bypass request cannot be made; report the limitation without substituting assumptions for live evidence.
