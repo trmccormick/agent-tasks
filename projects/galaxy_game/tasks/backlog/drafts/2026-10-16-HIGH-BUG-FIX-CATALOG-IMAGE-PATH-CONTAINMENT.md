@@ -77,8 +77,8 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 
 ## Prerequisites — READ FIRST
 
-- Read `GUARDRAILS.md` and `projects/galaxy_game/SESSION_GUIDANCE.md`.
-- Code under change was added in galaxyGame commit `d7894ca3` (on origin/main). [FILL IN: confirm still the latest commit touching these two files.]
+- Read `rules/GUARDRAILS.md` and `projects/galaxy_game/SESSION_GUIDANCE.md`.
+- Code under change was added in galaxyGame commit `d7894ca3` (on origin/main). CONFIRMED: `git log -1 --format=%h -- galaxy_game/app/controllers/admin/catalog_controller.rb` → `d7894ca3`; `git log -1 --format=%h -- galaxy_game/spec/controllers/admin/catalog_controller_spec.rb` → `d7894ca3`. Both return the same commit.
 - Do NOT start from the catalog-index image-resolution task or C3b. This task is a prerequisite for the first and is independent of the second.
 
 ## Context
@@ -94,14 +94,14 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 
 `File.exist?`/`send_file` resolve `..` at the filesystem level, so the second row would be served from outside the catalog directory. The existing traversal test (`rejects path traversal attempts`, spec line 208 on origin) only sends the first row, so the suite passes while the bypass exists. A symlink inside the catalog root pointing outside it would also pass the string check (reported by the 2026-10-15 catalog-index pre-implementation report, not independently re-verified).
 
-**Supersedes a claim on record:** that pre-implementation report (in `projects/galaxy_game/summaries/`, [FILL IN exact filename], committed in `7c07377`) says `Pathname.join` "normalizes `..` sequences, blocking simple `../../../etc/passwd` attacks". The table above shows that is true only for a leading `..`; embedded `..` segments are kept. Do not edit that report. This task supersedes that line.
+**Supersedes a claim on record:** that pre-implementation report (in `projects/galaxy_game/summaries/`, `2026-10-15-PREIMPL-CATALOG-INDEX-IMAGE-RESOLUTION.md`, committed in `7c07377`) says `Pathname.join` "normalizes `..` sequences, blocking simple `../../../etc/passwd` attacks". The table above shows that is true only for a leading `..`; embedded `..` segments are kept. Do not edit that report. This task supersedes that line.
 
 ## Critical Information for This Task
 
 1. **One objective.** Serve only regular files whose resolved real path is inside the catalog root's real path. Nothing else.
 2. **Do not change** the route, the URL helper `admin/catalog_image_path(path:)`, the JSON/response shape, or which image is selected for any asset. Canonical-render selection is an unresolved human decision (C3b / catalog-index lane). Do not choose or touch it.
 3. **Resolve both sides.** Compare real path of the requested file with the real path of the catalog root, using a trailing separator (so `catalog-private` does not match `catalog`). The root itself may sit under symlinks.
-4. **Rejects behave like the existing rejection.** Match the status the current traversal test expects. [FILL IN: confirm 404 vs other from the current spec/controller.]
+4. **Rejects behave like the existing rejection.** Match the status the current traversal test expects. CONFIRMED: spec line 208 expects `have_http_status(:not_found)` (404). Controller returns `head :not_found`.
 5. **Tests must not write into the real data directory.** The current spec hardcodes `/home/galaxy_game/app/data/images/catalog` and creates a zero-byte PNG there if missing. New tests use a temp directory / stubbed root, and a real symlink created in that temp directory.
 6. **Green tests are not live behavior.** Also confirm with an actual request (see AC5). Not yet verified: whether routing or the web server normalizes `..` / `%2e%2e` before the controller, and whether `/admin` requires authentication. Record what you observe; do not expand scope to fix auth.
 7. Git commands on host only. Scratch files and logs go in `temp-files/`, never the repo root.
@@ -158,7 +158,7 @@ Save the report as an MD file in `projects/galaxy_game/summaries/` BEFORE any wo
 |---|---|---|
 | `galaxy_game/app/controllers/admin/catalog_controller.rb` | `catalog_image` containment check | yes, origin read 2026-10-16 |
 | `galaxy_game/spec/controllers/admin/catalog_controller_spec.rb` | existing traversal test at line 208; add regression tests | yes, origin read 2026-10-16 |
-| [FILL IN: any helper/shared module the fix needs] | only if unavoidable; otherwise stop | no |
+| No helper or shared module needed | controller is standalone; uses only Rails built-ins (`File.exist?`, `send_file`, `start_with?`) | yes, verified by reading controller source |
 
 Changing any file beyond these is a Stop Condition.
 
@@ -170,7 +170,9 @@ Outline only; the implementation agent confirms exact code and commands.
 - **Step 1:** write the synthesis report (above).
 - **Step 2 (red first):** add tests for (a) embedded `..`, (b) sibling-prefix directory, (c) symlink inside the root pointing outside, (d) a valid catalog image still served. Run the spec; paste output showing (a)-(c) fail on current code.
 - **Step 3:** change the containment check in `catalog_image` to compare real paths with a trailing separator and require a regular file.
-- **Step 4:** run the controller spec in isolation: [FILL IN: exact docker/rspec command per project conventions]. Paste output.
+- **Step 4:** run the controller spec in isolation (per SESSION_GUIDANCE.md RSpec entry: container working directory is `/home/galaxy_game`; use the log-redirect form and inspect with `tail -50`):
+  `docker exec web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/controllers/admin/catalog_controller_spec.rb > /home/galaxy_game/log/rspec_catalog_controller_$(date +%s).log 2>&1'`
+  Then: `docker exec web tail -50 /home/galaxy_game/log/rspec_catalog_controller_<timestamp>.log`. Paste output.
 - **Step 5:** live check (AC5). Paste the exact requests and responses.
 - **Step 6:** stage explicit paths only and report `git diff --stat`. Do not push.
 
@@ -198,14 +200,14 @@ Outline only; the implementation agent confirms exact code and commands.
 
 ## Commit Instructions
 
-Run git commands on **host only**. The agent stages explicit paths (never `git add .` or `git commit -a`) and reports `git diff --cached --stat`; the human commits and pushes. [FILL IN: confirm against GUARDRAILS Rule 26.]
+Run git commands on **host only**. The agent stages explicit paths (never `git add .` or `git commit -a`) and reports `git diff --cached --stat`. Per GUARDRAILS.md Rule 26 — "Agents may `git add` (stage) changes. Agents may NOT run `git commit` or `git push` without an explicit human approval message in the current chat session" — present the diff or commit message and STOP; wait for explicit approval before running either command.
 
 **Task file move on completion:** `git mv projects/galaxy_game/tasks/active/2026-10-16-HIGH-BUG-FIX-CATALOG-IMAGE-PATH-CONTAINMENT.md projects/galaxy_game/tasks/completed/2026-10/2026-10-16-HIGH-BUG-FIX-CATALOG-IMAGE-PATH-CONTAINMENT.md`
 
 ## Dependencies
 
 - Blocked by: none.
-- Blocks: the safety question in Phase 1 of `2026-10-13-HIGH-BUGFIX-CATALOG-INDEX-IMAGE-RESOLUTION` (its scope excludes the controller). [FILL IN: confirm after reading that task.]
+- Blocks: this task is required before Phase 2 of `2026-10-13-HIGH-BUGFIX-CATALOG-INDEX-IMAGE-RESOLUTION`. (that task's scope excludes the controller) It is the separate, narrowly scoped hardening task that item 4 of that task anticipates "if approved" (approval is a human decision, not yet given). CONFIRMED: lines 48-50 state "The existing `start_with?` containment check does not establish symlink handling, regular-file validation, or sufficient canonical-root containment. A separate serving-security assessment and, if approved, narrowly scoped hardening task is required." Lines 57-62 list "Catalog image-serving containment, traversal/symlink protection, regular-file validation, and URL behavior are verified or separately approved for hardening" as required before Phase 2.
 - Related, not blocking: C3b (`2026-10-11-MEDIUM-BUG-FIX-C3B-RH400-CATALOG-IMAGE-URL`) carries a short note about this finding.
 
 ## Completion Report
