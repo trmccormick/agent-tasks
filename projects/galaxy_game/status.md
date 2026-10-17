@@ -1,14 +1,22 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-10-11 — C3 RH-400 catalog image serving COMPLETE: Implemented fallback when AssetRegistry fails, added controller image serving action, verified end-to-end path resolution works, all tests passing (21/21)
+**Last Updated:** 2026-10-17 — origin/main at `98d200e` (request construction / base URL fix in C verification draft); status.md curation: header + snapshot + stale In Flight flags
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
+
+### Current Snapshot (2026-10-17)
+- **agent-tasks**: clean; `main` == `origin/main` at `98d200e`
+- **galaxyGame**: clean; `main` == `origin/main`; no divergence
+- **Active tasks**: 1 file (`active/asset-ui/2026-09-06-HIGH-FEATURE-ASSET-GENERATION-STANDALONE-EXECUTION.md`)
+- **Drafts**: 4 files under `tasks/drafts/` (catalog_image containment parent + A/B/C split, all `status: backlog`, `resume: false`)
+- **Untracked**: 5 items from paused sessions (left untouched per PLANNING_AGENT_CLOSEOUT.md Rule 6)
 
 ---
 
 ## 🔍 In Flight — Open Sessions & Staged Tasks
 
 ### Inventory `add_item` Diagnostic (2026-09-27) — IN PROGRESS
+> **⚠️ NEEDS RE-VERIFY** — last-known 2026-09-27, not re-verified 2026-10-17. May be stale; confirm relevance before next session.
 - **Issue**: `settlement.inventory.add_item('binding_agent', 50, player)` returns `false`, persists nothing. Spec context "with sufficient materials" reports `binding_agent (need 10.0, have 0.0)` even though `before` block calls `add_item`.
 - **Findings so far**:
   - Working tree confirmed clean for `production_service_spec.rb`
@@ -21,8 +29,12 @@
 - **Debug script**: Created at `galaxy_game/tmp/debug_inv.rb` (mounted to container)
 - **Status**: Script ready to run; awaiting clean execution to get full diagnostic output
 
+### Active Task Note — ChatGPT Lane
+- `2026-09-06-HIGH-FEATURE-ASSET-GENERATION-STANDALONE-EXECUTION.md` (in `active/asset-ui/`): no session owner, checklist incomplete (2/3 boxes unchecked), last updated 2026-09-06. **ChatGPT lane only** — do NOT move any task files under `backlog/asset-ui/` or `active/asset-ui/`.
+
 ---
 ## 🔍 Read-Only RSpec Investigation (2026-10-01) — IN PROGRESS
+> **⚠️ NEEDS RE-VERIFY** — last-known 2026-10-01, not re-verified 2026-10-17. Baseline data is historical evidence only; confirm relevance before next session.
 
 **Scope**: Read-only investigation of full-suite failures. No source/spec/data edits, no git operations.
 
@@ -813,6 +825,53 @@ This section preserves session records, known issues, and completed work from pr
 **Grok needs to incorporate**: Material sourcing convention + acquisition logic into his Foothold Planner work. The multi-system coordination task is deferred but should be reviewed when footholds are established.
 
 ---
+
+## 📝 Folded Early-Oct Session Logs (through 2026-10-08)
+
+**These entries were folded into this summary on 2026-10-17. Originals preserved below.**
+
+### Summary of shipped work (2026-10-05 through 2026-10-08)
+- **TransitEngine Topology Containment** (2026-10-05/10): Final revision pass — expanded tests 10→17, rewrote AC to 21 items with neutral topology-proxy terminology, removed `direct-solar` language, fixed duplicate header. Task remains `status: backlog`, `dispatch_ready: false`. Committed to galaxyGame as `129b1a20`.
+- **C4 Visual Profile Resolution** (2026-10-08): Implemented `resolve_visual_profile` + `has_visual_profile?` in AssetRegistry, added 13 focused tests (72/72 passing). Task moved to `completed/2026-10/`. Committed to galaxyGame as `4d1ee80b`, agent-tasks as `38f4b77`.
+- **CURRENT_STATUS.md banner** (2026-10-13, work from 10-13): Added warning banner pointing to agent-tasks status. Committed as `4d99a1be`.
+- **docs/README.md status pointer** (2026-10-13): Replaced stale Phase 3 section with development status pointer. Committed as `6e67f84e`.
+- **SESSION_GUIDANCE RSpec log-file redirect** (2026-10-09): Updated Paths table to require log-file redirect for RSpec output. Committed as `abb2ab7`.
+
+### Original folded entries
+
+---
+
+## 📝 Session Log — 2026-10-08 (C4: Visual Profile Resolution)
+
+- **Changed:** 
+  - `galaxy_game/app/services/asset_registry.rb` — added `resolve_visual_profile(asset_id)` and `has_visual_profile?(asset_id)` methods — VERIFIED by `git log 4d1ee80b --stat`
+  - `galaxy_game/spec/services/asset_registry_spec.rb` — added 13 focused C4 tests (Visual Profile Resolution boundary) — VERIFIED by `git log 4d1ee80b --stat`
+  - `projects/galaxy_game/tasks/completed/2026-10/2026-08-31-MEDIUM-FEATURE-ASSET-UI-C4-implement-component-catalog-case.md` — task file moved to completed/ with status: completed — VERIFIED by `git ls-files` and `git log 38f4b77 --stat`
+  - `projects/galaxy_game/summaries/2026-10-08-FEATURE-ASSET-UI-C4-VISUAL-PROFILE-RESOLUTION.md` — synthesis report created — VERIFIED by `git ls-files` and `git log 38f4b77 --stat`
+- **Committed:** 
+  - galaxyGame: `4d1ee80b` (Visual Profile resolution boundary implementation + 72/72 tests passing) — pushed to origin/main
+  - agent-tasks: `38f4b77` (C4 task moved to completed/ + synthesis report) — already on origin/main
+- **Not committed:** none
+- **Stop condition:** none (C4 complete and verified; work is DONE and committed)
+
+---
+
+## 📝 Session Log — 2026-10-06 (Verification: Transit Engine Topology Containment Specs & Rake)
+
+- **Changed:** 
+  - `projects/galaxy_game/summaries/2026-10-06-IMPL-STATE-FINAL.txt` (state capture: 3 modified files, 2 untracked) — created Oct 10 21:27
+  - `projects/galaxy_game/summaries/2026-10-06-SPECS-FINAL.txt` (51 examples, 45 passed, 6 pre-existing failures) — created Oct 10 21:27
+  - `projects/galaxy_game/summaries/2026-10-06-BASELINE-phase_timing-AFTER.txt` (rake output: Earth→Luna 0d→7d shift) — created Oct 10 21:27
+  - `projects/galaxy_game/summaries/2026-10-06-BASELINE-DIFF.txt` (diff: BEFORE vs AFTER rake runs) — created Oct 10 21:27
+  - `projects/galaxy_game/summaries/2026-10-06-GIT-DIFF-FINAL.txt` (full git diff of code changes) — created Oct 10 21:27
+  - `projects/galaxy_game/summaries/2026-10-06-IMPL-CHANGES-FINAL.md` (untracked file inventory) — created Oct 10 21:27
+  - `projects/galaxy_game/summaries/2026-10-06-CLOSING-TRANSIT-ENGINE-TOPOLOGY-CONTAINMENT.md` (verification report) — created Oct 10 21:27
+- **Committed:** none (read-only verification session, summary files left untracked for next session review)
+- **Not committed:** 7 summary files (documentation only; findings in CLOSING document for planning agent review)
+- **Stop condition:** none (verification complete, documentation ready for next session)
+
+---
+
 ## 🔍 Today's Session (2026-10-05) — TransitEngine Topology Task Final Revisions
 
 ### TransitEngine Topology Containment — Final Revision Passes ✅
@@ -924,19 +983,4 @@ This section preserves session records, known issues, and completed work from pr
   - `reconciliation-summary-2026-10-11.md` (paused session dated 2026-10-11)
   - `temp-files/` directory (unclear ownership, left as-is)
 - **Stop condition:** none (session closeout complete, repositories synchronized, uncommitted files belong to other sessions)
-
----
-
-## 📝 Session Log — 2026-10-08 (C4: Visual Profile Resolution)
-
-- **Changed:** 
-  - `galaxy_game/app/services/asset_registry.rb` — added `resolve_visual_profile(asset_id)` and `has_visual_profile?(asset_id)` methods — VERIFIED by `git log 4d1ee80b --stat`
-  - `galaxy_game/spec/services/asset_registry_spec.rb` — added 13 focused C4 tests (Visual Profile Resolution boundary) — VERIFIED by `git log 4d1ee80b --stat`
-  - `projects/galaxy_game/tasks/completed/2026-10/2026-08-31-MEDIUM-FEATURE-ASSET-UI-C4-implement-component-catalog-case.md` — task file moved to completed/ with status: completed — VERIFIED by `git ls-files` and `git log 38f4b77 --stat`
-  - `projects/galaxy_game/summaries/2026-10-08-FEATURE-ASSET-UI-C4-VISUAL-PROFILE-RESOLUTION.md` — synthesis report created — VERIFIED by `git ls-files` and `git log 38f4b77 --stat`
-- **Committed:** 
-  - galaxyGame: `4d1ee80b` (Visual Profile resolution boundary implementation + 72/72 tests passing) — pushed to origin/main
-  - agent-tasks: `38f4b77` (C4 task moved to completed/ + synthesis report) — already on origin/main
-- **Not committed:** none
-- **Stop condition:** none (C4 complete and verified; work is DONE and committed)
 
