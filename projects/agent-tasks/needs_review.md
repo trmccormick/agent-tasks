@@ -52,6 +52,22 @@ Implementation agents: add an entry here instead of just noting something in sta
 **Priority**: LOW — not blocking, improves git log readability
 **Status**: OPEN. Next action: run `projects/wvulibraries_knapsack/tasks/backlog/2026-10-13-LOW-DOCS-CONTRIBUTING-COMMIT-MESSAGES.md` (drafted, not dispatched). Mark RESOLVED when its diff is reviewed and committed.
 
+### 2026-10-18 — TASK_TEMPLATE.md synthesis section contradictions (catalog-image containment review)
+**What happened**: During catalog-image containment task draft review, four internal contradictions were found in `TASK_TEMPLATE.md` that affect every task file using it:
+
+1. **Synthesis output conflict**: Lines 241 and 280 say to "post synthesis in chat" but lines 123 and 243 say "never paste synthesis in chat."
+2. **Step ordering conflict**: Synthesis section (line 241) says "before any commands" while Step 0 (lines 102/107) requires lifecycle commands first — impossible to satisfy both.
+3. **Path inconsistency**: the `find` verification command uses `agent-tasks/projects/...` (relative to the clone parent) while the `git mv` commands use `projects/...` (relative to the clone root); intended working directory is unverified.
+4. **Body ordering conflict**: Body lists readiness checklist before Dispatch Interface, but header comments say Dispatch goes first.
+
+**Observed in**: galaxy_game project, catalog-image containment task drafts (A/B/C) review session
+**What I already checked**: VERIFIED against current `TASK_TEMPLATE.md` — all four contradictions confirmed on disk. Affects every task file that follows this template.
+**What needs a second opinion**: (1) What is the correct synthesis output destination — chat or file? (2) Should Step 0 run before or after synthesis reading? (3) Should paths be absolute to clone root or relative? (4) Which ordering is intended — checklist first or dispatch first? **Recommendation**: Schedule a dedicated Claude session for agent-tasks repo to fix the template holistically rather than patching individual task files.
+**Priority**: HIGH — every drafted task inherits these contradictions
+**Status**: OPEN. Next action: review with a Claude session for the agent-tasks repo; fix at template level, then re-substitute blocks in affected tasks.
+
+---
+
 ### 2026-10-13 — Artifact categorization unclear
 **What happened**: SESSION_CLOSEOUT.md says "never delete without human approval" for everything. But intermediate synthesis report drafts, debugging notes, and working handoff versions clutter the repo. Unclear what stays vs gets archived.
 **Observed in**: agent-tasks project, workflow observation
