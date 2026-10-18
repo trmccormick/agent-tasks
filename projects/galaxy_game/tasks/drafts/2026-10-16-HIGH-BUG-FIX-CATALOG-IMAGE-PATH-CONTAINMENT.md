@@ -45,10 +45,10 @@ Agents receive this exact text as the startup contract. Every word matters.
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/asset-ui/2026-10-16-HIGH-BUG-FIX-CATALOG-IMAGE-PATH-CONTAINMENT.md
+Task: <agent-tasks>/projects/galaxy_game/tasks/drafts/2026-10-16-HIGH-BUG-FIX-CATALOG-IMAGE-PATH-CONTAINMENT.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/asset-ui/2026-10-16-HIGH-BUG-FIX-CATALOG-IMAGE-PATH-CONTAINMENT.md \
+  git mv projects/galaxy_game/tasks/drafts/2026-10-16-HIGH-BUG-FIX-CATALOG-IMAGE-PATH-CONTAINMENT.md \
          projects/galaxy_game/tasks/active/2026-10-16-HIGH-BUG-FIX-CATALOG-IMAGE-PATH-CONTAINMENT.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.

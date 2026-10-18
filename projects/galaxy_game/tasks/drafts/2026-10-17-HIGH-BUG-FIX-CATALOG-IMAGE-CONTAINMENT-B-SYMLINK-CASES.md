@@ -22,10 +22,10 @@ Agents receive this exact text as the startup contract. Every word matters.
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/drafts/2026-10-17-HIGH-BUG-FIX-CATALOG-IMAGE-CONTAINMENT-B-SYMLINK-CASES.md
+Task: <agent-tasks>/projects/galaxy_game/tasks/drafts/2026-10-17-HIGH-BUG-FIX-CATALOG-IMAGE-CONTAINMENT-B-SYMLINK-CASES.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/drafts/2026-10-17-HIGH-BUG-FIX-CATALOG-IMAGE-CONTAINMENT-B-SYMLINK-CASES.md \
+  git mv projects/galaxy_game/tasks/drafts/2026-10-17-HIGH-BUG-FIX-CATALOG-IMAGE-CONTAINMENT-B-SYMLINK-CASES.md \
          projects/galaxy_game/tasks/active/2026-10-17-HIGH-BUG-FIX-CATALOG-IMAGE-CONTAINMENT-B-SYMLINK-CASES.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
