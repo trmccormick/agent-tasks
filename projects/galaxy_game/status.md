@@ -984,3 +984,23 @@ This section preserves session records, known issues, and completed work from pr
   - `temp-files/` directory (unclear ownership, left as-is)
 - **Stop condition:** none (session closeout complete, repositories synchronized, uncommitted files belong to other sessions)
 
+---
+
+## 📝 Session Log — 2026-10-18 (Read-only task file edit: C3b known issue)
+
+- **Changed:** `projects/galaxy_game/tasks/backlog/asset-ui/2026-10-11-MEDIUM-BUG-FIX-C3B-RH400-CATALOG-IMAGE-URL.md` — inserted "Known issue found in review of d7894ca3" subsection with real file paths (catalog_controller.rb line 39, catalog_controller_spec.rb line 208) before `## Files Involved`.
+- **Committed:** none (human commits per rules)
+- **Not committed:** the task file edit above; diff written to `~/c3b-note-diff.md` for human review (`git diff -- projects/galaxy_game/tasks/backlog/asset-ui/2026-10-11-MEDIUM-BUG-FIX-C3B-RH400-CATALOG-IMAGE-URL.md > ~/c3b-note-diff.md 2>&1 && git status --short >> ~/c3b-note-diff.md 2>&1`)
+- **Stop condition:** none (read-only edit complete; human to review diff and commit)
+
+
+---
+
+## 📝 Session Log — 2026-10-18 (Phase 1 Research: Catalog Index Image Resolution)
+
+- **Changed:** 
+  - `projects/galaxy_game/tasks/backlog/asset-ui/2026-10-13-HIGH-BUGFIX-CATALOG-INDEX-IMAGE-RESOLUTION.md` — set `resume: true` (task returned to backlog with unresolved blockers)
+  - `projects/galaxy_game/summaries/2026-10-15-PREIMPL-CATALOG-INDEX-IMAGE-RESOLUTION.md` — created Phase 1 synthesis report documenting all investigation findings
+- **Committed:** none (human commits per rules)
+- **Not committed:** the two files above; diff written to `~/catalog-phase1-closeout-diff.md` for human review (`git diff -- projects/galaxy_game/tasks/backlog/asset-ui/2026-10-13-HIGH-BUGFIX-CATALOG-INDEX-IMAGE-RESOLUTION.md projects/galaxy_game/summaries/2026-10-15-PREIMPL-CATALOG-INDEX-IMAGE-RESOLUTION.md > ~/catalog-phase1-closeout-diff.md 2>&1 && git status --short >> ~/catalog-phase1-closeout-diff.md 2>&1`)
+- **Stop condition:** INCOMPLETE — Phase 1 synthesis complete with 4 unresolved prerequisites requiring human review (identity mapping blocker, primary-candidate selection gap, safe serving gap, runtime metadata scope). Task returned to backlog with `resume: true`. Human must resolve blockers before dispatching Phase 2.
