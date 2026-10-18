@@ -60,5 +60,7 @@ G. Hashes: `git branch --contains ac025ec` and `git branch --contains e313f91`. 
 
 H. Tracy only, no laptop (no agent has VM access): is `demo-hykudev.lib.wvu.edu` a tenant on the hykudev VM and not a separate VM? Clears the flag at line 276.
 
+I. Submodule pin: `git submodule status hyrax-webapp` and `grep -n VERSION hyrax-webapp/config/initializers/version.rb`. Record the commit hash and the VERSION value. Tracy reports the upgrade branch was cut from main with the submodule updated, and that branch runs on hykudev (REPORTED, 2026-10-18). Public samvera/hyku 7.2-stable reads 7.2.0 (REPORTED, 2026-10-18), but #3399 was closed unmerged on 2026-10-15, so this pin may predate whatever put 7.2.0 there. This shows whether the build on hykudev has the 7.2.0 constant, which the notes assumed #3399 would supply.
+
 Results go back to the web review agent, who drafts the SESSION_GUIDANCE.md edits one at a time (guard check, diff, then Tracy stages and commits).
 **Status**: OPEN — owner: Tracy (M4 laptop; the Intel MacBook if used)
