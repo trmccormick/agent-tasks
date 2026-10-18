@@ -95,7 +95,7 @@ The core containment fix is assigned to Task A, `2026-10-17-HIGH-BUG-FIX-CATALOG
 
 ## Critical Information for This Task
 
-1. **Depends on Task A:** Do not reimplement the core real-path fix. First verify Task A's approved/landed behavior in the current working tree and add the missing edge-case tests.
+1. **Depends on Task A:** Before adding or changing code, verify that Task A's core real-path containment fix is present in the current working tree and that its state is clear. Confirm the three symlink cases below against that behavior. If Task A is not present or its state is unclear, stop and ask the human to resolve task ordering; do not reimplement Task A.
 2. **Outside-root symlink:** Create a real symlink inside a temporary catalog root that points to a regular file outside that root; it must be rejected with 404.
 3. **Dangling symlink:** A symlink whose target does not exist must be rejected with 404; path-resolution failure must not escape as an exception or 500.
 4. **Symlinked catalog root:** If the configured catalog root path itself resolves through a symlink, a valid regular file beneath that resolved root must still be served. Containment is relative to the resolved root, not the spelling of the configured path.
@@ -161,9 +161,9 @@ No other source or test files may be changed. Do not add a helper or shared modu
 ## Implementation Steps
 
 - **Step 0:** Move the task file per the copied Agent Dispatch Interface; update status only after moving and verify only one copy exists.
-- **Step 1:** Save the Status Synthesis Report template above as required by the project workflow before implementation work.
-- **Step 2 (red first):** Add tests using temporary paths for (a) an in-root symlink to a regular file outside the root, (b) a dangling symlink, and (c) a valid regular file when the configured catalog root is reached through a symlink. Show which tests fail before the symlink-case change, where applicable.
-- **Step 3:** If a test reveals a gap after Task A, make only the narrowly necessary change in `catalog_image` to satisfy the three cases while preserving the resolved-root boundary and 404 behavior. If the behavior already satisfies them, add tests only.
+- **Step 1:** Save the Status Synthesis Report as required by the project workflow before implementation work.
+- **Step 2 — Confirm prerequisite and establish baseline:** Verify Task A's core real-path containment behavior is present and its state is clear before changing code. Add tests using temporary paths for (a) an in-root symlink to a regular file outside the root, (b) a dangling symlink, and (c) a valid regular file when the configured catalog root is reached through a symlink. Run these focused tests before making any Task B controller adjustment. Record each case as already passing or failing. A failing case is evidence of a gap only if the test reaches the intended controller behavior; do not manufacture a failure or alter a test merely to obtain red output. If a case fails, preserve the relevant failure output and identify the specific gap it demonstrates.
+- **Step 3 — Make only a necessary adjustment:** If a test demonstrates a gap in Task A's behavior, make only the narrowly necessary change in `catalog_image` to satisfy the three cases while preserving the resolved-root boundary and 404 behavior. If the behavior already satisfies all three cases, add tests only.
 - **Step 4:** Run the controller spec in isolation using the **VERIFIED FROM PARENT** command below (container working directory is `/home/galaxy_game`; inspect the generated log with `tail -50`):
 
   ```bash
@@ -171,15 +171,16 @@ No other source or test files may be changed. Do not add a helper or shared modu
   ```
 
   Then run `docker exec web tail -50 /home/galaxy_game/log/rspec_catalog_controller_<timestamp>.log`, substituting the actual timestamp. Paste output; do not claim unrun specs passed.
-- **Step 5:** Report exact changed paths and `git diff --stat`. Do not push or commit without explicit human approval.
+- **Step 5 — Report and preserve resume state:** Report exact changed paths and `git diff --stat`. Update the existing Progress / Resume block with the three cases' latest outcomes (already passing, exposed a gap, or not yet run), the relevant test evidence, and the next remaining action. Do not push or commit without explicit human approval.
 
 ## Acceptance Criteria
 
 - [ ] **AC1 — Outside-root symlink:** An in-root symlink targeting a regular file outside the resolved catalog root is rejected with 404 and no unhandled exception.
 - [ ] **AC2 — Dangling symlink:** A dangling symlink is rejected with 404; path resolution does not produce an unhandled exception or 500.
 - [ ] **AC3 — Symlinked root remains usable:** A valid regular file beneath a catalog root whose configured path is reached through a symlink is served with an image content type.
-- [ ] **AC4 — Test isolation and suite:** All symlink fixtures are created only in a temporary directory/stubbed root. `catalog_controller_spec.rb` isolation run has 0 failures; paste output.
-- [ ] **AC5 — Scope:** Only `galaxy_game/app/controllers/admin/catalog_controller.rb` and `galaxy_game/spec/controllers/admin/catalog_controller_spec.rb` changed. No route, URL helper, response-shape, authentication, URL behavior, or canonical-render selection changes were made.
+- [ ] **AC4 — Fixture isolation:** All symlink fixtures are created only in a temporary directory/stubbed root; no fixtures are written into `/home/galaxy_game/app/data/images/catalog`.
+- [ ] **AC5 — Test result:** The isolated `catalog_controller_spec.rb` run has 0 failures; paste the relevant output and do not claim unrun specs passed.
+- [ ] **AC6 — Scope:** Only `galaxy_game/app/controllers/admin/catalog_controller.rb` and `galaxy_game/spec/controllers/admin/catalog_controller_spec.rb` changed. No route, URL helper, response-shape, authentication, URL behavior, or canonical-render selection changes were made.
 
 ## Stop Conditions — escalate to user immediately if:
 
