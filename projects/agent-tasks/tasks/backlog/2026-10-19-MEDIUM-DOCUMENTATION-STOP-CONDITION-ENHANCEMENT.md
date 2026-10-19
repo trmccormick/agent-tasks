@@ -321,20 +321,7 @@ git push
 
 ---
 
-### Step 7 — Push Changes
-
-```bash
-git push
-```
-
-Verify all changes are pushed to origin/main:
-```bash
-git log origin/main -1 --oneline
-```
-
----
-
-### Step 7 — Move Task to Completed
+### Step 6 — Move Task to Completed
 
 ```bash
 git mv projects/agent-tasks/tasks/active/2026-10-19-MEDIUM-DOCUMENTATION-STOP-CONDITION-ENHANCEMENT.md \

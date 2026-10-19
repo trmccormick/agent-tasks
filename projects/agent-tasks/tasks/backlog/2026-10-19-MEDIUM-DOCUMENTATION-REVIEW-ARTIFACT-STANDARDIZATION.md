@@ -346,7 +346,7 @@ git log origin/main -1 --oneline
 
 ---
 
-### Step 8 — Move Task to Completed
+### Step 7 — Move Task to Completed
 
 ```bash
 git mv projects/agent-tasks/tasks/active/2026-10-19-MEDIUM-DOCUMENTATION-REVIEW-ARTIFACT-STANDARDIZATION.md \
