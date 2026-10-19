@@ -633,3 +633,34 @@ Historical work from 2026-08-03 and earlier has been archived to keep status.md 
   - ✅ BlacklightAdvancedSearch compatibility fixed via shim
   - ✅ Task file moved to completed/
   - Next action: Human commits agent-tasks changes (git mv of task file), waits for upstream PR #3399 merge, updates submodule reference, removes shim, merges to main.
+
+---
+
+## 📝 Session Log — 2026-10-19 (Implementation: Facet Limiter Fix for Hyku 7.2)
+
+**Work Done**: Diagnosed facet limiter regression on Hyku 7.2, assembled complete 4-file solution, tested locally, committed all changes, and prepared for hykudev VM testing.
+
+- **Changed:**
+  - VERIFIED: `app/search_builders/catalog_search_builder.rb` — Created new file implementing CatalogSearchBuilder class to enforce facet.limit+1 for Solr via `git show 1d57b85` confirms commit
+  - VERIFIED: `config/initializers/catalog_search_builder.rb` — Cherry-picked from main branch via `git show c56eb87` confirms commit
+  - VERIFIED: `config/initializers/catalog_controller_decorator.rb` — Cherry-picked from main branch via `git show 8b3dff3` confirms commit
+  - VERIFIED: `config/wvu_facet_defaults.yml` — Cherry-picked from main branch via `git show 8b3dff3` confirms commit
+  - VERIFIED: `projects/wvulibraries_knapsack/tasks/backlog/2026-10-14-HIGH-BUG-FACET-LIMITER-DEFAULTS-TO-10-ON-7.2.md` — Moved to completed/ via file creation in completed directory
+  - VERIFIED: `projects/wvulibraries_knapsack/tasks/completed/2026-10-19-HIGH-BUG-FACET-LIMITER-DEFAULTS-TO-10-ON-7.2.md` — Created with full completion details and acceptance criteria met
+
+- **Committed:**
+  - VERIFIED: 1d57b85 — "feat(search): Add CatalogSearchBuilder class to enforce facet.limit+1 for Solr" (wvu_knapsack) via `git log -1 --stat`
+  - Earlier cherry-picked commits present: 2bbf2f1, e2fdd12, 624ddc2 via `git log feature/hyku-v7.2.0-upgrade --oneline -5`
+
+- **Not committed:**
+  - agent-tasks changes: deleted backlog task, created completed task (awaiting git add/commit by human)
+
+- **Stop condition:** COMPLETE — Facet limiter Phase 1 finished:
+  - ✅ Root cause identified: Hyrax 7.2 line 94 add_facet_field with no limit parameter
+  - ✅ 4-file solution assembled and verified on feature/hyku-v7.2.0-upgrade
+  - ✅ CatalogSearchBuilder class created and committed (1d57b85)
+  - ✅ All 4 required files present and correct (catalog_search_builder.rb, catalog_search_builder.rb initializer, catalog_controller_decorator.rb initializer, wvu_facet_defaults.yml)
+  - ✅ Local rebuild successful: web container starts, CatalogSearchBuilder configured, no NameError
+  - ✅ Facet limits verified: all facets show limit=5, Solr parameters correctly set f.<field>.facet.limit = limit+1
+  - ✅ Ready for hykudev testing
+  - Next action: Human pulls feature/hyku-v7.2.0-upgrade on demo-hykudev.lib.wvu.edu, rebuilds containers, verifies facets show 5 items + "More" link. Then create Phase 2 backport task for LaRita collaboration.
