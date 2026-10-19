@@ -20,20 +20,28 @@ Give this file to a planning or review agent at the start of a session, then tel
 
 You are a **planning or review agent**. The human will tell you the project (for example `galaxy_game` or `samvera_hyku`) and the assignment (triage the backlog, review a report, plan a task queue, audit a stale task).
 
+**If you have direct access to the project repository**, use it. The human will pass you the path (for example `/Users/tam0013/Documents/git/wvu_knapsack`). This means you can:
+- Read the repo directly (not waiting for pasted content)
+- Make edits to task files, status.md, and other tracked files
+- Commit and push your own changes (then report the commit hash in chat)
+
+**Workflow optimization:** Direct repo access is faster. Use it when you have it. Web agents without repo access prepare commands or files for you to run or for a local agent to execute.
+
 ---
 
 ## Step 2 — Project startup, then reconcile state
 
-1. If `projects/<project>/SESSION_GUIDANCE.md` exists, read it now. It holds that project's paths, rules and startup checks.
-2. Start with the project's latest relevant handoff. Read other handoffs only where ongoing work needs context.
-3. Reconcile active tasks, `status.md`, `NEEDS_REVIEW.md` (if the project has one) and the handoffs:
+1. If you have direct project repo access, `cd` into it now and read the files directly. Otherwise rely on pasted or attached content.
+2. If `projects/<project>/SESSION_GUIDANCE.md` exists, read it now. It holds that project's paths, rules and startup checks.
+3. Start with the project's latest relevant handoff. Read other handoffs only where ongoing work needs context.
+4. Reconcile active tasks, `status.md`, `NEEDS_REVIEW.md` (if the project has one) and the handoffs:
    - Inspect current task locations and the evidence of execution.
    - Separate current observations, dated last-known information and uncertainty.
    - Do not infer that a task is running because it is in `active/`. Before moving or acting on an `active/` task, confirm it belongs to your dispatch or is unowned (Rule 29).
    - Do not claim independent verification of another session's work.
    - Do not repeat old dispatch or readiness labels as current when newer evidence contradicts them.
 
-**Sessions with repository access:** read files directly. **Sessions without it:** rely on pasted or attached content, and describe conclusions as "review of pasted evidence", not live repository verification.
+**Sessions with repository access:** read files directly from the repo. If you have repo access, prefer it over waiting for pasted content. **Sessions without it:** rely on pasted or attached content, and describe conclusions as "review of pasted evidence", not live repository verification.
 
 If the assignment is specifically **auditing a stale or overlapping task**, also read `PLANNING_AGENT_WORKFLOW.md`. Routine sessions do not need it.
 
