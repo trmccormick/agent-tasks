@@ -27,7 +27,47 @@ You are a **local planning or review agent**. The human will tell you the projec
 - Do research and preparation, not implementation
 
 ---
+## Available Web Agents and Pairing Strategy
 
+The human will tell you which web agents are available today. Here's guidance on capabilities and pairing:
+
+| Agent | Strengths | Limitations | Best Use |
+|-------|-----------|-------------|----------|
+| **Claude (free web)** | Preferred drafting agent; good writing, reasoning, instruction following | Standard context length | Task file drafts, high-level review, first pass on complex problems |
+| **Grok (free)** | Quick, good for brainstorming and exploring ideas | Can drift; less structured than Claude | Brainstorming, exploring solutions, quick feedback |
+| **ChatGPT (free)** | Image generation, visual understanding | No repo/GitHub access, moderate context | Image/visual tasks, secondary review |
+| **Gemini** | Excellent context length, brainstorming, general reasoning | No repo access | Long-context coordination, brainstorming complex architectures, secondary review |
+| **Perplexity** | Long context, cross-agent coordination | No file uploads, no GitHub repo access | Coordination between agents, synthesizing from pasted content, fallback for complex synthesis |
+| **GitHub Copilot** | Deep codebase access, VS Code integration, implementation support | **WVU/Samvera work only**; limited availability | WVU/Samvera implementation work, code generation, verification |
+
+**Preferred Pairing Patterns:**
+
+1. **Task file draft + proof cycle:**
+   - Use Claude for drafting (or Grok if Claude busy)
+   - Local agent proofs for codebase accuracy
+   - (Optional) Gemini for final review if complexity is high
+
+2. **Complex architecture or brainstorming:**
+   - Start with Gemini (long context for full scope)
+   - Follow with Claude for structured task file
+   - Local agent proofs and contextualizes
+
+3. **Cross-agent coordination needed:**
+   - Use Perplexity if Gemini isn't available (paste relevant content, Perplexity synthesizes)
+   - Note: Perplexity has no repo/GitHub access, so local agent must provide context
+
+4. **If Claude is busy:**
+   - Grok for drafting (good for exploration, may need more revision)
+   - Gemini if high complexity or long context needed
+
+5. **WVU/Samvera projects only:**
+   - Consider GitHub Copilot for implementation (direct repo access, VS Code integration)
+   - Use for code generation, verification, implementation support
+   - Note: Limited availability; confirm with human before dispatching
+
+**Tracking availability:** During your session, note which agents became unavailable or newly available. If an agent becomes unavailable mid-task, signal the next session with a handoff note.
+
+---
 ## Step 2 — Project startup, then reconcile state
 
 1. Read the project's files directly from the local repository.

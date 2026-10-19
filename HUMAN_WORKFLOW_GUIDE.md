@@ -48,7 +48,8 @@ Give it, in this order:
 2. Which project.
 3. It reads `PLANNING_AGENT_SESSION_START.md`, then `PLANNING_AGENT_CLOSEOUT.md`, then `notes/AGENT_NOTES.md`.
 4. The most recent session handoff: `projects/<project>/handoffs/<agent>/session_handoff_YYYY-MM-DD_<TOPIC>.md`.
-5. Your priority for the day.
+5. **Which web agents are available today** (including whether Copilot is available for WVU/Samvera work).
+6. Your priority for the day.
 
 **Local planning agent responsibilities:**
 - Research and triage
@@ -58,6 +59,7 @@ Give it, in this order:
 - Verify codebase context and paths (web agents may miss implementation details)
 - Finalize tasks and write dispatch prompts
 - Update `status.md` and session handoffs
+- Track available agents and suggest pairings based on project and context needs
 
 Before you start, check:
 - `git status --short` and `git log --oneline origin/main..HEAD` on the machine running this session.
@@ -69,6 +71,8 @@ Before you start, check:
 ## Dispatching a task
 
 - **You choose the agent at dispatch.** There is no fixed ladder. Pick by task size, cost, capability and how watched it needs to be.
+  - **For WVU/Samvera projects:** Consider GitHub Copilot if available (direct VS Code/repo access, good for implementation work)
+  - **For other projects:** Use web agents (Claude preferred for drafting, others for review/brainstorming)
 - Paste the prompt from `SIMPLE_HANDOFF_TEMPLATE.md` (or the task's own Agent Dispatch Interface), with the path placeholders filled for the machine that runs it.
   - Paste the **task file path, not its contents.**
 - Step 0 of the prompt moves the task from `backlog/` to `active/`. If the task has `resume: true`, the agent reads its Progress / Resume block first and continues.
