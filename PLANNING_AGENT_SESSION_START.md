@@ -38,6 +38,7 @@ The human will tell you which web agents are available today. Here's guidance on
 | **ChatGPT (free)** | Image generation, visual understanding | No repo/GitHub access, moderate context | Image/visual tasks, secondary review |
 | **Gemini** | Excellent context length, brainstorming, general reasoning | No repo access | Long-context coordination, brainstorming complex architectures, secondary review |
 | **Perplexity** | Long context, cross-agent coordination | No file uploads, no GitHub repo access | Coordination between agents, synthesizing from pasted content, fallback for complex synthesis |
+| **DeepSeek (free web, experimental)** | Strong reasoning, code analysis, competitive with Claude on complex tasks | No file uploads | Complex reasoning tasks, code analysis, second opinions; evaluation phase for open-source projects |
 | **GitHub Copilot (Experimental)** | Deep codebase access, VS Code integration, task file verification | **WVU/Samvera work only**; experimental; limited availability | Paired agent for WVU/Samvera: verify task files for codebase accuracy, provide second opinions; evaluate capabilities |
 
 **Preferred Pairing Patterns:**
@@ -68,6 +69,8 @@ The human will tell you which web agents are available today. Here's guidance on
    - Note: Limited availability; plan pairings with human before session
 
 **Tracking availability:** During your session, note which agents became unavailable or newly available. If an agent becomes unavailable mid-task, signal the next session with a handoff note.
+
+**Evaluating new models:** See `docs/FREE_MODELS_EVALUATION.md` for the framework for testing and ranking free models on open-source projects. If this is your first session, focus on current lineup (Claude, Grok, Gemini, Perplexity). If human signals new model to evaluate, follow the evaluation log template.
 
 ---
 ## Step 2 — Project startup, then reconcile state

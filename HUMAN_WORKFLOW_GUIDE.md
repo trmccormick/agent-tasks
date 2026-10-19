@@ -65,6 +65,7 @@ Before you start, check:
 - `git status --short` and `git log --oneline origin/main..HEAD` on the machine running this session.
 - Which laptop holds work that is not on origin (see "Several laptops" below).
 - Project-specific startup is in `projects/<project>/SESSION_GUIDANCE.md`.
+- See `docs/FREE_MODELS_EVALUATION.md` for available models and ongoing evaluation framework for open-source projects.
 
 ---
 
@@ -72,6 +73,7 @@ Before you start, check:
 
 - **You choose the agent at dispatch.** There is no fixed ladder. Pick by task size, cost, capability and how watched it needs to be.
   - **For WVU/Samvera projects:** Use Claude or web agents for primary drafting. Consider GitHub Copilot (experimental) as a **paired verification agent** if available: verification pass on task files before final dispatch, second opinions, codebase accuracy checks. This helps evaluate Copilot's capabilities.
+  - **For open-source projects:** Use Claude (primary) or other web agents. Consider new models from `docs/FREE_MODELS_EVALUATION.md` as experiments, especially for complex reasoning or code analysis tasks. Track results in the evaluation log.
   - **For other projects:** Use web agents (Claude preferred for drafting, others for review/brainstorming)
 - Paste the prompt from `SIMPLE_HANDOFF_TEMPLATE.md` (or the task's own Agent Dispatch Interface), with the path placeholders filled for the machine that runs it.
   - Paste the **task file path, not its contents.**
