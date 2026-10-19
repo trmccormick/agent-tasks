@@ -48,7 +48,7 @@ The human will tell you which web agents are available today. Here's guidance on
 
 | Agent | Strengths | Limitations | Best Use |
 |-------|-----------|-------------|----------|
-| **WVU Copilot (web agent, experimental)** | Reasoning, synthesis, planning; paired work with other agents | No VSCode integration, no file operations; unverified for production work | Paired synthesis with Claude/Perplexity for WVU/Samvera planning; not for code execution; evaluation phase for capabilities |
+| **WVU Copilot (web agent)** | Primary code reviewer for AI-generated code; detects SQL injection, N+1 queries, hallucinated methods, Rails version mismatches, security issues; public repo access | No VSCode integration, no file operations | **Primary reviewer for all WVU/Samvera AI-generated code** (Qwen/GitHub Copilot output); catch AI mistakes before commit |
 
 **Preferred Pairing Patterns:**
 
@@ -70,11 +70,12 @@ The human will tell you which web agents are available today. Here's guidance on
    - Grok for drafting (good for exploration, may need more revision)
    - Gemini if high complexity or long context needed
 
-5. **WVU/Samvera projects — WVU Copilot as synthesis partner (experimental, work account):**
-   - Use Claude or other free agents for primary task file drafting
-   - **Optional pair with WVU Copilot + Claude/Perplexity for:** reasoning, synthesis, planning; complex architecture review
-   - WVU Copilot is a web agent (no VSCode); suitable for conceptual work and second opinions, NOT code execution
-   - If code escalation needed (Qwen stalls on implementation): use GitHub Copilot (if personal budget available) or free agents, not WVU Copilot
+5. **WVU/Samvera projects — WVU Copilot as primary code reviewer (work account):**
+   - Use Claude or Grok for primary task file drafting and initial code generation
+   - Qwen generates implementation (or GitHub Copilot if budget available)
+   - **WVU Copilot reviews ALL AI-generated code first** — catches SQL injection, N+1 queries, hallucinated gems/methods, Rails version mismatches, security patterns
+   - Escalate to Claude/Grok/ChatGPT for secondary review only if WVU Copilot flags uncertainty or needs validation
+   - Typical review sequence: Qwen/GitHub → WVU Copilot (primary) → Claude (escalation only) → human approval → commit
    - Note: WVU Copilot is experimental; verify all recommendations independently before trusting on production work
 
 **Tracking availability:** During your session, note which agents became unavailable or newly available. If an agent becomes unavailable mid-task, signal the next session with a handoff note.
@@ -86,20 +87,36 @@ The human will tell you which web agents are available today. Here's guidance on
 Before planning work, ask the human:
 
 1. **"What projects are active today?"**
-   - Determines routing: WVU/Samvera → WVU Copilot (if synthesis/pairing needed); Personal projects → GitHub Copilot (if budget) or free agents
+   - Determines routing: WVU/Samvera → WVU Copilot as primary reviewer; Personal projects → GitHub Copilot (if budget) or free agents
    - Also determines scope of work for this session
 
-2. **"What's our GitHub Copilot budget status?"** (personal projects only)
-   - If >70% budget remaining: OK to escalate Qwen → GitHub Copilot if needed
-   - If 40-70% remaining: Use free agents first, GitHub Copilot only if critical
-   - If <40% remaining: Use Personal Microsoft Copilot (fallback) or Ollama + free agents, avoid paid GitHub Copilot
-   - Reference: `docs/COPILOT_USAGE_LOG.md` tracks monthly spend; target ~$2.50/week
-   - Note: WVU projects use WVU Copilot pairing only; budget check doesn't apply
+2. **"What's our GitHub Copilot budget status?"** (personal projects AND WVU escalation decisions)
+   - **Personal projects**: If >70% remaining, OK to escalate Qwen → GitHub Copilot; if <40%, use Personal Microsoft Copilot or free agents
+   - **WVU/Samvera work**: WVU Copilot primary review is unlimited; use free agents (Claude/Grok) for secondary escalation, not GitHub Copilot budget
+   - Reference: `docs/COPILOT_USAGE_LOG.md` tracks monthly spend; target ~$2.50/week for personal projects only
 
 3. **"Any known blockers or carryover from last session?"**
    - Helps you prioritize and avoid repeated stalls
 
 Once you have answers, you can make smart routing decisions.
+
+---
+
+## Project Classification (Work vs Personal Budget)
+
+**WORK ACCOUNT** (use WVU Copilot, do NOT consume personal GitHub budget):
+- Any project in `projects/wvulibraries_*` folder
+- Any project in `projects/samvera_*` folder
+- Any project explicitly marked as WVU/Samvera in the handoff or task file
+- Context: Human is Samvera Hyku Community Developer at WVU; all Samvera/WVU Libraries work is professional work-related, not personal
+
+**PERSONAL ACCOUNT** (use personal GitHub Copilot budget, then Personal Microsoft Copilot, then free agents):
+- Projects outside `wvulibraries_*` and `samvera_*` folders
+- Projects explicitly marked as personal in handoff
+
+**Rule**: When in doubt, ask in the intake questions. Better to confirm than to accidentally burn personal budget on work.
+
+---
 
 **Evaluating new models:** See `docs/FREE_MODELS_EVALUATION.md` for the framework for testing and ranking free models on open-source projects. If this is your first session, focus on current lineup (Claude, Grok, Gemini, Perplexity). 
 
