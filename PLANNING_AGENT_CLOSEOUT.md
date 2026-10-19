@@ -54,3 +54,21 @@ Give the human one list: item, owner, evidence, recommended action. Wait. Do not
 ## 6. Handoff note (end of every planning session)
 
 Add a short note to `status.md` or the planning summary: what was checked, what was changed (approved), what is waiting for the human, which `resume: true` tasks are ready to dispatch, and which items were left alone and why.
+
+## 7. Housekeeping slice (one per session, if applicable)
+
+**When to do this**: Every planning session, at the end, **if the project has a `HOUSEKEEPING.md` file**.
+
+1. **Read the housekeeping file** (e.g., `projects/<project>/HOUSEKEEPING.md`). Pick the first item with `status: todo` and no open dependencies.
+2. **Do its read-only first step** (no changes, no deletions). Propose at most 10 files in the normal proposal table.
+3. **Wait for approval.** Act only on approved items.
+4. **Record the slice:**
+   - Update the housekeeping file: set item to `in progress` or `done`, add a row to the Session log
+   - Commit with a message referencing the item ID
+   - Add a "Housekeeping Slice" section to the session handoff (section 6 above) documenting what was worked on
+5. **Stop there.** Even if more items are ready, next session picks up the next one.
+
+**Purpose:** Prevents big-bang cleanups and recurring issues (file duplication, stale temp files, etc.) from accumulating. Each session handles one small slice.
+
+**File format:** See `projects/galaxy_game/HOUSEKEEPING.md` or `projects/<project>/HOUSEKEEPING.md` for structure and conventions.
+
