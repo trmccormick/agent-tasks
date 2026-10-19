@@ -2,6 +2,8 @@
 
 **Purpose:** Document and evaluate free web and local models for our workflow, ranking by performance and effectiveness on our type of work (agent coordination, task file drafting, codebase analysis, documentation, open source projects).
 
+**For Planning Agents:** This is a live tracking document. Before dispatching an open-source project task, research the candidate model(s) online (LLM Arena, Reddit/HN discussions, model release notes) and incorporate external evidence into your recommendation. Update this document with both internal evaluations AND external findings. Models evolve frequently—your online research informs what we should try next.
+
 **Initial Focus:** Open source projects (Galaxy Game, Samvera projects, etc.) before WVU/Samvera-specific tools.
 
 ---
@@ -83,6 +85,20 @@ For each model tested on open source projects, evaluate and score (1-5):
    - Tracks state correctly
    - Avoids contradictions
 
+### External Evidence Sources
+
+**Planning agents should research before dispatch to inform recommendations:**
+
+| Source | What to Look For | Update Frequency |
+|--------|------------------|------------------|
+| **LLM Arena** (huggingface.co/spaces/lmsys/chatbot-arena) | Side-by-side comparisons, community voting, code understanding scores | Daily updates |
+| **OpenRouter** (openrouter.ai) or **Replicate** | Model cards, community feedback, usage patterns, performance metrics | Weekly+ |
+| **Model Release Notes** | New capabilities, context expansion, bug fixes, performance improvements | Per release |
+| **Reddit** (r/LocalLLMs, r/MachineLearning) | Real-world experiences, gotchas, hidden capabilities, hidden limitations | Ongoing |
+| **Hacker News** | Discussion threads on new model releases, performance analysis | Per release |
+| **Twitter/Bluesky** | Quick takes from researchers, unexpected discoveries, usage patterns | Real-time |
+| **Model Cards on Hugging Face** | Intended use, strengths/weaknesses, benchmarks, caveats | Per release |
+
 ### Scoring Legend
 - **5** — Excellent; consistently strong; preferred choice
 - **4** — Good; reliable; acceptable alternative
@@ -98,27 +114,32 @@ For each model tested on open source projects, evaluate and score (1-5):
 ### Model: [Model Name]
 
 **Date:** YYYY-MM-DD  
-**Evaluator:** [Name]  
+**Evaluator:** [Name/Agent]  
 **Project:** [Project Name]  
-**Task Type:** [e.g., task file drafting, code analysis, brainstorming]
+**Task Type:** [e.g., task file drafting, code analysis, brainstorming]  
+**External Research Done:** [Y/N] — If yes, list sources checked (LLM Arena, Reddit threads, release notes, etc.)
 
-| Dimension | Score | Notes |
-|-----------|-------|-------|
-| Code Understanding | N/A | |
-| Reasoning Quality | N/A | |
-| Instruction Following | N/A | |
-| Writing Quality | N/A | |
-| Speed | N/A | |
-| Cost/Value | N/A | |
-| Context Handling | N/A | |
+| Dimension | Score | Internal Notes | External Evidence |
+|-----------|-------|-----------------|-------------------|
+| Code Understanding | N/A | | |
+| Reasoning Quality | N/A | | |
+| Instruction Following | N/A | | |
+| Writing Quality | N/A | | |
+| Speed | N/A | | |
+| Cost/Value | N/A | | |
+| Context Handling | N/A | | |
 
-**Overall Assessment:** [Summary of strengths and weaknesses]
+**Overall Assessment:** [Summary of strengths and weaknesses based on internal testing]
+
+**External Consensus:** [What do online sources say? Is it consistent with our findings?]
 
 **Recommended For:** [Specific use cases where this model excels]
 
 **Recommended Against:** [Use cases to avoid]
 
 **Next Steps:** [What to test next, if applicable]
+
+**Status:** [Ready to use / Needs more testing / Not recommended]
 
 ---
 

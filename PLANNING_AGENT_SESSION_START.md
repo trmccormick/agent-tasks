@@ -70,7 +70,20 @@ The human will tell you which web agents are available today. Here's guidance on
 
 **Tracking availability:** During your session, note which agents became unavailable or newly available. If an agent becomes unavailable mid-task, signal the next session with a handoff note.
 
-**Evaluating new models:** See `docs/FREE_MODELS_EVALUATION.md` for the framework for testing and ranking free models on open-source projects. If this is your first session, focus on current lineup (Claude, Grok, Gemini, Perplexity). If human signals new model to evaluate, follow the evaluation log template.
+**Evaluating new models:** See `docs/FREE_MODELS_EVALUATION.md` for the framework for testing and ranking free models on open-source projects. If this is your first session, focus on current lineup (Claude, Grok, Gemini, Perplexity). 
+
+**When evaluating models for open-source work:**
+- Research current model capabilities online before dispatch (LLM Arena, HN discussions, model release notes, Reddit)
+- Consider external evidence: models change frequently and online benchmarks may be more current than our evaluations
+- Incorporate both your research AND internal testing into your recommendation
+- Update the evaluation log with both internal findings and external consensus
+- If human signals new model to evaluate, follow the evaluation log template including external sources
+
+**Your role in model evaluation:**
+- You track what we've learned internally (evaluations, results, handoff notes)
+- You supplement that with current external evidence (what the community reports, new releases, benchmarks)
+- You balance both sources when making agent recommendations
+- Each dispatch is a chance to gather data and update rankings
 
 ---
 ## Step 2 — Project startup, then reconcile state
