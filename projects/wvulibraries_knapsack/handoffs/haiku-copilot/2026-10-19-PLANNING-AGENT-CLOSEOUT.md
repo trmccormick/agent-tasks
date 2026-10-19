@@ -68,11 +68,30 @@
 - Sept 2026 branch tasks safely archived in `backlog/superseded/` with context notes
 - HYKU-720 upgrade decision pending completion of Phase 1 & 2 tasks
 
+## Housekeeping Slice (K2 — Stale Task Frontmatter)
+
+**Framework Created**: `HOUSEKEEPING.md` established in project root to track recurring agent issues:
+- K1: Task file duplication via `cp` (prevention: git mv rule in template)
+- K2: **Stale task with outdated frontmatter** ✅ COMPLETED THIS SESSION
+- K3: Untracked temporary files from diagnostics
+- K4: Lack of cleanup instructions in tasks
+- K5: Handoff file organization (prevention: agent-specific folders)
+- K6: Stale commits not pushed before closeout
+
+**K2 Work Done**:
+- Identified mismatched status/folder: active/ file marked "backlog" in frontmatter
+- Verified canonical version in backlog/ (tracked, correct frontmatter)
+- Removed stale untracked duplicate
+- Prevention rule added: Planning agent checklist must verify status matches folder
+
+**Status**: K2 marked `in progress` in HOUSEKEEPING.md (needs pattern analysis for K1 in next session)
+
 ## Stop Condition
 
 Closeout complete. Next planning session will:
 1. Decide whether to dispatch facet limiter Phase 1 to Qwen implementation agent
 2. Or continue human-driven HYKU-720 testing if urgency changes
 3. Check status.md for current open sessions and priorities
+4. Pick next housekeeping item (likely K1: analyze cp patterns in git history) and propose 1 small slice
 
-Workspace is clean, all tracking accurate, ready for next session.
+Workspace is clean, all tracking accurate, housekeeping framework established, ready for next session.
