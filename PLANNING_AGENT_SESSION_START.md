@@ -36,19 +36,22 @@ Qwen (local model, Ollama) has three distinct roles in this workflow:
    - Use when: Web agents suggest approach but you need codebase validation
    - Output: Refined task file, architecture notes, implementation constraints
    - Then: Hand off to web agent review or implementation
+   - Note: Keep planning sessions focused; don't do deep research inline
 
 2. **Research Mode**: Read-only codebase exploration (no implementation)
+   - **Dispatch as a separate, dedicated session** (not inline in planning)
    - Use when: Need to understand architecture, find patterns, analyze dependencies
-   - Output: Codebase findings, architecture summary, pattern discovery
-   - Then: Pass findings to web agents (Claude, Grok) for synthesis/analysis
-   - Example: "Research the Hyku search architecture" → Qwen explores → pass findings to Claude for review
+   - Output: Save findings to `.md` file (e.g., `research-findings.md`)
+   - Then: Share `.md` with Claude/web agents for synthesis/analysis; planning agent incorporates result
+   - Benefit: Cleaner context, reusable research artifact, web agents can focus on analysis not exploration
+   - Example workflow: Planning agent → "dispatch Qwen research session on Hyku search architecture" → Qwen saves `hyku-search-research.md` → Planning agent sends file to Claude for synthesis → use Claude's analysis in task file
 
 3. **Implementation Mode**: Generate code based on approved task file
    - Use when: Task is clear, acceptance criteria validated, approach approved
    - Output: Code, tests, commits
-   - Then: Web agent or WVU Copilot reviews; human approves before push
+   - Then: Web agent or WVU Copilot reviews diffs; human approves before push
 
-**Workflow pattern**: Web agents brainstorm → Qwen research (codebase exploration) → Claude synthesis → Qwen implementation
+**Key Session Pattern**: Keep planning sessions lean. Offload research to dedicated Qwen research sessions that produce `.md` artifacts. This maximizes token efficiency and creates reusable documentation.
 
 ---
 ## Available Web Agents and Pairing Strategy
@@ -134,20 +137,22 @@ Once you have answers, you can make smart routing decisions.
 
 GitHub Copilot Premium ($2.50/week budget) is a **last resort**, not the primary tool. Before escalating:
 
-1. **Use non-GitHub free agents for task decomposition**: Gemini, Perplexity break complex work into smaller, clearer pieces (they don't need repo access). Qwen retries on each piece—often succeeds.
-2. **Use GitHub-capable free agents for code review**: Claude, Grok, ChatGPT can read public GitHub repos directly. Provide GitHub URLs or paste diffs—they review in repo context.
-3. **Use WVU Copilot for Samvera/Hyku specialized review**: Paste diffs to WVU Copilot for architecture/pattern review on WVU/Samvera code (specializes in Rails/Hyku, validates design decisions).
-4. **Start a new session if stuck**: Clean context window eliminates bloat and confusion that makes Qwen stall.
-5. **Check budget and escalate cautiously**: Only escalate to GitHub Copilot if you have >70% budget remaining after trying above steps.
-6. **If budget is low**: Keep using task simplification + free agent review + new sessions instead of GitHub Copilot.
+1. **Dispatch Qwen research session if needed**: If architecture/patterns unclear, dispatch dedicated Qwen research session (read-only) → save findings to `.md` → share with Claude for synthesis → use in planning. Don't research inline in planning sessions.
+2. **Use non-GitHub free agents for task decomposition**: Gemini, Perplexity break complex work into smaller, clearer pieces (they don't need repo access). Qwen retries on each piece—often succeeds.
+3. **Use GitHub-capable free agents for code review**: Claude, Grok, ChatGPT can read public GitHub repos directly. Provide GitHub URLs or paste diffs—they review in repo context.
+4. **Use WVU Copilot for Samvera/Hyku specialized review**: Paste diffs to WVU Copilot for architecture/pattern review on WVU/Samvera code (specializes in Rails/Hyku, validates design decisions).
+5. **Start a new session if stuck**: Clean context window eliminates bloat and confusion that makes Qwen stall (different from research sessions—use when implementation is stuck, not for exploration).
+6. **Check budget and escalate cautiously**: Only escalate to GitHub Copilot if you have >70% budget remaining after trying above steps.
+7. **If budget is low**: Keep using research sessions + task simplification + free agent review + new sessions instead of GitHub Copilot.
 
 **Typical workflow**:
+- Need architecture clarity → Dispatch Qwen research session on architecture → Save findings.md → Send to Claude → Incorporate results in task
 - Qwen stalls on complex refactor → Gemini/Perplexity breaks into 3 smaller tasks → Qwen succeeds on each piece
 - Qwen generates code → Give Claude/Grok the GitHub URL → They review in repo context → Suggest fixes → Qwen implements
 - WVU/Samvera code review → Paste diffs to WVU Copilot → Validates Samvera patterns + architecture → GO/REVISE/STOP decision
-- Edge case still stuck → New session with cleaner context → Qwen retries → Success
+- Implementation still stuck → New session with cleaner context → Qwen retries → Success
 
-This approach keeps you under budget while improving quality through multiple review gates. **Escalate to GitHub Copilot only after exhausting free options.**
+This approach keeps you under budget while improving quality. **Research investigations go to separate research sessions (save .md); implementation blockers get fresh sessions; reviews go to appropriate specialist (WVU Copilot, Claude, Grok).**
 
 ---
 
