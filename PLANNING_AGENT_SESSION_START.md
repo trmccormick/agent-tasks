@@ -31,15 +31,24 @@ You are a **local planning or review agent**. The human will tell you the projec
 
 The human will tell you which web agents are available today. Here's guidance on capabilities and pairing:
 
+**PERSONAL ACCOUNT** (all free web agents + GitHub Copilot Premium):
+
 | Agent | Strengths | Limitations | Best Use |
 |-------|-----------|-------------|----------|
 | **Claude (free web)** | Preferred drafting agent; good writing, reasoning, instruction following | Standard context length | Task file drafts, high-level review, first pass on complex problems |
-| **Grok (free)** | Quick, good for brainstorming and exploring ideas | Can drift; less structured than Claude | Brainstorming, exploring solutions, quick feedback |
-| **ChatGPT (free)** | Image generation, visual understanding | No repo/GitHub access, moderate context | Image/visual tasks, secondary review |
-| **Gemini** | Excellent context length, brainstorming, general reasoning | No repo access | Long-context coordination, brainstorming complex architectures, secondary review |
-| **Perplexity** | Long context, cross-agent coordination | No file uploads, no GitHub repo access | Coordination between agents, synthesizing from pasted content, fallback for complex synthesis |
+| **Grok (free web)** | Quick, good for brainstorming and exploring ideas | Can drift; less structured than Claude | Brainstorming, exploring solutions, quick feedback |
+| **ChatGPT (free web)** | Image generation, visual understanding | No repo/GitHub access, moderate context | Image/visual tasks, secondary review |
+| **Gemini (free web)** | Excellent context length, brainstorming, general reasoning | No repo access | Long-context coordination, brainstorming complex architectures, secondary review |
+| **Perplexity (free web)** | Long context, cross-agent coordination | No file uploads, no GitHub repo access | Coordination between agents, synthesizing from pasted content, fallback for complex synthesis |
 | **DeepSeek (free web, experimental)** | Strong reasoning, code analysis, competitive with Claude on complex tasks | No file uploads | Complex reasoning tasks, code analysis, second opinions; evaluation phase for open-source projects |
-| **GitHub Copilot (Experimental)** | Deep codebase access, VS Code integration, task file verification | **WVU/Samvera work only**; experimental; limited availability | Paired agent for WVU/Samvera: verify task files for codebase accuracy, provide second opinions; evaluate capabilities |
+| **GitHub Copilot (VSCode)** | Deep codebase access, VS Code integration, code verification | Limited to ~$2.50/week budget | Code escalations when Qwen stalls on personal/open-source projects |
+| **Personal Microsoft Copilot (web, fallback)** | Reasoning, synthesis, code review | No VSCode integration, no repo access | Fallback for personal projects if GitHub Copilot budget exhausted |
+
+**WORK ACCOUNT** (WVU-only):
+
+| Agent | Strengths | Limitations | Best Use |
+|-------|-----------|-------------|----------|
+| **WVU Copilot (web agent, experimental)** | Reasoning, synthesis, planning; paired work with other agents | No VSCode integration, no file operations; unverified for production work | Paired synthesis with Claude/Perplexity for WVU/Samvera planning; not for code execution; evaluation phase for capabilities |
 
 **Preferred Pairing Patterns:**
 
@@ -61,14 +70,36 @@ The human will tell you which web agents are available today. Here's guidance on
    - Grok for drafting (good for exploration, may need more revision)
    - Gemini if high complexity or long context needed
 
-5. **WVU/Samvera projects — Copilot as paired verification agent:**
-   - Use Claude or other agents for primary task file drafting
-   - **Pair with Copilot (experimental) for:** task file verification against codebase, second opinions, capability evaluation
-   - Copilot reads your codebase directly; request verification of paths, configurations, implementation details
-   - Confirmation: Optional final review before dispatch to understand Copilot's effectiveness
-   - Note: Limited availability; plan pairings with human before session
+5. **WVU/Samvera projects — WVU Copilot as synthesis partner (experimental, work account):**
+   - Use Claude or other free agents for primary task file drafting
+   - **Optional pair with WVU Copilot + Claude/Perplexity for:** reasoning, synthesis, planning; complex architecture review
+   - WVU Copilot is a web agent (no VSCode); suitable for conceptual work and second opinions, NOT code execution
+   - If code escalation needed (Qwen stalls on implementation): use GitHub Copilot (if personal budget available) or free agents, not WVU Copilot
+   - Note: WVU Copilot is experimental; verify all recommendations independently before trusting on production work
 
 **Tracking availability:** During your session, note which agents became unavailable or newly available. If an agent becomes unavailable mid-task, signal the next session with a handoff note.
+
+---
+
+## Session Intake Questions
+
+Before planning work, ask the human:
+
+1. **"What projects are active today?"**
+   - Determines routing: WVU/Samvera → WVU Copilot (if synthesis/pairing needed); Personal projects → GitHub Copilot (if budget) or free agents
+   - Also determines scope of work for this session
+
+2. **"What's our GitHub Copilot budget status?"** (personal projects only)
+   - If >70% budget remaining: OK to escalate Qwen → GitHub Copilot if needed
+   - If 40-70% remaining: Use free agents first, GitHub Copilot only if critical
+   - If <40% remaining: Use Personal Microsoft Copilot (fallback) or Ollama + free agents, avoid paid GitHub Copilot
+   - Reference: `docs/COPILOT_USAGE_LOG.md` tracks monthly spend; target ~$2.50/week
+   - Note: WVU projects use WVU Copilot pairing only; budget check doesn't apply
+
+3. **"Any known blockers or carryover from last session?"**
+   - Helps you prioritize and avoid repeated stalls
+
+Once you have answers, you can make smart routing decisions.
 
 **Evaluating new models:** See `docs/FREE_MODELS_EVALUATION.md` for the framework for testing and ranking free models on open-source projects. If this is your first session, focus on current lineup (Claude, Grok, Gemini, Perplexity). 
 
