@@ -7,7 +7,8 @@ Model-neutral: the role comes from the prompt, not the model. One session, one r
 
 - **Does:** read status, curate `status.md`, check `active/` and `backlog/`, plan, write tasks and dispatch prompts, keep the workspace in order, propose actions to the human.
 - **Does not:** run tests, edit application code, or do research or implementation itself. Write a task or dispatch prompt and hand it to a new research or implementation session. This also keeps the planning session's context short.
-- **Context rule:** when the planning session gets long, end it with a handoff note (section 6) and start a new planning session from that note.
+- **Context rule:** when the planning session gets long, end it with a handoff file (section 6) and start a new planning session from that handoff.
+- **Handoff file is primary continuity mechanism:** The next planning session reads your handoff file first to understand current state. status.md is a fast human-readable summary; the handoff file is the detailed technical record.
 - **Never without the human's approval:** deleting or archiving task files (Rule 29), moving a task that another session owns, committing or pushing (Rule 26).
 - **Forbidden commands during maintenance:** `git stash`, `git reset`, `git checkout` (of files), `git restore`, `git clean`, a plain `git pull` on a dirty tree. Use `git fetch` and report. Do not unstage another session's staged changes.
 
@@ -51,13 +52,31 @@ Give the human one list: item, owner, evidence, recommended action. Wait. Do not
 - Pausing or closing a project: put `Project state: active | paused | archived` and one sentence why in the first lines of its `status.md`. Use `paused`, not deletion. Never archive without approval.
 - Verify with `git status --short` and the relevant listing; confirm only the approved changes happened. The human commits.
 
-## 6. Handoff note (end of every planning session)
+## 6. Create handoff file (end of every planning session) — REQUIRED
 
-Add a short note to `status.md` or the planning summary: what was checked, what was changed (approved), what is waiting for the human, which `resume: true` tasks are ready to dispatch, and which items were left alone and why.
+Every planning session MUST create a formal handoff file so the next session (planning, research, or implementation) can quickly resume without re-reading everything.
 
-## 7. Housekeeping slice (one per session, if applicable)
+**File location:** `projects/<project>/handoffs/<agent>/<date>-<type>-CLOSEOUT.md`
+- `<agent>`: Your agent folder name (e.g., `haiku-copilot`, `qwen-planning`, `claude-web`)
+- `<date>`: Session date (YYYY-MM-DD)
+- `<type>`: Session type (PLANNING, RESEARCH, IMPLEMENTATION, or specific domain)
 
-**When to do this**: Every planning session, at the end, **if the project has a `HOUSEKEEPING.md` file**.
+**Handoff file MUST document:**
+1. **What was checked:** Inventory findings (active/, backlog/, git state, session ownership)
+2. **What was changed (approved only):** Files moved, status updated, tasks created/dispatched
+3. **What is waiting:** Next steps for human, which resume:true tasks are ready, blockers
+4. **Open sessions:** Current agent dispatch status (running/paused/blocked/needs-review)
+5. **Housekeeping slice:** (if applicable) What was worked on from HOUSEKEEPING.md
+
+**Also update** `status.md` header with `Last Updated: YYYY-MM-DD — <brief summary>` to point to the handoff.
+
+**Why this matters:** The next planning session starts by reading the handoff file to understand current state. Without it, they re-inventory everything, wasting time and risking missed context. The handoff file is the primary continuity mechanism.
+
+**Do NOT rely on status.md alone.** The handoff file is the detailed record; status.md is the fast summary for humans.
+
+## 7. Housekeeping slice (one per session, if applicable) — OPTIONAL
+
+**When to do this**: After creating the handoff file (section 6), **if the project has a `HOUSEKEEPING.md` file**, pick one small slice of work.
 
 1. **Read the housekeeping file** (e.g., `projects/<project>/HOUSEKEEPING.md`). Pick the first item with `status: todo` and no open dependencies.
 2. **Do its read-only first step** (no changes, no deletions). Propose at most 10 files in the normal proposal table.
