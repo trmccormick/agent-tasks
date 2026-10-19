@@ -283,7 +283,31 @@ Current step 3 reads:
 3. **Consistency check**: Do examples use the same format and level of detail?
 4. **Scope check**: Do guidance and examples stay within what SESSION_CLOSEOUT expects (session-specific observations)?
 
-If any fail, revise before proceeding to Step 5.
+If any fail, revise before proceeding to Step 4.5.
+
+---
+
+### Step 4.5 — WAIT FOR REVIEWER ASSESSMENT AND HUMAN AUTHORIZATION
+
+⚠️ **STOP. Do not commit, push, or complete task until both approvals are received.**
+
+1. Submit your synthesis report to the review channel with:
+   - Link to synthesis report file (saved in `projects/agent-tasks/summaries/`)
+   - Summary of changes made to SESSION_CLOSEOUT.md
+   - Request: Reviewer assessment and approval to proceed
+
+2. Await reviewer response:
+   - ✅ **GO** — Reviewer approved work. Proceed to Step 5.
+   - 🔄 **REVISE** — Reviewer identified issues. Implement feedback, regenerate synthesis, resubmit for review.
+   - 🛑 **STOP** — Reviewer identified blocking issue. Do not commit. Follow reviewer guidance.
+
+3. Await human authorization:
+   - Once reviewer issues GO, await explicit human authorization: "Proceed with commit/push/task completion"
+   - Human may approve after reviewer GO, or may request additional review
+
+4. Only proceed to Step 5 if you have received:
+   - ✅ Reviewer GO (not REVISE, not STOP)
+   - ✅ Human explicit authorization for commit/push/task completion
 
 ---
 
@@ -297,7 +321,20 @@ git push
 
 ---
 
-### Step 6 — Move Task to Completed
+### Step 7 — Push Changes
+
+```bash
+git push
+```
+
+Verify all changes are pushed to origin/main:
+```bash
+git log origin/main -1 --oneline
+```
+
+---
+
+### Step 7 — Move Task to Completed
 
 ```bash
 git mv projects/agent-tasks/tasks/active/2026-10-19-MEDIUM-DOCUMENTATION-STOP-CONDITION-ENHANCEMENT.md \
@@ -321,6 +358,8 @@ git push
 - [ ] Examples are realistic and use plain language (not abstract)
 - [ ] Total addition is ~25-30 lines (does not bloat section)
 - [ ] No restructuring of existing "1b" steps; subsection is purely additive
+- [ ] Reviewer issued GO (not REVISE or STOP)
+- [ ] Human explicitly authorized commit/push/task completion
 - [ ] Changes staged, committed, and pushed
 - [ ] Task file moved to completed/ and pushed
 

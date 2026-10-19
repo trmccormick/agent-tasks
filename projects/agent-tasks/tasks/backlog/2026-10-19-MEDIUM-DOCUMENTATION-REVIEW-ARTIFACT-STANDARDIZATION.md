@@ -289,7 +289,31 @@ That's all for this file — keep it minimal.
 3. **Example check**: Is the example realistic? Does it show evidence labeling properly?
 4. **Reference check**: Do all three files (if template created) point to each other appropriately?
 
-If any fail, revise before proceeding to Step 6.
+If any fail, revise before proceeding to Step 5.5.
+
+---
+
+### Step 5.5 — WAIT FOR REVIEWER ASSESSMENT AND HUMAN AUTHORIZATION
+
+⚠️ **STOP. Do not commit, push, or complete task until both approvals are received.**
+
+1. Submit your synthesis report to the review channel with:
+   - Link to synthesis report file (saved in `projects/agent-tasks/summaries/`)
+   - Summary of changes made to target files
+   - Request: Reviewer assessment and approval to proceed
+
+2. Await reviewer response:
+   - ✅ **GO** — Reviewer approved work. Proceed to Step 6.
+   - 🔄 **REVISE** — Reviewer identified issues. Implement feedback, regenerate synthesis, resubmit for review.
+   - 🛑 **STOP** — Reviewer identified blocking issue. Do not commit. Follow reviewer guidance.
+
+3. Await human authorization:
+   - Once reviewer issues GO, await explicit human authorization: "Proceed with commit/push/task completion"
+   - Human may approve after reviewer GO, or may request additional review
+
+4. Only proceed to Step 6 if you have received:
+   - ✅ Reviewer GO (not REVISE, not STOP)
+   - ✅ Human explicit authorization for commit/push/task completion
 
 ---
 
@@ -309,7 +333,20 @@ git push
 
 ---
 
-### Step 7 — Move Task to Completed
+### Step 8 — Push Changes
+
+```bash
+git push
+```
+
+Verify all changes are pushed to origin/main:
+```bash
+git log origin/main -1 --oneline
+```
+
+---
+
+### Step 8 — Move Task to Completed
 
 ```bash
 git mv projects/agent-tasks/tasks/active/2026-10-19-MEDIUM-DOCUMENTATION-REVIEW-ARTIFACT-STANDARDIZATION.md \
@@ -332,6 +369,8 @@ git push
 - [ ] SESSION_CLOSEOUT.md § "Handoff Files (required)" explicitly includes review sessions
 - [ ] Review handoff path is documented (handoffs/<agent>/<date>-REVIEW-[TOPIC]-SESSION.md)
 - [ ] Optional REVIEW_REPORT_TEMPLATE.md is created with copy-paste template
+- [ ] Reviewer issued GO (not REVISE or STOP)
+- [ ] Human explicitly authorized commit/push/task completion
 - [ ] All changes staged, committed, and pushed
 - [ ] Task file moved to completed/ and pushed
 
