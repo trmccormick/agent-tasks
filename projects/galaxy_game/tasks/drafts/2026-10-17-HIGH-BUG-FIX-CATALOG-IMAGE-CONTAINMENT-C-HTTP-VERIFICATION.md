@@ -104,9 +104,9 @@ The PARENT's core finding is that the controller's current string-prefix guard c
 
 1. **No code changes:** This task's only deliverable is a Markdown report. Do not edit, stage, commit, or push source code, tests, routes, authentication, or configuration.
 2. **Separate evidence types:** The PARENT's Ruby table establishes path-building/guard behavior only. Controller specs establish controller-level behavior only. Live HTTP requests are required for this task's conclusions about the HTTP stack.
-3. **Percent encoding is unverified:** Send and record a request target containing percent-encoded traversal (`%2e%2e`, and mixed-case encoding if practical). Report whether it reaches the controller unchanged, is decoded/normalized, or is rejected upstream. Do not infer the layer responsible without evidence.
-4. **Authentication is unverified:** Observe whether `/admin` requires authentication. If it appears not to, report the evidence and stop; do not add authentication.
-5. **Scope boundaries:** Do not change route behavior, URL helper `admin/catalog_image_path(path:)`, JSON/response shape, authentication, or which image is selected for any asset. Canonical-render selection remains an unresolved human decision.
+3. **Percent encoding is unverified:** Send and record request targets containing percent-encoded traversal (`%2e%2e` and mixed-case encoding, such as `%2E%2e`, if practical). Report whether each target reaches the controller unchanged, is decoded or normalized before controller handling, or is rejected upstream. Do not infer the responsible layer without evidence.
+4. **Authentication is unverified:** Observe whether `/admin` requires authentication before sending valid-image, bypass-path, or encoded-traversal requests. Use a request without supplied credentials or an existing authenticated session. If the evidence indicates that `/admin` does not require authentication, record the request/response evidence and stop immediately; do not perform further HTTP checks and do not change or add authentication.
+5. **Scope boundaries:** Do not change route behavior, URL helper `admin_catalog_image_path(path:)`, JSON/response shape, authentication, or which image is selected for any asset. Canonical-render selection remains an unresolved human decision.
 6. **Human approval:** Approval to proceed is a human decision; this draft does not itself authorize dispatch or execution.
 
 ## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
@@ -154,7 +154,14 @@ Before navigating to any URLs, running any commands, or modifying any files, you
 
 ## Problem Statement
 
-Produce a report only, based on live HTTP observations, that records whether a percent-encoded `..` path reaches the `catalog_image` controller unchanged, whether `/admin` requires authentication, and the exact request/response evidence for one valid image request and one bypass-path request. Do not change code, tests, routes, URL helpers, authentication, response shape, or image selection. This verification is separate from controller-level regression tests and does not replace them.
+Produce one Markdown report only, based on live HTTP observations, that records:
+- whether `/admin` requires authentication, based on a request made without supplied credentials or an existing authenticated session;
+- whether percent-encoded traversal (`%2e%2e`, including mixed-case encoding where practical) reaches the `catalog_image` controller unchanged, is decoded/normalized before reaching it, or is rejected upstream; and
+- the exact request/response evidence for one valid image request and one bypass-path request.
+
+Check application reachability first, then observe authentication before making any valid-image, bypass-path, or encoded-traversal requests. If `/admin` appears not to require authentication, record the evidence and stop before any further HTTP checks.
+
+Do not change code, tests, routes, URL helpers, authentication, response shape, or image selection. This verification is separate from controller-level regression tests and does not replace them.
 
 ## Files Involved
 
@@ -162,40 +169,41 @@ Produce a report only, based on live HTTP observations, that records whether a p
 |---|---|---|
 | `galaxy_game/app/controllers/admin/catalog_controller.rb` | Read only, to understand the action being exercised and identify what evidence can show controller reachability | **VERIFIED FROM PARENT:** origin read 2026-10-16; action line 39, guard line 45 |
 | `galaxy_game/spec/controllers/admin/catalog_controller_spec.rb` | Read only, to distinguish controller-spec evidence from live HTTP evidence; existing traversal test at line 208 | **VERIFIED FROM PARENT:** origin read 2026-10-16 |
-| `projects/galaxy_game/summaries/` | Save the report-only findings in Markdown | Summary directory is named in the PARENT's synthesis-report requirement; exact output filename is to be chosen by the agent |
-| Running application and request client | Make one valid-image request and one bypass request; record the raw request targets and responses | Route verified in `galaxy_game/config/routes.rb` line 126: `get 'catalog/image/*path', to: 'catalog#catalog_image'` inside `namespace :admin`, so the full path pattern is `/admin/catalog/image/*path` and the URL helper is `admin_catalog_image_path(path:)`. Base URL verified in `docker-compose.dev.yml` web service port mapping `3000:3000` → `http://localhost:3000`. |
+| `projects/galaxy_game/summaries/` | Save the single report-only deliverable in Markdown | Summary directory is named in the PARENT's synthesis-report requirement; exact output filename is to be chosen by the agent |
+| Running application and request client | Check application reachability, observe `/admin` authentication, then make one valid-image request and one bypass request and observe encoded traversal handling if permitted by the authentication result | **VERIFIED:** `docker-compose.dev.yml` maps the web service to `3000:3000`, and the human runs that Compose file; base URL is `http://localhost:3000`. **VERIFIED:** route pattern is `/admin/catalog/image/*path`, with URL helper `admin_catalog_image_path(path:)` (route in `galaxy_game/config/routes.rb`, line 126, as supplied). |
 
 No source, test, route, or configuration files may be changed. This is a report-only task.
 
 ## Implementation Steps
 
-- **Step 0:** Move the task file per the copied Agent Dispatch Interface; update status only after moving and verify only one copy exists.
-- **Step 1:** Save the Status Synthesis Report template above as required by the project workflow before verification.
-- **Step 2:** Identify the configured running application base URL and construct requests to `catalog_image` using the known path pattern `/admin/catalog/image/*path` (URL helper: `admin_catalog_image_path(path:)`). The compose file (`docker-compose.dev.yml`, web service) maps port 3000:3000, so the base URL is `http://localhost:3000`. If the app is not running on that URL, stop and report the actual base URL rather than inventing one.
-- **Step 3:** Make one valid-image request and one bypass-path request. Record the exact raw request target as sent, response status, relevant response headers (including content type for the valid image), and a concise response observation. Use a traversal form grounded in the PARENT's verified path-building table, such as `images/catalog/../../../etc/passwd`, for the bypass request.
-- **Step 4:** Exercise a percent-encoded traversal target containing `%2e%2e` (mixed-case encoding if practical) and determine, from available request/controller evidence, whether the encoded form reaches the controller unchanged, is transformed, or is rejected upstream. Separately observe whether `/admin` requires authentication. Do not change auth or routing to make these checks easier.
-- **Step 5:** Save a Markdown report under `projects/galaxy_game/summaries/` with each observation, exact request/response evidence, the distinction between verified and unverified facts, and any limitations. If any live check cannot be performed, state it explicitly and leave the corresponding acceptance criterion unmet.
+- **Step 0:** Follow the copied Agent Dispatch Interface's task-file lifecycle instructions only after human approval; update status only after moving and verify only one copy exists.
+- **Step 1:** Save the Status Synthesis Report template referenced by the task's required workflow as an MD file before verification. Do not paste the synthesis report into chat.
+- **Step 2:** Check reachability at the verified base URL `http://localhost:3000`. If the app is not reachable at http://localhost:3000, stop and report what you tried.
+- **Step 3:** Before any valid-image, bypass-path, or encoded-traversal request, observe whether `/admin` requires authentication. Use a request without supplied credentials or an existing authenticated session. Record the exact request target, response status, relevant response evidence, and the basis for the conclusion. If `/admin` appears not to require authentication, record the evidence and stop immediately; do not perform further HTTP checks and do not change authentication.
+- **Step 4:** Only if the authentication observation does not trigger the stop condition, make one valid-image request and one bypass-path request. Record each exact raw request target as sent, response status, relevant response headers (including content type for the valid image), and a concise response observation. Use a traversal form grounded in the PARENT's verified path-building table, such as `/admin/catalog/image/images/catalog/../../../etc/passwd`, adapting the request target only as necessary to exercise the intended path through the wildcard route; record the exact target actually sent.
+- **Step 5:** Only if permitted by the authentication observation, send and record a request target containing `%2e%2e` and, if practical, a mixed-case form such as `%2E%2e`. Use request/controller evidence to determine whether the target reaches the controller unchanged, is decoded or normalized before controller handling, or is rejected upstream. Record the raw target and status for each attempt, and identify any inference separately from direct observation.
+- **Step 6:** Save one Markdown report under `projects/galaxy_game/summaries/` containing the observations, exact request/response evidence, distinction between verified and unverified facts, and any limitations. If any live check cannot be performed, state that explicitly and leave the corresponding acceptance criterion unmet.
 
 ## Acceptance Criteria
 
-- [ ] **AC1 — Percent-encoded traversal:** Report whether a request target containing `%2e%2e` reaches the controller unchanged, is decoded/normalized, or is rejected upstream. Include exact raw request target and available evidence; distinguish direct observation from inference.
-- [ ] **AC2 — Authentication observation:** Report whether `/admin` requires authentication and include the request/response evidence supporting that observation. If it appears not to require authentication, stop without changing anything.
-- [ ] **AC3 — Valid request evidence:** Record one actual valid-image request's exact raw target, response status, relevant headers including image content type, and response observation.
-- [ ] **AC4 — Bypass request evidence:** Record one actual bypass-path request's exact raw target, response status, and response observation. State whether evidence shows it reached the controller or was stopped/rewritten upstream.
-- [ ] **AC5 — Report-only boundary:** Save the report in `projects/galaxy_game/summaries/`; no code, test, route, helper, authentication, response-shape, configuration, or canonical-render changes are made.
+- [ ] **AC1 — Authentication observation:** Before any valid-image, bypass-path, or encoded-traversal request, report whether `/admin` requires authentication. Include the exact request target, response status, and response evidence from a request made without supplied credentials or an existing authenticated session. If it appears not to require authentication, stop without making further HTTP requests or changing anything.
+- [ ] **AC2 — Percent-encoded traversal:** If the authentication observation permits further checks, report how request targets containing `%2e%2e` (and a mixed-case variant if practical) are handled: controller receives them unchanged, they are decoded/normalized before controller handling, or they are rejected upstream. Include each exact raw request target and available evidence; distinguish direct observation from inference.
+- [ ] **AC3 — Valid request evidence:** If the authentication observation permits further checks, record one actual valid-image request's exact raw target, response status, relevant headers including image content type, and response observation.
+- [ ] **AC4 — Bypass request evidence:** If the authentication observation permits further checks, record one actual bypass-path request's exact raw target, response status, and response observation. State whether evidence shows it reached the controller or was stopped/rewritten upstream.
+- [ ] **AC5 — Report-only boundary:** Save exactly one Markdown report in `projects/galaxy_game/summaries/`; no code, test, route, helper, authentication, response-shape, configuration, or canonical-render changes are made.
 - [ ] **AC6 — Evidence integrity:** Do not claim an HTTP check passed if it was not run. If a request cannot be made or the app/environment cannot be identified, record the limitation and leave the affected criterion unmet.
 
 ## Stop Conditions — escalate to user immediately if:
 
-- The running application's base URL cannot be established from the available environment; stop and report the actual base URL. Request construction is known: `admin_catalog_image_path(path: '...')` → `/admin/catalog/image/...`. (Verified in `docker-compose.dev.yml`: web service maps port 3000:3000 → `http://localhost:3000`.)
-- `/admin` appears not to require authentication; record the observed evidence and stop. Do not fix authentication.
+- if the app is not reachable at http://localhost:3000, stop and report what you tried.
+- `/admin` appears not to require authentication; record the observed evidence and stop. Do not fix or add authentication.
 - A requested check would require changing a route, URL helper, authentication, response shape, app configuration, source code, tests, or canonical-image selection.
 - The application is unavailable, a valid image cannot be identified safely, or the bypass request cannot be made; report the limitation without substituting assumptions for live evidence.
 - Uncommitted changes or an environment issue would require changing files to proceed; do not make code changes.
 
 ## Commit Instructions
 
-This is a report-only task. Do not edit, stage, commit, or push code or configuration. Save the requested report in the summaries folder; report the exact report path and evidence gathered. If a task-file lifecycle action is required, follow the standard workflow only after the human approves proceeding.
+This is a report-only task with one deliverable: a Markdown report saved in the summaries folder. Do not edit, stage, commit, or push code or configuration. Report the exact report path and evidence gathered. If a task-file lifecycle action is required, follow the standard workflow only after the human approves proceeding.
 
 ## Dependencies
 
