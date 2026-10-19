@@ -64,3 +64,9 @@ I. Submodule pin: `git submodule status hyrax-webapp` and `grep -n VERSION hyrax
 
 Results go back to the web review agent, who drafts the SESSION_GUIDANCE.md edits one at a time (guard check, diff, then Tracy stages and commits).
 **Status**: OPEN — owner: Tracy (M4 laptop; the Intel MacBook if used)
+
+### 2026-10-18 — samvera/hyku#3399 closed unmerged; shim removal trigger unknown
+**What happened**: Tracy's PR `samvera/hyku#3399` (VERSION 7.1.0 to 7.2.0 on `7.2-stable`) was closed unmerged by a maintainer on 2026-10-15, after a change request on 2026-10-12 saying it needs to be merged from the tag. Issue `#3397` is still open. `config/initializers/version.rb` on `7.2-stable` now reads `VERSION = '7.2.0'` (all REPORTED: public GitHub pages read through a fetch tool, 2026-10-18). The 2026-10-15 `status.md` entry, item 8 of the 2026-10-15 handoff and `SESSION_GUIDANCE.md` line 251 (at commit `b171acb`; it quotes Tracy's report of 2026-10-14) still say the PR is approved and waits on an adjustment, and say the BlacklightAdvancedSearch shim (`e313f91`) should be removed when it merges. The guidance therefore tells agents a fix is pending that is not. Observed in the wvulibraries_knapsack project, web review session 2026-10-18.
+**What I already checked**: the shim's commit message ties it to `blacklight_advanced_search` versions, not to `VERSION` (REPORTED: commit page read through a fetch tool), so I can't see why #3399 would retire it. Check I in the M4 entry above asks which `hyrax-webapp` commit the build pins and whether it has VERSION 7.2.0.
+**What needs a second opinion**: (1) How did `7.2-stable` get to `7.2.0`, for example did a maintainer push it from the tag? (2) What upstream change, if any, would let the shim be removed? (3) After the M4 results, rewrite `SESSION_GUIDANCE.md` line 251 to match; the web review agent drafts that edit.
+**Status**: OPEN. Next action: M4 results, then the line 251 rewrite. Owner: Tracy.
