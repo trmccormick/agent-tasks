@@ -38,7 +38,7 @@ The human will tell you which web agents are available today. Here's guidance on
 | **ChatGPT (free)** | Image generation, visual understanding | No repo/GitHub access, moderate context | Image/visual tasks, secondary review |
 | **Gemini** | Excellent context length, brainstorming, general reasoning | No repo access | Long-context coordination, brainstorming complex architectures, secondary review |
 | **Perplexity** | Long context, cross-agent coordination | No file uploads, no GitHub repo access | Coordination between agents, synthesizing from pasted content, fallback for complex synthesis |
-| **GitHub Copilot (Experimental)** | Deep codebase access, VS Code integration, implementation support | **WVU/Samvera work only**; experimental; limited availability | **ENCOURAGE USE:** WVU/Samvera implementation work, code generation, verification; building experience with this tool |
+| **GitHub Copilot (Experimental)** | Deep codebase access, VS Code integration, task file verification | **WVU/Samvera work only**; experimental; limited availability | Paired agent for WVU/Samvera: verify task files for codebase accuracy, provide second opinions; evaluate capabilities |
 
 **Preferred Pairing Patterns:**
 
@@ -60,12 +60,12 @@ The human will tell you which web agents are available today. Here's guidance on
    - Grok for drafting (good for exploration, may need more revision)
    - Gemini if high complexity or long context needed
 
-5. **WVU/Samvera projects — Copilot experimentation phase:**
-   - **PREFERRED for implementation:** GitHub Copilot (experimental, building experience)
-   - Direct repo access, VS Code integration, excellent for code generation and verification
-   - Dispatch for most WVU/Samvera work when available — this is an experimentation phase
-   - Note: Limited availability; confirm with human before dispatching
-   - Fallback: Claude if Copilot unavailable
+5. **WVU/Samvera projects — Copilot as paired verification agent:**
+   - Use Claude or other agents for primary task file drafting
+   - **Pair with Copilot (experimental) for:** task file verification against codebase, second opinions, capability evaluation
+   - Copilot reads your codebase directly; request verification of paths, configurations, implementation details
+   - Confirmation: Optional final review before dispatch to understand Copilot's effectiveness
+   - Note: Limited availability; plan pairings with human before session
 
 **Tracking availability:** During your session, note which agents became unavailable or newly available. If an agent becomes unavailable mid-task, signal the next session with a handoff note.
 
