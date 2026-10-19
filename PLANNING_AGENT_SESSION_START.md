@@ -27,22 +27,45 @@ You are a **local planning or review agent**. The human will tell you the projec
 - Do research and preparation, not implementation
 
 ---
+
+## Qwen — Three Modes
+
+Qwen (local model, Ollama) has three distinct roles in this workflow:
+
+1. **Planning Mode**: Task decomposition, validate web agent suggestions against codebase patterns, identify constraints
+   - Use when: Web agents suggest approach but you need codebase validation
+   - Output: Refined task file, architecture notes, implementation constraints
+   - Then: Hand off to web agent review or implementation
+
+2. **Research Mode**: Read-only codebase exploration (no implementation)
+   - Use when: Need to understand architecture, find patterns, analyze dependencies
+   - Output: Codebase findings, architecture summary, pattern discovery
+   - Then: Pass findings to web agents (Claude, Grok) for synthesis/analysis
+   - Example: "Research the Hyku search architecture" → Qwen explores → pass findings to Claude for review
+
+3. **Implementation Mode**: Generate code based on approved task file
+   - Use when: Task is clear, acceptance criteria validated, approach approved
+   - Output: Code, tests, commits
+   - Then: Web agent or WVU Copilot reviews; human approves before push
+
+**Workflow pattern**: Web agents brainstorm → Qwen research (codebase exploration) → Claude synthesis → Qwen implementation
+
+---
 ## Available Web Agents and Pairing Strategy
 
 The human will tell you which web agents are available today. Here's guidance on capabilities and pairing:
 
 **PERSONAL ACCOUNT** (all free web agents + GitHub Copilot Premium):
 
-| Agent | Strengths | Limitations | Best Use |
-|-------|-----------|-------------|----------|
-| **Claude (free web)** | Preferred drafting + code review agent; can read public GitHub repos; good writing, reasoning, instruction following | Standard context length | Task file drafts, code review with GitHub context, first pass on complex problems |
-| **Grok (free web)** | Quick brainstorming; can read GitHub repos | Can drift; less structured than Claude | Brainstorming, exploring solutions, quick GitHub-context review |
-| **ChatGPT (free web)** | Image generation, visual understanding; can read GitHub repos | No email/account integration | Image/visual tasks, GitHub-context code review |
-| **Gemini (free web)** | Excellent context length, brainstorming, general reasoning | **Cannot access GitHub repos directly** | Long-context coordination, brainstorming complex architectures, task decomposition |
-| **Perplexity (free web)** | Long context, cross-agent coordination, web research | **Cannot access GitHub repos directly**, no file uploads | Coordination between agents, synthesizing from pasted content, web research, task decomposition |
-| **DeepSeek (free web, experimental)** | Strong reasoning, code analysis, competitive with Claude on complex tasks | No file uploads | Complex reasoning tasks, code analysis, second opinions; evaluation phase for open-source projects |
-| **GitHub Copilot (VSCode)** | Deep codebase access, VS Code integration, code verification | Limited to ~$2.50/week budget | Code escalations when Qwen stalls on personal/open-source projects |
-| **Personal Microsoft Copilot (web, fallback)** | Reasoning, synthesis, code review | No VSCode integration, no repo access | Fallback for personal projects if GitHub Copilot budget exhausted |
+| Agent | Strengths | Limitations | Best Use | How to Use |
+|-------|-----------|-------------|----------|-----------|
+| **Claude (free web)** | Preferred drafting + code review agent; can read public GitHub repos; good writing, reasoning, instruction following | Standard context length | Task file drafts, code review with GitHub context, first pass on complex problems | Provide GitHub URL directly—Claude will browse repo and review files in context |
+| **Grok (free web)** | Quick brainstorming; can read GitHub repos | Can drift; less structured than Claude | Brainstorming, exploring solutions, quick GitHub-context review | Provide GitHub URL—Grok will access and review |
+| **ChatGPT (free web)** | Image generation, visual understanding; can read GitHub repos | Moderate context | Image/visual tasks, GitHub-context code review | Provide GitHub URL for repo review; paste file content for detailed review |
+| **Gemini (free web)** | Excellent context length, brainstorming, general reasoning | Cannot access GitHub repos directly; file upload limited | Long-context coordination, brainstorming complex architectures, task decomposition | Copy-paste file contents or upload (if available); no GitHub URL access |
+| **Perplexity (free web)** | Long context, cross-agent coordination, web research | Cannot access GitHub repos; file upload limited on free plan (~few/day then copy-paste required) | Coordination between agents, synthesizing from pasted content, web research, task decomposition | Paste file contents; file uploads limited—after quota, copy-paste instead |
+| **GitHub Copilot (VSCode)** | Deep codebase access, VS Code integration, code verification | Limited to ~$2.50/week budget | Code escalations when Qwen stalls on personal/open-source projects | Integrated in VSCode; works with local files and GitHub repos |
+| **Personal Microsoft Copilot (web, fallback)** | Reasoning, synthesis, code review | No VSCode integration, no GitHub access | Fallback for personal projects if GitHub Copilot budget exhausted | Copy-paste code; no GitHub URL access |
 
 **WORK ACCOUNT** (WVU-only):
 
