@@ -1,5 +1,39 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-10-15
+**Last Updated:** 2026-10-19 — Session Closeout (planning session)
+
+---
+
+## 🔄 Session 2026-10-19 — Planning Closeout
+
+**Work Completed**:
+- ✅ Inventory check: Verified git state, active/backlog/completed task folders, all 5 sessions in status.md
+- ✅ Duplicate detection: Found stale copy of facet limiter task in active/ (untracked, never executed—only difference was status field)
+- ✅ Stale artifact removal: Deleted `active/2026-10-14-HIGH-BUG-FACET-LIMITER-DEFAULTS-TO-10-ON-7.2.md` (was untracked copy with no synthesis or progress)
+- ✅ Canonical version confirmed: `backlog/2026-10-14-HIGH-BUG-FACET-LIMITER-DEFAULTS-TO-10-ON-7.2.md` is source of truth (tracked, correct frontmatter, dispatch interface valid)
+
+**Open Sessions Status**:
+- None currently active (no dispatched tasks in agent window)
+- HYKU-720 testing: human/hykudev testing (not agent dispatch—manual testing by user)
+
+**Tasks Ready to Dispatch** (in priority order):
+1. **Facet Limiter Bug Fix** (`backlog/2026-10-14-HIGH-BUG-FACET-LIMITER-DEFAULTS-TO-10-ON-7.2.md`)
+   - Status: Backlog, READY TO DISPATCH
+   - Priority: HIGH (blocker for 7.2→main merge)
+   - Scope: Phase 1 — diagnose & fix facet limiter on feature/hyku-v7.2.0-upgrade, test on hykudev
+   - Dispatch path: Correct (points to backlog/, agent instructed to move to active/ in Step 0)
+
+**Stale Claims Verified**:
+- "All recent work has been committed" — ✅ Confirmed: `git log origin/main..HEAD` is empty (no local-only commits)
+- Session 2026-10-15 marked CLOSED — ✅ Confirmed: prod reindex verified complete by Jessica
+- HYKU-720 testing noted as in-progress — ✅ Still accurate: user testing on hykudev, not dispatched
+
+**Paused Sessions Protected**:
+- Sept 2026 tasks remain in `backlog/superseded/` with context notes (not removed, not lost)
+
+**Next Steps**:
+1. Dispatch facet limiter task (Phase 1) to Qwen implementation agent
+2. Monitor Phase 1 completion, then create Phase 2 backport task
+3. Continue HYKU-720 testing in parallel (no agent dispatch needed—human-driven testing)
 
 ---
 
