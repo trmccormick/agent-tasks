@@ -1,5 +1,5 @@
 # Agent-Tasks — Project Status & Task Tracking
-**Last Updated:** 2026-10-12 — header, In Flight and Recent Closures refreshed; closeout split into session and planning files (details in the session logs below)
+**Last Updated:** 2026-10-19 — Planning agent routing logic finalized; budget tracking integrated into PLANNING_AGENT_SESSION_START.md; WVU Copilot positioned for Samvera work; free agent GitHub access tiers documented. See handoff: `handoffs/claude-web/2026-10-19-PLANNING-CLOSEOUT.md`
 
 ---
 
