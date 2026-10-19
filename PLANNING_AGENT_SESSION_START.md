@@ -28,6 +28,41 @@ You are a **local planning or review agent**. The human will tell you the projec
 
 ---
 
+## Synthesis Report Structure — Evidence Framework
+
+A synthesis report proves you understand the project state before taking action. Every claim must be labeled by how it was established:
+
+- **(VERIFIED)** — I checked this myself this session (command output, direct file inspection).
+- **(REPORTED)** — From status.md, a handoff file, or human statement. Include the date: `[YYYY-MM-DD]`.
+- **(INFERRED)** — My conclusion based on other evidence. If material to the plan, flag for verification.
+
+**Required sections:** Assignment summary · Evidence basis (files read, labels) · Findings · Next steps
+
+*Example:*
+```markdown
+### Findings
+- Project `galaxy_game` has 3 active tasks (REPORTED [2026-10-18], from status.md)
+- Task 2026-10-18-X is complete — verified via git log commit on main ✓
+- Task 2026-10-17-Y has no handoff for 48h — INFERRED: may need follow-up, recommend verification next session
+```
+
+---
+
+## Routing Recommendation (Optional)
+
+If the planning outcome carries risk or affects other projects, add routing metadata:
+
+```
+Routing: YES
+Reason: Architecture change affecting downstream API consumers.
+Suggested capability: Review by agent with service-contract knowledge.
+Note: Planning agents recommend review; they cannot auto-dispatch. Human decides.
+```
+
+*See `REVIEW_AGENT_GUIDE.md § "Evidence Standards"` for full evidence definitions.*
+
+---
+
 ## Qwen — Three Modes
 
 Qwen (local model, Ollama) has three distinct roles in this workflow:
