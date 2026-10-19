@@ -21,31 +21,22 @@ subscription_expiration: UNKNOWN (check GitHub billing page)
 
 ## What We Know (June 1, 2026 - OFFICIAL POLICY)
 
-### CRITICAL: Death of the 0x Free Tier
+### CRITICAL: No 0x Free Tier in Copilot $10 Package
 
-**Major Policy Change**: GitHub is removing the 0x free tier for ALL agents. Every model now has a cost.
+**Current Policy (As of October 2026)**: GitHub Copilot $10/month provides NO free agent tiers. Every model in the Copilot Pro package costs AI Credits.
 
-**Current State (May 31, 2026)**:
+**Current State (October 2026)**:
 ```
-GPT-5 mini        = 0x (unlimited, FREE) ← PRIMARY EXECUTION
-Haiku             = 0.33x (paid)
-Claude Sonnet     = 1x (paid)
-Claude Opus       = 1.5x (paid)
-Local Codestral   = 0 tokens (local, unlimited)
-Local Qwen3.5     = 0 tokens (local, unlimited)
-```
+GPT-4o / Claude models = paid (cost varies by model)
+Haiku / Sonnet         = paid (cost varies by model)
+All web-based agents   = paid (no 0x tier)
 
-**Expected After June 1 (ASSUMPTION - NEEDS VERIFICATION)**:
-```
-GPT-5 mini        = 0.5x? (paid, but cheaper than Sonnet) ← NEW COST UNKNOWN
-Haiku             = 0.33x (paid, remains cheapest premium)
-Claude Sonnet     = 1x (paid, standard)
-Claude Opus       = 1.5x (paid, premium)
-Local Codestral   = 0 tokens (local, unlimited) ← BECOMES PRIMARY
-Local Qwen3.5     = 0 tokens (local, unlimited) ← BECOMES PRIMARY
+Local Codestral        = 0 tokens (local, unlimited)
+Local Qwen 3.6 35B     = 0 tokens (local, unlimited) ← PREFERRED LOCAL
+Local Qwen 3.8         = 0 tokens (local, slower, fallback)
 ```
 
-**Impact**: Your unlimited GPT-5 mini 0x tier is **GONE**. All execution work now has a cost UNLESS you use local models.
+**Impact**: All Copilot agents consume credits from your $10/month budget. Local models (Qwen 3.6 35B, Codestral) are the only true unlimited option.
 
 ### GitHub Copilot Pro: Usage-Based Billing Model (OFFICIAL)
 
@@ -281,7 +272,7 @@ IMPLEMENTATION (primary execution):
 | Tier | Agent | Cost | Role | Monthly Capacity |
 |---|---|---|---|---|
 | **0-Token** | Gemini | 0 | Planner | Unlimited |
-| **0-Token** | Qwen3.5 (local) | 0 | Detail, triage | Unlimited |
+| **0-Token** | Qwen 3.6 35B (local) | 0 | Detail, triage, execution | Unlimited |
 | **0-Token** | Perplexity | 0 | Validation | Unlimited |
 | **Paid** | Copilot Pro | $10/mo | Primary execution (simple work) | 5-10 tasks |
 | **Local** | Codestral (M4) | 0 | Complex/large context | Unlimited |
@@ -292,7 +283,7 @@ IMPLEMENTATION (primary execution):
 | Tier | Agent | Cost | Role | Monthly Capacity |
 |---|---|---|---|---|
 | **0-Token** | Gemini | 0 | Planner | Unlimited |
-| **0-Token** | Qwen3.5 (local) | 0 | Detail, triage, execution | Unlimited |
+| **0-Token** | Qwen 3.6 35B (local) | 0 | Detail, triage, execution | Unlimited |
 | **0-Token** | Codestral (M4) | 0 | Primary execution | Unlimited |
 | **0-Token** | Perplexity | 0 | Validation | Unlimited |
 | **Free** | Copilot Free | 0 (completions only) | Inline suggestions | Unlimited |
@@ -304,38 +295,39 @@ IMPLEMENTATION (primary execution):
 
 ### Before June 1 (Current: Unlimited 0x Tier)
 ```
-Gemini (0)           → Plan
+Gemini (0)              → Plan
    ↓
-Qwen3.5 (0, local)   → Triage & detail
+Qwen 3.6 35B (0, local) → Triage & detail & PRIMARY EXECUTION
    ↓
-Perplexity (0)       → Validate
+Perplexity (0)         → Validate
    ↓
-GPT-4.1 0x (0, FREE) → PRIMARY EXECUTION (unlimited)
+Copilot Pro (paid)     → Only for escalations or urgent work
    ↓
-Claude 1x (premium)  → Complex work only
+Claude 1x (premium)    → Complex work only
 ```
 
 **Characteristics**:
-- ✅ Unlimited GPT-4.1 execution
-- ✅ No budget constraints
-- ✅ Route ALL mechanical work to GPT-4.1 0x
-- ✅ Copilot Pro not in workflow (experimental/unknown)
+- ✅ Local Qwen 3.6 35B is unlimited execution baseline
+- ✅ Copilot agents consume paid credits (budget-constrained)
+- ✅ Route ALL mechanical work to Qwen 3.6 35B first
+- ✅ Copilot Pro for emergency escalations only
 
 ### After June 1 (OPTION A: Copilot Pro + Local Models)
 
 **Assumption**: GPT-4.1 available in Copilot Pro at reasonable cost
 
 ```
-Gemini (0)           → Plan
+Gemini (0)              → Plan
    ↓
-Qwen3.5 (0, local)   → Triage & detail
+Qwen 3.6 35B (0, local) → Triage & detail
    ↓
-Perplexity (0)       → Validate
+Perplexity (0)         → Validate
    ↓
 IMPLEMENTATION (choose based on work type):
-├─ Simple fix        → Copilot Pro (budget: 5-7 tasks/month)
-├─ Complex work      → Local Codestral (unlimited)
-└─ Rare/architecture → Claude 1x (premium)
+├─ Simple fix (primary) → Local Qwen 3.6 35B (unlimited)
+├─ Complex work         → Local Qwen 3.6 35B or Codestral (unlimited)
+├─ Escalation           → Copilot Pro (budget: 5-7 tasks/month)
+└─ Rare/architecture    → Claude 1x (premium)
 ```
 
 **Characteristics**:
@@ -345,21 +337,20 @@ IMPLEMENTATION (choose based on work type):
 - ⚠️ Need to track credit usage monthly (can run out mid-month)
 - ⚠️ When depleted: NO fallback, Copilot stops working
 
-### After June 1 (OPTION B: Local-First + Claude Premium)
-
-**Assumption**: Copilot Pro too expensive or GPT-4.1 not available
+**Path B: Local-First + Minimal Copilot** (current approach with Qwen 3.6 as primary)
 
 ```
-Gemini (0)           → Plan
+Gemini (0)              → Plan
    ↓
-Qwen3.5 (0, local)   → Triage & detail
+Qwen 3.6 35B (0, local) → Triage & detail & PRIMARY EXECUTION
    ↓
-Perplexity (0)       → Validate
+Perplexity (0)         → Validate
    ↓
 IMPLEMENTATION (primary execution):
-├─ 90% mechanical    → Local Codestral/Qwen3.5 (unlimited)
-├─ Emergency backup  → Copilot Free (completions only)
-└─ Rare/complex      → Claude 1x (premium, limited use)
+├─ 95%+ mechanical      → Local Qwen 3.6 35B (unlimited, preferred)
+├─ Fallback             → Local Codestral (unlimited)
+├─ Emergency escalation → Copilot Pro (budget-limited, <1 credit/month)
+└─ Rare/complex         → Claude 1x (premium, very limited use)
 ```
 
 **Characteristics**:
@@ -380,7 +371,7 @@ IMPLEMENTATION (primary execution):
 
 **What you can do**:
 - ✅ Route complex work to Copilot Pro but monitor spending daily
-- ✅ Test local Codestral/Qwen3.5 in parallel (preparing for potential Path B)
+- ✅ Test local Codestral/Qwen 3.6 35B in parallel (preparing for potential Path B)
 - ✅ Measure: How much Copilot work do you actually do per month?
 - ✅ Collect: Data on local model performance for same tasks
 - ✅ **Track spending**: Update COPILOT_USAGE_LOG.md weekly to prevent access loss
@@ -420,21 +411,24 @@ IMPLEMENTATION (primary execution):
 
 **What to do**:
 
-1. **Route by default to local models**:
-   - Simple RSpec fixes → Codestral (local, free)
-   - Model layer issues → Qwen3.5 (local, free)
-   - Boilerplate, controllers → Codestral (local, free)
-   - Only escalate to Copilot Pro if local fails
+1. **Route by default to Qwen 3.6 35B (preferred local model)**:
+   - Simple RSpec fixes → Qwen 3.6 35B (local, free, preferred)
+   - Model layer issues → Qwen 3.6 35B (local, free, preferred)
+   - Boilerplate, controllers → Qwen 3.6 35B (local, free, preferred)
+   - Fallback: Codestral if Qwen is overwhelmed
+   - Only escalate to Copilot Pro if both local models fail
 
 2. **Track which tasks REQUIRE Copilot Pro**:
-   - Record: Task name, complexity level, why local model wasn't sufficient
+   - Record: Task name, complexity level, why Qwen 3.6/Codestral wasn't sufficient
    - Pattern: Complex multi-file reasoning? Architectural decisions? Novel patterns?
    - Goal: Identify when Copilot Pro is truly needed vs. optional convenience
+   - Note: If Qwen 3.6 is consistently failing on certain task types, may indicate need to test Qwen 3.8 (though slower)
 
 3. **Measure credit efficiency**:
    - Copilot Pro budget: ~$10 AI Credits (prepaid, spread across 12 months)
    - Target: Use <1 credit/month on average (save credits for emergencies)
-   - If achievable: Demonstrates local models can handle 95%+ of work
+   - If achievable: Demonstrates Qwen 3.6 35B can handle 95%+ of work
+   - Track: Time to solution for Qwen 3.6 vs. Qwen 3.8 vs. Copilot Pro (to justify preferred choice)
 
 **Why**: At renewal (April/May 2027), if you averaged <1 credit/month usage, downgrading to Free is a no-brainer. You'll have proven local models work for your workflow.
 
@@ -485,8 +479,8 @@ THEN downgrade to Copilot Free ($0) + local primary
 
 | Tier | Agent | Cost | Role | When To Use |
 |---|---|---|---|---|
-| **Primary** | Codestral (M4 local) | 0 | Mechanical work, RSpec, controllers | Throughout month (default first) |
-| **Primary** | Qwen3.5 (local) | 0 | Detail, triage, model layer | Throughout month (default first) |
+| **Primary** | Qwen 3.6 35B (local) | 0 | Mechanical work, RSpec, detail, model layer (PREFERRED) | Throughout month (default first) |
+| **Primary** | Codestral (M4 local) | 0 | Alternative when Qwen busy, complex patterns | Throughout month (fallback) |
 | **0-Token** | Gemini | 0 | Planning, prioritization, coordination | Always in workflow |
 | **0-Token** | Perplexity | 0 | Validation, research | When needed |
 | **Secondary (CONTROLLED)** | Copilot Pro | $0.1-0.5 per task | Emergency escalations only | (1) Local failures anytime, (2) Only when critical |
@@ -498,10 +492,10 @@ THEN downgrade to Copilot Free ($0) + local primary
 ```
 Task arrives:
 ├─ Simple (RSpec, models, controllers)
-│  └─ Route to Codestral/Qwen3.5 (local, free)
+│  └─ Route to Qwen 3.6 35B (local, free, preferred)
 │
 ├─ Complex (multi-file refactor, architecture)
-│  └─ Try local first if you have time
+│  └─ Try local (Qwen 3.6 or Codestral) first if you have time
 │     ├─ Success? Done.
 │     └─ Failure AND NOT URGENT? Queue for weekend or next month
 │     └─ Failure AND URGENT? Check budget status:
@@ -593,31 +587,34 @@ GPT-4.1 available in Copilot Pro?
 
 **Why**: Everything else depends on knowing when your prepaid ends
 
-### Priority 2: Implement Local-First Routing (This Week)
+### Priority 2: Implement Local-First Routing with Qwen 3.6 (This Week)
 
-**Goal**: Set up Codestral/Qwen3.5 as default agents in Continue + AGENT_ROUTING.md
+**Goal**: Set up Qwen 3.6 35B as primary local agent in Continue + update AGENT_ROUTING.md
 
 **Action**:
-1. [ ] Update docs/new_agent/rules/AGENT_ROUTING.md: Add "Local First" section
-   - Simple tasks (RSpec, models, controllers) → Codestral
-   - Triage/detail → Qwen3.5
+1. [ ] Update docs/new_agent/rules/AGENT_ROUTING.md: Add "Local First - Qwen 3.6 Priority" section
+   - Simple tasks (RSpec, models, controllers) → Qwen 3.6 35B (PREFERRED)
+   - Fallback: Codestral if Qwen overwhelmed
+   - Triage/detail → Qwen 3.6 35B (PREFERRED)
    - Only escalate to Copilot Pro on local failure
-2. [ ] Test one RSpec fix with local Codestral (verify it works well)
+   - Note: Qwen 3.8 available if needed (slower but possibly more capable)
+2. [ ] Test one RSpec fix with local Qwen 3.6 35B (verify it works well)
 3. [ ] Confirm docs/new_agent/COPILOT_USAGE_LOG.md is ready for tracking
 
-**Why**: Establishes the baseline for measuring credit efficiency over prepaid period
+**Why**: Qwen 3.6 is now the preferred primary agent; establishes baseline for credit efficiency
 
 ### Priority 3: Track Every Copilot Escalation (Ongoing)
 
-**Goal**: Collect data on when/why Copilot Pro is actually needed
+**Goal**: Collect data on when/why Copilot Pro is actually needed (local failures)
 
 **Action**:
-1. [ ] Every time local model fails, escalate to Copilot Pro
-2. [ ] Log in COPILOT_USAGE_LOG.md: Date, task name, why local failed, credits used
-3. [ ] Review monthly: Identify patterns in escalation types
+1. [ ] Every time Qwen 3.6 or Codestral fails, escalate to Copilot Pro
+2. [ ] Log in COPILOT_USAGE_LOG.md: Date, task name, why Qwen/Codestral failed, credits used
+3. [ ] Review monthly: Identify patterns in escalation types (e.g., "Qwen 3.6 fails on X tasks")
 4. [ ] Target: <1 credit/month average (8-12 escalations/month)
+5. [ ] If Qwen 3.6 frequently fails on specific types, note for Qwen 3.8 testing
 
-**Why**: At renewal, this data proves whether downgrading to Free is viable
+**Why**: At renewal, this data proves whether downgrading to Free is viable AND informs which local model (3.6 vs 3.8) is most reliable
 
 ### Priority 4: No Credits-Tracking Burden Until 30 Days Before Expiration
 
@@ -648,11 +645,11 @@ A: Access halts. No overages, no charges, just stopped until next billing cycle.
 **Q: What if local Codestral fails on a task?**  
 A: Escalate to Copilot Pro. Log it in COPILOT_USAGE_LOG.md. This data is gold for your renewal decision.
 
-**Q: Should I compare Codestral vs Qwen3.5 performance?**  
-A: Yes, try both on similar tasks. You might find one is better for RSpec fixes, the other for model layer work. Document which works best.
+**Q: Should I compare Qwen 3.6 vs Qwen 3.8 vs Codestral performance?**  
+A: Yes, but Qwen 3.6 35B is preferred (faster). Test Qwen 3.8 only if 3.6 fails on specific tasks (trade-off: slower but possibly more capable). Codestral is a good fallback when Qwen is overwhelmed. Document patterns in success/failure per model.
 
-**Q: What if local models frequently fail?**  
-A: That would argue for renewing Copilot Pro (Path A). But based on your strategy, you're expecting <1 credit/month, so frequent failures are unlikely if local models are reasonable.
+**Q: What if Qwen 3.6 frequently fails?**  
+A: Try Qwen 3.8 (slower but possibly more capable). If still failing, escalate to Codestral. If both fail, escalate to Copilot Pro. Pattern of Qwen 3.6 failures should be tracked to identify task types needing premium agents. Note: Frequent failures unexpected given Qwen 3.6's typical performance.
 
 **Q: How do I prevent access loss?**  
 A: Monitor spending weekly. Target <$5/month average (leaves $5 buffer). Use GitHub Billing page to check current spend. Update COPILOT_USAGE_LOG.md. Yellow alert at $5, red alert at $8. Never allow it to hit $10 mid-month.
@@ -666,8 +663,8 @@ A: Good idea. If Codestral takes 10 minutes (wrong output), Qwen3.5 takes 5 minu
 **Q: What if my M4 Mac gets overwhelmed by local models?**  
 A: Unlikely. Codestral/Qwen3.5 are reasonable models. If they're causing system slowdown, that's a hardware limitation, not a model quality issue. Still use them; just accept slower response time.
 
-**Q: Will my local models improve by renewal date?**  
-A: Maybe. New local models might release over time. By renewal, you can evaluate latest options (Qwen4, DeepSeek improvements, etc.) and decide if local-first is still best for your workflow.
+**Q: Will Qwen improve by renewal date?**  
+A: Yes, likely. Qwen updates (3.7, 4.0, etc.) may release before renewal. By renewal date (April/May 2027), evaluate if new Qwen versions improve on problem areas. Qwen 3.6 is current preferred; watch for improvements that might make Qwen 3.8 or newer versions the better choice.
 
 **Q: Since I prepaid for a year, how does that affect June 1 policy?**  
 A: Not at all. June 1 policy only affects new monthly subscribers. Your prepaid continues unchanged. You have an unfair advantage for 12 months.
@@ -689,13 +686,14 @@ A: Absolutely. They'll hit the $10 credit limit hard if on monthly billing. Your
 | **Advantage** | Prepaid period lets you test patterns before renewal; NO billing risk ✅ |
 | **Next step** | Execute month-end burn strategy, track both emergency + burn |
 
-**Recommendation**: At renewal, you're likely keeping Copilot Pro. $10/month is minimal cost for productivity boost. Use this prepaid period to:
-1. Test local models (Codestral/Qwen3.5) on production work — are they reliable?
-2. Measure month-end burn effectiveness — how much backlog clears?
-3. Track emergency escalations — do you need Copilot Pro for urgent work?
-4. Build confidence — prove which tasks local models handle well
+**Recommendation**: At renewal, you're likely downgrading to Free or minimal Pro usage. Use this prepaid period to:
+1. Validate Qwen 3.6 35B on production work — is it reliable primary agent?
+2. Document Qwen 3.6 performance patterns — which task types succeed/fail?
+3. Track emergency escalations — when/why does Copilot Pro become necessary?
+4. Build confidence — prove Qwen 3.6 handles 95%+ of work
+5. Establish baseline for Qwen 3.8 comparison (slower but maybe needed for edge cases)
 
-**At Renewal Decision**: If local models are reliable for urgent work + month-end burns clear meaningful backlog, renewal is justified. $10/month is worth the acceleration.
+**At Renewal Decision**: If Qwen 3.6 35B proves reliable for 95%+ of work, downgrade to Free tier. $10/month saved. Keep Copilot Free for rare urgent completions. $0 monthly spend becomes sustainable.
 
 ---
 
