@@ -6,9 +6,39 @@ Project-specific guidance lives in `projects/<project>/SESSION_GUIDANCE.md`.
 
 **Planning sessions do not use this file.** They use `PLANNING_AGENT_CLOSEOUT.md`. If you are a research or implementation session, the planning and maintenance duties are not yours.
 
+**Handoff files are required for continuity.** All agents (research, implementation, web, review) MUST create a formal handoff file at the end of each session so the planning agent can track cross-agent work and status. See "Handoff Files (required)" section below.
+
 **Session closeout covers the task work done in that session, and nothing else.** Maintenance of everything else (stale or duplicate files, other sessions' drafts, archive housekeeping, `status.md` curation) belongs to the planning agent and the human.
 
 **Which exit applies?** If the task is finished, use sections 1-4. If you are stopping before it is finished and no one will resume in this same session, use section 2a (stop early). If this same session will resume after a usage limit, it is paused: see section 1b item 7.
+
+---
+
+## Handoff Files (required)
+
+Every research, implementation, and web agent session MUST create a handoff file so the planning agent and other agents can understand what was done, what is in progress, and what is waiting.
+
+**File location:** `projects/<project>/handoffs/<agent>/<date>-<type>-SESSION.md`
+- `<agent>`: Your agent folder name (e.g., `haiku-copilot`, `qwen-planning`, `claude-web`)
+- `<date>`: Session date (YYYY-MM-DD)
+- `<type>`: Session type (RESEARCH, IMPLEMENTATION, REVIEW, WEB) or specific domain (e.g., FACET-FIX, DIAGNOSTICS)
+
+**Handoff file MUST document:**
+1. **Task:** The task file path you worked on
+2. **What was done:** Changes made, code written, tests run, findings discovered
+3. **Commits:** All commits made this session (include hashes)
+4. **Status:** Is the task complete, paused, or blocked? Why?
+5. **Next action:** What the next session (planning or implementation) needs to do
+6. **Blockers:** Any issues preventing completion
+7. **Files left uncommitted:** If there are uncommitted files, explain why (awaiting approval, temporary diagnostics, etc.)
+
+**Why this matters:** The planning agent reads your handoff file to:
+- Understand what each agent did in parallel (cross-agent coordination)
+- Decide which task to dispatch next
+- Diagnose blockers or ask the human for approval
+- Update `status.md` with accurate summaries
+
+**Do NOT rely on `status.md` entries alone.** Your status.md entry is brief; the handoff file is the detailed record for agent-to-agent continuity.
 
 ---
 
@@ -60,6 +90,8 @@ Closeout covers only the files this session created or changed. Another session'
 
 8. If you cannot write your entry (for example `status.md` already has another session's uncommitted changes), say so in your report and stop on that item. Do not skip it silently, and do not stage the file as it stands.
 
+9. **Handoff file is primary, status.md is summary.** Your status.md entry should be concise (4 bullets). The full technical details (findings, diagnostics, test results, commit messages, blockers) belong in your handoff file (see "Handoff Files (required)" section). Reference your handoff file in your status.md entry if needed: "See handoff for details: `handoffs/<agent>/<date>-TYPE-SESSION.md`"
+
 ### 1c. Planning-agent curation
 
 Curation of `status.md` (header, stale claims, archiving) is the planning agent's job and is described in `PLANNING_AGENT_CLOSEOUT.md`. Do not do it.
@@ -95,6 +127,7 @@ Use this when you end a session with the task unfinished and a different session
 3. Move the task from `active/` to `backlog/` (or the folder the project's `SESSION_GUIDANCE.md` names instead) with `git mv`. Run `find . -name "<task file name>"` and confirm exactly one copy exists. If more than one exists, stop and report (section 0).
 4. Add one `status.md` Session Log entry (section 1b) with **Stop condition** set to `INCOMPLETE`, a pointer to the task file, and the next action. Detail lives in the task file, not in `status.md`.
 5. Do not stage or commit other files, and do not clean up anything else (section 0). Commit only your own explicit paths if the human has asked you to commit; otherwise leave them uncommitted and say so.
+6. **Create a handoff file** (see "Handoff Files (required)" section) documenting what was done, what is paused, and exact resume point. This is critical for the next agent to pick up efficiently.
 
 A session that is only **paused** (it will resume itself) does not do this. Its task stays in `active/` and it only notes the pause in the task's Progress block.
 
@@ -110,11 +143,13 @@ Clean up the stale drafts, superseded reports and duplicate artifacts that **thi
 
 ---
 
-## 4. Closeout Handoff
+## 4. Closeout Statement (brief summary for human)
 
-Leave a brief statement of:
+Leave a brief text statement of:
 - Maintenance performed (what was updated, moved, archived)
 - Exceptions (files that belong to other sessions and were left as-is, unresolved restrictions, anything else left as-is with reason)
+
+**Note:** This is your brief summary to the human. The formal handoff file (created per "Handoff Files (required)" section above) goes to the planning agent and contains full technical details.
 
 ---
 
