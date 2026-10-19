@@ -35,11 +35,11 @@ The human will tell you which web agents are available today. Here's guidance on
 
 | Agent | Strengths | Limitations | Best Use |
 |-------|-----------|-------------|----------|
-| **Claude (free web)** | Preferred drafting agent; good writing, reasoning, instruction following | Standard context length | Task file drafts, high-level review, first pass on complex problems |
-| **Grok (free web)** | Quick, good for brainstorming and exploring ideas | Can drift; less structured than Claude | Brainstorming, exploring solutions, quick feedback |
-| **ChatGPT (free web)** | Image generation, visual understanding | No repo/GitHub access, moderate context | Image/visual tasks, secondary review |
-| **Gemini (free web)** | Excellent context length, brainstorming, general reasoning | No repo access | Long-context coordination, brainstorming complex architectures, secondary review |
-| **Perplexity (free web)** | Long context, cross-agent coordination | No file uploads, no GitHub repo access | Coordination between agents, synthesizing from pasted content, fallback for complex synthesis |
+| **Claude (free web)** | Preferred drafting + code review agent; can read public GitHub repos; good writing, reasoning, instruction following | Standard context length | Task file drafts, code review with GitHub context, first pass on complex problems |
+| **Grok (free web)** | Quick brainstorming; can read GitHub repos | Can drift; less structured than Claude | Brainstorming, exploring solutions, quick GitHub-context review |
+| **ChatGPT (free web)** | Image generation, visual understanding; can read GitHub repos | No email/account integration | Image/visual tasks, GitHub-context code review |
+| **Gemini (free web)** | Excellent context length, brainstorming, general reasoning | **Cannot access GitHub repos directly** | Long-context coordination, brainstorming complex architectures, task decomposition |
+| **Perplexity (free web)** | Long context, cross-agent coordination, web research | **Cannot access GitHub repos directly**, no file uploads | Coordination between agents, synthesizing from pasted content, web research, task decomposition |
 | **DeepSeek (free web, experimental)** | Strong reasoning, code analysis, competitive with Claude on complex tasks | No file uploads | Complex reasoning tasks, code analysis, second opinions; evaluation phase for open-source projects |
 | **GitHub Copilot (VSCode)** | Deep codebase access, VS Code integration, code verification | Limited to ~$2.50/week budget | Code escalations when Qwen stalls on personal/open-source projects |
 | **Personal Microsoft Copilot (web, fallback)** | Reasoning, synthesis, code review | No VSCode integration, no repo access | Fallback for personal projects if GitHub Copilot budget exhausted |
@@ -48,7 +48,7 @@ The human will tell you which web agents are available today. Here's guidance on
 
 | Agent | Strengths | Limitations | Best Use |
 |-------|-----------|-------------|----------|
-| **WVU Copilot (web agent)** | Primary code reviewer for AI-generated code; detects SQL injection, N+1 queries, hallucinated methods, Rails version mismatches, security issues; public repo access | No VSCode integration, no file operations | **Primary reviewer for all WVU/Samvera AI-generated code** (Qwen/GitHub Copilot output); catch AI mistakes before commit |
+| **WVU Copilot (web agent)** | Architecture review, risk assessment, dispatch validation, diff review; strong on Samvera/Hyku patterns | No reliable GitHub access, no file operations, no IDE integration | Pre-implementation: validate architecture & risk; Post-implementation: review diffs & validate work completion |
 
 **Preferred Pairing Patterns:**
 
@@ -90,10 +90,15 @@ Before planning work, ask the human:
    - Determines routing: WVU/Samvera → WVU Copilot as primary reviewer; Personal projects → GitHub Copilot (if budget) or free agents
    - Also determines scope of work for this session
 
-2. **"What's our GitHub Copilot budget status?"** (personal projects AND WVU escalation decisions)
-   - **Personal projects**: If >70% remaining, OK to escalate Qwen → GitHub Copilot; if <40%, use Personal Microsoft Copilot or free agents
-   - **WVU/Samvera work**: WVU Copilot primary review is unlimited; use free agents (Claude/Grok) for secondary escalation, not GitHub Copilot budget
-   - Reference: `docs/COPILOT_USAGE_LOG.md` tracks monthly spend; target ~$2.50/week for personal projects only
+2. **"What's our GitHub Copilot budget status?"** (escalation decisions)
+   - Reference: `docs/COPILOT_USAGE_LOG.md` tracks monthly spend; target ~$2.50/week
+   - GitHub Copilot is a **last resort**, not primary tool
+   - **Before escalating to GitHub Copilot, try**:
+     1. Simplify the task (break into smaller, clearer pieces)
+     2. Start a new session (clean context, no bloat)
+     3. Use free agents (Claude, Grok, Gemini, Perplexity)
+     4. Only then escalate to GitHub Copilot if budget allows (~70%+ remaining)
+   - **If budget is low** (<40% remaining): don't use GitHub Copilot, rely on task simplification + new sessions + free agents
 
 3. **"Any known blockers or carryover from last session?"**
    - Helps you prioritize and avoid repeated stalls
@@ -102,19 +107,42 @@ Once you have answers, you can make smart routing decisions.
 
 ---
 
-## Project Classification (Work vs Personal Budget)
+## Escalation Strategy (Before Using GitHub Copilot Premium)
 
-**WORK ACCOUNT** (use WVU Copilot, do NOT consume personal GitHub budget):
+GitHub Copilot Premium ($2.50/week budget) is a **last resort**, not the primary tool. Before escalating:
+
+1. **Use non-GitHub free agents for task decomposition**: Gemini, Perplexity break complex work into smaller, clearer pieces (they don't need repo access). Qwen retries on each piece—often succeeds.
+2. **Use GitHub-capable free agents for code review**: Claude, Grok, ChatGPT can read public GitHub repos directly. Provide GitHub URLs or paste diffs—they review in repo context.
+3. **Use WVU Copilot for Samvera/Hyku specialized review**: Paste diffs to WVU Copilot for architecture/pattern review on WVU/Samvera code (specializes in Rails/Hyku, validates design decisions).
+4. **Start a new session if stuck**: Clean context window eliminates bloat and confusion that makes Qwen stall.
+5. **Check budget and escalate cautiously**: Only escalate to GitHub Copilot if you have >70% budget remaining after trying above steps.
+6. **If budget is low**: Keep using task simplification + free agent review + new sessions instead of GitHub Copilot.
+
+**Typical workflow**:
+- Qwen stalls on complex refactor → Gemini/Perplexity breaks into 3 smaller tasks → Qwen succeeds on each piece
+- Qwen generates code → Give Claude/Grok the GitHub URL → They review in repo context → Suggest fixes → Qwen implements
+- WVU/Samvera code review → Paste diffs to WVU Copilot → Validates Samvera patterns + architecture → GO/REVISE/STOP decision
+- Edge case still stuck → New session with cleaner context → Qwen retries → Success
+
+This approach keeps you under budget while improving quality through multiple review gates. **Escalate to GitHub Copilot only after exhausting free options.**
+
+---
+
+## Project Classification (Context Only)
+
+Context for understanding which agents specialize in which work:
+
+**WORK ACCOUNT** (WVU/Samvera projects):
 - Any project in `projects/wvulibraries_*` folder
 - Any project in `projects/samvera_*` folder
-- Any project explicitly marked as WVU/Samvera in the handoff or task file
-- Context: Human is Samvera Hyku Community Developer at WVU; all Samvera/WVU Libraries work is professional work-related, not personal
+- Any project explicitly marked as WVU/Samvera in handoff
+- **Note**: WVU Copilot specializes in architecture/risk review for these projects; provide diffs/files for Samvera pattern validation
 
-**PERSONAL ACCOUNT** (use personal GitHub Copilot budget, then Personal Microsoft Copilot, then free agents):
+**PERSONAL ACCOUNT** (other projects):
 - Projects outside `wvulibraries_*` and `samvera_*` folders
 - Projects explicitly marked as personal in handoff
 
-**Rule**: When in doubt, ask in the intake questions. Better to confirm than to accidentally burn personal budget on work.
+**Budget strategy**: For **any project**, prefer free tools first (Qwen, Gemini/Perplexity for decomposition, Claude/Grok/ChatGPT for GitHub-context code review, WVU Copilot for Samvera architecture). Only use GitHub Copilot Premium after exhausting free options.
 
 ---
 
