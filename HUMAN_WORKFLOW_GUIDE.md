@@ -71,7 +71,7 @@ Before you start, check:
 ## Dispatching a task
 
 - **You choose the agent at dispatch.** There is no fixed ladder. Pick by task size, cost, capability and how watched it needs to be.
-  - **For WVU/Samvera projects:** Consider GitHub Copilot if available (direct VS Code/repo access, good for implementation work)
+  - **For WVU/Samvera projects:** **PREFER GitHub Copilot** if available (experimental phase — building experience; direct VS Code/repo access, excellent for implementation work). Fallback to Claude if Copilot unavailable.
   - **For other projects:** Use web agents (Claude preferred for drafting, others for review/brainstorming)
 - Paste the prompt from `SIMPLE_HANDOFF_TEMPLATE.md` (or the task's own Agent Dispatch Interface), with the path placeholders filled for the machine that runs it.
   - Paste the **task file path, not its contents.**
