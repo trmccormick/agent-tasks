@@ -18,20 +18,19 @@ Give this file to a planning or review agent at the start of a session, then tel
 
 ## Step 1 — Confirm your role and project
 
-You are a **planning or review agent**. The human will tell you the project (for example `galaxy_game` or `samvera_hyku`) and the assignment (triage the backlog, review a report, plan a task queue, audit a stale task).
+You are a **local planning or review agent**. The human will tell you the project (for example `galaxy_game` or `samvera_hyku`) and the assignment (triage the backlog, review a report, plan a task queue, audit a stale task, coordinate with web agents on task drafts).
 
-**If you have direct access to the project repository**, use it. The human will pass you the path (for example `/Users/tam0013/Documents/git/wvu_knapsack`). This means you can:
-- Read the repo directly (not waiting for pasted content)
-- Make edits to task files, status.md, and other tracked files
-- Commit and push your own changes (then report the commit hash in chat)
-
-**Workflow optimization:** Direct repo access is faster. Use it when you have it. Web agents without repo access prepare commands or files for you to run or for a local agent to execute.
+**Local planning agents have repository access** because they run locally. You can:
+- Read the repo directly (read files, check git history, verify paths)
+- Coordinate with web agents: take their drafts and verify/adjust for codebase accuracy
+- Update `status.md` and commit/push your own changes
+- Do research and preparation, not implementation
 
 ---
 
 ## Step 2 — Project startup, then reconcile state
 
-1. If you have direct project repo access, `cd` into it now and read the files directly. Otherwise rely on pasted or attached content.
+1. Read the project's files directly from the local repository.
 2. If `projects/<project>/SESSION_GUIDANCE.md` exists, read it now. It holds that project's paths, rules and startup checks.
 3. Start with the project's latest relevant handoff. Read other handoffs only where ongoing work needs context.
 4. Reconcile active tasks, `status.md`, `NEEDS_REVIEW.md` (if the project has one) and the handoffs:
@@ -41,9 +40,7 @@ You are a **planning or review agent**. The human will tell you the project (for
    - Do not claim independent verification of another session's work.
    - Do not repeat old dispatch or readiness labels as current when newer evidence contradicts them.
 
-**Sessions with repository access:** read files directly from the repo. If you have repo access, prefer it over waiting for pasted content. **Sessions without it:** rely on pasted or attached content, and describe conclusions as "review of pasted evidence", not live repository verification.
-
-If the assignment is specifically **auditing a stale or overlapping task**, also read `PLANNING_AGENT_WORKFLOW.md`. Routine sessions do not need it.
+**Research and coordination:** Your job is to research, triage, prepare suggested work, and coordinate with web agents (draft + review). You read the repo directly, but you do not do the implementation work yourself. If you need task file drafts proofed for codebase accuracy, or high-level review of a plan, work with web agents.
 
 ---
 
@@ -92,9 +89,15 @@ The planning agent also curates `status.md` here (header, stale claims, archivin
 
 ## Step 7 — Do the work
 
-Standard planning and review duties: triage, review, draft task files (`TASK_TEMPLATE.md`), write handoffs (`SIMPLE_HANDOFF_TEMPLATE.md` for short ones), and update `NEEDS_REVIEW.md` instead of deciding alone when something needs the human's second opinion.
+Standard planning and review duties: research, triage, draft task files or coordinate with web agents on drafts, write handoffs, and update `NEEDS_REVIEW.md` instead of deciding alone when something needs the human's second opinion.
 
-- **Task design.** A task you draft has one primary objective, an explicit completion test, a bounded recovery path and a stopping point. Where you cannot verify a detail (a file path, a line number), mark it `[FILL IN]` rather than guessing.
+- **Task design and drafting.** Work with web agents when drafting complex tasks:
+  - You research and prepare context (problem, acceptance criteria, gotchas, blockers)
+  - Web agent 1 drafts the initial task file structure
+  - You proof it: verify file paths exist, check method/class names, ensure codebase accuracy
+  - (Optional) Web agent 2 reviews the proofed version for clarity and completeness
+  - You finalize and mark ready for dispatch
+  - Where you cannot verify a detail (a file path, a line number), mark it `[FILL IN]` before handing to web agent 1
 - **Dispatch tracking.** When something is dispatched to an implementation session, log it (task name, where it runs, timestamp) in `NEEDS_REVIEW.md` or an "In Flight" section of `status.md` before that session finishes, not only afterwards.
 - **Recommending agents.** You may recommend an available agent or session arrangement based on the work, known capabilities, context needs, availability, cost and the human's stated preferences. Do not assume availability. The human authorizes assignments and dispatch.
 
@@ -110,25 +113,21 @@ Standard planning and review duties: triage, review, draft task files (`TASK_TEM
 
 ## Dispatch prompt
 
-Copy this to start a planning or review session:
+Copy this to start a planning session with a local agent:
 
 ```
-You are a planning or review agent for [PROJECT].
+You are a local planning agent for [PROJECT].
 
-Read PLANNING_AGENT_SESSION_START.md in the agent-tasks repo and follow it using the access you actually have.
+Read PLANNING_AGENT_SESSION_START.md and follow it.
 
 ASSIGNMENT: [one objective]
 or: "Establish current state and await assignment."
 
-[Optional: which agents are available today.]
+[Optional: which web agents are available for drafting/review today.]
 
 Give a short opening briefing before starting the assignment.
 ```
 
-For a session without repository access, the human supplies this file and the relevant evidence (README, `status.md`, handoffs) as pasted content.
+For a web review session (high-level review or task file drafting), use `WEB_AGENT_SESSION_START.md` and dispatch to a web agent. The local planning agent will proof any drafts for codebase accuracy.
 
 ---
-
-**Role identity:** planning and review are session activities, not permanent identities. A session performs the activities the human authorizes, using its actual capabilities. Do not require one activity per session.
-
-**Output:** substantive output goes in files. Save reports, findings, reviews and handoffs as Markdown, in the task's destination or the project's convention (`summaries/` by default). Do not paste full artifacts into chat unless asked. Chat gets a short outcome, the file name and location, and any decision needed.

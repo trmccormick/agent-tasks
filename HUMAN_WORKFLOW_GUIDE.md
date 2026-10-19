@@ -22,63 +22,85 @@ One session, one role. New work in another role is a new session. Long sessions 
 ## How a session works
 
 ```
-You talk to the planning agent (local)
-  └─ It reads status, triages, and writes or picks a task file
-  └─ It writes a dispatch prompt for the task
-       └─ You choose the agent for this task and paste the prompt into a new session
-            └─ OPTION A: Agent has repo access (Qwen, GitHub Copilot, etc.)
-               └─ Agent makes edits, commits, pushes directly
-               └─ Agent reports commit hash in chat
-               └─ (Optional) You review the diff via GitHub or send to web review agent
-            └─ OPTION B: Agent has no repo access (Claude free web, etc.)
-               └─ Agent prepares commands or files for you to run
-               └─ You run the commands locally or send to a local agent (Option A)
-            └─ The agent (or you, if no repo access) runs targeted tests, reports
-            └─ The agent closes out (SESSION_CLOSEOUT.md), or stops early if unfinished
-  └─ You bring the result back to the planning agent
-  └─ The planning agent updates status and writes a session handoff
-  └─ You commit and push (agents with repo access may commit/push directly; others send commands to you)
+You talk to the local planning agent (local)
+  └─ Does research, reads status.md, prepares suggested work
+  └─ Hands to web agent 1 (review/draft agent) for high-level review and task file draft
+       └─ Web agent 1 drafts task files, reviews context, suggests improvements
+       └─ You bring draft back to local planning agent
+  └─ Local planning agent proofs the draft, adjusts for codebase accuracy, updates paths and context
+       └─ (Optional) Hands adjusted draft to web agent 2 (final reviewer) for second opinion
+       └─ Web agent 2 reviews the codebase-adjusted version
+  └─ Local planning agent finalizes task and writes dispatch prompt
+       └─ You dispatch to implementation agent (local with repo access, or web agent with commands)
+            └─ Implementation agent does the work, commits/pushes or reports progress
+            └─ You bring results back to planning agent
+  └─ Local planning agent updates status and writes session handoff
+  └─ You commit and push (from the laptop where work lives)
 ```
 
-**Workflow optimization pattern:** If a local agent (Qwen, GitHub Copilot) has repo access, let them make changes → commit → push. If a web agent (Claude free, ChatGPT free) is reviewing, have them check the GitHub diff. This avoids multiple round-trips of "prepare command → run → report" with no repo access.
-
-**Example:** You dispatch a task to Qwen (with repo access). Qwen reads the task, makes changes, commits with a clear message, and pushes. You then ask Claude (web, no repo access) to review the GitHub diff. Claude reviews and approves, or identifies issues for Qwen to fix in the next session.
-
-You are the bridge: approving, carrying results between sessions, and setting priorities.
-
+**Workflow pattern:** Local agent → web draft → local adjust → (optional) web review → dispatch → execute. Local agents do research, codebase verification, and status curation. Web agents do high-level review and drafting. This keeps context tight and reduces review cycles.
 ---
 
 ## Starting a planning session
 
 Give it, in this order:
-1. The role: "planning agent", and which project.
-2. It reads `PLANNING_AGENT_SESSION_START.md`, then `PLANNING_AGENT_CLOSEOUT.md`, then `notes/AGENT_NOTES.md`.
-3. The most recent session handoff: `projects/<project>/handoffs/<agent>/session_handoff_YYYY-MM-DD_<TOPIC>.md`.
-4. **If the agent has local repo access**, also pass the **path to the project repository** (e.g., `/Users/tam0013/Documents/git/wvu_knapsack`). This allows direct edits, commits, and pushes without human intermediation.
+1. The role: "local planning agent" or "planning agent" (same role, emphasizes it runs locally)
+2. Which project.
+3. It reads `PLANNING_AGENT_SESSION_START.md`, then `PLANNING_AGENT_CLOSEOUT.md`, then `notes/AGENT_NOTES.md`.
+4. The most recent session handoff: `projects/<project>/handoffs/<agent>/session_handoff_YYYY-MM-DD_<TOPIC>.md`.
 5. Your priority for the day.
 
-**Workflow optimization:** Agents with direct repo access (local planning agents, Qwen, GitHub Copilot) should make changes directly → commit → push, then report. Web agents without repo access (Claude free web, ChatGPT free web) review and prepare commands for you to run or for a local agent to execute. This reduces round-trips.
-
-For a web review session, give it `WEB_AGENT_SESSION_START.md` first, then optionally pair it with a local agent that can execute its recommendations.
+**Local planning agent responsibilities:**
+- Research and triage
+- Read and curate `status.md`
+- Prepare suggested work
+- Coordinate with web agents for drafting and review (see "Drafting task files with web agents" below)
+- Verify codebase context and paths (web agents may miss implementation details)
+- Finalize tasks and write dispatch prompts
+- Update `status.md` and session handoffs
 
 Before you start, check:
-- `git status --short` and `git log --oneline origin/main..HEAD` on the laptop you are on.
+- `git status --short` and `git log --oneline origin/main..HEAD` on the machine running this session.
 - Which laptop holds work that is not on origin (see "Several laptops" below).
-- Project-specific startup (Galaxy: the baseline test log, Docker running) is in `projects/<project>/SESSION_GUIDANCE.md`.
+- Project-specific startup is in `projects/<project>/SESSION_GUIDANCE.md`.
 
 ---
 
 ## Dispatching a task
 
 - **You choose the agent at dispatch.** There is no fixed ladder. Pick by task size, cost, capability and how watched it needs to be.
-  - **Agents with repo access** (Qwen, GitHub Copilot, local planning agent): Use for tasks requiring direct code edits, commits, and pushes. They can work autonomously.
-  - **Agents without repo access** (Claude free web, ChatGPT free web): Use for review, planning, drafting tasks, or pairing with a repo-access agent (web agent prepares commands, local agent executes).
 - Paste the prompt from `SIMPLE_HANDOFF_TEMPLATE.md` (or the task's own Agent Dispatch Interface), with the path placeholders filled for the machine that runs it.
-  - **For agents with repo access**, include the project repo path (e.g., `/Users/tam0013/Documents/git/wvu_knapsack`). They will read and edit directly.
-  - **For agents without repo access**, paste the task file path (not contents) and be ready to provide pasted content if needed.
-- Step 0 of the prompt moves the task from `backlog/` to `active/`. If the task has `resume: true`, the agent reads its Progress / Resume block first and continues, and does not restart.
+  - Paste the **task file path, not its contents.**
+- Step 0 of the prompt moves the task from `backlog/` to `active/`. If the task has `resume: true`, the agent reads its Progress / Resume block first and continues.
 - The synthesis report is saved as a file in `summaries/` before any implementation, and chat is for questions.
 - Two attempts at a fix, then stop and bring it back to the planning agent for re-diagnosis.
+
+---
+
+## Drafting task files with web agents
+
+Task files are often drafted collaboratively: local planning agent researches, web agent drafts, local agent verifies codebase details.
+
+**Pattern (typical):**
+1. **Local planning agent** prepares context (problem, acceptance criteria, blockers, known gotchas)
+2. **Web agent 1** (draft agent) creates initial task file from the context, filling in high-level structure
+3. **Local planning agent** proofs the draft:
+   - Verifies file paths exist and are accurate
+   - Confirms method names, class names, and implementation details
+   - Adjusts for codebase-specific conventions
+   - Updates dispatch interface with correct paths
+4. **(Optional) Web agent 2** (final reviewer) reviews the codebase-adjusted version for clarity and completeness
+5. **Local planning agent** finalizes and is ready for dispatch
+
+**Why this works:**
+- Web agents are good at high-level structure and writing
+- Local agents have repo access and catch path/name errors
+- Two web agent passes (draft + review) catch writing and clarity issues
+- Reduces back-and-forth and speeds up task file quality
+
+**Commands for steps:**
+- Web agents: You hand them text or pasted context; they draft
+- Local agent: `git ls-files`, `grep`, `find` to verify paths; reads code to check names and conventions
 
 ---
 
@@ -86,12 +108,12 @@ Before you start, check:
 
 | Situation | What happens |
 |---|---|
-| Task finished | Agent follows `SESSION_CLOSEOUT.md`: one Session Log entry in `status.md`, task moved to `completed/`, only its own files touched. **If the agent has repo access**, they commit and push. **If not**, they prepare the changes for you to commit/push. |
-| Stopping unfinished; someone else will pick it up | **Stop early** (`SESSION_CLOSEOUT.md` section 2a): update the task's Progress / Resume block, set `resume: true`, move it back to `backlog/`, one `INCOMPLETE` line in `status.md`. **If the agent has repo access**, they commit and push. **If not**, they prepare changes for you or a local agent. |
+| Task finished (implementation agent) | Agent follows `SESSION_CLOSEOUT.md`: one Session Log entry in `status.md`, task moved to `completed/`, only its own files touched. Results come back to planning agent. |
+| Stopping unfinished; someone else will pick it up | **Stop early** (`SESSION_CLOSEOUT.md` section 2a): agent updates task's Progress / Resume block, sets `resume: true`, moves it to `backlog/`, writes one `INCOMPLETE` line in `status.md`. Results come back to planning agent. |
 | Paused at a usage limit and the same session will come back | Nothing moves. The task stays in `active/`. A missing closeout means paused, not abandoned. |
-| Planning session | `PLANNING_AGENT_CLOSEOUT.md`: inventory, propose, wait for you, act on approved items only. **Planning agents with repo access** commit and push handoff and status updates directly. **Planning agents without repo access** send commands to you. |
+| Planning session (local planning agent) | `PLANNING_AGENT_CLOSEOUT.md`: inventory, research, prepare suggested work, coordinate with web agents, update `status.md`. Local agent commits and pushes changes. Handoff file created in `handoffs/haiku-copilot/` or agent-specific folder. |
 
-A session never cleans up another session's files. The planning agent does maintenance, with you. Agents with repo access commit their own changes; agents without repo access send commands for you to run or a local agent to execute.
+A session never cleans up another session's files. The local planning agent does maintenance and curation, with the human's approval.
 
 ---
 
@@ -157,7 +179,8 @@ Optional. They keep the planning agent focused. Not written down elsewhere in ag
 
 ## Common mistakes
 
-- **Not using agent repo access when available.** If a local agent has the repo path, let them make changes and commit. This is faster than "agent prepares command → you run it → agent reads output → repeat".
+- **Skipping web agent review on task file drafts.** Two passes (draft + review) catch issues faster than one long back-and-forth.
+- **Not verifying paths after web agent draft.** Web agents may use plausible paths that don't exist. Local agent must proof.
 - **Skipping the handoff.** Context is lost and the next session starts from scratch.
 - **Pasting a task's contents instead of its path.** The agent can read the file, and pasting wastes tokens.
 - **Approving a fix without reading the synthesis report.** Read the risk section first.
@@ -165,10 +188,9 @@ Optional. They keep the planning agent focused. Not written down elsewhere in ag
 - **Writing documentation during an implementation task.** Flag the gap and make it a separate task.
 - **A third fix attempt.** Two, then re-diagnose.
 - **Letting `git add -A`, `git stash`, `git reset`, `git checkout` or a plain `git pull` on a dirty tree near a session's closeout.** They can sweep in or destroy other sessions' work.
-- **Treating "complete" as pushed.** Check origin (or ask the agent to report the commit hash).
+- **Treating "complete" as pushed.** Check origin.
 - **Mixing roles in one long session.** Spawn a new session.
 - **A web agent giving you two requests at once, or switching delivery methods mid-job.** Ask it to slow down and follow "Handing over changes".
-- **Assuming agents without repo access can commit.** Only agents with the project repo path can commit and push directly. Web agents send you commands or files.
 
 ---
 
