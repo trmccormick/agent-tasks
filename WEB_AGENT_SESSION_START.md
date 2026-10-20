@@ -42,7 +42,7 @@ You are a **review and planning agent**. You make the judgment calls an implemen
 2. `projects/<project>/SESSION_GUIDANCE.md`, if it exists. It has that project's paths and rules.
 3. The first screen of the project's `status.md` (header and project state). The planning agent keeps it curated, so read further only if `NEEDS_REVIEW.md` points there or the human asks about overall state.
 4. Individual task files, code or transcripts only when the `NEEDS_REVIEW.md` entry does not give enough to decide. Ask for the specific thing, not "paste the whole session."
-5. **Check handoff files** from other agents: `projects/<project>/handoffs/<agent>/<date>-*-SESSION.md` (these contain cross-agent context the planning agent may need)
+5. **Check handoff files** from other agents: `projects/<project>/handoffs/<agent>/<date>-*-CLOSEOUT.md` (these contain cross-agent context the planning agent may need)
 
 ---
 

@@ -47,7 +47,7 @@ Give it, in this order:
 1. The role: "local planning agent" or "planning agent" (same role, emphasizes it runs locally)
 2. Which project.
 3. It reads `PLANNING_AGENT_SESSION_START.md`, then `PLANNING_AGENT_CLOSEOUT.md`, then `notes/AGENT_NOTES.md`.
-4. The most recent session handoff: `projects/<project>/handoffs/<agent>/session_handoff_YYYY-MM-DD_<TOPIC>.md`.
+4. The most recent session handoff: `projects/<project>/handoffs/<agent>/<date>-<type>-CLOSEOUT.md`.
 5. **Which web agents are available today** (including whether Copilot is available for WVU/Samvera work).
 6. Your priority for the day.
 
@@ -140,7 +140,7 @@ Exactly one copy of a task file exists at any time. If you find two, nobody move
 
 At the end of a long or important session, the planning agent (or web agent) writes one and **you commit it**, because a file that exists only in chat is invisible to your other laptops.
 
-Path: `projects/<project>/handoffs/<agent>/session_handoff_YYYY-MM-DD_<TOPIC>.md` (`<agent>` is one subfolder per agent, for example `claude-web`)
+Path: `projects/<project>/handoffs/<agent>/<date>-<type>-CLOSEOUT.md` (`<agent>` is one subfolder per agent, for example `claude-free-web`)
 
 A good handoff has: current state (verified or reported), what landed with commit hashes, what is open, decisions waiting on you, known pre-existing problems, files touched, and the first thing to do next session. Galaxy handoffs also carry the test baseline.
 

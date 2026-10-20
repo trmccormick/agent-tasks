@@ -57,7 +57,7 @@ Give the human one list: item, owner, evidence, recommended action. Wait. Do not
 Every planning session MUST create a formal handoff file so the next session (planning, research, or implementation) can quickly resume without re-reading everything.
 
 **File location:** `projects/<project>/handoffs/<agent>/<date>-<type>-CLOSEOUT.md`
-- `<agent>`: Your agent folder name (e.g., `haiku-copilot`, `qwen-planning`, `claude-web`)
+- `<agent>`: Your agent folder name (e.g., `haiku-copilot`, `qwen-planning`, `claude-free-web`)
 - `<date>`: Session date (YYYY-MM-DD)
 - `<type>`: Session type (PLANNING, RESEARCH, IMPLEMENTATION, or specific domain)
 

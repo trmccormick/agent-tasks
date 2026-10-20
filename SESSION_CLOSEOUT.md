@@ -18,8 +18,8 @@ Project-specific guidance lives in `projects/<project>/SESSION_GUIDANCE.md`.
 
 Every research, implementation, and web agent session MUST create a handoff file so the planning agent and other agents can understand what was done, what is in progress, and what is waiting.
 
-**File location:** `projects/<project>/handoffs/<agent>/<date>-<type>-SESSION.md`
-- `<agent>`: Your agent folder name (e.g., `haiku-copilot`, `qwen-planning`, `claude-web`)
+**File location:** `projects/<project>/handoffs/<agent>/<date>-<type>-CLOSEOUT.md`
+- `<agent>`: Your agent folder name (e.g., `haiku-copilot`, `qwen-planning`, `claude-free-web`)
 - `<date>`: Session date (YYYY-MM-DD)
 - `<type>`: Session type (RESEARCH, IMPLEMENTATION, REVIEW, WEB) or specific domain (e.g., FACET-FIX, DIAGNOSTICS)
 
