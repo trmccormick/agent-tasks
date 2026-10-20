@@ -333,19 +333,6 @@ git push
 
 ---
 
-### Step 8 — Push Changes
-
-```bash
-git push
-```
-
-Verify all changes are pushed to origin/main:
-```bash
-git log origin/main -1 --oneline
-```
-
----
-
 ### Step 7 — Move Task to Completed
 
 ```bash
