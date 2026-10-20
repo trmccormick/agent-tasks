@@ -77,13 +77,13 @@ galaxy-game-ui/
 
 ## Core Features
 
-### Feature 1: Settlement Command Center (`/dashboard`)
-**Purpose**: Primary player interface for managing settlements and manufacturing economy
+### Feature 1: Player Dashboard (`/dashboard`)
+**Purpose**: Character login screen — what you see when you arrive at a settlement
 
-- **Player Summary Header**: Player name, primary settlement, ISK balance, manufacturing queue depth
-- **Active Settlements Panel**: Card-based list of settlements under player control with production status (Growing/Stable/Crisis/Terraforming), growth rate, population, tax base in GCC
-- **Manufacturing Queue**: Active production jobs showing: what's being fabricated, resource inputs (Regolith → Processed Materials → Components), time to completion, production location
-- **Supply Flow Network**: Inter-settlement shipments via wormholes showing: origin settlement, destination settlement, cargo type, estimated arrival time
+- **Location & Character Header**: Current settlement, character name, ISK balance, account status
+- **Local Inventory Panel**: Resources stored at current settlement with quantities and storage capacity bar
+- **Ships Panel**: Player's ships with status (Docked at location vs. In-Transit to destination), current/destination location
+- **Pending Operations**: Orders, contracts, missions, and manufacturing jobs at this settlement
 
 ### Feature 2: Supply Route Planner (`/wormholes`)
 **Purpose**: Inter-settlement network connectivity and logistics planning interface
@@ -93,10 +93,11 @@ galaxy-game-ui/
 - **Route Planner**: Jump routes between settlements (e.g., ANTOLLARE III → Enedore → Jita Hub)
 - **Shipment Tracking**: Active in-flight cargos with ETA and cargo capacity constraints
 
-### Feature 3: Admin Digital Twin Sandbox (`/admin`)
-**Purpose**: Consequence-free simulation environment for testing terraforming and settlement strategies
+### Feature 3: Admin AI Manager Control Suite (`/admin`)
+**Purpose**: Administrative dashboard for system management and AI tuning
 
-- **Digital Twin Management**: Create sandboxed clones of planets, manage multiple simulation scenarios
+- **Digital Twin Sandbox**: Create sandboxed clones of planets, run simulation scenarios, compare outcomes (consequence-free terraforming planning)
+- **AI Manager Control Panel**: View and adjust AI Manager strategic priorities, adjust game parameters, influence AI decision-making
 - **Terraforming Impact Planner**: Preview terraforming interventions with projected economic costs and planetary outcomes (atmosphere %, biosphere health)
 - **Scenario Comparison**: Side-by-side comparison of simulation results to inform real-world strategy (Final Atmosphere %, Economic Impact, Terraform Time, Biosphere Health)
 - **Sim Engine Event Log**: Scrolling mock feed of tick updates, extraction events, trade execution logs

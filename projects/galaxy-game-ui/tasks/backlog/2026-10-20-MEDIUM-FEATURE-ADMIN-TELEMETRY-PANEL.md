@@ -73,12 +73,12 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 
 ## Context
 
-This task builds the **Admin Digital Twin Sandbox** feature — a consequence-free simulation environment for testing terraforming and settlement development scenarios. It includes three main sections:
-1. **Digital Twin Management**: Create sandbox clones, run simulation scenarios, compare outcomes
-2. **Terraforming Impact Planner**: Preview terraforming interventions (atmosphere, hydrosphere, biosphere changes) and their economic costs
-3. **Scenario Comparison & Results**: Side-by-side comparison of simulation outcomes to inform real-world strategy
+This task builds the **Admin Control Suite** — the interface for system administrators to manage and tune Galaxy Game. It includes two main sections:
 
-This feature is Galaxy Game's SimEarth sandbox. Admins and AI planning systems use it to project planetary evolution and validate balance before committing resources. All simulation data is mocked; later it will integrate with TerraSim physics engine and economic projections.
+1. **AI Manager Control Panel**: View AI Manager strategic priorities, current directives, and tuning parameters. Admins can adjust AI focus (terraforming priority, settlement growth rate, market intervention level, etc.)
+2. **Digital Twin Sandbox**: Consequence-free simulation environment for testing terraforming and development scenarios. Admins use this to validate balance changes before applying them to live worlds.
+
+Admins have a different view than players. Admins see system-wide metrics and control levers; players only see their character's personal view. All data is mocked; later it will integrate with AI Manager configuration and TerraSim physics engine.
 
 ---
 
@@ -120,60 +120,61 @@ Create and save synthesis report to `/Users/tam0013/Documents/git/agent-tasks/pr
 **Date**: 2026-10-20
 
 ### What I'm About to Do
-Build the `/admin` view with three sections:
-1. **Digital Twin Management** — display sandboxed planet clones, create scenarios, run simulations
-2. **Terraforming Impact Planner** — show planned interventions with economic costs and projected outcomes (atmosphere, hydrosphere, biosphere)
-3. **Scenario Comparison** — side-by-side view of multiple simulation results to compare strategies
+Build the `/admin` view with two main sections:
+1. **AI Manager Control Panel** — display current strategic priorities with adjustable sliders (Terraforming Focus %, Settlement Growth %, Market Intervention %). Show active AI Manager directives.
+2. **Digital Twin Sandbox** — display sandbox planet clones, run consequence-free terraforming simulations, compare outcomes to validate balance changes.
 
-Admin buttons for creating twins and running scenarios will be mocked with Stimulus JS handlers. All simulation data is from MockDataHelper.
+Admin controls for adjusting priorities and creating simulations will be mocked with Stimulus JS handlers. All data is from MockDataHelper.
 
 ### Files I'll Modify
 | File | Purpose | Status |
 |---|---|---|
-| `app/views/admin/index.html.erb` | Main admin template with Digital Twin management, planner, and comparison | pending |
-| `app/helpers/admin_helper.rb` | View logic (scenario status icons, terraforming impact formatting) | pending |
-| `app/assets/stylesheets/admin.css` | Component library (twin cards, scenario cards, impact visualizations) | pending |
-| `app/javascript/controllers/admin_controller.js` | Stimulus controller for scenario management buttons | pending |
+| `app/views/admin/index.html.erb` | Main admin template with AI Manager control and Digital Twin sandbox | pending |
+| `app/helpers/admin_helper.rb` | View logic (priority icons, scenario status, impact formatting) | pending |
+| `app/assets/stylesheets/admin.css` | Component library (control cards, scenario cards, impact visualizations) | pending |
+| `app/javascript/controllers/admin_controller.js` | Stimulus controller for priority adjustments and simulation buttons | pending |
 
 ### Prerequisites Completed
 - ✅ Task 1 (Rails 8 setup) completed and committed
 - ✅ bin/rails s starts server without errors
-- ✅ MockDataHelper.digital_twins(), .terraforming_scenarios(), .scenario_results() exist
-- ✅ Read admin/Digital Twin feature spec from project README
+- ✅ MockDataHelper.ai_manager_priorities(), .digital_twins(), .terraforming_scenarios() exist
+- ✅ Read admin feature spec from project README
+- ✅ Understand: AI Manager controls are mocked (no real backend changes)
 - ✅ Understand: Digital Twin scenarios are read-only projections (no real-world impact)
-- ✅ Understand: Terraforming impact should be simplified but plausible
-- ✅ Understand: Scenario comparison focuses on key metrics (atmosphere, economy, time)
+- ✅ Understand: Player view (character location) vs. Admin view (system tuning) are different
 
 ### Expected Outcomes
-1. `GET /admin` returns full HTML with three Digital Twin sections
-2. Digital Twin Management shows 2 mock planet clones (Mars, Venus scenario) with creation date, status (ready/simulating/complete)
-3. Terraforming Impact Planner displays 1 scenario with intervention type, economic cost projection, and outcome estimates
-4. Scenario Comparison shows 2-3 scenarios side-by-side with key metrics: Final Atmosphere %, Economic Impact (GCC), Terraform Time (years), Biosphere Health
-5. Create Scenario button triggers Stimulus handler and shows success message
+1. `GET /admin` returns full HTML with AI Manager control panel and Digital Twin sections
+2. AI Manager Control Panel displays current priorities: Terraforming Focus (40%), Settlement Growth (35%), Market Intervention (25%) with adjustable sliders
+3. AI Manager Status shows 2-3 active directives (Alpha Centauri Expansion, Atmospheric Rebalancing, Resource Optimization) with progress indicators
+4. Digital Twin Sandbox shows 2 mock scenarios with creation date, status (ready/simulating/complete), key metrics
+5. Create Scenario button triggers Stimulus handler and shows success message (no page reload)
 6. All sections use consistent glassmorphic styling with Tailwind dark theme
-7. Impact visualizations are card-based, not complex charts
+7. Priority sliders are interactive (mock - no backend calls)
 8. Layout responsive (mobile/tablet/desktop)
 9. No console errors; all data from MockDataHelper
+10. Clear visual distinction from player dashboard (admin = system control, player = character location)
 
 ### Critical Gotchas I Will Avoid
+- ❌ Creating real backend endpoints for priority adjustments — instead ✅ mock with Stimulus JS
 - ❌ Allowing scenario edits to affect real world — instead ✅ all scenarios are read-only sandboxes
 - ❌ Showing complex physics equations — instead ✅ showing high-level outcome summaries
-- ❌ Complex multi-column comparison tables — instead ✅ using card-based scenario display
-- ❌ Unrealistic mock data — instead ✅ generating plausible terraforming progressions
+- ❌ Confusing admin view with player view — instead ✅ admin = system tuning, player = character location view
 
 ### Success Criteria
-- Admin view loads and all three sections visible
-- Digital Twin clones displayed with correct creation dates and status
-- Terraforming scenarios show economic cost and projected outcomes
-- Scenario comparison clearly shows key metrics side-by-side
-- Create/Run Scenario buttons clickable and show success messages (no page reload)
+- Admin view loads and both sections (AI Manager + Digital Twin) visible
+- AI Manager priorities displayed with correct percentages and adjustable sliders
+- Active AI directives show with progress indicators
+- Digital Twin scenarios displayed with creation dates and status
+- Priority adjustment buttons clickable and show success messages (no page reload)
 - Layout responsive on all screen sizes
 - All data from MockDataHelper
-- UI patterns are clear enough to inform Digital Twin backend integration design
+- Clear visual distinction from player dashboard
+- UI patterns inform AI Manager and Digital Twin backend integration design
 
 ---
 
-**SYNTHESIS COMPLETE.** Ready to build admin Digital Twin sandbox.
+**SYNTHESIS COMPLETE.** Ready to build admin AI Manager control suite.
 ```
 
 **POST THIS TO CHAT BEFORE PROCEEDING.** Do not start actual work until synthesis is approved.
@@ -182,7 +183,7 @@ Admin buttons for creating twins and running scenarios will be mocked with Stimu
 
 ## Problem Statement
 
-The Admin Panel is the operational supervisor's view for system monitoring and override controls. It must clearly present AI Manager status, economic conditions, and simulation tick feedback in a compact, scannable layout.
+The Admin Control Suite provides system administrators with tools to monitor and tune Galaxy Game. Unlike player dashboard (character location view), admin interface shows system-wide metrics and control levers. Admins need to see AI Manager priorities and adjust them, plus access a consequence-free sandbox for validating changes before affecting live worlds.
 
 ---
 

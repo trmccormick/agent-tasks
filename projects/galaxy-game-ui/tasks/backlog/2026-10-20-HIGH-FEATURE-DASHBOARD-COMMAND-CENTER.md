@@ -75,11 +75,11 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 
 ## Context
 
-This task builds the **Settlement Command Center** — the player's primary interface for managing settlements, manufacturing production, resource economy, and inter-settlement supply chains. It includes four integrated panels rendering mocked Galaxy Game data.
+This task builds the **Player Dashboard** — the character's view when they log in. Like EVE Online, a player is physically located at a specific settlement and sees their personal status, inventory at that location, ships, and pending operations.
 
-**Key Constraint**: All data comes from `MockDataHelper` — no database queries. Views render pure mock data structures. This is a UI **prototype** designed to identify information needs; it will later integrate with existing planet generation and manufacturing chain code.
+**Key Constraint**: All data comes from `MockDataHelper` — no database queries. Views render pure mock data structures. This is a UI **prototype** designed to identify what information players need when at a settlement; it will later integrate with character location data and inventory systems.
 
-**What This Prototype Does**: Shows settlement status, active production/manufacturing, resource inventory, and supply flows between settlements. This guides UI patterns for the real backend integration.
+**What This Prototype Does**: Shows the player's current settlement location, personal inventory, ISK balance, ships (docked vs. in-transit), and settlement-local operations. This guides UI patterns for character-centric gameplay.
 
 ---
 
@@ -92,20 +92,20 @@ This task builds the **Settlement Command Center** — the player's primary inte
 - ✅ Right: Call `MockDataHelper.system_status`, `MockDataHelper.active_units`, etc. in your controller or view helper
 - Why: No persistence layer exists; all data is regenerated on page reload
 
-⚠️ **GOTCHA 2: Settlement status must distinguish manufacturing phases**
-- ❌ Wrong: Show all settlements as identical cards
-- ✅ Right: Use status color/badge: Growing (green), Stable (cyan), Crisis (red), Terraforming (purple)
-- Why: Players must quickly see which settlements need attention
+⚠️ **GOTCHA 2: This is CHARACTER location view, not settlement management**
+- ❌ Wrong: Show all settlements player owns, top-down management interface
+- ✅ Right: Show only current settlement + character's inventory/ships at that location (like EVE when you log in at a station)
+- Why: Players need to know where they are and what they can do RIGHT NOW at this location
 
 ⚠️ **GOTCHA 3: Responsive grid layout is essential**
 - ❌ Wrong: Fixed-width panels that break on mobile/tablet
 - ✅ Right: Use Tailwind `grid-cols-1 md:grid-cols-2 lg:grid-cols-4` for responsive layouts
 - Why: Dashboard must work on multiple screen sizes
 
-⚠️ **GOTCHA 4: Production timeline must show both inputs and outputs**
-- ❌ Wrong: Show only "Producing Structural I-Beams"
-- ✅ Right: Show "Regolith (100 units/day) → Processed Materials → Components → Structural I-Beams (5 units remaining)"
-- Why: Players need to understand manufacturing chains and resource dependencies to make strategic decisions
+⚠️ **GOTCHA 4: Ships panel must show both docked and in-transit**
+- ❌ Wrong: Show only docked ships or only in-transit
+- ✅ Right: Show all player ships with clear status badge: Docked (at location) vs. In-Transit (to destination)
+- Why: Player needs to know what's available NOW vs. what's coming
 
 ---
 
@@ -122,10 +122,10 @@ Create and save synthesis report to `/Users/tam0013/Documents/git/agent-tasks/pr
 
 ### What I'm About to Do
 Build the `/dashboard` view with four integrated panels:
-1. **Player Summary Header** (player name, primary settlement, ISK balance, manufacturing queue status)
-2. **Active Settlements Panel** (card-based list of settlements with production status, growth rate, tax base)
-3. **Manufacturing & Production** (what's being fabricated at each settlement, resource consumption, completion time)
-4. **Supply Flow Network** (inter-settlement logistics via wormholes—resources in transit, estimated arrival, destination)
+1. **Location & Character Header** (current settlement, character name, ISK balance, account status)
+2. **Local Inventory Panel** (resources at current settlement: Compressed Blue Ice, Oxygen Isotopes, etc. with quantities)
+3. **Ships Panel** (player's ships: docked at location vs. in-transit, current location/destination, status)
+4. **Pending Operations** (open orders, contracts, missions at this settlement, in-progress manufacturing jobs)
 
 All data sourced from MockDataHelper. Styling uses Tailwind dark theme with glassmorphic cards.
 
@@ -146,29 +146,30 @@ All data sourced from MockDataHelper. Styling uses Tailwind dark theme with glas
 
 ### Expected Outcomes
 1. `GET /dashboard` returns full HTML with all four panels
-2. Player Summary Header displays: player name, primary settlement, ISK balance, manufacturing queue depth
-3. Active Settlements Panel shows 3 mock settlements (ANTOLLARE III, Enedore Station, Jita Mining Hub) with production status, growth rate, tax base
-4. Manufacturing Queue displays 2 production jobs with: name, inputs (regolith → components), time remaining, production location
-5. Supply Flow Network shows 1 inter-settlement shipment (Enedore → Jita Hub, Structural I-Beams, ETA 4 hours)
+2. Location & Character Header displays: current settlement (ANTOLLARE III), character name, ISK balance
+3. Local Inventory Panel shows 4 resources at current location (Blue Ice: 500 units, Oxygen: 250, Heavy Water: 100, EM: 10) with storage capacity bar
+4. Ships Panel displays 3 mock ships: 2 docked at ANTOLLARE III, 1 in-transit to Jita Hub (ETA 2 hours)
+5. Pending Operations shows 2 open orders/contracts at this settlement
 6. All panels use consistent glassmorphic styling with Tailwind dark theme
 7. Layout is responsive (works on mobile/tablet/desktop)
 8. No console errors; all data renders without database queries
 
 ### Critical Gotchas I Will Avoid
 - ❌ Querying database — instead ✅ using MockDataHelper exclusively
-- ❌ Inconsistent panel styling — instead ✅ creating reusable "glass card" component
+- ❌ Treating this as settlement management view — instead ✅ this is CHARACTER location view (what you see when you log in)
 - ❌ Fixed-width layout — instead ✅ using Tailwind responsive grids
-- ❌ Different colors for same status — instead ✅ mapping statuses to consistent badge classes
+- ❌ Showing all settlements — instead ✅ showing only current location + character's resources/ships
 
 ### Success Criteria
 - Dashboard loads and all four panels visible
 - All data rendered correctly from MockDataHelper
-- Settlement status badges consistently colored (Growing=green, Stable=cyan, Crisis=red, Terraforming=purple)
-- Production timeline shows input → output flow
-- Supply flow shows origin/destination/cargo/eta clearly
+- Location header clearly shows WHERE the player is
+- Inventory shows only items at current location
+- Ships clearly marked as Docked vs. In-Transit
+- Pending operations show only at this location
 - Layout responsive on mobile, tablet, desktop
 - No database errors in Rails logs
-- UI patterns are clear enough to inform backend integration design
+- UI clearly communicates: "You are HERE, these are YOUR things"
 
 ---
 
@@ -181,7 +182,7 @@ All data sourced from MockDataHelper. Styling uses Tailwind dark theme with glas
 
 ## Problem Statement
 
-The Dashboard feature is the core player interface. It must display settlement/manufacturing/economic data (settlements under control, production queues, supply flows) in a clean, scannable layout. This prototype identifies what information the UI needs to show; later it will integrate with existing planet generation and manufacturing chain backend code.
+The Dashboard feature is the first thing a player sees when they log in. Like EVE Online, a player is physically located at a settlement and needs to see: where they are, their personal inventory at that location, their ships (docked and in-transit), and pending operations. This prototype identifies the information architecture needed for character-centric gameplay; later it will integrate with character location data and inventory systems.
 
 ---
 
