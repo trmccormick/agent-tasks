@@ -72,6 +72,22 @@ These fix bugs in upstream code that affect all tenants, not just WVU Knapsack. 
 **Fix**: Removes the facet from the sidebar.
 **Why Upstream**: This is a UX decision that should be configurable at the framework level, not per-tenant.
 
+### 9. SAML current_phase Regression — Authentication Fails with Boolean Return Value
+**File**: `config/initializers/saml_phase_patch.rb` (NEW)
+**Upstream Target**: **Hyku** (`hyku-core`) or **omniauth-saml gem**
+**Bug**: Hyku 7.2 with omniauth-saml ~> 2.1 has a regression where `OmniAuth::Strategies::SAML#current_phase` returns Boolean instead of Integer. The omniauth decorator code (in hyrax-webapp's `lib/omni_auth/strategies/saml_decorator.rb:32`) expects an integer and attempts arithmetic (`current_phase + 1`), causing:
+```
+NoMethodError (undefined method '+' for true:TrueClass)
+```
+**Impact**: SAML authentication completely fails on Hyku 7.2, blocking catalog access for any tenant using SAML auth.
+**Reproducible**: Only on systems with SAML enabled (not visible in local dev if auth is mocked/disabled).
+**Fix**: Wrapper initializer that monkey-patches `current_phase` to always return an integer, converting Boolean results to 0/1.
+**Why Upstream**: This is a breaking regression in omniauth-saml 2.1.x or Hyku 7.2's integration of it. Likely needs:
+- Investigation: Check omniauth-saml changelog for when this changed
+- Investigation: Check Hyku 7.2 release notes for known SAML issues
+- Fix location: Either revert in omniauth-saml or update hyrax-webapp's decorator to handle Boolean returns
+**Status**: TEMPORARY WORKAROUND — Should be fixed upstream, not patched indefinitely in Knapsack
+
 ---
 
 ## 📦 KNAPSACK-SPECIFIC CUSTOMIZATIONS (Stay in Knapsack)

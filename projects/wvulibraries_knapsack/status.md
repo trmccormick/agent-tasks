@@ -1,5 +1,47 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-10-19 — Session Closeout (planning session)
+**Last Updated:** 2026-10-20 — Hyku 7.2 Upgrade Testing & Fixes (continued)
+
+---
+
+## 🔄 Session 2026-10-20 — Hyku 7.2 Upgrade: Bug Fixes & Upstream Tracking
+
+**Focus**: Fix 3 critical blockers discovered during hykudev testing, identify 1 upstream regression
+
+**Work Completed**:
+- ✅ **SAML current_phase Patch** (commit 2b095a1): Created `config/initializers/saml_phase_patch.rb` to wrap OmniAuth::Strategies::SAML#current_phase and convert Boolean returns to Integer
+  - Fixes: `NoMethodError (undefined method '+' for true)` blocking catalog access
+  - Workaround: Temporary until upstream fixes omniauth-saml 2.1.x regression
+  
+- ✅ **Facet Limiter Fix** (commit 9ba4395): Modified `config/initializers/catalog_controller_decorator.rb` to force-delete and re-add YAML-configured facets
+  - Fixes: location_sim and people_represented_sim stuck at limit 10 instead of 5
+  - Root cause: Hyku 7.2 doesn't reliably apply `.limit =` changes to existing facet objects
+  - Solution: Delete and re-add with correct config during initialization
+  
+- ✅ **AdvancedController Guard & Shim** (commit 5e0b5c6):
+  - Updated `lib/blacklight/controller_knapsack_decorator.rb` with `defined?()` guard
+  - Enhanced `config/initializers/blacklight_advanced_search_shim.rb` with stub AdvancedController class
+  - Fixes: `uninitialized constant BlacklightAdvancedSearch::AdvancedController` errors
+  
+- ✅ **Upstream Issue Tracking**: Created task file `tasks/backlog/2026-10-20-HIGH-UPSTREAM-SAML-CURRENT-PHASE-REGRESSION-HYKU-7.2.md` for tracking upstream SAML regression
+- ✅ **Audit Updated**: Added issue #9 (SAML regression) to `UPSTREAM_CONTRIBUTION_AUDIT.md`
+
+**Code Status**: All fixes committed and pushed to `feature/hyku-v7.2.0-upgrade`
+**Testing**: Ready for hykudev deployment and validation
+
+**Key Insight**: SAML issue only visible on systems with SAML auth enabled (not in local dev with mocked auth). Hyku 7.2's omniauth-saml ~> 2.1 breaking change should be fixed upstream, not patched indefinitely.
+
+**Next Steps**:
+1. Pull changes on hykudev: `git pull origin feature/hyku-v7.2.0-upgrade`
+2. Rebuild: `docker-compose pull && docker-compose up -d --build web`
+3. Validate: 
+   - ✅ Catalog accessible (SAML error fixed)
+   - ✅ All facets limited to 5 items
+   - ✅ Advanced search functional
+4. If successful: Prepare for production upgrade path
+
+**Upstream Actions Required**:
+- [ ] Report SAML current_phase regression to samvera/hyku (or verify duplicate exists)
+- [ ] Track upstream fix for SAML facet limiter (both temporary workarounds)
 
 ---
 
