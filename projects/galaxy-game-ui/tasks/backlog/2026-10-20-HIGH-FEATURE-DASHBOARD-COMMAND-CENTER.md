@@ -75,11 +75,24 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 
 ## Context
 
-This task builds the **Player Dashboard** — the character's view when they log in. Like EVE Online, a player is physically located at a specific settlement and sees their personal status, inventory at that location, ships, and pending operations.
+This task builds the **Player Dashboard UI mockup** — exploring how to present character status, manufacturing, research, inventory, missions, and trading in a cohesive interface.
 
-**Key Constraint**: All data comes from `MockDataHelper` — no database queries. Views render pure mock data structures. This is a UI **prototype** designed to identify what information players need when at a settlement; it will later integrate with character location data and inventory systems.
+**Design Philosophy**: This is a **UI/UX prototype** using MockData placeholders. All data is mocked; later it will integrate with live character data. The goal is to explore "what information does a player need?" and "how should it be organized?"
 
-**What This Prototype Does**: Shows the player's current settlement location, personal inventory, ISK balance, ships (docked vs. in-transit), and settlement-local operations. This guides UI patterns for character-centric gameplay.
+**Sections** (all mockups with placeholder data):
+1. **Location Header**: Settlement name, character name, ISK balance
+2. **Research Queue**: Blueprints in progress with ETAs and progress bars
+3. **Local Facilities**: Production buildings available at this settlement
+4. **Local Inventory**: Resources stored at this location with capacity visualization
+5. **Manufacturing Queue**: Active production jobs with completion time
+6. **Ships Panel**: Docked vessels and in-transit shipments with ETAs
+7. **NPC Buy Orders**: What NPCs need (market opportunity display)
+8. **Active Missions**: Escalated buy orders with potential rewards
+9. **Player Contracts**: Active agreements player has accepted
+
+**Styling Reference**: Use EVE Dashboard patterns (glassmorphic panels, dark theme, cyan accents, dense information layout)
+
+**Future Integration**: MockData will be replaced with live character queries, allowing UI to show real inventory, research, manufacturing status.
 
 ---
 
@@ -89,10 +102,10 @@ This task builds the **Player Dashboard** — the character's view when they log
 
 ⚠️ **GOTCHA 1: Use MockDataHelper exclusively for data**
 - ❌ Wrong: Query ActiveRecord models or databases
-- ✅ Right: Call `MockDataHelper.system_status`, `MockDataHelper.active_units`, etc. in your controller or view helper
-- Why: No persistence layer exists; all data is regenerated on page reload
+- ✅ Right: Call `MockDataHelper.character_at_settlement(:antollare)`, `MockDataHelper.research_queue`, etc.
+- Why: No persistence layer exists; all data is regenerated on page reload from mocks
 
-⚠️ **GOTCHA 2: This is CHARACTER location view, not settlement management**
+⚠️ **GOTCHA 2: Information architecture focus, not full interactivity**
 - ❌ Wrong: Show all settlements player owns, top-down management interface
 - ✅ Right: Show only current settlement + character's inventory/ships at that location (like EVE when you log in at a station)
 - Why: Players need to know where they are and what they can do RIGHT NOW at this location

@@ -73,11 +73,21 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 
 ## Context
 
-This task builds the **Supply Route Planner** feature — a network view of inter-settlement connectivity and logistics. It includes two main sections:
-1. **Settlement Network Map**: High-density list of connected settlements, wormhole types (Natural/Artificial), stability status, decay timers, and Exotic Matter (EM) potential
-2. **Route Planner & Shipment Tracking**: Active supply routes between settlements, transit times, cargo capacity limits, and in-flight shipments
+This task builds the **Surface/Terrain View UI mockup** — exploring how to present inter-settlement connectivity, logistics networks, and terrain information in a coherent player interface.
 
-This feature enables players to understand settlement-to-settlement connectivity and plan resource logistics via wormholes. All data is mocked; later it will integrate with existing wormhole generation code and planet data.
+**Sections** (all mockups with placeholder-friendly implementations):
+1. **Settlement Network Map**: High-density table of connected settlements, wormhole types (Natural/Artificial), stability status, EM potential
+2. **AstroLift Logistics Interface**: Cycler routes with pricing/capacity/ETAs, route planning, in-flight shipment tracking
+3. **Surface View Canvas Mockup**: Grid or simple HTML/SVG showing terrain, resource deposits, units, layer toggles
+
+**Design Philosophy**: This is a **UI/UX prototype** — placeholders and mockups are acceptable outcomes. The goal is to explore "how should settlement networks and logistics be presented?" Canvas rendering can be as simple as an HTML table with placeholder tiles.
+
+**Future Integration**: MockData from Task 1 will eventually be replaced with live game data, allowing real logistics tuning in a controlled sandbox.
+
+**Inspiration Sources**:
+- EVE Dashboard: Dense information panels, network visualization, glassmorphic styling
+- Civilization/FreeCiv: Terrain grid UI, resource overlays, route planning
+- SimCity: Logistics chains, infrastructure visualization
 
 ---
 

@@ -73,12 +73,21 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 
 ## Context
 
-This task builds the **Admin Control Suite** — the interface for system administrators to manage and tune Galaxy Game. It includes two main sections:
+This task builds the **Admin Suite UI mockup** — exploring how to present system-wide management, NPC economy coordination, and consequence-free scenario testing in a cohesive admin interface.
 
-1. **AI Manager Control Panel**: View AI Manager strategic priorities, current directives, and tuning parameters. Admins can adjust AI focus (terraforming priority, settlement growth rate, market intervention level, etc.)
-2. **Digital Twin Sandbox**: Consequence-free simulation environment for testing terraforming and development scenarios. Admins use this to validate balance changes before applying them to live worlds.
+**Design Philosophy**: This is a **UI/UX prototype** using MockData for all system telemetry. Admins have a completely different view than players—they see system-wide metrics, NPC operations, and control levers. All data is mocked; later it will integrate with AI Manager, NPC corporation data, and TerraSim physics.
 
-Admins have a different view than players. Admins see system-wide metrics and control levers; players only see their character's personal view. All data is mocked; later it will integrate with AI Manager configuration and TerraSim physics engine.
+**Sections** (all mockups with placeholder data):
+1. **AI Manager Control Panel**: Priority tuning (Harvester %, Market Import %, Expansion %), active directives, system status
+2. **NPC Corporation Dashboard**: Status of AI-controlled entities (AstroLift, LDC, MDC, VDC), what they're harvesting/trading/producing
+3. **Buy Order Management**: Status display (unfulfilled/mission/AI-fulfilling), escalation timing, creation interface
+4. **AstroLift Tuning**: Cycler route pricing, capacity allocation, scheduling
+5. **Digital Twin Sandbox**: Create consequence-free scenarios, run simulations, compare outcomes
+6. **Metrics Dashboard**: System-wide statistics (prices, production rates, NPC activity)
+
+**Styling Reference**: Use EVE Dashboard patterns (glassmorphic panels, data density, metrics emphasis)
+
+**Future Integration**: MockData will be replaced with live AI Manager queries and NPC status, allowing real economy tuning in a controlled sandbox.
 
 ---
 
@@ -91,8 +100,7 @@ Admins have a different view than players. Admins see system-wide metrics and co
 - ✅ Right: All scenarios are consequence-free; changes stay in sandbox only
 - Why: Admin UI explores possibilities without affecting live data. Real intervention requires separate approval flow.
 
-⚠️ **GOTCHA 2: Terraforming impact is complex — simplify visualization**
-- ❌ Wrong: Show detailed atmosphere/hydrosphere/biosphere physics equations
+⚠️ **GOTCHA 2: NPC Corporation management is for display, not control**
 - ✅ Right: Show high-level outcomes: "Atmospheric CO2 +0.5% after 100 years" + economic cost projections
 - Why: Prototype phase; detailed physics visualization can be added after backend integration.
 
