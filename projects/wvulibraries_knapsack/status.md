@@ -1,9 +1,54 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-10-20 — Hyku 7.2 Upgrade Testing & Fixes (continued)
+**Last Updated:** 2026-10-20 (Evening) — Hyku 7.2 Facet Limiter Investigation
 
 ---
 
-## 🔄 Session 2026-10-20 — Hyku 7.2 Upgrade: Bug Fixes & Upstream Tracking
+## 🔄 Session 2026-10-20 (Continued) — Facet Limiter Investigation
+
+**Focus**: Diagnose why facet limiting remains stuck at 10 items on hykudev despite configuration code
+
+**Investigation Summary**:
+- ✅ SAML authentication crash FIXED (commit 2b095a1)
+- ✅ AdvancedController missing constant FIXED (commits 5e0b5c6, c0dc6eb)
+- 🟡 **Facet Limiter Code In Place BUT NOT WORKING**:
+  - Blacklight config has limit: 5 ✓
+  - CatalogSearchBuilder created to inject f.<field>.facet.limit params ✓
+  - Catalog loads without crashes ✓
+  - But UI still shows 10 items instead of 5 ✗
+
+**Root Cause Investigation (In Progress)**:
+- Added aggressive logging to verify CatalogSearchBuilder is actually invoked (commit 84f3d3b)
+- Expected findings (pending hykudev log review):
+  - If initializer + method logs present: Search builder IS running but Solr/Blacklight not respecting params
+  - If only initializer log: Search builder not being used (registration issue)
+  - If no logs: Initializer not executing (configuration timing issue)
+
+**Commits This Session**:
+- `ef752e7` - fix: Handle Boolean facet limits in CatalogSearchBuilder (Hyku 7.2 regression)
+- `84f3d3b` - debug: Add aggressive logging to verify CatalogSearchBuilder is being invoked
+
+**Diagnostic Status**: 🔴 BLOCKING
+- ✅ Logging added and pushed
+- ❓ hykudev log review PENDING
+- ❓ Root cause undetermined
+- ❓ Solution approach unknown until logs reviewed
+
+**Next Diagnostic Step**:
+```bash
+# On hykudev after rebuild and catalog access:
+grep "CatalogSearchBuilder" ./data/logs/rails/production.log | head -20
+```
+Expected: See "CatalogSearchBuilder Initializer: to_prepare block executing" and "CatalogSearchBuilder#add_facetting_to_solr: METHOD CALLED!"
+
+**Planning Decision**:
+- Task remains ACTIVE (not moved to completed)
+- Implementation session paused awaiting log review authorization
+- Facet limiter diagnostic awaits human review of findings before next diagnostic iteration
+- Status will be updated once log results are reviewed and next steps determined
+
+---
+
+## 🔄 Session 2026-10-20 (Early) — Hyku 7.2 Upgrade: Bug Fixes & Upstream Tracking
 
 **Focus**: Fix 3 critical blockers discovered during hykudev testing, identify 1 upstream regression
 
@@ -12,36 +57,26 @@
   - Fixes: `NoMethodError (undefined method '+' for true)` blocking catalog access
   - Workaround: Temporary until upstream fixes omniauth-saml 2.1.x regression
   
-- ✅ **Facet Limiter Fix** (commit 9ba4395): Modified `config/initializers/catalog_controller_decorator.rb` to force-delete and re-add YAML-configured facets
-  - Fixes: location_sim and people_represented_sim stuck at limit 10 instead of 5
-  - Root cause: Hyku 7.2 doesn't reliably apply `.limit =` changes to existing facet objects
-  - Solution: Delete and re-add with correct config during initialization
+- ✅ **Facet Limiter Code** (commits 1d57b85, 9ba4395, ef752e7):
+  - `app/search_builders/catalog_search_builder.rb` - Enforces facet.limit+1 for all facets
+  - `config/initializers/catalog_controller_decorator.rb` - Registers CatalogSearchBuilder and M3 facets with limit: 5
+  - `config/wvu_facet_defaults.yml` - YAML configuration for critical facets
+  - Initial issue: Boolean facet.limit values causing "undefined method '+' for true" crash
+  - Fix applied: Type validation before arithmetic, fallback to default limit: 5
   
-- ✅ **AdvancedController Guard & Shim** (commit 5e0b5c6):
+- ✅ **AdvancedController Guard & Shim** (commits 5e0b5c6, c0dc6eb):
   - Updated `lib/blacklight/controller_knapsack_decorator.rb` with `defined?()` guard
-  - Enhanced `config/initializers/blacklight_advanced_search_shim.rb` with stub AdvancedController class
+  - Enhanced `config/initializers/blacklight_advanced_search_shim.rb` with stub AdvancedController class in to_prepare block
   - Fixes: `uninitialized constant BlacklightAdvancedSearch::AdvancedController` errors
   
-- ✅ **Upstream Issue Tracking**: Created task file `tasks/backlog/2026-10-20-HIGH-UPSTREAM-SAML-CURRENT-PHASE-REGRESSION-HYKU-7.2.md` for tracking upstream SAML regression
+- ✅ **Upstream Issue Tracking**: Created task file `tasks/backlog/2026-10-20-HIGH-UPSTREAM-SAML-CURRENT-PHASE-REGRESSION-HYKU-7.2.md`
 - ✅ **Audit Updated**: Added issue #9 (SAML regression) to `UPSTREAM_CONTRIBUTION_AUDIT.md`
 
-**Code Status**: All fixes committed and pushed to `feature/hyku-v7.2.0-upgrade`
-**Testing**: Ready for hykudev deployment and validation
+**Code Status**: All initial fixes committed and pushed to `feature/hyku-v7.2.0-upgrade`
 
 **Key Insight**: SAML issue only visible on systems with SAML auth enabled (not in local dev with mocked auth). Hyku 7.2's omniauth-saml ~> 2.1 breaking change should be fixed upstream, not patched indefinitely.
 
-**Next Steps**:
-1. Pull changes on hykudev: `git pull origin feature/hyku-v7.2.0-upgrade`
-2. Rebuild: `docker-compose pull && docker-compose up -d --build web`
-3. Validate: 
-   - ✅ Catalog accessible (SAML error fixed)
-   - ✅ All facets limited to 5 items
-   - ✅ Advanced search functional
-4. If successful: Prepare for production upgrade path
-
-**Upstream Actions Required**:
-- [ ] Report SAML current_phase regression to samvera/hyku (or verify duplicate exists)
-- [ ] Track upstream fix for SAML facet limiter (both temporary workarounds)
+**SAML Validation**: Not yet tested (SAML auth required - needs hykudev testing)
 
 ---
 
