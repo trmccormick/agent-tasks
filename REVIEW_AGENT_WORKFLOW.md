@@ -34,6 +34,34 @@ Save to the task/project destination, or `summaries/` by default. Include:
 
 For sessions without filesystem access, provide the artifact text for an authorized local session to save; do not claim it was saved.
 
+### Standard Review Artifact Format
+
+- **Where to save**: `projects/[PROJECT]/summaries/YYYY-MM-DD-REVIEW-[TOPIC].md`
+- **Required sections**:
+  1. **Assignment** (one sentence: what reviewed, what decision requested)
+  2. **Evidence Basis** (which files reviewed, which commands/runs; label each claim as `(VERIFIED)` or `(REPORTED)` — see REVIEW_AGENT_GUIDE § "Evidence Standards")
+  3. **Findings** (2–5 key issues, each with evidence reference)
+  4. **Open Concerns** (optional: unresolved questions or edge cases)
+  5. **Disposition** (`PROCEED` | `PROCEED WITH CAUTION` | `STOP` — must choose one)
+  6. **Rationale** (one paragraph explaining why)
+  7. **Recommendations** (optional: future work or decisions for human/planning agent)
+- **Length**: 1–2 pages max (concise, not comprehensive audit)
+- **Format**: Markdown
+
+**Example:**
+
+```
+### Review: Task File Drafting Standards
+**Assignment**: Review draft TASK_TEMPLATE.md; approve for commit.
+**Evidence Basis**: Read TASK_TEMPLATE.md; ran `grep -r "PLACEHOLDER"` (VERIFIED).
+**Findings**:
+  1. Section "5. Acceptance Criteria" still contains `[ ]` checkboxes — not finalized (REPORTED, from file).
+  2. No evidence references in Finding section — inconsistent with REVIEW_AGENT_GUIDE (VERIFIED by grep).
+**Disposition**: PROCEED WITH CAUTION
+**Rationale**: Structure is correct; needs minor fixes before final approval.
+**Recommendations**: Author should add evidence labels to all findings.
+```
+
 ### 5. Report briefly in chat
 
 State the disposition and artifact location. Do not paste the full review.

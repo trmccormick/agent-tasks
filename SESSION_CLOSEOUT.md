@@ -6,7 +6,7 @@ Project-specific guidance lives in `projects/<project>/SESSION_GUIDANCE.md`.
 
 **Planning sessions do not use this file.** They use `PLANNING_AGENT_CLOSEOUT.md`. If you are a research or implementation session, the planning and maintenance duties are not yours.
 
-**Handoff files are required for continuity.** All agents (research, implementation, web, review) MUST create a formal handoff file at the end of each session so the planning agent can track cross-agent work and status. See "Handoff Files (required)" section below.
+**Handoff files are required for continuity.** Every research, implementation, web, and review agent session MUST create a formal handoff file at the end of each session so the planning agent can track cross-agent work and status. See "Handoff Files (required)" section below.
 
 **Session closeout covers the task work done in that session, and nothing else.** Maintenance of everything else (stale or duplicate files, other sessions' drafts, archive housekeeping, `status.md` curation) belongs to the planning agent and the human.
 
@@ -16,9 +16,10 @@ Project-specific guidance lives in `projects/<project>/SESSION_GUIDANCE.md`.
 
 ## Handoff Files (required)
 
-Every research, implementation, and web agent session MUST create a handoff file so the planning agent and other agents can understand what was done, what is in progress, and what is waiting.
+Every research, implementation, web, and review agent session MUST create a handoff file so the planning agent and other agents can understand what was done, what is in progress, and what is waiting.
 
 **File location:** `projects/<project>/handoffs/<agent>/<date>-<type>-CLOSEOUT.md`
+(Review sessions also create handoffs. Save as: handoffs/<agent>/<date>-REVIEW-[TOPIC]-SESSION.md)
 - `<agent>`: Your agent folder name (e.g., `haiku-copilot`, `qwen-planning`, `claude-free-web`)
 - `<date>`: Session date (YYYY-MM-DD)
 - `<type>`: Session type (RESEARCH, IMPLEMENTATION, REVIEW, WEB) or specific domain (e.g., FACET-FIX, DIAGNOSTICS)
