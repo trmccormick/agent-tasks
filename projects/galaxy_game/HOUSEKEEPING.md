@@ -4,7 +4,7 @@
 
 Purpose: agent sessions leave handoffs, logs and scratch files behind, and nobody can tell later what is still needed. This file breaks the cleanup into small items that can be done a few at a time, one slice per session, so it never becomes a big-bang cleanup.
 
-Counts below are VERIFIED from origin on 2026-10-18 unless marked REPORTED. Re-check a count before acting on it.
+Counts below were VERIFIED from origin on 2026-10-18 and re-checked on 2026-10-19 (origin head `2cf5c92`) unless marked REPORTED. Re-check a count before acting on it.
 
 ## Standing rules
 
@@ -21,17 +21,17 @@ Status: `todo`, `in progress`, `done`. Each item should become its own small tas
 
 | ID | Item | Evidence | First step (read-only unless noted) | Status |
 |---|---|---|---|---|
-| H1 | Add `temp-files/` to `.gitignore` in agent-tasks and galaxyGame | `temp-files/` shows as untracked in agent-tasks, not ignored | One-line change per repo; Tracy approves | todo |
-| H2 | Confirm what `projects/galaxy_game/archive/`, `status_archive/` and `deprecated/` are for | all three exist at the project root | Read their contents and any README; report conventions | todo |
-| H3 | Write the retention rule and add a "Housekeeping slice" step (new section 7) to `PLANNING_AGENT_CLOSEOUT.md`: read this file, pick the next item, propose, wait, record in the Session log | closeout doc is 56 lines, sections 0 to 6 | Draft the section text; ChatGPT and Tracy review before it is committed | todo |
-| H4 | Add a "Files I created this session and how to dispose of them" line to `SESSION_CLOSEOUT.md`, so the agent that made scratch says what is safe to remove | agents currently leave this unstated | Draft one short section; review before commit | todo |
+| H1 | Add `temp-files/` to `.gitignore` in agent-tasks and galaxyGame | `temp-files/` shows as untracked in agent-tasks, not ignored Re-checked 2026-10-19: `.gitignore` in agent-tasks still has no `temp-files` entry. | One-line change per repo; Tracy approves | todo |
+| H2 | Confirm what `projects/galaxy_game/archive/`, `status_archive/` and `deprecated/` are for | all three exist at the project root Re-checked 2026-10-19: `archive/` has 3 files, `status_archive/` 2, `deprecated/` 5, no subfolders. | Read their contents and any README; report conventions | todo |
+| H3 | Write the retention rule and add a "Housekeeping slice" step (new section 7) to `PLANNING_AGENT_CLOSEOUT.md`: read this file, pick the next item, propose, wait, record in the Session log | closeout doc is 56 lines, sections 0 to 6 `PLANNING_AGENT_CLOSEOUT.md` now has section 7 "Housekeeping slice" (`b0ab336`), marked OPTIONAL; its limits (10 files, newest-per-agent, 30 days) are not yet confirmed against this tracker. | Draft the section text; ChatGPT and Tracy review before it is committed | in progress |
+| H4 | Add a "Files I created this session and how to dispose of them" line to `SESSION_CLOSEOUT.md`, so the agent that made scratch says what is safe to remove | agents currently leave this unstated `SESSION_CLOSEOUT.md` now requires a handoff file from every agent (`9283077`, `bb8147f`) but does not ask for temporary files and how to dispose of them. | Add one bullet to its "Handoff file MUST document" list: temporary files created this session and when each is safe to remove. | todo |
 | H5 | galaxyGame root: six scratch files added in `d7894ca3` | `2026-10-10-status.md` (terminal paste), two Qwen chat logs (85 KB), three `tools/diag_*` scripts | Tracy's suggestions: delete the paste; copy the two logs to agent-tasks handoffs then `git rm` in galaxyGame; keep the diag scripts until C3b is closed | todo |
-| H6 | Handoff duplicates | 42 file names exist in two places inside `galaxy_game/handoffs` (351 KB of extra copies; sizes matched in the 10 sampled, contents NOT compared) | Qwen compares contents of all 42 pairs and reports which are byte-identical | todo |
-| H7 | Archive old handoffs, one month per session | 147 of 168 dated handoffs are older than 30 days (Jun 49, Jul 35, Aug 34, Sep 41, Oct 9) | Propose one month's table; keep newest per agent and anything an open task references | todo |
+| H6 | Handoff duplicates | 42 file names exist in two places inside `galaxy_game/handoffs` (351 KB of extra copies; sizes matched in the 10 sampled, contents NOT compared) Re-checked 2026-10-19: 175 handoff files, 42 names still in more than one folder. | Qwen compares contents of all 42 pairs and reports which are byte-identical | todo |
+| H7 | Archive old handoffs, one month per session | 147 of 168 dated handoffs are older than 30 days (Jun 49, Jul 35, Aug 34, Sep 41, Oct 9) Re-checked 2026-10-19: no archiving done; 42 loose files at the top level, 59 in `claude-free-web`. (Commit `3c13f63` mentions "89→8"; its contents were not checked.) | Propose one month's table; keep newest per agent and anything an open task references | todo |
 | H8 | Archive summaries | 246 files in `galaxy_game/summaries` (Jul 90, Aug 60, Sep 40, Oct 37) | Same rule as H7, keeping anything an open or recent task references | todo |
 | H9 | galaxyGame root inventory | 74 root files: 13 `test_*.rb`, 3 `debug_*.rb`, committed `__pycache__`, logs and diffs (`full_run_order.txt` 863 KB, `diff_files.txt` and `filtered_diff.txt` 114 KB each, `fix.log`, `grinder_startup.log`, `monitor_gitlog.txt`) | Qwen classifies each: referenced by anything, code, doc or scratch. Then batches of at most 10 | todo |
-| H10 | Normalize handoff folder names to simple slugs (for example `claude-web`, `qwen-planning`, `perplexity`) and fix docs that mention the old names | current names include spaces and parentheses (`claude(free web)`, `claude(hakiu copilot)`, `grok` and `grok(free web)`, `various`); the planning docs say `claude-web` | Do after H6 and H7 so fewer files move | todo |
-| H11 | agent-tasks root: three proposal-style docs | `PHASE_1_REVIEW_EXTRACT.md`, `TASK_FILE_AS_EXECUTION_CONTRACT_PROPOSAL.md`, `TASK_FILE_AUTHORITY_AND_MULTI_AGENT_ROUTING_PROPOSAL.md` | Check whether anything references them, then propose `docs/` or archive | todo |
+| H10 | Normalize handoff folder names to simple slugs (for example `claude-web`, `qwen-planning`, `perplexity`) and fix docs that mention the old names | current names include spaces and parentheses (`claude(free web)`, `claude(hakiu copilot)`, `grok` and `grok(free web)`, `various`); the planning docs say `claude-web` Re-checked 2026-10-19: most folders renamed in `454e3bc`; `qwen(planning agent)/` (1 file) still has parentheses beside `qwen-local-planning-agent/` (23); docs that mention old names not checked. | Do after H6 and H7 so fewer files move | todo |
+| H11 | agent-tasks root: three proposal-style docs | `PHASE_1_REVIEW_EXTRACT.md`, `TASK_FILE_AS_EXECUTION_CONTRACT_PROPOSAL.md`, `TASK_FILE_AUTHORITY_AND_MULTI_AGENT_ROUTING_PROPOSAL.md` Re-checked 2026-10-19: all three still at the root, which now has 23 files. | Check whether anything references them, then propose `docs/` or archive | todo |
 | H12 | Home folder (Tracy's machine only, not in git) | 15 files from this workflow were moved to `~/agent-out/2026-10-archive/` on 2026-10-18; about 12 older files from Oct 6 to 11 remain in `~` (REPORTED) | Tracy reviews the older files and decides | todo |
 
 ## How the planning agent uses this (proposed wording for H3)
@@ -47,3 +47,4 @@ At the end of the closeout proposal, add one "Housekeeping slice" row group:
 | Date | Item | What was done | Commit |
 |---|---|---|---|
 | 2026-10-18 | (tracker created) | Inventory of both repos and the home folder; 15 workflow output files moved from `~` to `~/agent-out/2026-10-archive/` | |
+| 2026-10-19 | (tracker re-checked) | Claude web compared items H1 to H12 with origin `2cf5c92`: H3 moved to in progress, H4 narrowed to one bullet, counts refreshed; no files were moved or removed | |
