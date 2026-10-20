@@ -1,5 +1,5 @@
 # Agent-Tasks — Project Status & Task Tracking
-**Last Updated:** 2026-10-19 — Planning agent routing logic finalized; budget tracking integrated into PLANNING_AGENT_SESSION_START.md; WVU Copilot positioned for Samvera work; free agent GitHub access tiers documented. See handoff: `handoffs/claude-web/2026-10-19-PLANNING-CLOSEOUT.md`
+**Last Updated:** 2026-10-20 — Review-gate authority model validated end-to-end with Task 2 (synthesis approved, implementation completed, reviewer GO issued, human authorization received, commits verified on main). Workflow documentation updated: MODEL_SELECTION_GUIDE.md, PLANNER_ROLE_BOUNDARIES.md. Task 3 ready in backlog. See handoff: `handoffs/haiku-copilot/2026-10-20-PLANNING-CLOSEOUT.md`
 
 ---
 
@@ -14,6 +14,34 @@
 | Window / session | Agent | Task | State | Last touched | Local-only commits |
 |---|---|---|---|---|---|
 | (none for agent-tasks work) | | | | | |
+
+---
+
+## 📝 Session Log — 2026-10-20 (Review-Gate Authority Model Validation)
+
+**Objective**: Validate end-to-end review-gate authority chain and correct workflow role boundaries.
+
+**Completed Work** (5 commits):
+1. **Foundation Task (2026-10-19, commits 940d263 + fc1e128)** — Added review-gate enforcement to 5 workflow files (TASK_TEMPLATE.md, REVIEW_AGENT_GUIDE.md, REVIEW_AGENT_WORKFLOW.md, SESSION_CLOSEOUT.md, IMPLEMENTATION_AGENT_SESSION_CLOSEOUT.md). Made review-gate non-bypassable at template level.
+
+2. **Task 1: Evidence Classification (commit eeae198)** — Added evidence labeling framework to PLANNING_AGENT_SESSION_START.md (VERIFIED/REPORTED/ASSUMED).
+
+3. **Task 2: Review Artifact Standardization (commits 6b669df + 315d7dc)** — Standardized review agent output structure; clarified review session handoff requirements; created REVIEW_REPORT_TEMPLATE.md.
+
+4. **Workflow Documentation (commit 9f2ae23)** — Created MODEL_SELECTION_GUIDE.md and PLANNER_ROLE_BOUNDARIES.md to codify corrected role boundaries and budget-aware model selection strategy.
+
+**Validation Results**:
+- ✅ Implementation agent STOP point confirmed (didn't bypass review-gate)
+- ✅ Planner role boundaries corrected (prepared context, didn't issue approval)
+- ✅ Reviewer (Copilot) issued independent assessment (GO)
+- ✅ Human authorization gate functioned (Tracy explicit approval required)
+- ✅ Implementation agent committed/pushed only after both approvals
+- ✅ All artifacts verified on main (commits 6b669df, 315d7dc, 9f2ae23)
+
+**Open Items**:
+- Task 3 (Stop Condition Enhancement) ready in backlog; awaiting future dispatch
+- wvu_knapsack planning session notified of workflow updates
+- Premium budget at ~54% (monitoring for Phase 2 model transitions)
 
 ---
 
