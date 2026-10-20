@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 resume: false
 priority: HIGH
 type: documentation
@@ -9,7 +9,45 @@ local_worker_safe: true
 ---
 
 ## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
+**STOP. Do not send this task to an agent until ALL boxes are checked.**
 
+- [x] Agent Dispatch Interface section above is complete and accurate (no placeholders)
+- [x] All Step 0-N instructions are clear and actionable (not vague)
+- [x] Synthesis report template is provided (copy/paste ready, not as example)
+- [x] Acceptance Criteria are measurable
+- [x] All file paths are verified to exist
+- [x] No placeholder text remains in Implementation Steps
+
+**Task is NOT READY until all checkboxes are completed.**
+
+---
+
+## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
+
+```
+You are **Documentation Agent**.
+
+Project: agent-tasks (root workflow repository)
+Task: <agent-tasks>/projects/agent-tasks/tasks/active/2026-10-19-HIGH-DOCUMENTATION-REVIEW-GATE-AND-AUTHORITY-BOUNDARIES.md
+
+READ FIRST: WORKFLOW_GOVERNANCE_IMPLEMENTATION_PLAN.md contains full context.
+
+CRITICAL: Save synthesis report as MD file to projects/agent-tasks/summaries/ BEFORE starting changes.
+  Filename: YYYY-MM-DD-SYNTHESIS-REVIEW-GATE-AND-AUTHORITY-BOUNDARIES.md
+  Chat is for questions only — full synthesis goes in summaries folder.
+
+Closeout: Follow SESSION_CLOSEOUT.md when complete.
+```
+
+---
+
+# TASK: Add Review-Gate Checkpoint and Clarify Authority Boundaries
+
+**Status**: ACTIVE  
+**Priority**: HIGH  
+**Type**: documentation  
+**Created**: 2026-10-19  
+**Last Updated**: 2026-10-20  
 **STOP. Do not send this task to an agent until ALL boxes are checked.**
 
 - [ ] Agent Dispatch Interface section below is complete and accurate (no placeholders)

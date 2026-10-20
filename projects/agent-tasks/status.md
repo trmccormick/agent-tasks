@@ -335,3 +335,13 @@ All hashes VERIFIED on origin with `git log -1` at f5260b8.
 - **Committed:** `c07985a`, `d2c3242`, `16f779c`, all pushed (VERIFIED: `git push` output, ranges `589b5c5..c07985a`, `c07985a..d2c3242`, `d2c3242..16f779c`).
 - **Not committed:** this entry and `projects/agent-tasks/handoffs/claude-free-web/session_handoff_2026-10-18_NEEDS-REVIEW-FILES-AND-HYKU-PR-CHECK.md`, until Tracy commits them (VERIFIED: `git status -sb` after the push of `16f779c` was clean). Commits from other sessions that arrived during the session, `2aeea96`, `b115ce6` and `589b5c5`, left as-is, not this session (VERIFIED: `git log --oneline --name-status b171acb..HEAD`).
 - **Stop condition:** none for the edits above. Open, owner Tracy: the M4 laptop checks A to I in the knapsack `NEEDS_REVIEW.md`, then the `[CONFIRM]` flags in both `SESSION_GUIDANCE.md` files (three in the knapsack file, VERIFIED: `grep -n -E 'CONFIRM|FILL IN'`). `samvera/hyku#3399` was closed unmerged on 2026-10-15 by a maintainer, and `7.2-stable` now reads `VERSION = '7.2.0'` (REPORTED: web fetch, 2026-10-18), so "approved, waits on an adjustment" in the 2026-10-14 and 2026-10-15 entries and in the knapsack guidance at line 251 is stale. Details in the handoff above.
+
+---
+
+## 📝 Session Log — 2026-10-20 (Review-Gate Task Implementation - Qwen)
+
+- **Changed:** TASK_TEMPLATE.md, REVIEW_AGENT_GUIDE.md, REVIEW_AGENT_WORKFLOW.md, SESSION_CLOSEOUT.md, IMPLEMENTATION_AGENT_SESSION_CLOSEOUT.md (5 files total, ~186 insertions across all files implementing review-gate checkpoints). Task file moved from backlog/ to completed/2026-10/ (git mv). Task YAML status updated from backlog → completed.
+- **Committed:** 940d263 (feat: add review-gate checkpoints to all workflow templates), all pushed to origin/main (VERIFIED: `git push` output, SHA 940d263).
+- **Not committed:** none.
+- **Stop condition:** none. Completed successfully. Review-gate requirement now non-bypassable at template level; all implementation agents inherit mandate that commit cannot proceed without (1) Reviewer GO + (2) Human Authorization.
+
