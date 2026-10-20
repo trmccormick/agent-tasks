@@ -260,7 +260,7 @@ This is the prerequisite for all downstream work.
 
 ---
 
-## Implementation Steps
+## Implementation Steps (Clone-and-Adapt Approach)
 
 ### Step 0 — Move task file to active/ (MANDATORY FIRST STEP — NO EXCEPTIONS)
 
@@ -286,62 +286,119 @@ Expected: exactly one result at `active/` path.
 
 ### Step 1 — Create Status Synthesis Report
 
-Create and save synthesis report to `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy-game-ui/summaries/2026-10-20-SETUP-SYNTHESIS.md` using the template above.
+Create and save synthesis report to `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy-game-ui/summaries/2026-10-20-SETUP-SYNTHESIS.md` using the template from earlier in this task file.
 
-Post this in chat: *"Synthesis report created at [path]. All prerequisites met. Ready to initialize Rails app."*
+Post this in chat: *"Synthesis report created at [path]. All prerequisites met. Ready to clone and adapt WVU Moonshot."*
 
 Wait for approval before proceeding to Step 2.
 
 ---
 
-### Step 2 — Initialize Rails 8 app
+### Step 2 — Clone WVU Moonshot as Galaxy Game UI base
+
+**RATIONALE**: WVU Moonshot already has working Rails 8 setup, Docker, Tailwind, Stimulus patterns, and no database — exactly what we need. Adapting is much faster than starting from scratch.
 
 ```bash
-cd /Users/tam0013/Documents/git/galaxy-game-ui
+# Clone WVU Moonshot to galaxy-game-ui
+cd /Users/tam0013/Documents/git
+git clone https://github.com/wvulibraries/wvu-moonshot.git galaxy-game-ui
 
-# Initialize new Rails 8 app with Tailwind CSS
-rails new . --css tailwind --skip-test --force
+cd galaxy-game-ui
 
-# This creates:
-# - Gemfile with Rails 8, Tailwind, Stimulus
-# - config/routes.rb (to be modified)
-# - Standard Rails directory structure
-# - app/assets/stylesheets/application.tailwind.css
-# - config/tailwind.config.js
+# Remove WVU-specific git history
+rm -rf .git
+git init
+git add .
+git commit -m "Initial clone of WVU Moonshot adapted for Galaxy Game UI prototype"
 ```
 
-Verify output: should see "create" messages for all standard Rails directories and config files.
+Verify: `/Users/tam0013/Documents/git/galaxy-game-ui` exists with Rails 8 structure intact.
 
 ---
 
-### Step 3 — Create the three controllers with stubbed actions
+### Step 3 — Remove WVU-specific code and branding
 
+**Edit**: `Gemfile`
+- Remove: Any WVU-specific gems (auth, wvu-utilities, etc.)
+- Keep: Rails 8, Tailwind CSS 4, Stimulus JS, Propshaft, Importmaps
+- Add: `# No database needed for prototype` (comment)
+
+**Delete these directories** (WVU-specific content):
 ```bash
+rm -rf app/services/wvu_*
+rm -rf app/views/wvu_*
+rm -rf app/models/ (if it exists and contains WVU models)
+rm -rf app/mailers/
+rm -rf app/jobs/
+rm -rf db/migrate/ (keep db/ folder empty)
+```
+
+**Edit**: `app/views/layouts/application.html.erb`
+- Remove: WVU branding, WVU logos, WVU-specific navigation
+- Keep: Basic layout structure, Tailwind classes, Stimulus support, asset pipeline
+
+Verify: Gemfile has no WVU-specific dependencies; WVU directories removed.
+
+---
+
+### Step 4 — Rename and customize controllers for Galaxy Game
+
+**Rename controllers to match Galaxy Game features:**
+```bash
+# If WVU had app/controllers with WVU names, rename them:
+# The goal: three controllers for Dashboard, Wormholes, Admin
+
+# Create Galaxy Game controllers if needed:
 cd /Users/tam0013/Documents/git/galaxy-game-ui
 
-# Generate the three controllers with index action
+# Only create if they don't exist from clone
 bin/rails g controller Dashboard index --skip-routes
 bin/rails g controller Wormholes index --skip-routes
 bin/rails g controller Admin index --skip-routes
-
-# This creates:
-# - app/controllers/dashboard_controller.rb
-# - app/controllers/wormholes_controller.rb
-# - app/controllers/admin_controller.rb
-# - app/views/dashboard/index.html.erb (empty stub)
-# - app/views/wormholes/index.html.erb (empty stub)
-# - app/views/admin/index.html.erb (empty stub)
 ```
 
-Verify: three controller files exist and each has an `index` action defined.
+**Edit**: `app/controllers/dashboard_controller.rb`
+```ruby
+class DashboardController < ApplicationController
+  def index
+    @system_status = MockDataHelper.system_status
+    @player_inventory = MockDataHelper.bay_inventory
+    @player_units = MockDataHelper.active_units
+    @market_panel = MockDataHelper.market_quick_panel
+  end
+end
+```
+
+**Edit**: `app/controllers/wormholes_controller.rb`
+```ruby
+class WormholesController < ApplicationController
+  def index
+    @wormhole_network = MockDataHelper.wormhole_network
+    @transit_routes = MockDataHelper.transit_routes
+  end
+end
+```
+
+**Edit**: `app/controllers/admin_controller.rb`
+```ruby
+class AdminController < ApplicationController
+  def index
+    @ai_manager = MockDataHelper.ai_manager_status
+    @economic_indices = MockDataHelper.economic_indices
+    @event_log = MockDataHelper.sim_engine_events
+  end
+end
+```
+
+Verify: Each controller has an index action; data passed to views via instance variables.
 
 ---
 
-### Step 4 — Configure routes
+### Step 5 — Configure routes
 
 **Edit**: `config/routes.rb`
 
-**Replace** the default routes section with:
+Replace with:
 ```ruby
 Rails.application.routes.draw do
   # Root route
@@ -357,55 +414,44 @@ Rails.application.routes.draw do
 end
 ```
 
-Verify: routes file looks correct, no syntax errors.
+Verify: routes file is correct, no syntax errors.
 
 ---
 
-### Step 5 — Create MockData helper module
+### Step 6 — Create MockDataHelper module
 
 **Create**: `app/helpers/mock_data.rb`
 
 ```ruby
 module MockDataHelper
-  # Returns mock system status for Dashboard feature
-  def self.system_status
+  # Returns mock character and settlement data
+  def self.character_at_settlement(settlement_id = :antollare)
     {
-      system_name: "ANTOLLARE III",
-      security_level: "1.2",
-      eap: 452.5,  # Earth Anchor Price
-      player_isk: 15_000_000,
-      player_gcc: 2_500
+      character_name: "Commander Nova",
+      settlement: "ANTOLLARE III",
+      isk_balance: 15_000_000,
+      location: "Bay 4, Dock Station A"
     }
   end
 
-  # Returns mock active sector units for Dashboard feature
-  def self.active_units
+  # Returns mock research queue
+  def self.research_queue
     [
-      {
-        name: "PVE Array-01",
-        type: "Planetary Volatiles Extractor",
-        status: "Harvesting",
-        location: "ANTOLLARE III - Bay 4",
-        yield: "450 m³/hour"
-      },
-      {
-        name: "Heavy Transport Tug Alpha",
-        type: "Heavy Transport",
-        status: "In Transit",
-        location: "Wormhole Gate - 3 hops away",
-        cargo: "2500 m³ (Compressed Blue Ice)"
-      },
-      {
-        name: "Logistics Hauler Beta",
-        type: "Light Transport",
-        status: "Docked",
-        location: "ANTOLLARE III - Docking Bay",
-        cargo: "Empty"
-      }
+      { blueprint: "Structural I-Beams", progress: 65, eta: "2h 15m", level: 2 },
+      { blueprint: "Refined Copper Sheets", progress: 40, eta: "5h 30m", level: 3 }
     ]
   end
 
-  # Returns mock bay inventory for Dashboard feature
+  # Returns mock local facilities
+  def self.local_facilities
+    [
+      { name: "Factory Unit Alpha", specializes_in: "Structural Components", status: "Manufacturing", utilization: 85 },
+      { name: "Refinery Module Beta", specializes_in: "Ores & Metals", status: "Idle", utilization: 0 },
+      { name: "Research Lab Gamma", specializes_in: "Blueprints", status: "Active", utilization: 100 }
+    ]
+  end
+
+  # Returns mock local inventory
   def self.bay_inventory
     [
       { resource: "Compressed Blue Ice", quantity: 850, max: 1000, unit: "units" },
@@ -415,62 +461,92 @@ module MockDataHelper
     ]
   end
 
-  # Returns mock market quick-panel data for Dashboard feature
-  def self.market_quick_panel
+  # Returns mock manufacturing queue
+  def self.manufacturing_queue
     [
-      { commodity: "Nitrogen", buy_spread: "420-435 ISK", sell_spread: "410-425 ISK", volume: "15k units available" },
-      { commodity: "Cthonic Attar", buy_spread: "5200-5450 ISK", sell_spread: "5100-5400 ISK", volume: "2.3k units available" },
-      { commodity: "Structural I-Beams", buy_spread: "1200-1350 ISK", sell_spread: "1150-1300 ISK", volume: "8.7k units available" }
+      { job: "Structural I-Beams x500", facility: "Factory Unit Alpha", progress: 72, eta: "1h 45m", status: "In Progress" },
+      { job: "Refined Copper x200", facility: "Factory Unit Alpha", progress: 0, eta: "3h 20m", status: "Queued" }
     ]
   end
 
-  # Returns mock wormhole network data for Wormholes feature
+  # Returns mock player ships
+  def self.player_ships
+    [
+      { name: "Heavy Transport Tug Alpha", type: "Transport", status: "Docked", location: "ANTOLLARE III" },
+      { name: "Logistics Hauler Beta", type: "Light Transport", status: "Docked", location: "ANTOLLARE III" },
+      { name: "Scout Vessel Gamma", type: "Scout", status: "In Transit", destination: "Jita Hub", eta: "4h 20m" }
+    ]
+  end
+
+  # Returns mock NPC buy orders
+  def self.npc_buy_orders
+    [
+      { corporation: "LDC (Lunar Development Corp)", needs: "Compressed Blue Ice", quantity: 500, price_per_unit: 1200, total: 600_000 },
+      { corporation: "AstroLift Logistics", needs: "Oxygen Isotopes", quantity: 300, price_per_unit: 850, total: 255_000 },
+      { corporation: "MDC (Mars Development Corp)", needs: "Heavy Water", quantity: 200, price_per_unit: 2100, total: 420_000 }
+    ]
+  end
+
+  # Returns mock player missions (escalated buy orders)
+  def self.active_missions
+    [
+      { mission: "Secure Ice Delivery", offer: "LDC", reward: 150_000, deadline: "6 hours", status: "Available" },
+      { mission: "Emergency Isotope Supply", offer: "AstroLift", reward: 85_000, deadline: "2 hours", status: "In Progress" }
+    ]
+  end
+
+  # Returns mock wormhole network
   def self.wormhole_network
     [
-      { system: "ANTOLLARE III", type: "Natural", mass_stability: "95%", decay_timer: "22 hours", em_potential: "High", hops_to: "Jita Hub" },
-      { system: "Enedore", type: "Artificial", mass_stability: "100%", decay_timer: "N/A", em_potential: "Medium", hops_to: "Jita Hub" },
-      { system: "Jita Hub", type: "Artificial", mass_stability: "100%", decay_timer: "N/A", em_potential: "None", hops_to: "Trade Hub" }
+      { system: "ANTOLLARE III", type: "Natural", stability: "95%", decay_timer: "22 hours", em_potential: "High" },
+      { system: "Enedore", type: "Artificial", stability: "100%", decay_timer: "N/A", em_potential: "Medium" },
+      { system: "Jita Hub", type: "Artificial", stability: "100%", decay_timer: "N/A", em_potential: "None" }
     ]
   end
 
-  # Returns mock route data for Wormhole Transit Planner
-  def self.transit_routes
+  # Returns mock AstroLift routes
+  def self.astrolift_routes
     [
-      { route: "ANTOLLARE III → Enedore → Jita Hub", hops: 2, estimated_time: "4.5 hours", unit_mass_restriction: "Max 50,000 kg" },
-      { route: "ANTOLLARE III → Jita Hub (direct)", hops: 1, estimated_time: "2.0 hours", unit_mass_restriction: "Max 30,000 kg" }
+      { route: "ANTOLLARE III → Enedore → Jita Hub", hops: 2, time: "4.5h", price: 50_000, capacity: "5000 m³" },
+      { route: "ANTOLLARE III → Jita Hub (direct)", hops: 1, time: "2h", price: 85_000, capacity: "3000 m³" }
     ]
   end
 
-  # Returns mock AI Manager directives for Admin Panel
+  # Returns mock NPC corporations
+  def self.npc_corporations
+    [
+      { name: "AstroLift", status: "Operating", current_activity: "Scheduling cycler departures", inventory_value: 2_500_000 },
+      { name: "LDC", status: "Operating", current_activity: "Importing compressed blue ice", inventory_value: 1_800_000 },
+      { name: "MDC", status: "Operating", current_activity: "Harvesting metals", inventory_value: 3_200_000 }
+    ]
+  end
+
+  # Returns mock AI Manager status
   def self.ai_manager_status
     {
       directives: [
-        { directive: "Alpha Centauri Expansion", status: "Active", progress: "67%" },
-        { directive: "Wormhole Node Scanning", status: "Active", progress: "42%" },
-        { directive: "Resource Rebalancing", status: "Idle", progress: "100%" }
+        { directive: "Expansion to Alpha Centauri", status: "Active", progress: "67%" },
+        { directive: "Market Stabilization", status: "Active", progress: "42%" }
       ],
-      next_tick: "2026-10-20 18:00 UTC",
-      tick_duration: "6 hours"
+      priorities: { harvester: 60, market_import: 30, expansion: 10 },
+      next_tick: "2026-10-20 18:00 UTC"
     }
   end
 
-  # Returns mock economic indices for Admin Panel
-  def self.economic_indices
-    {
-      global_eap: 452.5,
-      scc_surcharge: "0.5%",
-      broker_fee: "0.3%",
-      sales_tax: "3.37%"
-    }
-  end
-
-  # Returns mock sim engine event log for Admin Panel
-  def self.sim_engine_events
+  # Returns mock Digital Twin scenarios
+  def self.digital_twin_scenarios
     [
-      { timestamp: "2026-10-20 12:15 UTC", event: "Tick #4521 processed", details: "6 systems updated" },
-      { timestamp: "2026-10-20 12:10 UTC", event: "Extraction event", details: "PVE Array-01 yielded 450 m³ Compressed Blue Ice" },
-      { timestamp: "2026-10-20 12:05 UTC", event: "Trade execution", details: "Sell order matched: 500 units Nitrogen @ 425 ISK" },
-      { timestamp: "2026-10-20 12:00 UTC", event: "Wormhole decay", details: "Natural wormhole in Enedore decayed after 24h" }
+      { name: "Scenario A: 60% Harvester Focus", status: "Simulated", outcome: "Higher production, lower NPC fulfillment", time_to_stable: "12 days" },
+      { name: "Scenario B: Balanced AI", status: "Simulated", outcome: "Mixed results, economy stable", time_to_stable: "8 days" }
+    ]
+  end
+
+  # Returns mock buy order status
+  def self.buy_order_status
+    [
+      { item: "Compressed Blue Ice", quantity: 500, npc_offering: "LDC", status: "Unfulfilled", escalation_eta: "2h" },
+      { item: "Oxygen Isotopes", quantity: 300, npc_offering: "AstroLift", status: "Mission Posted", reward: 85_000 },
+      { item: "Heavy Water", quantity: 200, npc_offering: "MDC", status: "AI Fulfilling (Harvester)", eta: "3h" }
     ]
   end
 end
@@ -480,24 +556,145 @@ Verify: file exists at `app/helpers/mock_data.rb` with all methods defined.
 
 ---
 
-### Step 6 — Customize Tailwind config for dark sci-fi theme
+### Step 7 — Customize Tailwind config
 
 **Edit**: `config/tailwind.config.js`
 
-**Replace** the theme section with (inspired by EVE Dashboard `/app/static/style.css`):
+Ensure these colors are in the theme extend section:
 ```javascript
-module.exports = {
-  content: [
-    './app/views/**/*.{erb,html}',
-    './app/components/**/*.{erb,html}',
-    './app/helpers/**/*.{rb}',
-  ],
-  theme: {
-    extend: {
-      colors: {
-        'eve-dark': '#0e1114',      // EVE Dashboard main background
-        'eve-panel': '#161b21',     // EVE Dashboard panel background
-        'eve-panel2': '#1d242c',    // EVE Dashboard alt panel background
+colors: {
+  'galaxy-dark': '#0a0a0a',      // Primary background
+  'galaxy-panel': '#1a1a2e',     // Panel background
+  'galaxy-accent': '#00d4ff',    // Cyan accent (primary)
+  'galaxy-secondary': '#9d4edd', // Purple accent
+  'galaxy-text': '#e0e0e0',      // Primary text
+  'galaxy-text-dim': '#8892b0',  // Dim text
+  'galaxy-success': '#06ffa5',   // Success green
+  'galaxy-warning': '#ffd60a',   // Warning yellow
+  'galaxy-danger': '#ff006e'     // Danger pink
+}
+```
+
+Verify: config file has Galaxy Game color palette defined.
+
+---
+
+### Step 8 — Create base layout template
+
+**Edit**: `app/views/layouts/application.html.erb`
+
+Ensure it includes:
+```erb
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Galaxy Game UI Prototype</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-galaxy-dark text-galaxy-text">
+    <!-- Navigation -->
+    <nav class="border-b border-galaxy-accent/30 bg-galaxy-panel">
+      <div class="max-w-7xl mx-auto px-4 py-4 flex gap-6">
+        <%= link_to "Dashboard", dashboard_path, class: "hover:text-galaxy-accent" %>
+        <%= link_to "Wormholes", wormholes_path, class: "hover:text-galaxy-accent" %>
+        <%= link_to "Admin", admin_path, class: "hover:text-galaxy-accent" %>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+      <%= yield %>
+    </main>
+  </body>
+</html>
+```
+
+Verify: layout template has navigation bar and renders child views.
+
+---
+
+### Step 9 — Create view stubs for three features
+
+**Create**: `app/views/dashboard/index.html.erb`
+```erb
+<div class="space-y-6">
+  <h1 class="text-3xl font-bold text-galaxy-accent">Player Dashboard</h1>
+  
+  <div class="bg-galaxy-panel border border-galaxy-accent/30 rounded p-4">
+    <h2 class="text-xl font-semibold text-galaxy-accent mb-2">Character Status</h2>
+    <p class="text-galaxy-text"><strong>Settlement:</strong> <%= @system_status[:system_name] %></p>
+    <p class="text-galaxy-text"><strong>ISK Balance:</strong> <%= @system_status[:player_isk] %></p>
+  </div>
+
+  <div class="bg-galaxy-panel border border-galaxy-accent/30 rounded p-4">
+    <h2 class="text-xl font-semibold text-galaxy-accent mb-2">Mock Data Test</h2>
+    <p class="text-galaxy-text">Dashboard loaded successfully. See console for data structures.</p>
+    <pre class="bg-galaxy-dark p-2 mt-2 text-xs text-galaxy-text-dim overflow-auto">
+      <%= @system_status.inspect %>
+    </pre>
+  </div>
+</div>
+```
+
+**Create**: `app/views/wormholes/index.html.erb`
+```erb
+<div class="space-y-6">
+  <h1 class="text-3xl font-bold text-galaxy-accent">Wormhole Network</h1>
+  
+  <div class="bg-galaxy-panel border border-galaxy-accent/30 rounded p-4">
+    <h2 class="text-xl font-semibold text-galaxy-accent mb-2">Settlement Network Map</h2>
+    <p class="text-galaxy-text">Wormhole network feature placeholder. Data loaded from MockDataHelper.</p>
+  </div>
+</div>
+```
+
+**Create**: `app/views/admin/index.html.erb`
+```erb
+<div class="space-y-6">
+  <h1 class="text-3xl font-bold text-galaxy-accent">Admin Control Suite</h1>
+  
+  <div class="bg-galaxy-panel border border-galaxy-accent/30 rounded p-4">
+    <h2 class="text-xl font-semibold text-galaxy-accent mb-2">AI Manager Status</h2>
+    <p class="text-galaxy-text">Admin panel feature placeholder. Data loaded from MockDataHelper.</p>
+  </div>
+</div>
+```
+
+Verify: all three view files exist and render successfully.
+
+---
+
+### Step 10 — Start Rails server and verify routes
+
+```bash
+cd /Users/tam0013/Documents/git/galaxy-game-ui
+
+# Install dependencies
+bundle install
+yarn install
+
+# Start Rails server
+bin/rails s
+
+# In another terminal, verify routes work
+curl http://localhost:3000/dashboard
+curl http://localhost:3000/wormholes
+curl http://localhost:3000/admin
+
+# Copy curl output into chat with screenshot of browser showing Dashboard view
+```
+
+Verify:
+- `bin/rails s` starts without errors
+- All three routes return HTML (not 404)
+- Tailwind CSS classes render (inspect page source in browser)
+- MockDataHelper provides data visible in views
+- No ActiveRecord errors in server logs
         'eve-line': '#2a333d',      // EVE Dashboard borders/lines
         'eve-text': '#d8dee6',      // EVE Dashboard text color
         'eve-muted': '#8a97a6',     // EVE Dashboard muted text
