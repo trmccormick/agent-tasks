@@ -28,7 +28,21 @@ Model-neutral. One session, one role.
 Do this for **your** task only.
 
 ### 1a. Task finished
+⚠️ **Review-gate pre-condition:** Before proceeding with the steps below, you MUST satisfy the review gate (see `SESSION_CLOSEOUT.md`, Review Gate Pre-Condition section):
 
+1. Create your handoff file (if not already created).
+2. Request reviewer assessment and await disposition (GO / REVISE / STOP).
+3. **REVISE** — address issues, re-verify, return for review.
+4. **STOP** — do not proceed; await human guidance.
+5. **GO** — still wait for **human authorization** before completing the steps below.
+
+| You CANNOT do until reviewer GO + human auth | You MAY do after reviewer GO but before human auth |
+|---|---|
+| Set YAML `status: completed` in task file | Create handoff file documenting what was done |
+| Run `git mv active/ → completed/` | Update status.md with "awaiting human authorization" note |
+| Push commits | Save evidence artifacts for the human to review |
+
+Once reviewer GO **and** human authorization are confirmed, proceed:
 1. Record outcome and verification in the task file (what shipped, commands run, results).
 2. Set YAML: `status: completed` (and clear `resume` if set).
 3. `git mv` the task from `active/` → `completed/` (use the project’s completed layout, e.g. `completed/YYYY-MM/`).

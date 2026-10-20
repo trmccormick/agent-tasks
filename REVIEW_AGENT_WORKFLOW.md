@@ -46,6 +46,36 @@ State the disposition and artifact location. Do not paste the full review.
 - Automatically rewrite tasks, dispatch work, or add reviewers
 - Override specifically authorized checkpoints on existing assignments
 - Assume all reviewers lack filesystem access — capabilities depend on actual session access
+- Commit or push code on behalf of the implementation agent
+- Mark a task as complete in status.md or the task file
+
+---
+
+## Reviewer Authority Over Commits
+
+Reviewers exercise authority over commits through their disposition process, but they do not run git operations themselves.
+
+### Dispositions and Their Effect on Commits
+
+| Disposition | Commit Allowed? | Next Step |
+|---|---|---|
+| **GO** | Not yet — human must still authorize | Human reviews GO + authorizes commit/push |
+| **REVISE** | No | Implementation agent fixes issues, resubmits for review |
+| **STOP** | No | Work halts; awaits human guidance |
+
+### The Two-Step Commit Chain
+
+Reviewers control the first step only. Neither reviewer nor implementation agent can bypass the second:
+
+1. **Reviewer GO** — "The work meets acceptance criteria and is ready for commit." This is NOT authorization to commit.
+2. **Human Authorization** — Tracy explicitly approves the commit/push. Only this step unlocks git operations.
+
+### What Reviewers Do NOT Do With Commits
+
+- ❌ Run `git commit` or `git push` on implementation work
+- ❌ Mark tasks as complete in status.md
+- ❌ Approve their own review (self-review requires another reviewer)
+- ❌ Override a STOP disposition without human involvement
 
 ---
 

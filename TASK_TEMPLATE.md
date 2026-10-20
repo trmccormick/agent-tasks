@@ -281,6 +281,37 @@ Before navigating to any URLs, running any commands, or modifying any files, you
 
 ---
 
+## 🔴 REVIEW GATE — STOP BEFORE COMMITTING (MANDATORY)
+
+**You MAY NOT commit, push, or mark any task step as "complete" until BOTH of the following conditions are met:**
+
+1. **Reviewer has issued a GO disposition** — a reviewer has assessed your work and disposed it as one of: `GO`, `REVISE`, or `STOP`. See REVIEW_AGENT_GUIDE.md for reviewer authority definitions.
+2. **Human has authorized commit/push/completion** — even after reviewer GO, you may not proceed to commit or push without explicit human authorization.
+
+### What This Means In Practice
+
+| You CAN do | You CANNOT do |
+|---|---|
+| Implement changes per task instructions | Commit/push/mark-complete without both conditions above |
+| Run tests and verify your changes locally | Assume reviewer GO is sufficient to proceed to commit |
+| Create synthesis and evidence artifacts | Proceed to the next task step if review disposition is REVISE or STOP |
+| Report results and request review | Override a reviewer's REVISE or STOP disposition |
+
+### Review-Gate Workflow
+
+1. **Complete all implementation and verification steps** listed below this section
+2. **Create evidence artifacts** (test output, synthesis reports)
+3. **STOP** — paste your evidence in chat and state: *"All implementation and verification complete. Requesting reviewer assessment."*
+4. **Wait for reviewer disposition** (GO / REVISE / STOP)
+5. If **REVISE**: address the listed issues, re-test, return to step 3
+6. If **STOP**: do not proceed; await human guidance
+7. If **GO**: wait for explicit human authorization to commit/push/completion
+8. Once **both** conditions are satisfied: proceed to Commit Instructions below
+
+> **This checkpoint is NOT optional.** It applies to all implementation tasks regardless of size or perceived risk. The reviewer does not commit directly; only the human authorizes commits.
+
+---
+
 ## Problem Statement
 [Exact description of what is wrong or missing.]
 
@@ -428,6 +459,14 @@ Do not commit until the user explicitly approves.
 ---
 
 ## Commit Instructions
+
+> ⚠️ **PRE-COMMIT CHECK**: Before running ANY of the commands below, confirm:
+> - [ ] Reviewer has issued GO disposition (not just pending)
+> - [ ] Human has explicitly authorized commit/push/completion
+> - [ ] Both conditions documented in your completion report
+>
+> If either condition is unmet, DO NOT proceed. Wait for the missing authorization.
+
 Run git commands on **host only** — never inside the Docker container:
 ```bash
 git add [specific files only — never git add .]

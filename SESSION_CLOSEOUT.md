@@ -42,6 +42,30 @@ Every research, implementation, and web agent session MUST create a handoff file
 
 ---
 
+## Review Gate Pre-Condition (implementation sessions — apply after handoff, before finalizing closeout)
+
+If your session produced implementation work that requires review, you MUST satisfy the review gate **after** creating your handoff file above but **before** finalizing your closeout (marking tasks complete in status.md or task file, moving tasks to completed/, pushing commits).
+
+1. **Create your handoff file first** — document what was done before requesting review (see section above)
+2. **Request reviewer assessment** — report completion and ask for disposition
+3. **Await reviewer disposition** — GO, REVISE, or STOP
+4. **If REVISE** — address issues, re-verify, return for review (do not proceed to finalize)
+5. **If STOP** — do not finalize; await human guidance
+6. **If GO** — still wait for human authorization before:
+   - Marking any task as complete in status.md or the task file
+   - Running `git mv` from active/ → completed/
+   - Pushing commits
+
+| You CANNOT do until reviewer GO + human auth | You MAY do after reviewer GO but before human auth |
+|---|---|
+| Mark task complete | Create handoff file documenting what was done (do this first!) |
+| Move task to completed/ | Update status.md with "awaiting human authorization" note |
+| Push commits | Save evidence artifacts for the human to review |
+
+> If no review is required for this task (e.g., planning, research without implementation), skip this section. When in doubt, request review before closeout.
+
+---
+
 ## 0. Scope: only what this session touched
 
 Closeout covers only the files this session created or changed. Another session's work is off limits, whether that session is running, paused or finished: its task files, drafts, reports, uncommitted changes and untracked files.
