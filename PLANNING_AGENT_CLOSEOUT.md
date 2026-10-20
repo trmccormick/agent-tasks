@@ -21,6 +21,12 @@ Run for agent-tasks and, where a task points to one, the project repo:
 3. For every task file in `active/`: its YAML `status:`, `last_updated`, and its Progress / Resume block.
 4. `find . -name "<task file name>"` for any task that may be duplicated.
 5. The Open Sessions table and the last Session Log entries in `status.md`.
+6. **Task Lifecycle Validation (NEW):** For each completed task from this session, verify:
+   - `find projects/<project>/tasks -name "<task file name>"` — should show exactly 1 file
+   - File should be in `completed/YYYY-MM/` folder
+   - YAML `status: completed` should match folder location
+   - If multiple copies found or state is corrupt: STOP, report findings, do not proceed
+   - See `rules/TASK_FILE_LIFECYCLE_VALIDATION.md` for details
 
 ## 2. Classify each item by owner
 

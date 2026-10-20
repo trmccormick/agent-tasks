@@ -178,3 +178,71 @@ At each transition → ONLY ONE COPY should exist in git history
 - [ ] Update YAML header when changing status
 - [ ] Paste `find` output in chat as proof
 
+---
+
+## Incident: Task 2 Lifecycle Artifacts (2026-10-20)
+
+**Date**: 2026-10-20  
+**Project**: agent-tasks  
+**Task**: 2026-10-19-MEDIUM-DOCUMENTATION-REVIEW-ARTIFACT-STANDARDIZATION  
+**Issue**: Stale untracked lifecycle copies left in `active/` and `backlog/` after task completion
+
+### What Happened
+
+Task 2 completed successfully (moved to `completed/2026-10/` via git mv, committed at 315d7dc). However, during planning-session closeout validation, found:
+
+1. **`projects/agent-tasks/tasks/active/2026-10-19-MEDIUM-DOCUMENTATION-REVIEW-ARTIFACT-STANDARDIZATION.md`**
+   - Untracked (not in git index)
+   - Different content (MD5: cb994b00d128f3ffcad6cbc55b61102b vs. authoritative a25f2044...)
+   - Timestamp: Oct 20 16:40 (after task was completed at 16:23)
+   - Lifecycle violation: Completed task should not remain in `active/`
+
+2. **`projects/agent-tasks/tasks/backlog/2026-10-19-MEDIUM-DOCUMENTATION-REVIEW-ARTIFACT-STANDARDIZATION.md`**
+   - Untracked (shows `?? ` in `git status`)
+   - Identical content to authoritative copy (MD5 match)
+   - Leftover from git recovery operation (commit 0223662)
+   - Lifecycle violation: Completed task should not remain in `backlog/`
+
+3. **`projects/agent-tasks/tasks/completed/2026-10/2026-10-19-MEDIUM-DOCUMENTATION-REVIEW-ARTIFACT-STANDARDIZATION.md`**
+   - ✅ Tracked by git (in index at commit 315d7dc)
+   - ✅ Correct location and state
+   - ✅ Authoritative copy
+
+### Root Cause
+
+Likely source: Interactive file operations during implementation session left untracked copies in working directory. Git mv was executed, but local filesystem copies remained. Not committed to git, so not cleaned up by subsequent operations.
+
+### Resolution
+
+Both untracked copies removed during closeout validation. Authoritative copy verified on main branch.
+
+### Prevention Strategy for Future Closeouts
+
+**New Closeout Step — Task Lifecycle Validation**: 
+
+Add to [PLANNING_AGENT_CLOSEOUT.md](../PLANNING_AGENT_CLOSEOUT.md) § "1. Inventory & Pre-Flight Checks":
+
+```bash
+## Lifecycle Artifact Check (NEW)
+
+For each completed task from this session:
+
+1. Find all copies:
+   find projects/agent-tasks/tasks -name "[TASK_FILE_NAME]"
+
+2. Verify single authoritative copy:
+   - Expected: 1 file in completed/YYYY-MM/
+   - Check that YAML status: completed matches folder
+
+3. Report:
+   - If multiple copies found: STOP, report findings, do not commit
+   - If single copy in correct location: confirm in chat ✅
+   - If stale untracked copies exist: remove and report cleanup
+```
+
+**Acceptance Criteria for Future Planning Sessions**:
+- [ ] Before closeout commit: validate each closed task has one authoritative copy
+- [ ] No untracked task-file copies in working directory
+- [ ] All task files in folder match YAML status field
+- [ ] Document findings in closeout handoff § "What Was Checked"
+
