@@ -1,8 +1,8 @@
 # Galaxy Game UI Prototype — Status & Progress Tracking
 
 **Last Updated**: 2026-10-21  
-**Project Phase**: AUDIT & REMEDIATION (post Claude review)  
-**Overall Status**: AWAITING REMEDIATION COMPLETION (then design session, then Task 2+)
+**Project Phase**: DESIGN SESSION (remediation complete)  
+**Overall Status**: READY FOR DESIGN SESSION → Task 2+ scoping
 
 **Strategic Context**: This is an **information architecture laboratory** for exploring UI/UX patterns using mockups and placeholders. Inspiration drawn from EVE Dashboard (styling), Civilization (terrain UI), SimCity (building/production UI), and SimEarth (world management). Patterns validated here will guide main game development; live data can be gradually integrated for tuning.
 
@@ -13,9 +13,9 @@
 | Component | Status | Purpose | Notes |
 |-----------|--------|---------|-------|
 | Infrastructure (Zeitwerk, Tailwind, MockData) | ✅ FIXED (2026-10-21) | Fixed duplicate helper, Galaxy Game resources, CSS config | Committed to main |
-| Task 1 file remediation | 🟡 IN PROGRESS | Remove duplicates, fix contradictions, audit against code | Qwen task: 2026-10-21-HIGH-REMEDIATE-TASK-1-CLEANUP.md |
-| MockDataHelper audit | 🟡 IN PROGRESS | Verify synthesis reports match actual methods | Qwen task: 2026-10-21-HIGH-AUDIT-MOCKDATA-METHODS.md |
-| Dashboard design (deferred) | ⏳ BLOCKED | Awaiting design session to clarify scope | After remediation complete |
+| Task 1 file remediation | ✅ COMPLETE (2026-10-21) | Remove duplicates, fix contradictions, audit against code | Moved to completed/2026-10/ — commit 45e520c |
+| MockDataHelper audit | ✅ COMPLETE (2026-10-21) | Verify synthesis reports match actual methods | Syntheses corrected — commit da51cca |
+| Dashboard design | 🟡 SCHEDULED | Clarify scope, design panels, layout | Next: Design session (human-led or Gemini) |
 | Dashboard implementation | 🔴 BACKLOG | Build Player Dashboard UI mockup | After design approved |
 | Wormholes implementation | 🔴 BACKLOG | Build Surface/Terrain View UI mockup | After design approved |
 | Admin implementation | 🔴 BACKLOG | Build Admin Suite UI mockup | After design approved |
@@ -24,29 +24,37 @@
 
 ## Active Tasks
 
-### Currently In Progress (Qwen)
+### Recently Completed (Commits 45e520c, da51cca)
 
-1. **2026-10-21-HIGH-REMEDIATE-TASK-1-CLEANUP.md**
-   - Fix duplicate Steps 7–10 in Task 1 file
-   - Remove stray EVE CSS fragments
-   - Fix acceptance contradictions (GET / vs /admin behavior)
-   - Update context to clarify: frontend prototype with auth required only for /admin
-   - Validate against TASK_TEMPLATE.md
-   - **Stop condition**: Create handoff, await GO disposition
+1. **2026-10-21-HIGH-REMEDIATE-TASK-1-CLEANUP** ✅
+   - ✅ Removed duplicate Steps 7–10 (EVE-themed duplicates)
+   - ✅ Deleted stray CSS fragments (`eve-line` color)
+   - ✅ Fixed acceptance contradiction: GET / returns 200, /admin returns 302
+   - ✅ Clarified context: frontend prototype with auth required only for /admin
+   - ✅ Validated against TASK_TEMPLATE.md
+   - **Moved to**: `tasks/completed/2026-10/`
 
-2. **2026-10-21-HIGH-AUDIT-MOCKDATA-METHODS.md**
-   - Verify all methods in MockDataHelper actually exist
-   - Cross-check Dashboard, Admin, Wormholes synthesis reports against code
-   - Document discrepancies: missing methods vs wrong names vs synthesis text wrong
-   - Test each method callable in container (no errors)
-   - **Stop condition**: Audit report complete, await human decision on reconciliation
+2. **2026-10-21-HIGH-AUDIT-MOCKDATA-METHODS** ✅
+   - ✅ Verified all 21 methods in MockDataHelper exist and are callable
+   - ✅ Identified fictional method references in old syntheses:
+     - `player_contracts`, `pending_operations` → composed from real methods
+     - `ai_manager_priorities` → renamed to `ai_manager_status`
+     - `terraforming_scenarios` → does not exist (removed)
+   - ✅ Created corrected synthesis files:
+     - `2026-10-21-DASHBOARD-SYNTHESIS-CORRECTED.md` (using real methods)
+     - `2026-10-21-ADMIN-SYNTHESIS-CORRECTED.md` (created from audit)
+     - `2026-10-21-WORMHOLES-SYNTHESIS-CORRECTED.md` (created from audit)
+   - ✅ All resource names corrected: Water Ice (not Blue Ice), Oxygen (not Oxygen Isotopes), etc.
 
-### Next Up (After Remediation)
+### Next Up (Blocking Nothing)
 
 1. **DESIGN SESSION** (human-led, Gemini if available)
-   - Clarify Dashboard scope: which panels? (4? 9? custom?)
-   - Reference: Galaxy Game prototype + EVE Dashboard inspiration
-   - Output: approved screen layouts, final panel list
+   - Input: Galaxy Game prototype intent + EVE Dashboard inspiration + MockDataHelper methods
+   - Clarify Dashboard scope: which panels? how many? in what order?
+   - Reference: EVE Dashboard styling patterns + Galaxy Game domain (settlements, resources, NPCs)
+   - Output: approved screen layouts, final panel list, data binding map
+   - **Duration**: ~1-2 hours
+   - **After approval**: Design constraints flow into Task 2-4 scoping
 
 2. **Rewrite Task 2–4** (Planning Agent)
    - After design approved, break into small focused subtasks
