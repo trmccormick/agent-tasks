@@ -1,5 +1,5 @@
 ---
-status: active
+status: backlog
 resume: false
 priority: HIGH
 type: feature
@@ -8,7 +8,27 @@ mvp_alignment: GALAXY_GAME_UI
 local_worker_safe: true
 ---
 
-## 🟢 Agent Dispatch Interface (Ready to Send)
+## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
+
+**STOP. Do not send this task to an agent until ALL boxes are checked.**
+
+- [x] Agent Dispatch Interface section below is complete and accurate (no placeholders)
+- [x] All Step 0-N instructions are clear and actionable (not vague)
+- [x] Synthesis report template is provided (copy/paste ready, not as example)
+- [x] No placeholder text remains in Implementation Steps
+- [x] All file paths are verified to exist
+- [x] Architecture Gotchas are specific (not generic)
+- [x] Acceptance Criteria are measurable
+- [x] Dependencies and Blocked/Blocks relationships are clear
+
+**Task is READY for dispatch.**
+
+---
+
+## � Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
+
+**This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
+Agents receive this exact text as the startup contract. Every word matters.
 
 ```
 You are **Planning Agent**.
@@ -16,17 +36,26 @@ You are **Planning Agent**.
 Project: galaxy-game-ui
 Task: /Users/tam0013/Documents/git/agent-tasks/projects/galaxy-game-ui/tasks/backlog/2026-10-21-HIGH-FEATURE-DASHBOARD-TASK-REWRITE-2-4.md
 
-Step 0: Move this task to active/: mv tasks/backlog/2026-10-21-HIGH-FEATURE-DASHBOARD-TASK-REWRITE-2-4.md tasks/active/
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy-game-ui/tasks/backlog/2026-10-21-HIGH-FEATURE-DASHBOARD-TASK-REWRITE-2-4.md \
+         projects/galaxy-game-ui/tasks/active/2026-10-21-HIGH-FEATURE-DASHBOARD-TASK-REWRITE-2-4.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
-Step 1: Read approved design: projects/galaxy-game-ui/summaries/2026-10-21-DESIGN-SESSION-OUTPUT-QWEN.md
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - Verify with: find projects/galaxy-game-ui/tasks -name "2026-10-21-HIGH-FEATURE-DASHBOARD-TASK-REWRITE-2-4.md"
+    Only ONE result should exist at active/. Paste this output before committing.
 
-Step 2: Read complete task dispatch specs: projects/galaxy-game-ui/summaries/2026-10-21-QWEN-TASK-REWRITE-DISPATCH.md
+READ FIRST (after Step 0): Task file contains all prerequisites, specifications, and implementation steps.
 
-Step 3: Create 3 task files in projects/galaxy-game-ui/tasks/backlog/ (see TASK 2, 3, 4 specs in dispatch)
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: projects/galaxy-game-ui/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
 
-Step 4: Post synthesis report to chat (one per task, before committing)
-
-Step 5: After all synthesis reports approved, commit: git add projects/galaxy-game-ui/tasks/backlog/2026-10-21-HIGH-*.md && git commit -m "task: Dashboard implementation tasks 2-4 (rewritten from design) [2026-10-21]"
+Closeout: follow SESSION_CLOSEOUT.md only.
 ```
 
 ---
