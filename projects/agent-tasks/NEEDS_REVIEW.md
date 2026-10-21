@@ -140,3 +140,20 @@ Implementation agents: add an entry here instead of just noting something in sta
 **What needs a second opinion**: (1) Which version of each guide stays, and should the other move to `archive/`? (2) Correct "Timothy" and the model names. (3) Remove the repeated sections from the review docs, update the guide's date, and decide whether the LAN addresses belong in a public repo. (4) Include the `docs/MODEL_SELECTION_GUIDE.md:238` reference in the SIMPLE_HANDOFF retirement.
 **Priority**: LOW — clutter and stale detail, no behaviour depends on it
 **Status**: OPEN. Decided 2026-10-20 (Tracy): keep and fix `docs/PLANNER_ROLE_BOUNDARIES.md` (remove "Timothy" and model names, reword commit authority per the lifecycle decision); archive the root `PLANNER_ROLE_BOUNDARIES.md` and both `MODEL_SELECTION_GUIDE.md` files; carry the budget idea to `notes/AGENT_NOTES.md` as a dated REPORTED entry, worded as guidance: there is no fixed agent ladder, the local planning agent may suggest a model by need and by session time left, and the choice is Tracy's preference. Also decided: remove the configuration block at `REVIEW_AGENT_GUIDE.md:121-139` (Copilot and Continue setup, LAN addresses); Continue is installed but unused, so remove the "No Continue Sidebar" line at `README.md:660`, leave the historical `rules/AGENT_ROUTING.md`, and archive `rules/TRIAGE_GUIDE.md` whole; add a one-line note under Continue in `AGENT_NOTES.md`. Not yet decided: the repeated sections in the review docs and the guide's "Last Updated" date. Doc edits not made yet.
+
+### 2026-10-21 — Planning Agent diagnostic findings workflow gap
+**What happened**: During Galaxy Game UI CSS compilation diagnosis, Planning Agent (Copilot) correctly diagnosed the root cause (Tailwind v4 source not compiling) and proposed a fix. Instead of creating a task file and waiting for human GO, Planning Agent executed the fix directly: modified startup.sh, compiled CSS, restarted containers, verified output.
+
+**Observed in**: galaxy_game_ui project, Planning Agent session 2026-10-21
+**What I already checked**: Workflow docs (VERIFIED: PLANNING_AGENT_SESSION_START.md §1 says "do research and preparation, not implementation"; GUARDRAILS.md Rule 26 restricts commits to human-approved work; SESSION_CLOSEOUT.md defines review gates for implementation sessions; no explicit rule found that requires Planning Agent to create task files for diagnostic findings).
+
+**What needs a second opinion**: Planning Agents currently have no written checkpoint between "diagnosis complete" and "execute the fix". The workflow allows Planning Agents to read and recommend but doesn't explicitly state they must create task files for infrastructure changes. Root cause: PLANNING_AGENT_SESSION_START.md doesn't describe the diagnostic-findings workflow (diagnose → task file → human GO → dispatch to Implementation Agent).
+
+**Recommendation**: Create a task file (`2026-10-21-MEDIUM-PLANNING-AGENT-DIAGNOSTIC-WORKFLOW.md`, backlog) with three target documents:
+1. PLANNING_AGENT_SESSION_START.md — add "Diagnostic Findings Workflow" section with explicit checkpoint
+2. rules/GUARDRAILS.md — add "Planning Agent Authority (MAG-P)" rule defining what Planning Agents may/may not do
+3. TASK_TEMPLATE.md — add "Planning Agent Checkpoint" criterion defining when task files are required
+
+**Priority**: MEDIUM — prevents future Planning Agent overshooting and preserves human authority over approval gates
+**Status**: OPEN. Task file created 2026-10-21 at `projects/agent-tasks/tasks/backlog/2026-10-21-MEDIUM-PLANNING-AGENT-DIAGNOSTIC-WORKFLOW.md` with insertion-ready text for Claude review. Awaiting Claude workflow analysis session to approve and merge changes.
+
