@@ -1,12 +1,56 @@
 # Galaxy Game UI Prototype — Status & Progress Tracking
 
 **Last Updated**: 2026-10-21  
-**Project Phase**: DESIGN SESSION (remediation complete)  
-**Overall Status**: READY FOR DESIGN SESSION → Task 2+ scoping
+**Project Phase**: DESIGN SESSION (complete — approved)  
+**Overall Status**: DESIGN APPROVED → Task 2–4 rewrite phase (in progress)
 
 **Strategic Context**: This is an **information architecture laboratory** for exploring UI/UX patterns using mockups and placeholders. Inspiration drawn from EVE Dashboard (styling), Civilization (terrain UI), SimCity (building/production UI), and SimEarth (world management). Patterns validated here will guide main game development; live data can be gradually integrated for tuning.
 
 ---
+
+## 🟢 Design Session — 2026-10-21 ✅ COMPLETE & APPROVED
+
+### Dashboard Design Complete
+- Qwen Design Output: `2026-10-21-DESIGN-SESSION-OUTPUT-QWEN.md` ✅
+- Gemini Review Handoff: `2026-10-21-GEMINI-DESIGN-REVIEW-HANDOFF.md` ✅
+- **Status**: ✅ APPROVED by Gemini (2026-10-21)
+
+### Gemini's Approval Summary
+- ✅ All 4 deliverables present and complete
+- ✅ Strict adherence to constraints (MockDataHelper only, Galaxy Game terminology)
+- ✅ Responsive layout with mobile-first stacking
+- ✅ Glassmorphic styling with consistent dark theme
+- ✅ Data bindings match verified method list
+- ✅ No EVE Online terminology leakage
+- ✅ Zero deviations from project constraints
+- Note: Future consideration — clamp progress bar percentages to 0–100% to avoid overflow
+
+### Approved Design Specifications
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| **Panel count** | 5 panels + header | Enough data density without overwhelming; excludes admin/wormholes (dedicated views) |
+| **Layout** | 2-column grid (header full-width, footer full-width) | Balances visual weight; stacks to 1-col on mobile |
+| **Visual hierarchy** | Header → Bay Inventory → Ships → Manufacturing/Orders → Market Footer | Most actionable data first (resources, fleet); economy data below fold |
+| **Tabs** | Pending Ops (Manuf ↔ Research), Open Orders (Buy Orders ↔ Missions) | Reduces clutter while keeping secondary data 1 click away |
+| **Data relationships** | Cross-panel visual cues (colored fills, hover tooltips) | Shows connections without requiring navigation |
+
+### Panel List (Draft — Awaiting Approval)
+```
+Panel H: Location & Character → MockDataHelper.system_status + character_at_settlement
+Panel 1: Local Bay Inventory  → MockDataHelper.bay_inventory
+Panel 2: Ships & Active Units → MockDataHelper.player_ships
+Panel 3: Pending Ops (tabbed) → manufacturing_queue / research_queue
+Panel 4: Open Orders (tabbed) → npc_buy_orders / active_missions
+Panel 5: Market Footer         → MockDataHelper.market_quick_panel
+```
+
+### Next Steps After Design Approval
+1. Rewrite Tasks 2–4 from approved design specs
+2. Break into subtasks (≤150 lines each, one file per panel)
+3. Implement → Review → Approve → Commit cycle
+
+---
+
 
 ## Quick Status
 
@@ -15,10 +59,10 @@
 | Infrastructure (Zeitwerk, Tailwind, MockData) | ✅ FIXED (2026-10-21) | Fixed duplicate helper, Galaxy Game resources, CSS config | Committed to main |
 | Task 1 file remediation | ✅ COMPLETE (2026-10-21) | Remove duplicates, fix contradictions, audit against code | Moved to completed/2026-10/ — commit 45e520c |
 | MockDataHelper audit | ✅ COMPLETE (2026-10-21) | Verify synthesis reports match actual methods | Syntheses corrected — commit da51cca |
-| Dashboard design | 🟡 SCHEDULED | Clarify scope, design panels, layout | Next: Design session (human-led or Gemini) |
-| Dashboard implementation | 🔴 BACKLOG | Build Player Dashboard UI mockup | After design approved |
-| Wormholes implementation | 🔴 BACKLOG | Build Surface/Terrain View UI mockup | After design approved |
-| Admin implementation | 🔴 BACKLOG | Build Admin Suite UI mockup | After design approved |
+| Dashboard design | ✅ APPROVED (2026-10-21) | Clarify scope, design panels, layout | Gemini review complete — ready for implementation |
+| Dashboard implementation | 🟡 IN PROGRESS | Build Player Dashboard UI from approved design | Qwen rewriting Tasks 2–4 (start: post-design approval) |
+| Wormholes implementation | 🔴 BACKLOG | Build Surface/Terrain View UI mockup | After dashboard complete + design patterns proven |
+| Admin implementation | 🔴 BACKLOG | Build Admin Suite UI mockup | After dashboard complete + design patterns proven |
 
 ---
 
