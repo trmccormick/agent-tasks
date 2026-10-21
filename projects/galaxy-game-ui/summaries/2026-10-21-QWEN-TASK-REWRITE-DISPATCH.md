@@ -41,7 +41,7 @@ All 4 deliverables approved:
 
 **Task File Name**: `2026-10-21-HIGH-FEATURE-DASHBOARD-HEADER-AND-INVENTORY.md`
 
-**Location**: `projects/galaxy-game-ui/tasks/active/`
+**Location**: `projects/galaxy-game-ui/tasks/backlog/`
 
 **What to Include**:
 
@@ -99,7 +99,7 @@ Implement the Location & Character Header and Local Bay Inventory panels on the 
 
 **Task File Name**: `2026-10-21-HIGH-FEATURE-DASHBOARD-SHIPS-AND-MANUFACTURING.md`
 
-**Location**: `projects/galaxy-game-ui/tasks/active/`
+**Location**: `projects/galaxy-game-ui/tasks/backlog/`
 
 **What to Include**:
 
@@ -166,7 +166,7 @@ Implement the Ships & Active Units panel and the Pending Operations panel (Manuf
 
 **Task File Name**: `2026-10-21-HIGH-FEATURE-DASHBOARD-ORDERS-AND-MARKET.md`
 
-**Location**: `projects/galaxy-game-ui/tasks/active/`
+**Location**: `projects/galaxy-game-ui/tasks/backlog/`
 
 **What to Include**:
 
