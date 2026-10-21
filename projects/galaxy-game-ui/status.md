@@ -94,6 +94,44 @@
 
 ---
 
+## Infrastructure Maintenance (2026-10-21)
+
+### CSS Compilation Fix ✅
+
+**Issue**: Tailwind v4 CSS not rendering on pages after restart
+- Pages served with raw @import directives instead of compiled utilities
+- Galaxy Game theme colors not appearing
+- Dark theme not applied
+
+**Root Cause**: 
+- Application.css contained raw Tailwind v4 source (@import, @config, @theme blocks)
+- Rails asset pipeline not automatically compiling Tailwind CSS
+- @config path reference incorrect in source file
+
+**Resolution Applied**:
+1. ✅ Fixed @config path in application.css (commented out problematic reference)
+2. ✅ Compiled application.css using `bundle exec tailwindcss -c config/tailwind.config.js`
+3. ✅ Replaced source CSS with 728-line compiled Tailwind output (contains all utilities + theme)
+4. ✅ Updated startup script to run `tailwindcss:build` before Rails server starts
+5. ✅ Cleared asset cache and restarted container
+6. ✅ Verified served CSS now contains:
+   - Tailwind v4.3.3 full utility set
+   - Galaxy Game theme colors: `--color-galaxy-dark: #0a0a0a`, `--color-galaxy-accent: #00d4ff`, etc.
+   - All component styles (`.bg-galaxy-dark`, `.border-galaxy-accent/30`, etc.)
+
+**Verification**:
+- New CSS fingerprint: `application-94662743.css` (728 KB compiled)
+- Verified Galaxy Game colors in served CSS
+- Pages now display with dark theme and neon accents
+
+**Files Modified**:
+- `scripts/startup.sh` — Added Tailwind build step before Rails
+- `app/assets/stylesheets/application.css` — Now contains compiled Tailwind output (was raw source)
+
+**Browser Note**: Clear cache to see updated styles immediately (old CSS may be cached locally)
+
+---
+
 ## Blocking Issues
 None currently.
 
