@@ -1,8 +1,8 @@
 # Galaxy Game UI Prototype — Status & Progress Tracking
 
-**Last Updated**: 2026-10-20  
-**Project Phase**: UI/UX DESIGN EXPLORATION  
-**Overall Status**: READY FOR TASK 1 DISPATCH
+**Last Updated**: 2026-10-21  
+**Project Phase**: AUDIT & REMEDIATION (post Claude review)  
+**Overall Status**: AWAITING REMEDIATION COMPLETION (then design session, then Task 2+)
 
 **Strategic Context**: This is an **information architecture laboratory** for exploring UI/UX patterns using mockups and placeholders. Inspiration drawn from EVE Dashboard (styling), Civilization (terrain UI), SimCity (building/production UI), and SimEarth (world management). Patterns validated here will guide main game development; live data can be gradually integrated for tuning.
 
@@ -10,28 +10,60 @@
 
 ## Quick Status
 
-| Component | Status | Purpose | ETA |
-|-----------|--------|---------|-----|
-| Project setup + MockData | 🔴 NOT STARTED | Foundation for all features | 2026-10-21 |
-| Dashboard UI mockup | 🔴 NOT STARTED | Research, manufacturing, inventory, missions | 2026-10-22 |
-| Surface/Terrain UI mockup | 🔴 NOT STARTED | Settlement network, AstroLift routes, terrain grid | 2026-10-23 |
-| Admin Suite UI mockup | 🔴 NOT STARTED | AI Manager tuning, NPC management, Digital Twin | 2026-10-24 |
+| Component | Status | Purpose | Notes |
+|-----------|--------|---------|-------|
+| Infrastructure (Zeitwerk, Tailwind, MockData) | ✅ FIXED (2026-10-21) | Fixed duplicate helper, Galaxy Game resources, CSS config | Committed to main |
+| Task 1 file remediation | 🟡 IN PROGRESS | Remove duplicates, fix contradictions, audit against code | Qwen task: 2026-10-21-HIGH-REMEDIATE-TASK-1-CLEANUP.md |
+| MockDataHelper audit | 🟡 IN PROGRESS | Verify synthesis reports match actual methods | Qwen task: 2026-10-21-HIGH-AUDIT-MOCKDATA-METHODS.md |
+| Dashboard design (deferred) | ⏳ BLOCKED | Awaiting design session to clarify scope | After remediation complete |
+| Dashboard implementation | 🔴 BACKLOG | Build Player Dashboard UI mockup | After design approved |
+| Wormholes implementation | 🔴 BACKLOG | Build Surface/Terrain View UI mockup | After design approved |
+| Admin implementation | 🔴 BACKLOG | Build Admin Suite UI mockup | After design approved |
 
 ---
 
 ## Active Tasks
 
-### Currently In Progress
-- None — awaiting Qwen dispatch for Task 1
+### Currently In Progress (Qwen)
 
-### Next Up (Ready for Dispatch)
-1. **2026-10-20-HIGH-FEATURE-RAILS8-PROJECT-SETUP.md** — Initialize Rails 8 app, enhanced MockData module (character, corporations, buy orders, missions, routes, admin data)
-2. **2026-10-20-HIGH-FEATURE-DASHBOARD-COMMAND-CENTER.md** — Build Player Dashboard UI mockup (research, facilities, inventory, manufacturing, buy orders, missions, ships)
-3. **2026-10-20-HIGH-FEATURE-WORMHOLE-NETWORK-TRANSIT.md** — Build Surface/Terrain View UI mockup (settlement network, AstroLift routes, terrain canvas placeholder)
-4. **2026-10-20-MEDIUM-FEATURE-ADMIN-TELEMETRY-PANEL.md** — Build Admin Suite UI mockup (AI Manager, NPC management, buy order tracking, Digital Twin)
+1. **2026-10-21-HIGH-REMEDIATE-TASK-1-CLEANUP.md**
+   - Fix duplicate Steps 7–10 in Task 1 file
+   - Remove stray EVE CSS fragments
+   - Fix acceptance contradictions (GET / vs /admin behavior)
+   - Update context to clarify: frontend prototype with auth required only for /admin
+   - Validate against TASK_TEMPLATE.md
+   - **Stop condition**: Create handoff, await GO disposition
+
+2. **2026-10-21-HIGH-AUDIT-MOCKDATA-METHODS.md**
+   - Verify all methods in MockDataHelper actually exist
+   - Cross-check Dashboard, Admin, Wormholes synthesis reports against code
+   - Document discrepancies: missing methods vs wrong names vs synthesis text wrong
+   - Test each method callable in container (no errors)
+   - **Stop condition**: Audit report complete, await human decision on reconciliation
+
+### Next Up (After Remediation)
+
+1. **DESIGN SESSION** (human-led, Gemini if available)
+   - Clarify Dashboard scope: which panels? (4? 9? custom?)
+   - Reference: Galaxy Game prototype + EVE Dashboard inspiration
+   - Output: approved screen layouts, final panel list
+
+2. **Rewrite Task 2–4** (Planning Agent)
+   - After design approved, break into small focused subtasks
+   - Each subtask: one file (view/helper/CSS/test), ≤150 lines
+   - Use correct scope from design session
+   - Follow TASK_TEMPLATE.md exactly
+
+### Blocked / Deferred
+
+- Task 1 (Setup) — awaiting remediation completion before final approval
+- Task 2 (Dashboard) — deferred pending design session
+- Task 3 (Wormholes) — backlog, depends on Task 1 completion
+- Task 4 (Admin) — backlog, depends on Task 1 completion
 
 ### Completed
-- None yet
+
+- Infrastructure fixes: Zeitwerk error, Tailwind v4 config, MockDataHelper terminology → **Commit 8f8e007**
 
 ---
 
@@ -105,5 +137,34 @@ None currently.
 
 ## Archive & History
 - **Project created**: 2026-10-20
-- **Latest update**: 2026-10-20 (UI/UX prototype reframing + MockData expansion + NPC system integration)
+- **Latest update**: 2026-10-21 (Claude audit, infrastructure fixes, remediation tasks created)
 - **Project tracking**: This file (`status.md`)
+
+---
+
+## Session Log
+
+### 2026-10-21 — Planning Agent Review & Remediation Setup
+
+**Context**: Claude conducted code audit of Task 1 and synthesis reports, found 9 critical issues (Zeitwerk error, Tailwind v4 config, duplicate task steps, method mismatches, EVE terminology, process violations).
+
+**Work Completed by Planning Agent**:
+1. ✅ Reviewed all 9 audit findings with user
+2. ✅ Got user scope decisions: keep auth, defer design session, use Galaxy Game terms (GCC, Water Ice, Deuterium, Regolith, Luna settlements)
+3. ✅ Created infrastructure fixes (committed to main):
+   - Deleted duplicate `mock_data.rb` helper (Zeitwerk fix)
+   - Updated MockDataHelper with Galaxy Game resources & locations
+   - Fixed Tailwind v4 CSS config with @theme and @config directives
+   - Commit: `8f8e007`
+4. ✅ Created remediation task files for Qwen:
+   - `2026-10-21-HIGH-REMEDIATE-TASK-1-CLEANUP.md` — Fix corrupted task file
+   - `2026-10-21-HIGH-AUDIT-MOCKDATA-METHODS.md` — Verify methods exist
+
+**Stop Condition**: Awaiting Qwen execution + human approval before next phase.
+
+**Next Planning Steps**:
+1. Monitor Qwen's remediation work
+2. After remediation GO: Schedule design session (clarify Dashboard scope)
+3. Rewrite Tasks 2–4 per design output (smaller subtasks, ≤150 lines each)
+
+**Key Decision**: Infrastructure fixes kept (not reverted) but further implementation paused. Planning Agent monitors only.
