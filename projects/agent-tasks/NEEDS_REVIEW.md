@@ -171,3 +171,30 @@ Implementation agents: add an entry here instead of just noting something in sta
 **What needs a second opinion**: (1) Draft-review output: use `REVIEW_REPORT_TEMPLATE.md` with a draft-review variant and VERIFIED / REPORTED / INFERRED labels, or keep the new format? (2) Do the Rule 12 lines about stray-copy removal and pasting `find` output get reworded with the lifecycle task?
 **Priority**: MEDIUM — the draft gate is the main fix for planners self-approving tasks
 **Status**: OPEN. Decided 2026-10-22 (Tracy): (a) a planner commits and pushes drafts when Tracy tells it to, so web review agents can read the repo, and the task stays in `drafts/` until she approves; reword Rule 7 and Step 2. (b) Root `MODEL_SELECTION_GUIDE.md` stays as a living capability reference (no ranking or fixed ladder, dated and labelled rows); the `docs/` copy is archived; this replaces the 2026-10-20 decision to archive both copies. (c) `SIMPLE_HANDOFF_TEMPLATE.md` is retired (the dispatch block is the minimal handoff), including its new lines and the `[handoff]` steps. (d) `backlog/` holds approved tasks only: remove `drafts` from the Rule 12 backlog subfolder list and `{YYYY-MM}` from `TASK_TEMPLATE.md:10`.
+
+### 2026-10-22 — Implementation Agent Docker container execution rule not prominently documented
+**What happened**: During Task 1 (MockDataHelper enhancement) implementation for galaxy-game-ui, Qwen (implementation agent) ran `ruby -c` syntax check on host system instead of inside Docker container. This created version-mismatch risk: host Ruby version differs from container Ruby version, so syntax checks passing on host might fail silently in container at runtime. Agent self-corrected when pointed out (`docker exec galaxy_game ruby -c /home/galaxy_game/app/services/mock_data_helper.rb`), but the rule should be documented prominently enough to prevent repeating this pattern across projects and sessions.
+
+**Observed in**: galaxy-game-ui project, implementation session 2026-10-22 (Qwen, Task 1 - MockDataHelper).
+
+**Project-wide lesson**: For galaxy-game-ui specifically (and any containerized Rails project), the rule is:
+- File editing tools work via volume mount (`/Users/tam0013/Documents/git/galaxy-game-ui/galaxy-game-ui/...` on host syncs to `/home/galaxy_game/...` in container)
+- ALL Ruby/Rails/system commands MUST run inside container: `docker exec galaxy_game <command>`
+- Container app root is `/home/galaxy_game/` (NOT `/home/galaxy_game/galaxy-game-ui/`)
+- Do NOT run Ruby commands on host system
+
+**System-wide applicability**: This affects all containerized projects in the agent-tasks multi-project structure. Currently only galaxy-game-ui uses Docker; if samvera_hyku or wvu_knapsack adopt containers, this pattern applies.
+
+**What I already checked**: The galaxy-game-ui Dockerfile.dev line `ADD ./galaxy-game-ui /home/galaxy_game` (VERIFIED: maps host `./galaxy-game-ui/*` to container `/home/galaxy_game/*`); the docker-compose volume mount `./galaxy-game-ui:/home/galaxy_game` (VERIFIED); Qwen's correction to `docker exec galaxy_game ruby -c /home/galaxy_game/app/services/mock_data_helper.rb` (VERIFIED: syntax check passed in container).
+
+**What needs a second opinion**: (1) Should this rule be added to GUARDRAILS.md as a numbered rule (e.g., "Rule 30: Container Execution")? (2) Should galaxy-game-ui have a project-specific DOCKER_RULES.md or similar? (3) Should it be added to the galaxy-game-ui PROJECT_README or QWEN_HANDOFF? (4) Should it be emphasized in the `TASK_TEMPLATE.md` Agent Dispatch Interface block for containerized projects (conditional on project config)?
+
+**Recommended solution**: One or more of:
+- Add "Rule 30: Container Execution" to `rules/GUARDRAILS.md` (general principle, applies to all containerized projects)
+- Add "Docker Execution Rule" section to `projects/galaxy-game-ui/README.md` or `projects/galaxy-game-ui/DOCKER_RULES.md` (project-specific implementation)
+- Update galaxy-game-ui `QWEN_HANDOFF.md` section to include Docker rule prominently (agent-specific context)
+- Add a conditional note in `TASK_TEMPLATE.md` Agent Dispatch Interface for containerized projects
+
+**Priority**: MEDIUM — prevents version-mismatch bugs in containerized projects; affects galaxy-game-ui immediately and other containerized projects in future
+
+**Status**: OPEN. Discovery checkpoint: Qwen self-corrected and learned the rule. No additional implementation issues observed after correction. Needs human decision on documentation placement and emphasis level.
