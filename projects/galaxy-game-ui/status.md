@@ -1,16 +1,32 @@
 # Galaxy Game UI Prototype — Status & Progress Tracking
 
 **Last Updated**: 2026-10-22  
-**Project Phase**: CSS/Styling Fix Phase — Critical blocker identified  
-**Overall Status**: Task 2 pushed (commit `67a1168`), but Task 2-4 blocked by CSS styling gap. WVU branding in session view + incomplete dashboard styling. New task created: `2026-10-22-HIGH-FIX-SESSION-LOGIN-AND-DASHBOARD-STYLING.md` — must complete before Tasks 3-4 dispatch.
+**Project Phase**: CSS Foundation Integration — EVE Dashboard CSS adoption  
+**Overall Status**: Tasks reorganized into 3 phases. Phase 1 (CSS blocker) is HIGHEST PRIORITY. See CSS-INTEGRATION-STRATEGY.md for complete planning.
 
-**Strategic Context**: This is an **information architecture laboratory** for exploring UI/UX patterns using mockups and placeholders. Inspiration drawn from EVE Dashboard (styling), Civilization (terrain UI), SimCity (building/production UI), and SimEarth (world management). Patterns validated here will guide main game development; live data can be gradually integrated for tuning.
+**Strategic Context**: This is an **information architecture laboratory** for exploring UI/UX patterns using mockups and placeholders. Inspiration drawn from EVE Dashboard (styling), Civilization (terrain UI), SimCity (building/production UI), and SimEarth (world management). **NEW APPROACH**: Use EVE Dashboard CSS as foundation, customize for Galaxy Game domain, progressively port views with card styling.
 
 ---
 
-## � BLOCKER — CSS Styling Gap Discovered (2026-10-22)
+## 🔴 PHASE 1: CSS FOUNDATION — CRITICAL PATH
 
-### Issue Summary
+### Strategy: EVE Dashboard CSS as Primary Foundation
+**Complete planning in**: `CSS-INTEGRATION-STRATEGY.md`
+
+Adopt EVE Dashboard CSS system (variables, layouts, components), customize for Galaxy Game colors/domain, fix session view styling, polish dashboard.
+
+### Phase 1 Tasks (HIGHEST PRIORITY)
+
+| Task | Title | Scope | Estimate |
+|------|-------|-------|----------|
+| **1.1** | CSS Foundation Setup | Extract EVE Dashboard CSS, create Galaxy Game theme layer | 1.5-2h |
+| **1.2** | Fix Session/Login View | Remove WVU branding, apply proper CSS classes | 45min |
+| **1.3** | Dashboard Styling Polish | Add glasmorphic effects, match EVE aesthetic | 1h |
+
+### Full Context
+**See**: `CSS-INTEGRATION-STRATEGY.md` for complete planning
+
+
 Task 2 implementation is **functionally complete** but **visually incomplete**. Two interconnected styling problems:
 
 1. **Session/Login View**: Uses stale WVU Libraries branding + non-existent CSS classes (wvu-blue, wvu-warm-gray-*, wvu-accent-blue, wvu-gold)
