@@ -12,7 +12,11 @@ Give this file to a planning or review agent at the start of a session, then tel
 4. **Stall ladder.** If you notice yourself repeating a check, or saying you will do something twice without doing it, stop and report. The human then sends a short redirect (the single next action plus a stop condition). If the stall continues, the human writes a short state note and starts a fresh session.
 5. **Stages are separate.** Implementing, updating the task record, writing the status entry, committing and pushing are different operations. Say which are required for this assignment and verify each one. Do not claim one is done because another is.
 6. **Preserve unrelated work.** Work on `main` unless told otherwise. Never reset, stash, discard or commit changes that are not yours.
-7. **The human commits and pushes** (GUARDRAILS Rule 26). Show the diff and wait for approval.
+7. **Planning agents commit draft tasks; humans control approval gates** (GUARDRAILS Rule 12).  
+   - You may commit draft tasks to git (makes them reviewable)
+   - You may NOT move tasks from drafts/ to backlog/ (human-only operation)
+   - You may NOT dispatch tasks to implementation agents (human + review agent decision)
+   - Show what you've committed and wait for human approval before proceeding
 
 ---
 
@@ -25,6 +29,81 @@ You are a **local planning or review agent**. The human will tell you the projec
 - Coordinate with web agents: take their drafts and verify/adjust for codebase accuracy
 - Update `status.md` and commit/push your own changes
 - Do research and preparation, not implementation
+
+---
+
+## Task Creation Workflow (Step 1.5 — If Creating New Tasks)
+
+**This section applies if your assignment includes creating new draft tasks.**
+
+### Full Task Lifecycle
+
+```
+tasks/drafts/ → [git commit] → [review agent reads from git] → [human approves] 
+  → tasks/backlog/[SUBFOLDER]/ → [handoff] → tasks/active/ → tasks/completed/
+```
+
+**Three critical gates prevent planners from bypassing review:**
+
+1. **Draft Gate** (you are here if creating tasks): Task starts in `tasks/drafts/` with `status: draft`
+2. **Review Gate** (happens AFTER you commit): Independent review agent reads from git and returns assessment
+3. **Approval Gate** (human decides): Human reviews BOTH task file AND review assessment, then approves move to backlog
+
+**You (planning agent) CANNOT skip any of these gates.**
+
+### Procedure for Creating Draft Tasks
+
+1. **Create task file** in `tasks/drafts/[TASKNAME].md` with `status: draft` in YAML frontmatter
+   - Use TASK_TEMPLATE.md — ensure "DRAFT STATUS NOTE" section is included
+   - Complete full task specification (all sections from template)
+   - Fill in the "Draft Review Checklist" in the template with what you've verified (leave unchecked if not verified by you)
+
+2. **Commit to git** — make task reviewable from public repo
+   ```bash
+   cd <agent-tasks>
+   git add projects/[project]/tasks/drafts/[TASKNAME].md
+   git commit -m "draft task: [TASKNAME] [YYYY-MM-DD]"
+   git push
+   ```
+
+3. **Pause and wait** — you have created a draft task, not approved it
+   - Do NOT move the task to backlog/ yourself
+   - Do NOT dispatch it to implementation agents
+   - Do NOT say "here's the dispatch handoff"
+   - **DO recommend which web review agent should assess this draft** based on task needs and agent capabilities (see "Available Web Agents" section below)
+   - The human will use your recommendation to dispatch the task to a review agent next
+
+4. **Review agent routing recommendation** — After committing draft task, provide brief guidance on which review agent suits this task:
+   ```
+   Suggested review agent: [Claude | Grok | Gemini | ChatGPT | Perplexity | Office 365 Copilot]
+   Reason: [one line on why this agent's strengths fit this task]
+   ```
+   Examples:
+   - "Claude (can read GitHub repos directly, strong on architecture review)"
+   - "Gemini (long context needed for complex multi-component task)"
+   - "Office 365 Copilot (straightforward scope review, no special capabilities needed)"
+
+5. **Human workflow** (what happens next — you do not do this):
+   - Human sends **review agent** (web agent: Claude, Grok, Gemini, etc. — NOT local Qwen/Ollama) to read draft task from git repo
+   - Uses your agent recommendation as routing guidance (can accept, modify, or override)
+   - Review agent assesses scope, clarity, dependencies, architecture fit
+   - Review agent returns assessment with GO/REVISE/STOP disposition
+   - Human reviews assessment + task file, then:
+     - If GO: approves move to backlog/ by running `git mv tasks/drafts/[TASKNAME].md tasks/backlog/[SUBFOLDER]/[TASKNAME].md`
+     - If REVISE: returns to you with required changes; loop to step 1
+     - If STOP: may close or defer task
+
+### Key Rule: Planners Do Not Self-Approve
+
+❌ **DO NOT DO THIS:**
+- Create draft task → move it to backlog yourself → send dispatch handoff to implementation agent
+- This bypasses the review gate and violates workflow authority
+
+✅ **DO THIS INSTEAD:**
+- Create draft task → commit to git → stop and wait
+- Only human + review agent decide if task moves to backlog
+
+**Rationale**: Independent review catches scope creep, contradictions, and misaligned assumptions before implementation begins.
 
 ---
 
@@ -91,9 +170,29 @@ Qwen (local model, Ollama) has three distinct roles in this workflow:
 ---
 ## Available Web Agents and Pairing Strategy
 
-The human will tell you which web agents are available today. Here's guidance on capabilities and pairing:
+**For current list of available web agents, capabilities, and GitHub access status, see MODEL_SELECTION_GUIDE.md § "Available Web Models for Review Work".**
 
-**PERSONAL ACCOUNT** (all free web agents + GitHub Copilot Premium):
+That guide is maintained as web model capabilities evolve and is the source of truth for:
+- Which agents have GitHub read access (currently: Claude, Grok, ChatGPT)
+- Which are best for different task types (code review, long-context, fallback, etc.)
+- Current availability and limitations
+- How to recommend agents based on task needs
+
+**Quick guidance for planning agents**:
+- **Recommending a draft task review agent**: Consult MODEL_SELECTION_GUIDE.md table
+  - Primary code review agents with GitHub access: Claude, Grok
+  - Complex/long tasks: Gemini (long context, no GitHub access needed)
+  - Quick straightforward review: Office 365 Copilot (included with O365)
+  - Fallback: Check availability column in guide
+- **When recommending**: Mention which capability matters for this specific task (e.g., "Claude — can verify architecture patterns directly from GitHub repos")
+
+**Do not rely on this section for current capabilities** — MODEL_SELECTION_GUIDE.md is the maintained reference.
+
+---
+
+## DEPRECATED: Detailed Agent Table
+
+The following section is archived. Use MODEL_SELECTION_GUIDE.md § "Available Web Models for Review Work" instead.
 
 | Agent | Strengths | Limitations | Best Use | How to Use |
 |-------|-----------|-------------|----------|-----------|
@@ -103,7 +202,8 @@ The human will tell you which web agents are available today. Here's guidance on
 | **Gemini (free web)** | Excellent context length, brainstorming, general reasoning | Cannot access GitHub repos directly; file upload limited | Long-context coordination, brainstorming complex architectures, task decomposition | Copy-paste file contents or upload (if available); no GitHub URL access |
 | **Perplexity (free web)** | Long context, cross-agent coordination, web research | Cannot access GitHub repos; file upload limited on free plan (~few/day then copy-paste required) | Coordination between agents, synthesizing from pasted content, web research, task decomposition | Paste file contents; file uploads limited—after quota, copy-paste instead |
 | **GitHub Copilot (VSCode)** | Deep codebase access, VS Code integration, code verification | Limited to ~$2.50/week budget | Code escalations when Qwen stalls on personal/open-source projects | Integrated in VSCode; works with local files and GitHub repos |
-| **Personal Microsoft Copilot (web, fallback)** | Reasoning, synthesis, code review | No VSCode integration, no GitHub access | Fallback for personal projects if GitHub Copilot budget exhausted | Copy-paste code; no GitHub URL access |
+| **Microsoft Copilot (Office 365)** | Reasoning, synthesis, code review; included with Office 365 subscription | No VSCode integration, no GitHub access | General reasoning, code review, task synthesis (preferred fallback) | Web-based or Office app; copy-paste code |
+| **Personal Microsoft Copilot (web, fallback)** | Reasoning, synthesis, code review | No VSCode integration, no GitHub access | Fallback if Office 365 Copilot unavailable | Copy-paste code; no GitHub URL access |
 
 **WORK ACCOUNT** (WVU-only):
 
@@ -148,37 +248,26 @@ The human will tell you which web agents are available today. Here's guidance on
 Before planning work, ask the human:
 
 1. **"What projects are active today?"**
-   - Determines routing: WVU/Samvera → WVU Copilot as primary reviewer; Personal projects → GitHub Copilot (if budget) or free agents
+   - Determines routing: WVU/Samvera → WVU Copilot as primary reviewer; Personal projects → free web agents or Office 365 Copilot
    - Also determines scope of work for this session
 
-2. **"What's our GitHub Copilot budget status?"** (escalation decisions)
-   - Reference: `docs/COPILOT_USAGE_LOG.md` tracks monthly spend; target ~$2.50/week
-   - GitHub Copilot is a **last resort**, not primary tool
-   - **Before escalating to GitHub Copilot, try**:
-     1. Simplify the task (break into smaller, clearer pieces)
-     2. Start a new session (clean context, no bloat)
-     3. Use free agents (Claude, Grok, Gemini, Perplexity)
-     4. Only then escalate to GitHub Copilot if budget allows (~70%+ remaining)
-   - **If budget is low** (<40% remaining): don't use GitHub Copilot, rely on task simplification + new sessions + free agents
-
-3. **"Any known blockers or carryover from last session?"**
+2. **"Any known blockers or carryover from last session?"**
    - Helps you prioritize and avoid repeated stalls
 
 Once you have answers, you can make smart routing decisions.
 
 ---
 
-## Escalation Strategy (Before Using GitHub Copilot Premium)
+## Escalation Strategy (Web Agent Selection)
 
-GitHub Copilot Premium ($2.50/week budget) is a **last resort**, not the primary tool. Before escalating:
+**Agent selection priority** (no budget constraints with Office 365 Copilot):
 
 1. **Dispatch Qwen research session if needed**: If architecture/patterns unclear, dispatch dedicated Qwen research session (read-only) → save findings to `.md` → share with Claude for synthesis → use in planning. Don't research inline in planning sessions.
 2. **Use non-GitHub free agents for task decomposition**: Gemini, Perplexity break complex work into smaller, clearer pieces (they don't need repo access). Qwen retries on each piece—often succeeds.
 3. **Use GitHub-capable free agents for code review**: Claude, Grok, ChatGPT can read public GitHub repos directly. Provide GitHub URLs or paste diffs—they review in repo context.
 4. **Use WVU Copilot for Samvera/Hyku specialized review**: Paste diffs to WVU Copilot for architecture/pattern review on WVU/Samvera code (specializes in Rails/Hyku, validates design decisions).
-5. **Start a new session if stuck**: Clean context window eliminates bloat and confusion that makes Qwen stall (different from research sessions—use when implementation is stuck, not for exploration).
-6. **Check budget and escalate cautiously**: Only escalate to GitHub Copilot if you have >70% budget remaining after trying above steps.
-7. **If budget is low**: Keep using research sessions + task simplification + free agent review + new sessions instead of GitHub Copilot.
+5. **Use Office 365 Copilot for synthesis/reasoning**: General reasoning, task synthesis, code review (included with subscription, no budget constraint).
+6. **Start a new session if stuck**: Clean context window eliminates bloat and confusion that makes Qwen stall (different from research sessions—use when implementation is stuck, not for exploration).
 
 **Typical workflow**:
 - Need architecture clarity → Dispatch Qwen research session on architecture → Save findings.md → Send to Claude → Incorporate results in task

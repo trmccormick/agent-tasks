@@ -4,15 +4,70 @@
 **Applies To**: Any agent performing planning, research, implementation, or review sessions  
 **Purpose**: Shared responsibilities, authority, and evidence standards
 
+**Agent Selection Note**: Review agents are **web agents** (Claude, Grok, Gemini, ChatGPT, Perplexity). Local models (Qwen/Ollama) and GitHub Copilot are not used for review work. Review requires deep reasoning and judgment over codebase patterns; web agents have superior capabilities for this task.
+
 ---
 
 ## Session Activities, Not Permanent Identities
 
 Planning, research, implementation, and review are authorized session activities, not permanent identities attached to particular agents. A session may perform any combination of these activities using its actual capabilities. Do not require one role per session.
 
+---
+
+## Reviewing Draft Tasks for Scope Approval (Review Agent — Web Agent Only)
+
+**When assigned**: Human sends you to review draft task files that planning agents created and committed to git. Planning agent has recommended which review agent would best suit this task based on its needs; you were selected (or human chose from recommendations).
+
+**Your role**: Assess whether the draft task is ready to move from `tasks/drafts/` to `tasks/backlog/`. You provide a GO/REVISE/STOP disposition that informs human approval decision.
+
+**Assessment checklist** — verify each before issuing disposition:
+
+- **Acceptance Criteria**: Are they clear, measurable, and specific? ✅ Go / ⚠️ Needs clarification
+- **Task Scope**: Is it well-bounded? Does it overlap with active/backlog tasks? ✅ Focused / ⚠️ Too broad
+- **Dependencies**: Are they listed? Do they exist in status.md or active/backlog? ✅ Clear / ❌ Broken links
+- **Architecture Alignment**: Does the approach match current codebase patterns? ✅ Yes / ⚠️ Needs verification
+- **No Contradictions**: Are there conflicting instructions or gotchas that contradict each other? ✅ Consistent / ⚠️ Found issues
+- **Files Referenced**: Are all file paths accurate (check codebase)? ✅ Verified / ❌ Broken paths
+
+**Output**: Save assessment as MD file to `projects/[project]/summaries/YYYY-MM-DD-DRAFT-REVIEW-[TASKNAME].md`
+
+**Disposition format:**
+```markdown
+## DRAFT TASK REVIEW
+
+**Task**: [name from filename]  
+**Date**: YYYY-MM-DD  
+**Assessed by**: [Review Agent]
+
+### Assessment
+- Acceptance Criteria: [PASS | NEEDS CLARIFICATION]
+- Scope: [FOCUSED | TOO BROAD | OVERLAPPING]
+- Dependencies: [CLEAR | MISSING | BROKEN]
+- Architecture Alignment: [MATCHES PATTERN | NEEDS VERIFICATION]
+- No Contradictions: [YES | FOUND: describe]
+- File Paths: [VERIFIED | BROKEN: describe]
+
+### Disposition
+**GO** | **REVISE** | **STOP**
+
+### Notes
+[Any findings, required changes, or context for human decision]
+```
+
+**Outcomes:**
+- `GO`: Task is ready for human approval to move to backlog/ and proceed to implementation dispatch
+- `REVISE`: Task needs changes before re-review (planning agent updates in-place in drafts/)
+- `STOP`: Task has critical issues; recommend human guidance before proceeding
+
+---
+
 ## Authority
 
-Tracy authorizes priorities, assignments, dispatch, and scope changes. Sessions may recommend available agents or session arrangements with a brief rationale (capabilities, context needs, availability, cost), but do not assume availability or auto-dispatch newly drafted tasks.
+Tracy (human) authorizes priorities, assignments, dispatch, and scope changes. 
+
+**Planning agents may recommend review agents** based on task needs and agent capabilities. Provide a brief rationale explaining why a particular web agent (Claude, Grok, Gemini, ChatGPT, Perplexity, Office 365 Copilot) would be best suited for assessing a specific draft task. The human can accept the recommendation, select a different agent, or override based on availability/context.
+
+**Do not assume availability or auto-dispatch** newly drafted tasks — the human makes the dispatch decision.
 
 ### Reviewer Authority Over Commits
 

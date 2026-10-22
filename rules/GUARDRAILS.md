@@ -203,45 +203,84 @@ specific mapping into general habit.
 `TASK_OVERVIEW.md` must be updated BEFORE any task is marked In Progress or Complete.
 
 ### Rule 12 — Task File Lifecycle
+
 Every task follows this exact path:
 ```
-backlog/ → active/ → (work happens) → completed/
+tasks/drafts/ → (review agent assessment) → (human approval)
+  → tasks/backlog/[SUBFOLDER]/ → tasks/active/ → tasks/completed/
 ```
 
-**Backlog Subfolders** — Tasks are organized by phase/purpose, NOT date:
-- `current` — Active backlog queue for current development cycle
-- `design` — Architectural design tasks and system-level decisions
-- `deferred-cleanup` — Non-critical tech debt and cleanup work
-- `drafts` — Task concepts under initial drafting (not yet ready)
-- `procedural_generation` — Terrain/content generation research and implementation
-- `research` — Investigation tasks (traces, audits, feasibility studies)
-- `superseded` — Tasks that are no longer valid (historical archive)
-- `ui` — User interface and front-end development work
-- `ai-manager` — AI Manager architecture and coordination (created 2026-09-01)
+**Three gates in this lifecycle are non-negotiable:**
+
+1. **Draft Gate** (creation): New tasks start in `tasks/drafts/` with `status: draft`
+2. **Review Gate** (assessment): Independent review agent reads from git and returns GO/REVISE/STOP assessment
+3. **Approval Gate** (human): Only human approves move from `drafts/` to `backlog/` after review assessment
+
+**Planning agents cannot skip these gates.** See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for the required procedure.
+
+**Task Folder Structure:**
+
+- `tasks/drafts/` — **New draft tasks only** (status: draft, awaiting review)
+  - Created by planning agents
+  - Committed to git for review access
+  - Cannot move to backlog/ without human approval after review agent assessment
+  - Filename: `YYYY-MM-DD-PRIORITY-TYPE-NAME.md` (same convention as backlog/active)
+
+- `tasks/backlog/[SUBFOLDER]/` — **Approved queue** (status: backlog, ready for implementation dispatch)
+  - Moved here ONLY after review approval + human authorization
+  - Organized by domain/phase: `current`, `design`, `deferred-cleanup`, `drafts`, `procedural_generation`, `research`, `superseded`, `ui`, `ai-manager`, etc.
+  - Implementation agents dispatch from here to active/
+  - Handoffs reference backlog location
+
+- `tasks/active/` — **Work in progress** (status: active)
+  - Implementation agent has moved task here and begun synthesis report
+  - Work happens; agent moves to completed/ when done
+
+- `tasks/completed/` — **Finished work** (status: completed)
+  - Final resting place with completion report
+
+**CRITICAL ENFORCEMENT — Draft to Backlog Movement:**
+- ❌ **Agents CANNOT move tasks from `tasks/drafts/` to `tasks/backlog/`** — this operation is human-only
+- ❌ **Agents CANNOT self-approve draft tasks** — review agent + human approval required
+- ✅ **Only human may run: `git mv tasks/drafts/[FILENAME].md tasks/backlog/[SUBFOLDER]/[FILENAME].md`**
+- ✅ **Only human may change YAML status: draft → backlog in the moved file**
+- If a planning agent needs to update a draft task after review feedback, it updates the file in-place in `tasks/drafts/` and commits the update; human still controls the move to backlog
 
 **Note**: This list is deliberately maintained. New subfolders may be added for distinct work domains, but `backlog/` does NOT use date-based folders.
 
-**Moving task files — use the correct method based on tracking status:**
+**Moving task files — correct method by location and source status:**
 
+**HUMAN-ONLY moves (approval gates):**
 ```bash
-# For tracked files (file was previously committed): use git mv
-git mv projects/galaxy_game/tasks/backlog/[SUBFOLDER]/[FILENAME].md \
-       projects/galaxy_game/tasks/active/[FILENAME].md
+# Draft → Backlog (human approval required; planning agent cannot do this)
+# After review agent assessment + human approval of move:
+git mv projects/[project]/tasks/drafts/[FILENAME].md \
+       projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md
+# Then manually edit the moved file: status: draft → status: backlog
+# Then commit: git add [moved-file]; git commit -m "approve draft: [FILENAME]"
+```
 
-# For untracked files (newly created, never committed): use plain mv + git add
+**AGENT-ONLY moves (per handoff dispatch):**
+```bash
+# Backlog → Active (per handoff dispatch; agent-executable)
+git mv projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md \
+       projects/[project]/tasks/active/[FILENAME].md
+# Then manually edit the moved file: status: backlog → status: active
+# Paste find output before proceeding (Step 0 requirement)
+
+# Untracked files: mv then git add (if task is newly created)
 mv /path/to/source /path/to/destination
 git add destination_path
-# Do NOT run git rm on untracked source — it was never tracked
 ```
 
 **After moving, always verify with find:**
 ```bash
-find <agent-tasks>/projects/galaxy_game/tasks \
+find <agent-tasks>/projects/[project]/tasks \
      -name "[FILENAME].md"
 ```
 Only ONE result should exist. If two appear, a stale copy exists — remove it before committing.
 
-**Why**: `git mv` is preferred for tracked files because it preserves git history and stages the rename atomically. Plain `mv` + `git add` is the correct fallback for untracked files — `git mv` will fail on untracked files.
+**Why**: `git mv` preserves history and stages atomically. Human controls approval gates (draft→backlog). Agents execute operational moves (backlog→active) per explicit handoff instructions.
 
 A task in active/ with no completion report is abandoned — flag it.
 Never leave a task in active/ after work is done.

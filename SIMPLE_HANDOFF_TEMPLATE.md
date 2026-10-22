@@ -3,6 +3,14 @@
 
 ⚠️ **CRITICAL**: Do NOT expand this template. Keep exactly this format. All extra information belongs IN the task file, not in the handoff.
 
+⚠️ **PREREQUISITE**: Task file MUST be in `tasks/backlog/` with `status: backlog` before using this template.  
+If task is in `tasks/drafts/` with `status: draft`, it is NOT ready for dispatch. Human must first:
+1. Get review agent assessment from git
+2. Approve move to `tasks/backlog/`  
+3. Change YAML status: draft → backlog
+
+Only then use this handoff template.
+
 ---
 
 Before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root), and fill the bracketed fields.
