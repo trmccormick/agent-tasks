@@ -115,7 +115,9 @@ Closeout covers only the files this session created or changed. Another session'
 
 8. If you cannot write your entry (for example `status.md` already has another session's uncommitted changes), say so in your report and stop on that item. Do not skip it silently, and do not stage the file as it stands.
 
-9. **Handoff file is primary, status.md is summary.** Your status.md entry should be concise (4 bullets). The full technical details (findings, diagnostics, test results, commit messages, blockers) belong in your handoff file (see "Handoff Files (required)" section). Reference your handoff file in your status.md entry if needed: "See handoff for details: `handoffs/<agent>/<date>-TYPE-SESSION.md`"
+9. **Changes owned by another session:** If your appended status.md entry is complete and correct, but the file also contains deletions, modifications, or truncations made by another session, do not stage status.md. Preserve the working tree exactly as the other session left it. Append your own entry only when safe. Leave status.md uncommitted and report the mixed ownership until that session's changes can be resolved by them or by the human. Do not use `git restore`, `git checkout`, or any destructive operation to erase the other session's work. Do not claim ownership of modifications you did not make.
+
+10. **Handoff file is primary, status.md is summary.** Your status.md entry should be concise (4 bullets). The full technical details (findings, diagnostics, test results, commit messages, blockers) belong in your handoff file (see "Handoff Files (required)" section). Reference your handoff file in your status.md entry if needed: "See handoff for details: `handoffs/<agent>/<date>-TYPE-SESSION.md`"
 
 ### 1c. Planning-agent curation
 
