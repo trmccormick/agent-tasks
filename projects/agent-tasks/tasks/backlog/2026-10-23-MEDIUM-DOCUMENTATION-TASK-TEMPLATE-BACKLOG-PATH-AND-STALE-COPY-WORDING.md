@@ -1,5 +1,5 @@
 ---
-status: draft
+status: backlog
 resume: false
 priority: MEDIUM
 type: documentation
@@ -7,10 +7,6 @@ system_domain: OTHER
 mvp_alignment: OTHER
 local_worker_safe: true
 ---
-
-## DRAFT STATUS NOTE
-
-This task is a draft in `tasks/drafts/`. Do NOT dispatch it until the human has moved it to `tasks/backlog/` and set `status: backlog`. The `agent-tasks` backlog is flat, so the dispatch block below already omits the `[SUBFOLDER]/` segment.
 
 ## Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
 
