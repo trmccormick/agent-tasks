@@ -1,6 +1,6 @@
 # Model Selection Guide
 
-**Effective**: 2026-10-22 (Updated for draft review workflow, web agent selection)  
+**Effective**: 2026-10-24 (Updated for draft review workflow, web agent selection; dated review evidence added)  
 **Status**: Living document — updated as model capabilities evolve
 
 ## Summary
@@ -34,6 +34,22 @@ This guide clarifies which agent model is appropriate for each workflow role, an
 - **Long/complex tasks** (multiple components): Gemini (no GitHub needed, long context handles complexity)
 - **Quick reviews** (straightforward scope): Office 365 Copilot (included, no overhead)
 - **Fallback** (primary agent unavailable): Use agent from same row that is available
+
+**Reading the table**: the star ratings and the GitHub Access column above have no evidence labels. Where they disagree with the dated rows below, the dated rows win. This is a reference of what each agent has done, not a ranking or a fixed order; preference and session time still decide. A later task should label or replace the ratings.
+
+### Observed review results (dated evidence)
+
+Add one row per review session. Evidence labels: VERIFIED (checked against the repo by the person or agent named), REPORTED (stated by the person named), INFERRED (a conclusion from the above). One session is not a pattern; retest before treating a row as settled.
+
+| Date | Agent | Work reviewed | What happened | Evidence |
+|---|---|---|---|---|
+| 2026-10-23 | Grok | Draft task: GUARDRAILS Rule 12 wording, at `861585c` | Returned the requested format and GO with no changes. Every line number it quoted (210, 225, 231, 247, 281) matched `rules/GUARDRAILS.md`. | VERIFIED (Claude, by grep and a dry run of the edits on a copy) |
+| 2026-10-23 | Grok | Draft task: `PLANNING_AGENT_SESSION_START.md` wording, at `c5874c6` | Returned the requested format and GO with no changes. Every line number it quoted (15, 16, 19, 43, 61, 103) matched the file. | VERIFIED (Claude, by grep and a dry run of the edits on a copy) |
+| 2026-10-24 | ChatGPT | Draft task: `TASK_TEMPLATE.md` wording, at `7625086` | Returned REVISE, but none of its cited line numbers matched the files: it put the Step 1 text at line 14 (actual 17), Step 3 at 376 (actual 421), the dispatch block at 118-144 (actual 132-162) and the stale-copy lines at 133-135 (actual 150-152). Its required changes would have put wrong numbers into the task, so the review was not used. It did not stop when asked to if it could not read the files. | VERIFIED (Claude, comparing each citation with `git show 7625086:TASK_TEMPLATE.md`). INFERRED: it did not read the raw file. |
+| 2026-10-24 | Grok | Availability | Not available for review at about 15:45; Tracy expected it back about 16:34. | REPORTED (Tracy) |
+| 2026-10-24 | Grok | Overall | Tracy's preference after the sessions above: Grok seems the better choice so far. | REPORTED (Tracy) |
+
+**How to use a review**: before approving a task, spot-check three of the reviewer's quoted lines against the file at the commit it was given. A review whose quotes do not match the file is not a review.
 
 ---
 
