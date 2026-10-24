@@ -1,11 +1,12 @@
 ---
-status: drafts
+status: active
 resume: false
 priority: HIGH
 type: feature
 system_domain: VIEWS / ASSETS (CSS only)
 mvp_alignment: OTHER
 local_worker_safe: true
+last_updated: 2026-10-23
 ---
 
 ## 🔴 DRAFT REVIEW CHECKLIST
