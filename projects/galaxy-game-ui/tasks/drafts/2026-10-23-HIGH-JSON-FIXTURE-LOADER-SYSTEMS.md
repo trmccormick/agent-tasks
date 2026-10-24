@@ -1,5 +1,5 @@
 ---
-status: active
+status: drafts
 resume: false
 priority: HIGH
 type: feature
@@ -84,7 +84,7 @@ There is no data source for the prototype UI. Without one, every page invents it
 
 ## Implementation Steps
 
-1. **Read** `user_csv_loader.rb` and its tests/specs; report its shape (`[FILL IN]`).
+1. **Read** `user_csv_loader.rb` and its tests/specs (if any); confirm: `Result = Struct.new(:created, :skipped, keyword_init: true)`, `self.call(path = nil)`, and that it raises when its file is missing. Report any difference.
 2. **Create** `app/services/game_data_json_loader.rb` defining `GameDataJsonLoader` (the file name must match the constant for Zeitwerk). Behaviour:
    - `GameDataJsonLoader.call(:systems)` reads `Rails.root.join("db/mock_data/systems.json")`.
    - The name must match `/\A[a-z_]+\z/`; anything else returns an error result (no path traversal).
@@ -103,7 +103,7 @@ There is no data source for the prototype UI. Without one, every page invents it
 2. **No database work**: no migration, no model, no seeds change.
 3. **Keys**: symbolized once in the loader; views must not call `dig('name')`.
 4. **Terminology**: currency is GCC. No EVE terms (no ISK, no Jita).
-5. **Run everything in the container.** `[FILL IN]` container name (`galaxy_game` per task drafts; GUARDRAILS is reported to say `web`).
+5. **Run everything in the UI container, `galaxy_game`** (`docker exec galaxy_game ...`). GUARDRAILS says `web`, but that is the **main game's** container; never run UI commands there.
 6. **Out of scope**: controllers, views, CSS, routes, `db/seeds.rb`, auth.
 
 ## Acceptance Criteria

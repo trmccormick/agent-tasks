@@ -1,5 +1,5 @@
 ---
-status: active
+status: drafts
 resume: false
 priority: HIGH
 type: feature
@@ -88,7 +88,7 @@ The app has no Galaxy Game theme, and there is no confirmed working CSS path. Pa
 3. **Keep the WVU tokens** for now. Remove them only in a later task, after `grep` shows nothing uses them (login views included).
 4. **Make sure the built file is linked.** The layout must load the gem's build output (`app/assets/builds/tailwind.css`). After step 1 inspection, verify that `stylesheet_link_tag :app` in line 20 is resolving to the built file (via Propshaft). If not, this task must be escalated.
 5. **Rebuild inside the container** with the gem's task (`bin/rails tailwindcss:build`) and confirm the output file contains `--bg`.
-6. **Verify and capture**: load `/` and `/session/new` in the browser. Save screenshots of both in `summaries/` and ask the human to approve them.
+6. **Verify no regression**: load `/` and `/session/new` in the browser. Save screenshots of both in `summaries/`. They should look **unchanged**; the visible theme change belongs to the layout shell task. Ask the human to approve.
 
 ## Gotchas
 
