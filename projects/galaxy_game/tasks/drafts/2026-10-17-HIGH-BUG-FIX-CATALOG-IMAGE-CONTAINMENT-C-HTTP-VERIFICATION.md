@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: draft
 resume: false
 priority: HIGH
 type: documentation
@@ -7,76 +7,54 @@ system_domain: CONTROLLERS
 mvp_alignment: SPEC_HEALTH
 local_worker_safe: true
 created: 2026-10-17
-last_updated: 2026-10-17
+last_updated: 2026-10-23
 ---
 
+## 🟡 DRAFT STATUS NOTE
+
+This task is in draft status and awaiting review approval. It has NOT yet been approved for backlog.
+
+**Current State**: In `tasks/drafts/` committed to git
+**Next Step**: Review agent assessment → Human approval → Move to `tasks/backlog/` by human
+**Do NOT dispatch to implementation agents** until this task is in `tasks/backlog/` with `status: backlog`
+
+See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedure.
+
+## 🟡 DRAFT REVIEW CHECKLIST (Human — before approving move from drafts/ to backlog/)
+
+After review agent has returned assessment:
+
+- [ ] Acceptance Criteria are clear and measurable (no ambiguity)
+- [ ] Task scope is well-bounded (not too broad, not overlapping with active tasks)
+- [ ] Dependencies listed and verified against status.md (all prerequisites exist)
+- [ ] No contradictions in the task specification
+- [ ] Architecture aligns with current codebase patterns (review agent verified)
+- [ ] Review agent disposition is GO (not REVISE or STOP)
+
+**Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/[SUBFOLDER]/` and changing `status: draft → status: backlog`.
+
+---
+
+## 🟡 Draft-Specific Guidance (not sent to agents)
+
+This section is for human/planning-agent use only. It is NOT part of the agent dispatch contract.
+
+- This task remains in `tasks/drafts/` until a review agent returns GO and the human approves the move to backlog.
+- Do not send this task to an implementation agent while it is in drafts.
+- The Agent Dispatch Interface below (after this section) is the startup contract that WILL be sent to an agent — but only AFTER the task has been moved to `tasks/backlog/` and approved.
+
+---
 
 ## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
 
-**This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
-Agents receive this exact text as the startup contract. Every word matters.
+**NOT YET APPLICABLE.** This task is in `tasks/drafts/` with `status: draft`. It has NOT been reviewed or approved for implementation. Do not use this interface until the task is moved to `tasks/backlog/` with `status: backlog` and a review agent returns GO.
 
-**One allowed substitution:** before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root). Fill `[project]`, `[SUBFOLDER]` and `[FILENAME]` as usual. Change nothing else.
-
-```
-You are **Implementation Agent**.
-
-Project: galaxy_game
-Task: <agent-tasks>/projects/galaxy_game/tasks/drafts/2026-10-17-HIGH-BUG-FIX-CATALOG-IMAGE-CONTAINMENT-C-HTTP-VERIFICATION.md
-
-STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/drafts/2026-10-17-HIGH-BUG-FIX-CATALOG-IMAGE-CONTAINMENT-C-HTTP-VERIFICATION.md \
-         projects/galaxy_game/tasks/active/2026-10-17-HIGH-BUG-FIX-CATALOG-IMAGE-CONTAINMENT-C-HTTP-VERIFICATION.md
-  Then open the moved file and change: status: backlog → status: active
-  Paste the output of both commands in chat before proceeding.
-  Do NOT read the task file content, run any commands, or start synthesis until this is done.
-
-If the task YAML has `resume: true`, read the Progress / Resume block first, continue from "Next step", and set `resume: false` when you move the file to `active/`. Do not restart the task.
-
-LIFECYCLE: backlog → active → completed
-  - Tracked file: git mv (never cp or plain mv)
-  - New/untracked file: mv then git add the final path
-  - Never leave stale copies in the source folder
-  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-10-17-HIGH-BUG-FIX-CATALOG-IMAGE-CONTAINMENT-C-HTTP-VERIFICATION.md"
-    Only ONE result should exist. Paste this output before committing.
-
-READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
-
-CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
-  Summaries path: <agent-tasks>/projects/galaxy_game/summaries/
-  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
-  Chat is for questions only — never paste synthesis into chat (formatting breaks).
-
-Closeout: follow SESSION_CLOSEOUT.md only.
-```
-
-**IMPORTANT: Do not modify or abbreviate the text above.**
-Copy it exactly as-is when dispatching this task to an agent.
-This is the startup contract — every element is required.
-
-Everything else (details, gotchas, acceptance criteria, implementation steps) is in the sections below.
-The dispatch interface above is ONLY the bootstrap instructions.
-
-
-## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
-
-**STOP. Do not send this task to an agent until ALL boxes are checked.**
-
-- [ ] Agent Dispatch Interface section below is complete and accurate (no placeholders)
-- [ ] All Step 0-N instructions are clear and actionable (not vague)
-- [ ] Synthesis report template is provided (copy/paste ready, not as example)
-- [ ] No placeholder text remains in Implementation Steps
-- [ ] All file paths are verified to exist
-- [ ] Architecture Gotchas are specific (not generic)
-- [ ] Acceptance Criteria are measurable
-- [ ] Dependencies and Blocked/Blocks relationships are clear
-
-**Task is NOT READY until all checkboxes are completed.**
+When this task IS ready for dispatch (after human approval), the Agent Dispatch Interface will be filled out per TASK_TEMPLATE.md and PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow". It will reference the backlog path, not the drafts path.
 
 ---
 
-# TASK: HTTP verification for catalog image containment
-**Status**: BACKLOG (drafted for human review; NOT dispatched, NOT dispatch-ready until the checklist below is complete)
+## TASK: HTTP verification for catalog image containment
+**Status**: DRAFT (awaiting review; NOT dispatched, NOT dispatch-ready until reviewed and approved)
 **Priority**: HIGH  |  **Type**: documentation  |  **Created**: 2026-10-17
 
 ---
@@ -110,48 +88,11 @@ The PARENT's core finding is that the controller's current string-prefix guard c
 6. **Human approval:** Approval to proceed is a human decision; this draft does not itself authorize dispatch or execution.
 7. **Sensitive diagnostic output:** Never paste or save unredacted verbose HTTP output or diagnostic logs that may contain credentials. Before retaining or sharing captured output, redact the values of the entire `Cookie:` and `Set-Cookie:` headers. Never write the session cookie value to chat, the report, or any file. For bypass and encoded-traversal requests, record only the response status, content type, and byte length; never record or reproduce a non-image response body.
 
-## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
+## Status Synthesis Report (for implementation session only)
 
-Before navigating to any URLs, running any commands, or modifying any files, you MUST create and post a **synthesis report** in chat. This report demonstrates you understand the task before executing.
+**NOT YET APPLICABLE.** This section will be included in the Agent Dispatch Interface when the task is moved to `tasks/backlog/` and approved. It is not required for review of this draft.
 
-**Synthesis Report Template** (save as MD file, do NOT paste in chat):
-```markdown
-## STATUS SYNTHESIS REPORT
-
-**Task**: [name from filename]
-**Status**: [backlog → active → completed]
-**Date**: YYYY-MM-DD
-
-### What I'm About to Do
-[2-3 sentences: the goal, the verification method, the success criteria]
-
-### Files I'll Reference
-| File | Purpose | Status |
-|---|---|---|
-| `path/to/file` | [description] | [not started / pending / done] |
-
-### Prerequisites Completed
-- ✅ Step 0: Task file moved to active/ with git mv (find output pasted in chat)
-- ✅ Step 0: YAML status updated from backlog → active
-- ✅ Read README.md EXECUTOR section
-- ✅ Read project guide
-- ✅ Read this task file
-- ✅ Understand architecture gotchas above
-- ✅ Know which domain/credentials to use
-
-### Expected Outcomes
-[Exact description of what "done" looks like]
-
-### Critical Gotchas I Will Avoid
-- ❌ [wrong approach] — instead ✅ [right approach]
-- ❌ [wrong approach] — instead ✅ [right approach]
-
----
-
-**SYNTHESIS COMPLETE.** Ready to proceed with [PRIORITY 1 / PRIORITY 2 / etc].
-```
-
-**POST THIS TO CHAT BEFORE PROCEEDING.** Do not start actual work until synthesis is approved.
+When this task IS ready for dispatch, the synthesis report template will be part of the Agent Dispatch Interface (sent to the implementation agent). The implementation agent will create and post it before starting any work.
 
 ## Problem Statement
 
@@ -177,7 +118,9 @@ No source, test, route, or configuration files may be changed. This is a report-
 
 ## Implementation Steps
 
-- **Step 0:** Follow the copied Agent Dispatch Interface's task-file lifecycle instructions; update status only after moving and verify only one copy exists.
+*These steps apply only when this task is dispatched to an implementation agent (after it has been moved to `tasks/backlog/` and approved).*
+
+- **Step 0:** Follow the Agent Dispatch Interface's task-file lifecycle instructions; update status only after moving and verify only one copy exists.
 - **Step 1:** Save the Status Synthesis Report template referenced by the task's required workflow as an MD file before verification. Do not paste the synthesis report into chat.
 - **Step 2:** Check reachability at the verified base URL `http://localhost:3000`. If the app is not reachable at http://localhost:3000, stop and report what you tried.
 - **Step 3:** Before any valid-image, bypass-path, or encoded-traversal request, observe whether `/admin` requires authentication. First use a request without supplied credentials or an existing authenticated session. Record the exact request target, response status, relevant response evidence, and the basis for the conclusion. If `/admin` appears not to require authentication, record the evidence and stop immediately; do not perform further HTTP checks and do not change authentication. If `/admin` requires authentication, the human must supply a session cookie through an environment variable (for example, `GG_ADMIN_COOKIE`) set in the shell before the run. Never print, paste, log, or otherwise write the cookie value to chat, the report, or any file. If no session is supplied, record that authenticated checks could not be made, leave AC2–AC4 unmet, and stop.
@@ -230,24 +173,8 @@ The YAML `type` is `documentation`, a valid type listed in TASK_TEMPLATE.md, bec
 
 
 ## Completion Report
-*Filled in by the implementing agent after completion*
 
-**Completed by**: [agent name]
-**Completion date**: YYYY-MM-DD
-**Final test result**: X examples, Y failures
-**Evidence basis:** [direct verification / review of pasted evidence / reported by agent / human assertion] — [one-line source or note when not direct verification]
-
-### What was changed
-- `[file]` — [description of change]
-
-### Issues discovered
-[Any problems found during implementation that weren't in the original task]
-
-### Follow-up tasks needed
-[Any new backlog items identified — do not create the files, just list them here]
-
-### Lessons learned
-[What worked, what didn't, what future tasks in this area should know]
+*NOT YET APPLICABLE.* This section will be filled in by the implementing agent after the task is dispatched and completed. It is not applicable while this task remains in drafts.
 
 ---
 
