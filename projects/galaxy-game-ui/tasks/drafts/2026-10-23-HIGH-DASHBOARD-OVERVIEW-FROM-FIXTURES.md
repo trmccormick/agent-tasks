@@ -70,10 +70,10 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 First real dashboard, kept deliberately small: a header, a **Systems** panel and a **Connections** panel, all fed by the fixtures from the loader task. Inventory, market, missions and ships panels come later as separate small tasks, each with its own fixture file.
 
 Facts:
-- REPORTED: `DashboardController` (`index`) and a stub `dashboard/index.html.erb` already exist locally (uncommitted). `[FILL IN]` confirm they exist and what they contain.
+- VERIFIED: `DashboardController` (`index`) and a stub `dashboard/index.html.erb` both exist on the branch. Controller: empty `index` action. View: Rails-generated placeholder with `<h1>Dashboard#index</h1>`.
 - VERIFIED: the app uses Rails 8 built-in auth, not Devise. There is a `Current` model; there is no `current_user` helper unless defined. The `User` role enum uses `prefix: true`, so predicates are `role_admin?` / `role_player?`.
 - VERIFIED: with `resource :session`, the sign-in route helper is `new_session_path`.
-- The dashboard route must exist in `config/routes.rb` (`get "dashboard", to: "dashboard#index"`). `[FILL IN]` confirm.
+- VERIFIED: The dashboard route exists in `config/routes.rb` at line 5: `get "dashboard", to: "dashboard#index"`.
 
 ## Problem Statement
 
@@ -83,7 +83,7 @@ The dashboard is a placeholder. The UI needs a first screen that proves the data
 
 1. **Controller** (`app/controllers/dashboard_controller.rb`, existing): in `index`, call `GameDataJsonLoader.call(:systems)` and `.call(:links)`. Set `@systems`, `@links` (empty arrays on error) and `@data_error` (message or nil). Keep the default authentication requirement; do not skip it.
 2. **View** (`app/views/dashboard/index.html.erb`, existing): replace the stub with:
-   - **Header**: page title "Dashboard" and the signed-in user's email (`Current.user&.email_address`; `[FILL IN]` confirm `Current.user` is populated in this app).
+   - **Header**: page title "Dashboard" and the signed-in user's email (`Current.user&.email_address`; VERIFIED: Current model exists with `.user` delegation from `.session`).
    - **Systems panel**: one row per system: name, kind, identifier if present, and a "placeholder" badge when `source` is `placeholder`.
    - **Connections panel**: one row per link: `from → to`, type (`natural` / `artificial` / `unknown`). Resolve system ids to names in the view or controller, not in the JSON.
    - If `@data_error` is present, show a short message in place of the panels (no 500).
@@ -97,7 +97,7 @@ The dashboard is a placeholder. The UI needs a first screen that proves the data
 3. **No `current_user`, no `session_new_path`, no Devise.** Use `Current.user` and `new_session_path`.
 4. **No hard-coded colors**; use the tokens or Tailwind utilities.
 5. **Symbol keys** from the loader; do not call `dig('name')`.
-6. **Run everything in the container.** `[FILL IN]` container name.
+6. **Run everything in the container.** VERIFIED: the UI app's container is `galaxy_game` (docker-compose.yml).
 
 ## Acceptance Criteria
 

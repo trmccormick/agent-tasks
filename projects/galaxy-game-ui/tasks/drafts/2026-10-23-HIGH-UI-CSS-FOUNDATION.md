@@ -72,7 +72,7 @@ The first attempt failed partly because its CSS never loaded: a `tailwind.config
 Facts:
 - VERIFIED: Gemfile has `tailwindcss-rails ~> 4.6` (Tailwind v4) and no Sass gem.
 - VERIFIED: `app/assets/tailwind/application.css` is the file the gem builds; it still contains the WVU brand palette in an `@theme` block.
-- VERIFIED: `app/assets/stylesheets/application.css` also exists. `[FILL IN]` contents and whether the layout links it.
+- VERIFIED: `app/assets/stylesheets/application.css` also exists. It is an empty Rails CSS manifest (11 lines of standard boilerplate). The layout links it via `stylesheet_link_tag :app` (application.html.erb line 20).
 - REPORTED: the login/session views still use `wvu-*` classes. The first attempt made the login form unreadable by removing those tokens.
 - REPORTED (EVE Dashboard source, `style.css`): `--bg #0e1114`, `--panel #161b21`, `--panel2 #1d242c`, `--line #2a333d`, `--text #d8dee6`, `--muted #8a97a6`, `--accent #4aa8ff`, `--green #3fb950`, `--red #f85149`, `--gold #e3b341`.
 
@@ -82,10 +82,10 @@ The app has no Galaxy Game theme, and there is no confirmed working CSS path. Pa
 
 ## Implementation Steps
 
-1. **Inspect** (read-only; report before editing): the layout's `stylesheet_link_tag` line(s), `app/assets/stylesheets/application.css`, and which files use `wvu-` classes (`grep -rn "wvu-" app/`). `[FILL IN]` results.
+1. **Inspect** (read-only; report before editing): the layout's `stylesheet_link_tag` line(s), `app/assets/stylesheets/application.css`, and which files use `wvu-*` classes (`grep -rn "wvu-" app/`). VERIFIED: Layout line 20 is `<%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>`. Application.css is an empty manifest. Total WVU class occurrences: 35 files (26 in application.html.erb, 9 in sessions/passwords views).
 2. **Add Galaxy tokens** to `app/assets/tailwind/application.css` as CSS custom properties in `:root` (names exactly: `--bg --panel --panel2 --line --text --muted --accent --green --red --gold`) using the values above. Keep `--accent` at `#4aa8ff` until the human picks a Galaxy Game accent. Add a body rule using `var(--bg)` / `var(--text)`.
 3. **Keep the WVU tokens** for now. Remove them only in a later task, after `grep` shows nothing uses them (login views included).
-4. **Make sure the built file is linked.** The layout must load the gem's build output (`app/assets/builds/tailwind.css`). `[FILL IN]` the exact layout edit after step 1.
+4. **Make sure the built file is linked.** The layout must load the gem's build output (`app/assets/builds/tailwind.css`). After step 1 inspection, verify that `stylesheet_link_tag :app` in line 20 is resolving to the built file (via Propshaft). If not, this task must be escalated.
 5. **Rebuild inside the container** with the gem's task (`bin/rails tailwindcss:build`) and confirm the output file contains `--bg`.
 6. **Verify and capture**: load `/` and `/session/new` in the browser. Save screenshots of both in `summaries/` and ask the human to approve them.
 
@@ -94,8 +94,8 @@ The app has no Galaxy Game theme, and there is no confirmed working CSS path. Pa
 1. **No `.scss`.** There is no Sass gem. Plain `.css` only.
 2. **No `public/assets` tricks, no manifest deletes, no `-c config/tailwind.config.js` flag, and no changes to `scripts/startup.sh`.** One entry file, built by the gem.
 3. **Do not remove `wvu-*` tokens in this task.** The login page depends on them (REPORTED).
-4. **`app/assets/builds/tailwind.css` is generated.** `[FILL IN]` whether it is tracked. If it is, do **not** untrack it here; report it so the human can decide.
-5. **Run everything in the container** (`docker exec <container> bash -c 'unset DATABASE_URL && ...'`). `[FILL IN]` the container name: the task drafts say `galaxy_game`; GUARDRAILS is reported to say `web`.
+4. **`app/assets/builds/tailwind.css` is generated.** VERIFIED: the file exists and is tracked in git (`git ls-files galaxy-game-ui/app/assets/builds/tailwind.css` returns the path). Do **not** untrack it here.
+5. **Run everything in the container** (`docker exec <container> bash -c 'unset DATABASE_URL && ...'`). VERIFIED: the UI app's container is named `galaxy_game` (docker-compose.yml). Note: GUARDRAILS refers to the main game server, which uses container `web`; never run UI commands in that container.
 6. **Hard-coded colors are not allowed** in anything this task adds; use the variables.
 
 ## Acceptance Criteria

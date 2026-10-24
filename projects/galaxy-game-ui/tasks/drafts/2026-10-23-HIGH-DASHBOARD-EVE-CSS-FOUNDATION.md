@@ -75,13 +75,25 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 
 After Phase 4 (Landing Page), the app has a proper public entry point with Sign In → login form and About page. Now we need to build the authenticated Dashboard — the player's command center after logging in. The dashboard loads global game world data from a shared `GameState` record.
 
-**Architecture decision**: The game world is multi-user and shared. All players see the same systems, settlements, and market data. Player-specific views (missions, inventory) are filtered from global game state. This mirrors the galaxyGame pattern where global models (SolarSystem, Settlement) are queried, not stored per-player.
+**Architecture decision**: The game world is multi-user and shared. All players see the same systems, settlements, and market data. Player-specific views (missions, inventory) are filtered from global game state.
+
+**Data loading architecture**:
+- **GameState** — Global JSONB singleton in database (`game_states` table, id=1)
+- **System JSON files** — Dynamic loading from `data/systems/*.json` directory (not a single game_data.json)
+- Each system has its own JSON file: `sol.json`, `aol-732356.json`, etc.
+- GameState.world_data is populated at runtime by merging system JSON files
+
+**Why dynamic file loading over static game_data.json**:
+- Systems can be updated independently without re-seeding database
+- Hot-reload capability for development (edit a system JSON → refresh dashboard)
+- Scales to 100s of systems without bloating a single file
+- Mirrors production pattern where each solar system is an independent data source
 
 We need to:
 1. Create `GameState` model with JSONB `world_data` field (singleton record, id=1)
-2. Create `GameDataJsonLoader` service to load `/data/imports/game_data.json` into GameState
-3. Create sample `game_data.json` with systems, settlements, missions, market data
-4. Update `db/seeds.rb` to call GameDataJsonLoader after UserCsvLoader
+2. Create `SystemJsonLoader` service to load `data/systems/*.json` dynamically into GameState.world_data
+3. Create sample system JSON files in `data/systems/` directory (one per system)
+4. Update `db/seeds.rb` to call SystemJsonLoader after UserCsvLoader
 5. Update `DashboardController` to query `GameState.current.world_data`
 6. Create role-based views: `dashboard/player.html.erb` (command center) + `dashboard/admin.html.erb` (telemetry)
 7. Apply EVE Dashboard CSS foundation to both views
@@ -106,7 +118,7 @@ class GameState < ApplicationRecord
   # Simulation time tracking
   validates :year, :day, :speed, presence: true
   
-  # World data stored as JSONB
+  # World data stored as JSONB — loaded dynamically from data/systems/*.json
   # world_data = {
   #   systems: [...],
   #   settlements: [...],
@@ -119,6 +131,12 @@ class GameState < ApplicationRecord
   end
 end
 ```
+
+### System JSON Files Do Not Exist
+No `data/systems/` directory or system JSON files exist yet. We need to create:
+- `data/systems/sol.json` — Sol system data
+- `data/systems/aol-732356.json` — AOL-732356 system data
+- Each file contains: systems, settlements, inventory, market_orders for that system
 
 ### Dashboard Routes Exist but Redirect is Missing
 Post-authentication redirect needs to point to `/dashboard`, not stay on landing page.
@@ -197,43 +215,170 @@ class GameState < ApplicationRecord
 end
 ```
 
-### Step 2: Create GameDataJsonLoader Service
-Create `app/services/game_data_json_loader.rb`:
+### Step 2: Create SystemJsonLoader Service
+Create `app/services/system_json_loader.rb` to dynamically load system JSON files from `data/systems/*.json`.
+
+**File path**: `app/services/system_json_loader.rb`
 ```ruby
-class GameDataJsonLoader
-  Result = Struct.new(:success?, :record_count, :message)
+class SystemJsonLoader
+  Result = Struct.new(:success?, :system_count, :message)
 
-  DEFAULT_PATH = Rails.root.join('data', 'imports', 'game_data.json').freeze
+  SYSTEMS_DIR = Rails.root.join('data', 'systems').freeze
 
-  def self.call(path = DEFAULT_PATH)
-    new(path).call
-  end
-
-  def initialize(path = DEFAULT_PATH)
-    @path = path
+  def self.call
+    new.call
   end
 
   def call
-    return Result.new(false, 0, "File not found: #{@path}") unless File.exist?(@path)
+    return Result.new(false, 0, "Systems directory not found: #{SYSTEMS_DIR}") unless Dir.exist?(SYSTEMS_DIR)
 
-    begin
-      data = JSON.parse(File.read(@path))
-      game_state = GameState.current
-      game_state.update!(world_data: data)
-      
-      Result.new(true, data.size, "GameState loaded with #{data.keys.join(', ')}")
-    rescue JSON::ParseError => e
-      Result.new(false, 0, "JSON parse error: #{e.message}")
-    rescue StandardError => e
-      Result.new(false, 0, "Error: #{e.message}")
+    json_files = Dir.glob(SYSTEMS_DIR.join('*.json'))
+    return Result.new(false, 0, "No system JSON files found in #{SYSTEMS_DIR}") if json_files.empty?
+
+    all_world_data = merge_system_data(json_files)
+    game_state = GameState.current
+    game_state.update!(world_data: all_world_data)
+
+    count = (all_world_data['systems'] || []).size
+    Result.new(true, count, "Loaded #{count} systems from #{json_files.size} files")
+  end
+
+  private
+
+  def merge_system_data(json_files)
+    merged = {
+      systems: [],
+      settlements: [],
+      inventory: [],
+      market_orders: [],
+      missions: []
+    }
+
+    json_files.each do |file_path|
+      begin
+        data = JSON.parse(File.read(file_path))
+        merged['systems'] ||= []
+        merged['settlements'] ||= []
+        merged['inventory'] ||= []
+        merged['market_orders'] ||= []
+        merged['missions'] ||= []
+
+        # Append each system's data (no ID collision handling needed for prototype)
+        Array(data['systems']).each { |s| merged['systems'] << s }
+        Array(data['settlements']).each { |s| merged['settlements'] << s }
+        Array(data['inventory']).each { |i| merged['inventory'] << i }
+        Array(data['market_orders']).each { |m| merged['market_orders'] << m }
+        Array(data['missions']).each { |m| merged['missions'] << m }
+      rescue JSON::ParseError => e
+        Rails.logger.warn "Failed to parse #{file_path}: #{e.message}"
+      end
     end
+
+    merged
   end
 end
 ```
 
-### Step 3: Create Sample game_data.json
-Create `data/imports/game_data.json`:
+### Step 3: Create Sample System JSON Files
+Create `data/systems/` directory with one JSON file per system. This enables hot-reload and independent system updates.
+
+**Directory**: `data/systems/`
+
+**File**: `data/systems/sol.json`
 ```json
+{
+  "systems": [
+    {
+      "id": 1,
+      "name": "Sol",
+      "type": "star",
+      "identifier": "SOL-001",
+      "habitable_zones": 3,
+      "planet_count": 8
+    }
+  ],
+  "settlements": [
+    {
+      "id": 1,
+      "name": "Lunar Base Alpha",
+      "system_id": 1,
+      "type": "base",
+      "population": 25,
+      "operational_data": {
+        "power_grid": { "status": "online", "efficiency": 0.95 }
+      }
+    },
+    {
+      "id": 2,
+      "name": "Colony Beta",
+      "system_id": 1,
+      "type": "colony",
+      "population": 120,
+      "operational_data": {
+        "power_grid": { "status": "online", "efficiency": 0.87 }
+      }
+    }
+  ],
+  "inventory": [
+    { "name": "Regolith", "amount": 500, "material_type": "raw_material" },
+    { "name": "Water Ice", "amount": 200, "material_type": "raw_material" }
+  ],
+  "market_orders": [
+    { "resource": "water", "quantity": 50, "order_type": "buy", "price": 10.5 },
+    { "resource": "regolith", "quantity": 100, "order_type": "sell", "price": 5.0 }
+  ],
+  "missions": [
+    { "identifier": "mission_1", "name": "Explore Lunar Base Alpha", "status": "in_progress", "progress": 45 }
+  ]
+}
+```
+
+**File**: `data/systems/aol-732356.json`
+```json
+{
+  "systems": [
+    {
+      "id": 2,
+      "name": "AOL-732356",
+      "type": "star",
+      "identifier": "AOL-732356",
+      "habitable_zones": 5,
+      "planet_count": 12
+    }
+  ],
+  "settlements": [
+    {
+      "id": 3,
+      "name": "Outpost Gamma",
+      "system_id": 2,
+      "type": "outpost",
+      "population": 8,
+      "operational_data": {
+        "power_grid": { "status": "degraded", "efficiency": 0.62 }
+      }
+    }
+  ],
+  "inventory": [
+    { "name": "Copper Ore", "amount": 150, "material_type": "raw_material" },
+    { "name": "Hydrogen Fuel", "amount": 75, "material_type": "fuel" }
+  ],
+  "market_orders": [
+    { "resource": "copper", "quantity": 25, "order_type": "buy", "price": 75.0 }
+  ],
+  "missions": [
+    { "identifier": "mission_2", "name": "Deliver Supplies to Outpost Gamma", "status": "in_progress", "progress": 78 }
+  ]
+}
+```
+
+**Directory structure**:
+```
+data/systems/
+├── sol.json
+└── aol-732356.json
+```
+
+This design enables: adding new systems by dropping in a JSON file, updating existing systems without touching the database, and independent version control per system.
 {
   "systems": [
     {
@@ -326,7 +471,30 @@ Create `data/imports/game_data.json`:
 }
 ```
 
-### Step 4: Update db/seeds.rb
+### Step 4: Update db/seeds.rb — Call SystemJsonLoader
+Update `db/seeds.rb` to call `SystemJsonLoader` after `UserCsvLoader`:
+
+**File path**: `db/seeds.rb`
+
+Add immediately after the existing `UserCsvLoader` block:
+```ruby
+# ... (existing UserCsvLoader code) ...
+
+# Load global game world data from system JSON files into GameState
+load_result = SystemJsonLoader.call
+puts "✅ Game data loaded: #{load_result.message}" if load_result.success?
+```
+
+Run seeds to populate data:
+```bash
+docker exec -it web bash -c 'unset DATABASE_URL && rails db:seed'
+```
+
+**Hot-reload note**: After initial seeding, you can update system data by editing files in `data/systems/*.json` and running:
+```bash
+docker exec -it web bash -c 'rails runner "SystemJsonLoader.call"'
+```
+No database migration or re-seed needed for system updates.
 Add GameDataJsonLoader call after UserCsvLoader:
 ```ruby
 # Load demo users

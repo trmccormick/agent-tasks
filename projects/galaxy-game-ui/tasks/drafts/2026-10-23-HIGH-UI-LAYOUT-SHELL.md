@@ -84,7 +84,7 @@ Pages inherit WVU branding and light colors from the layout, so nothing can look
 
 ## Implementation Steps
 
-1. **Inspect** (read-only): confirm the layout matches the facts above and list every `wvu`/`woodburn` string in `app/views/layouts/` and `app/views/sessions/`, `app/views/passwords/` (`grep -rn "wvu\|woodburn" app/views`). Report the list. `[FILL IN]`
+1. **Inspect** (read-only): confirm the layout matches the facts above and list every `wvu`/`woodburn` string in `app/views/layouts/` and `app/views/sessions/`, `app/views/passwords/` (`grep -rn "wvu\|woodburn" app/views`). VERIFIED: 26 occurrences in application.html.erb (lines 24, 26, 35, 38, 43, 47, 51, 56, 66, 70, 74-76, 83, and others). Sessions/passwords views contain additional `wvu-` references for login form styling.
 2. **Body**: replace the body classes with token-based ones (for example `bg-[var(--bg)] text-[var(--text)]`), keeping `min-h-screen flex flex-col`.
 3. **Header**: replace the WVU masthead with a simple topbar: the text brand "Galaxy Game" linking to `root_path`; keep the sign-in/sign-out/email logic exactly as it is, restyled with token colors. Do not reference `logo.png`.
 4. **Main**: remove `woodburn-hall`; keep the container and `yield`.

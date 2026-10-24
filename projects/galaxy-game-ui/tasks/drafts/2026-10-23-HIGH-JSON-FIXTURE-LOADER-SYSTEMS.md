@@ -72,9 +72,9 @@ The prototype UI needs static data to build against. The decision (Tracy, 2026-1
 The first fixtures are star systems and the links between them, so the UI can build **wayfinding** (which systems exist, what connects to what). Other domains (settlements, inventory, market, missions) will be separate small tasks that reuse this loader.
 
 Facts:
-- VERIFIED: `app/services/user_csv_loader.rb` exists on the branch and `db/seeds.rb` calls `UserCsvLoader.call` and reads `.created` / `.skipped`. `[FILL IN]` read it and mirror its style (`.call`, result object).
+- VERIFIED: `app/services/user_csv_loader.rb` exists on the branch and `db/seeds.rb` calls `UserCsvLoader.call` and reads `.created` / `.skipped`. Its pattern: (1) class method `.call(path = nil)` delegates to `.new(path).call`, (2) `.new` sets `@path` with Rails.root.join default, (3) instance `.call` iterates CSV with headers, returns `Result.new(created: count, skipped: count)` (Struct). Mirror this exactly for GameDataJsonLoader.
 - VERIFIED: the repo root `.gitignore` ignores `/data/` and `/env/` (anchored at the repo root). Do **not** put fixtures under any `data/` folder.
-- REPORTED: the main game's Eden identifier is `AOL-732356`. `[FILL IN]` confirm against the game's own system JSON.
+- REPORTED: the main game's Eden identifier is `AOL-732356`. This must be confirmed by Tracy or by reading the main game's system JSON (path not yet accessible in this app repo).
 - Only Earth has biomes at game start (Tracy). Do not add biome fields to systems.
 
 ## Problem Statement
@@ -92,7 +92,7 @@ There is no data source for the prototype UI. Without one, every page invents it
 3. **Create fixtures** in `db/mock_data/`:
    - `systems.json`: top-level `"systems"` array. Fields: `id`, `name`, `kind` (`home` | `outpost` | `generated`), `identifier` (optional), `source` (`game_json` | `placeholder`). Include **Sol**, **Eden** and **three** generated placeholder systems named `Generated 001` … `003`.
    - `links.json`: top-level `"links"` array. Fields: `from`, `to` (system ids), `type` (`natural` | `artificial` | `unknown`), `source`. Link Sol↔Eden and connect each generated system to at least one other, so wayfinding has a graph with more than one hop.
-   - For Sol and Eden, copy only fields that exist in the game's own JSON, if reachable (`[FILL IN]` path). Otherwise mark `"source": "placeholder"`. **Do not invent** masses, stability or lore values.
+   - For Sol and Eden, copy only fields that exist in the game's own JSON, if reachable (main game's system JSON path: not yet accessible in this UI repo; ask Tracy). Otherwise mark `"source": "placeholder"`. **Do not invent** masses, stability or lore values.
    - Use `"type": "unknown"` for any link whose type has not been confirmed by Tracy.
 4. **Verify in the container** (commands below) and paste output.
 

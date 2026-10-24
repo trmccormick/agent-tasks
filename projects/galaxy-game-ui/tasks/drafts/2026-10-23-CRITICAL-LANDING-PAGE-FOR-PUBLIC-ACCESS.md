@@ -3,7 +3,7 @@ status: drafts
 resume: false
 priority: CRITICAL  
 type: feature
-system_domain: CONTROLLERS
+system_domain: VIEWS (content population — scaffolding done)
 mvp_alignment: OTHER
 local_worker_safe: true
 ---
@@ -56,12 +56,26 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 
 ---
 
-# TASK: Create Landing Page and About Page for Galaxy Game UI
+## 🟡 SCAFFOLDING STATUS — ALREADY DONE (post-Haiku session 2026-10-23)
+
+| Item | Path | Status |
+|------|------|--------|
+| LandingController with index action | `app/controllers/landing_controller.rb` | ✅ Created (empty scaffold) |
+| `views/landing/index.html.erb` view file | `app/views/landing/index.html.erb` | ✅ Created (blank Rails scaffold — only `<h1>Landing#index</h1>`) |
+| Root route (`root "landing#index"`) | `config/routes.rb` | ✅ Already set up |
+| Dashboard route (`/dashboard`) | `config/routes.rb` | ✅ Already set up |
+
+**Resume**: Start at "populate landing content" — do NOT generate or recreate the controller.
+
+---
+
+# TASK: Populate Landing Page Content for Galaxy Game UI
 **Status**: DRAFTS  
 **Priority**: CRITICAL  
 **Type**: feature  
 **Created**: 2026-10-23  
 **Last Updated**: 2026-10-23  
+**Resume From**: Content population (controller/views/routes already scaffolded)  
 
 ## Prerequisites — READ FIRST (Sequential Order)
 
@@ -73,168 +87,121 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 
 ## Context
 
-After Phase 4 (seeds cleanup), the app has default admin/player accounts but the root URL (`/`) still points to `sessions#new` — a direct login form with no Galaxy Game branding. This is not the entry point we want for a public-facing game site.
+After Phase 4 (seeds cleanup), the app has default admin/player accounts. The root URL (`/`) is already mapped to `landing#index` but the view file contains only a blank Rails scaffold placeholder (`<h1>Landing#index</h1>`). This needs content populated for a public-facing game site entry point.
 
 The galaxyGame prototype at `/Users/tam0013/Documents/git/galaxyGame/galaxy_game/app/views/landing/` has two views:
 - `index.html.erb` — Hero section with logo, tagline, Sign In/Create Account/Learn More buttons, plus a 4-panel game status grid
 - `about.html.erb` — Project vision, how it works, development workflow
 
-**The fresh app needs these pages to serve as the public entry point.** The root route must change from `sessions#new` → `landing#index`.
+**The fresh app's scaffolded landing view needs content populated.** The controller and routes already exist (created in Haiku session 2026-10-23).
 
-**IMPORTANT SCOPE NOTE**: This task is **structural only**. We create HTML templates, routes, and controllers. We do NOT:
+**IMPORTANT SCOPE NOTE**: This task focuses on **content population only**. Two CSS options — pick ONE before starting:
+- **Option A (minimal)**: Use existing classes only. No new stylesheets, no EVE CSS, no Tailwind class changes. Just populate HTML with placeholder content.
+- **Option B (depends on T3a)**: If EVE CSS foundation (T3a) is already approved and applied, use EVE CSS variables/classes for styling.
 
-- Remove any existing CSS (Tailwind or WVU Moonshot classes remain untouched)
-- Apply EVE Dashboard styling yet (that requires a separate structural analysis first)
-- Build out the dashboard view (coming in a later structural task)
-- Wire any backend data (placeholder static HTML only)
-
-We borrow **HTML structure** from the galaxyGame prototype's landing page (hero → auth buttons → status grid layout pattern) but implement it fresh. No styling decisions are made here — those require careful review of EVE Dashboard's overlapping elements first.
+> **Recommendation**: Go with Option A (minimal) until T3a is reviewed. Apply EVE CSS later as a separate pass.
 
 ---
 
-## Current State
-
-### Root Route (BROKEN FOR PUBLIC ACCESS)
+### Routes (already correct)
 ```ruby
-root "sessions#new"  # Goes directly to login — not what we want
+root "landing#index"
+get "dashboard", to: "dashboard#index", as: :dashboard
 ```
 
-### Routes File (config/routes.rb)
-```ruby
-Rails.application.routes.draw do
-  resource :session
-  resources :passwords, param: :token
-  get "up" => "rails/health#show", as: :rails_health_check
-  root "sessions#new"
-end
-```
-
-### What's Missing
-- `app/controllers/landing_controller.rb` — does not exist
-- `app/views/landing/` folder — does not exist
-- `/about` route — does not exist
-- Galaxy Game logo (`GalaxyGame.png`) asset — needs to be added to public/assets or app/assets
-
----
-
-## Implementation Steps
-
-### Step 1: Add Galaxy Game logo asset
-Copy or symlink the logo from galaxyGame:
-```bash
-# Check if it exists in galaxyGame
-ls /Users/tam0013/Documents/git/galaxyGame/galaxy_game/app/assets/images/GalaxyGame.png
-
-# If yes, copy to fresh app (use relative path in case of bind mount)
-cp /Users/tam0013/Documents/git/galaxyGame/galaxy_game/app/assets/images/GalaxyGame.png \
-   /Users/tam0013/Documents/git/galaxy-game-ui/galaxy-game-ui/app/assets/images/
-```
-
-> If the logo is not needed for this phase, replace the `<img>` tag with a text-based hero heading "Galaxy Game" instead. Check with human before copying large assets.
-
-### Step 2: Create LandingController
-Create `app/controllers/landing_controller.rb`:
+### LandingController (already scaffolded — Haiku 2026-10-23)
 ```ruby
 class LandingController < ApplicationController
-  def index; end
-  
-  def about; end
+  def index
+  end
 end
 ```
 
-No instance variables needed for the landing page — it's static HTML + Tailwind styling (or placeholder stats that render as "0" or "—").
+### views/landing/index.html.erb (blank scaffold — needs content)
+```html
+<div>
+  <h1 class="font-bold text-4xl">Landing#index</h1>
+  <p>Find me in app/views/landing/index.html.erb</p>
+</div>
+```
 
-### Step 3: Create views/landing/index.html.erb
-Create `app/views/landing/index.html.erb` based on galaxyGame prototype. Key sections:
+### What Needs to Be Populated (Implementation Steps below)
+1. **Hero section** — Galaxy Game branding (text or logo)
+2. **Auth buttons** — Sign In (→ `/session/new`) + optional Create Account link
+3. **Optional About link** — → `/about` (if `landing#about` action is added)
+4. **4 placeholder stat cards** — AI Manager / Star Systems / Economy / Expansion
+5. **Post-login redirect** — After successful session creation, redirect to `dashboard_path`. Add to sessions controller: `redirect_to dashboard_path` in create action.
 
-1. **Hero section** — Galaxy Game logo, title "Galaxy Game", tagline
-2. **Auth buttons** — Sign In (→ `/session/new`), Create Account (→ `/session/new` with signup mode)
-3. **Learn More link** — → `/about`
-4. **Game status grid** — 4 placeholder stat cards:
-   - AI Manager — "Decisions Today" — `0` or `—`
-   - Star Systems — "Systems Discovered" — `0` or `—`
-   - Economy — "Daily Trade Volume" — `0 GCC`
-   - Expansion — "Growth Rate" — `0%`
+### Implementation Steps
 
-> All stats are placeholders. No MockDataHelper needed yet. Just static HTML with placeholder values.
+### Step 1: Populate views/landing/index.html.erb with hero, auth buttons, placeholder stats
+Create Galaxy Game landing content. Based on galaxyGame prototype structure but minimal HTML only (Option A). Example:
 
-### Step 4: Create views/landing/about.html.erb
-Create `app/views/landing/about.html.erb` based on galaxyGame prototype. Sections:
-1. Project vision
-2. How it works (bullet list)
-3. Development workflow notes
-4. External links to agent docs
+```erb
+<h1 class="font-bold text-4xl mb-4">Galaxy Game</h1>
+<p class="mb-6">Explore, settle, and build your galactic empire.</p>
 
-> This is also static content. No controller logic needed beyond rendering.
+<div class="flex gap-4 mb-8">
+  <%= link_to "Sign In", session_new_path, class: "btn primary" %>
+  <!-- Option B (T3a applied): use .btn.primary for styled button -->
+  <!-- Option A (minimal): use existing Rails button helper -->
+</div>
 
-### Step 5: Update routes.rb
-Change the root route and add about:
+<div class="grid grid-cols-4 gap-4 mb-8">
+  <div class="panel">AI Manager — Decisions Today: <b>0</b></div>
+  <div class="panel">Star Systems — Discovered: <b>0</b></div>
+  <div class="panel">Economy — Trade Volume: <b>0 GCC</b></div>
+  <div class="panel">Expansion — Growth Rate: <b>0%</b></div>
+</div>
+
+<%= link_to "Learn More →", about_path %>
+```
+
+All stats are placeholders. No data wiring needed.
+
+### Step 2 (optional): Add landing#about view and /about route
+Create `views/landing/about.html.erb` with static content. Add `get "about" => "landing#about"` to routes if not already present.
+
+### Step 3: Wire post-login redirect to dashboard_path
+In `app/controllers/sessions_controller.rb`, after successful session create action, add:
 ```ruby
-Rails.application.routes.draw do
-  resource :session
-  resources :passwords, param: :token
-  
-  get "about", to: "landing#about"
-  root "landing#index"
-  
-  get "up" => "rails/health#show", as: :rails_health_check
-end
+redirect_to dashboard_path
 ```
+This ensures new users land on the dashboard, not the landing page.
 
-> Do NOT change dashboard, wormholes, or admin routes — those come later.
-
-### Step 5: Add a placeholder logo path
-If the Galaxy Game PNG exists, add it to `app/assets/images/`. If not (yet), use an `<h1>` heading for "Galaxy Game" as the text-based fallback.
-
-### Step 7: Verify
-```bash
-# Check landing page loads without errors
-curl -s http://localhost:3000/ | grep -c "Galaxy Game"
-
-# Check about page loads
-curl -s http://localhost:3000/about | grep -c "About"
-
-# Check sign-in link goes to /session/new
-curl -s http://localhost:3000/ | grep "session/new"
-```
+### Step 4 (if using Option B CSS): Apply EVE Dashboard variables
+After T3a is approved and deployed, replace any inline styles with EVE CSS classes (`@panel`, `.btn.primary`, etc.).
 
 ---
 
 ## Gotchas
 
-1. **Do NOT remove any existing CSS yet**: The fresh app's Tailwind and WVU Moonshot classes are still in place. This task creates structural HTML only — no CSS removal, no style overrides, no new stylesheets. Styling is deferred to a separate analysis task after we've mapped EVE Dashboard elements against our needs.
-
-2. **Placeholder stats only**: All 4 stat cards show static HTML text (`0` or `—`). No data wiring — that's a separate structural task.
-
-3. **Logo path**: If using `image_tag 'GalaxyGame.png'`, ensure the asset pipeline can find it (`app/assets/images/`). If not available, use an `<h1>` heading as fallback.
+1. **Controller + routes already scaffolded** — Do NOT create LandingController or modify routes.rb for basic landing/dashboard routing. Only populate view content.
+2. **CSS scope choice**: Pick Option A (minimal) or Option B (depends on T3a). Do NOT apply both in the same task.
+3. **Post-login redirect** — Must be wired so new users land on `/dashboard`. This is a one-line change in sessions controller create action.
+4. **All stats are placeholders** — No data wiring needed for this task.
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] `LandingController` exists with `index` and `about` actions
-- [ ] `app/views/landing/index.html.erb` renders without errors at `/`
-- [ ] `app/views/landing/about.html.erb` renders without errors at `/about`
-- [ ] Hero section shows "Galaxy Game" branding (logo or text)
-- [ ] Sign In button links to `/session/new`
-- [ ] About link links to `/about`
+- [ ] `LandingController#index` renders populated content (not blank scaffold)
+- [ ] Hero section shows "Galaxy Game" branding (text or logo)
+- [ ] Sign In link goes to `/session/new`
+- [ ] Post-login redirect goes to `dashboard_path`
 - [ ] 4 placeholder stat cards render on landing page
-- [ ] Root route is `landing#index`, NOT `sessions#new`
-- [ ] No WVU branding or classes remain in landing/about views
-- [ ] CSS uses EVE Dashboard variable system (no hardcoded colors)
+- [ ] CSS uses either existing classes only (Option A) OR EVE CSS if T3a deployed (Option B) — NOT both
 - [ ] Login/session routes still intact and functional after change
 - [ ] Production database untouched
+- [ ] **Out of scope**: About view (optional), CSS animations, responsive layout
 
 ---
 
 ## Dependencies
 
-**Depends on**: Task `2026-10-23-CRITICAL-SEEDS-CLEANUP-DEFAULT-USERS` (default accounts must exist first, even though landing page is public-facing, users need to be able to authenticate after clicking Sign In).  
-**Blocks**: None directly, but this task establishes the entry point for ALL player-facing navigation. Dashboard, wormholes, and admin tasks depend on the user being able to reach them via proper navigation flow.
-
----
-
-## Synthesis Report Template
+**Depends on**: Task `2026-10-23-CRITICAL-SEEDS-CLEANUP-DEFAULT-USERS` (default accounts must exist so Sign In works).  
+**Depends on**: T3a (EVE CSS Foundation) — only if Option B chosen. Otherwise minimal dependencies.  
+**Blocks**: Dashboard content population (T3b) — users need public entry point first.
 
 ```markdown
 # Task Synthesis Report — Landing Page Implementation

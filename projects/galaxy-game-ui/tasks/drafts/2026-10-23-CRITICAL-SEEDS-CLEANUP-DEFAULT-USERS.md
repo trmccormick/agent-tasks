@@ -3,7 +3,7 @@ status: drafts
 resume: false
 priority: CRITICAL
 type: feature
-system_domain: CONTROLLERS
+system_domain: MODELS / MIGRATIONS (data only — no UI)
 mvp_alignment: OTHER
 local_worker_safe: true
 ---
@@ -79,15 +79,18 @@ Closeout: follow SESSION_CLOSEOUT.md only.
   - `test/fixtures/graduate_records.yml`
   - `test/models/graduate_record_test.rb`
 
-❌ **STILL NEEDED** (for this task to complete):
-- **Step 3**: Rewrite `db/seeds.rb` with hardcoded admin/player account creation
+Post-9f64cd3 state is clean:
+- No GraduateRecord / DonorCsvLoader references remain in codebase
+- User model has `role` enum (player/admin) with migration `20261023135130_add_role_to_users`
+- `UserCsvLoader` service still exists but seeds.rb must be rewritten
+
+❌ **STILL NEEDED**:
+- **Step 3**: Rewrite `db/seeds.rb` — **choose ONE path only** (see below)
 - **Step 4**: Update `.gitignore` to add `galaxy-game-ui-first-attempt/`
-- **Step 5-6**: Verify setup.sh and login routes work cleanly
+- **Step 5**: Verify setup.sh and login routes work cleanly
 - Create synthesis report in `summaries/`
 
-**Rationale**: The dead code cleanup was prerequisite housekeeping; the core task work (seeds rewrite + .gitignore update + verification) remains.
-
-**Next agent**: Continue from Step 3 of Implementation Steps below. Do NOT re-delete files or re-do cleanup work already committed.
+**Next agent**: Continue from Step 3. Do NOT re-delete files or re-do cleanup work already committed.
 
 ---
 
@@ -106,7 +109,9 @@ Phases 1–3 of the fresh Galaxy Game UI cleanup are complete:
 - User role field added (enum: player/admin) ✅
 - Database renamed to galaxy_game_ui_development/test ✅
 
-The `setup.sh` script is failing because it still calls legacy donor seeding code (`DonorCsvLoader`) that references a CSV file (`data/donors.csv`) that no longer exists. This blocks all further work — users cannot log in and the app cannot start cleanly.
+The `setup.sh` script is failing because `db/seeds.rb` still references `UserCsvLoader` which expects a CSV that may not exist or contain valid data. This blocks all further work — users cannot log in and the app cannot start cleanly.
+
+**IMPORTANT**: This task deals ONLY with seeds/db setup. UI/CSS styling is out of scope.
 
 Additionally, the `galaxy-game-ui-first-attempt/` folder should be git-ignored so it does not pollute the repository.
 
@@ -118,14 +123,32 @@ Additionally, the `galaxy-game-ui-first-attempt/` folder should be git-ignored s
 | `app/services/donor_csv_loader.rb` | ✅ **ALREADY DELETED** (commit 9f64cd3) | Legacy donor CSV loading service |
 | Donor/graduate spec/test files | ✅ **ALREADY DELETED** (commit 9f64cd3) | Dead code, no longer needed |
 
-### db/seeds.rb Current Content (BROKEN)
+### db/seeds.rb Current Content (NEEDS WORK)
 ```ruby
 users = UserCsvLoader.call
 puts "Users CSV loaded: #{users.created} created, #{users.skipped} skipped."
-
-result = DonorCsvLoader.call
-puts "Donor CSV loaded: #{result.created} created, #{result.updated} updated, #{result.skipped} skipped."
 ```
+
+> **⚠️ CHOICE REQUIRED**: Implement ONE of the two approaches below. Pick the one that matches current `UserCsvLoader` reliability.
+>
+> **Option A — Inline seeds (simpler, guaranteed to work)**:
+> ```ruby
+> admin = User.find_by(email_address: 'admin@galaxygame.local') || User.create!(
+>   email_address: 'admin@galaxygame.local',
+>   password_digest: BCrypt::Password.create('password123'),
+>   role: 'admin'
+> )
+> player = User.find_by(email_address: 'player@galaxygame.local') || User.create!(
+>   email_address: 'player@galaxygame.local',
+>   password_digest: BCrypt::Password.create('password123'),
+>   role: 'player'
+> )
+> puts "Default accounts ready."
+> ```
+>
+> **Option B — Keep UserCsvLoader but make it safe**: Ensure `UserCsvLoader` checks for CSV existence and falls back to inline defaults if the file is missing.
+>
+> **Do NOT use both paths in the same seeds file.**
 
 ### .gitignore Current Content (incomplete)
 ```
@@ -219,13 +242,13 @@ Expected: `new_session GET    /session/new` and all other session routes present
 
 ## Acceptance Criteria
 
-- [ ] `app/services/donor_csv_loader.rb` deleted (confirmed via grep)
-- [ ] `app/services/user_csv_loader.rb` deleted (confirmed via grep)
-- [ ] `db/seeds.rb` contains only admin/player account creation code (no donor references)
+- [ ] **One path only**: Either inline seeds OR UserCsvLoader (not both in seeds)
+- [ ] `db/seeds.rb` produces admin + player accounts on `bin/rails db:seed`
 - [ ] `.gitignore` includes `galaxy-game-ui-first-attempt/`
 - [ ] `bin/rails db:seed` runs without errors and outputs confirmation of default accounts
 - [ ] Login routes (`/session/new`) still functional
 - [ ] No production database was touched (confirmed via config/database.yml)
+- [ ] **Out of scope**: UI/CSS/styling changes (deferred to T2/T3)
 
 ---
 
