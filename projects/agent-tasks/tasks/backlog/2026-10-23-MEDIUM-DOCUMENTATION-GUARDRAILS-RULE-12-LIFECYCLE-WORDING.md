@@ -1,5 +1,5 @@
 ---
-status: draft
+status: backlog
 resume: false
 priority: MEDIUM
 type: documentation
@@ -8,20 +8,16 @@ mvp_alignment: OTHER
 local_worker_safe: true
 ---
 
-## DRAFT STATUS NOTE
-
-This task is a draft in `tasks/drafts/`. Do NOT dispatch it until the human has moved it to `tasks/backlog/` and set `status: backlog`. Before dispatch, replace `[SUBFOLDER]` in the dispatch block with the backlog subfolder the human chose.
-
 ## Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
 
 ```
 You are **Implementation Agent**.
 
 Project: agent-tasks
-Task: <agent-tasks>/projects/agent-tasks/tasks/backlog/[SUBFOLDER]/2026-10-23-MEDIUM-DOCUMENTATION-GUARDRAILS-RULE-12-LIFECYCLE-WORDING.md
+Task: <agent-tasks>/projects/agent-tasks/tasks/backlog/2026-10-23-MEDIUM-DOCUMENTATION-GUARDRAILS-RULE-12-LIFECYCLE-WORDING.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/agent-tasks/tasks/backlog/[SUBFOLDER]/2026-10-23-MEDIUM-DOCUMENTATION-GUARDRAILS-RULE-12-LIFECYCLE-WORDING.md \
+  git mv projects/agent-tasks/tasks/backlog/2026-10-23-MEDIUM-DOCUMENTATION-GUARDRAILS-RULE-12-LIFECYCLE-WORDING.md \
          projects/agent-tasks/tasks/active/2026-10-23-MEDIUM-DOCUMENTATION-GUARDRAILS-RULE-12-LIFECYCLE-WORDING.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
