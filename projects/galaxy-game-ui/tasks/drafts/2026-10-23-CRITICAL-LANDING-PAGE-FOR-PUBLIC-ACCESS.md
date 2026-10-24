@@ -190,7 +190,7 @@ After T3a is approved and deployed, replace any inline styles with EVE CSS class
 - [ ] Sign In link goes to `/session/new`
 - [ ] Post-login redirect goes to `dashboard_path`
 - [ ] 4 placeholder stat cards render on landing page
-- [ ] CSS uses either existing classes only (Option A) OR EVE CSS if T3a deployed (Option B) — NOT both
+- [ ] CSS uses existing classes only (Option A) — minimal styling, no EVE CSS dependency
 - [ ] Login/session routes still intact and functional after change
 - [ ] Production database untouched
 - [ ] **Out of scope**: About view (optional), CSS animations, responsive layout
@@ -214,7 +214,6 @@ After T3a is approved and deployed, replace any inline styles with EVE CSS class
 | views/landing/about.html.erb | ✅ / ❌ | |
 | Root route changed to landing#index | ✅ / ❌ | |
 | About route added at /about | ✅ / ❌ | |
-| EVE CSS variables applied | ✅ / ❌ | |
 
 ## Verification Results
 | Check | Result |
@@ -226,6 +225,8 @@ After T3a is approved and deployed, replace any inline styles with EVE CSS class
 
 ## Issues
 - [If any issues, describe here]
+
+**Partial progress (2026-10-23)**: On review/qwen-ui-prototype, root is landing#index; hero + Sign In + placeholder status cards exist. Remaining: about page, AC verification, visual polish after T3a-2.
 
 ## Commit Hash:
 ```
