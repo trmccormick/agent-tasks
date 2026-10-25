@@ -244,3 +244,21 @@ Qualifying a reviewer: it quotes three lines from a named file at a named commit
 **What needs a second opinion**: (1) Should the draft retain the exact template dispatch block and leave task-specific review instructions in the body, or should the human approve a template change for review-only tasks? (2) If review-only dispatch is a supported task type, should the template explicitly define that role/contract instead of locally rewriting the mandatory block? (3) Confirm the intended review disposition and whether any additional revision is needed after this conformance issue is corrected.
 **Priority**: MEDIUM — mandatory dispatch contract mismatch; task should not be approved for dispatch as written.
 **Status**: OPEN. Claude review recommends REVISE before human approval/dispatch. No task file, template, lifecycle, or portal documentation was changed as part of the review; this entry records the finding for discussion.
+
+---
+
+#### Human decision / requested follow-up (2026-10-25)
+
+1. The human requests shared-template support for review-only task dispatch, to be addressed by Claude.
+2. No task-specific exception is authorized for the portal draft's "Review Agent" substitution.
+3. Claude should assess and prepare the smallest coherent shared-template correction that:
+   - Explicitly defines review-only dispatch support and allowed substitutions.
+   - Preserves the existing implementation dispatch contract.
+   - Distinguishes the agent producing a review/recovery deliverable from the independent reviewer assessing it.
+   - Preserves applicable startup, independent-review, and human-authorization requirements.
+4. The portal draft remains draft and blocked pending template resolution, draft alignment, and independent re-review.
+5. The required Working-Pair Interpretation / Synthesis deliverable section has been added in the portal working copy, as reported by its drafting agent; that correction remains uncommitted and independently unverified.
+6. Qwen is not authorized to change `TASK_TEMPLATE.md` or resolve this policy issue locally.
+
+---
+
