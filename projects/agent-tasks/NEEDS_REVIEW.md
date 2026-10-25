@@ -68,6 +68,25 @@ Implementation agents: add an entry here instead of just noting something in sta
 
 ---
 
+### 2026-10-25 — Portal-task session workflow violations (drafting + independent review flow)
+**What happened**: During today's portal-task session (working alongside another agent on the same task), multiple startup and lifecycle rules from GUARDRAILS.md were not followed:
+
+1. **Startup / task-template / draft-location rules missed**: The agent did not execute Step 0 (git mv backlog to active, status update, find verification) before any work. Task file was created in `tasks/drafts/` but the required draft-gate procedures were not acknowledged at session start.
+2. **Template compliance claimed without mandatory sections**: TASK_TEMPLATE.md mandatory sections (Observed in, What I already checked with VERIFIED/REPORTED labels, What needs a second opinion) were missing from portions of the task definition, yet template compliance was asserted.
+3. **Prior findings mixed into new task definition**: Findings from earlier entries (2026-10-18 through 2026-10-22) were incorporated into the current task's scope without separating them as background — effectively expanding scope into follow-on documentation work that should be a separate task.
+4. **Local paths supplied for a web reviewer**: Host-relative paths (e.g., `/Users/tam0013/Documents/git/...`) were provided in material cited for a non-repo web reviewer, who cannot verify them. This violates the principle that web reviewers receive only reproducible, repo-path evidence.
+5. **Staging status reported inconsistently**: Staging claims contradicted each other across session artifacts; the actual state was unclear to the independent reviewer.
+
+Additionally: short, focused requests have progressed without the earlier pause-and-confirm pattern that was established. The cause of this timeout regression is unconfirmed.
+
+**Observed in**: agent-tasks project, portal-task session 2026-10-25 (dual-agent: this agent + another on the same task file)
+**What I already checked**: VERIFIED against current NEEDS_REVIEW.md entries — no existing entry documents this specific session's pattern of combined violations. Closest related entry: "2026-10-18 — TASK_TEMPLATE.md synthesis section contradictions" (internal template state; not a session behavior report).
+**What needs a second opinion**: (1) Clearer startup acknowledgment in the Agent Dispatch Interface — should Step 0 produce a visible confirmation line before any command? (2) Lifecycle-specific placeholder requirements: mandatory-section placeholders that a drafter cannot leave blank (e.g., a mechanical check that [Observed in] and [What I already checked] sections are populated with VERIFIED/REPORTED entries)? (3) Should draft-gate validation include a mechanical template pass before the human sees it? (4) Tracking method for independent-review findings so they pass through correction and re-review without scope creep into the original task.
+**Priority**: MEDIUM — affects drafting quality gate and independent review validity
+**Status**: OPEN. Suggested assessments: (a) add a visible Step-0 confirmation line to the dispatch contract; (b) require mandatory-section placeholders with non-blank validation before human review; (c) run mechanical template validation on every draft commit; (d) establish a correction-and-resubmission channel for independent-review findings that keeps them scoped to the task file.
+
+---
+
 ### 2026-10-13 — Artifact categorization unclear
 **What happened**: SESSION_CLOSEOUT.md says "never delete without human approval" for everything. But intermediate synthesis report drafts, debugging notes, and working handoff versions clutter the repo. Unclear what stays vs gets archived.
 **Observed in**: agent-tasks project, workflow observation
