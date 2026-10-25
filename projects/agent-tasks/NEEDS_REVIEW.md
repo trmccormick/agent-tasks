@@ -198,3 +198,22 @@ Implementation agents: add an entry here instead of just noting something in sta
 **Priority**: MEDIUM — prevents version-mismatch bugs in containerized projects; affects galaxy-game-ui immediately and other containerized projects in future
 
 **Status**: OPEN. Discovery checkpoint: Qwen self-corrected and learned the rule. No additional implementation issues observed after correction. Needs human decision on documentation placement and emphasis level.
+
+### 2026-10-25 — Pair non-repo drafters with Qwen; reserve repo-capable agents for review
+**What happened**: Tracy's direction, 2026-10-25 (REPORTED): web agents without GitHub read access (Perplexity, Gemini, Office 365 Copilot) have longer sessions, so they are paired with Qwen to generate task files, and the agents with repo read access are kept for review, with REVISE sent back for adjustment. Current docs do the opposite in places (VERIFIED at `7faeb63`): `PLANNING_AGENT_SESSION_START.md` L171-185 recommends Gemini for complex draft reviews and Office 365 Copilot for quick ones; the deprecated table below it calls Claude the "Preferred drafting + code review agent"; `MODEL_SELECTION_GUIDE.md` lists Gemini and Office 365 Copilot as reviewers; `REVIEW_AGENT_GUIDE.md` L17-62 has no check for unresolved `[FILL IN]` markers. A review by an agent that cannot read the repo is a review of pasted evidence (`WEB_AGENT_SESSION_START.md` L14).
+
+**Evidence on repo access** (dated rows in `MODEL_SELECTION_GUIDE.md`): Grok's reviews of two drafts on 2026-10-23 quoted lines that all matched the repo (VERIFIED, Claude). ChatGPT's review on 2026-10-24 cited line numbers that did not match the files (VERIFIED, Claude); `PLANNING_AGENT_SESSION_START.md` L176 still lists ChatGPT as having GitHub read access.
+
+**Proposed flow** (not yet in any rule file):
+1. Drafter (no repo access) writes intent and scope, marking any path or line number it cannot verify `[FILL IN]` (`PLANNING_AGENT_SESSION_START.md` L386; `WEB_AGENT_SESSION_START.md` L55 says not to write unverifiable detail).
+2. Qwen fills each `[FILL IN]` from the repo, one concern per message.
+3. Tracy has the planner commit the draft when she says so (2026-10-22 decision).
+4. A reviewer with verified repo read access issues GO / REVISE / STOP on what is in git. A reviewer does not rewrite the task. REVISE goes back to the drafter and Qwen.
+5. Tracy approves the move to `backlog/`. Qwen implements. The reviewer then checks the diff before the commit (the review gate).
+Qualifying a reviewer: it quotes three lines from a named file at a named commit, and they must match. A drafter and a reviewer must be different agents. Gemini and Office 365 Copilot may still give a second opinion, labelled pasted evidence, but not the GO that gates approval.
+
+**What needs a second opinion**: (1) Is Claude excluded from drafting entirely, or only from reviewing its own drafts? (2) Re-test ChatGPT before listing it as repo-capable, or mark it untested until then? (3) Where is the spot-check recorded: `MODEL_SELECTION_GUIDE.md` or `REVIEW_AGENT_GUIDE.md`?
+
+**Edits needed, one file each, none made yet**: `MODEL_SELECTION_GUIDE.md` (add a drafter role; reviewer role requires a passed spot-check; ChatGPT row). `REVIEW_AGENT_GUIDE.md` draft-review checklist (no unresolved `[FILL IN]`; spot-check rule), together with the queued guides task. `PLANNING_AGENT_SESSION_START.md` L171-185 and the deprecated table, after the 1b task finishes with that file.
+**Priority**: MEDIUM — reduces limit-driven review gaps and removes the drafter-also-reviews conflict
+**Status**: OPEN. Direction decided 2026-10-25 (Tracy): pair non-repo drafters with Qwen; keep repo-capable agents as reviewers; REVISE goes back for adjustment. The three questions above and the doc edits are open.
