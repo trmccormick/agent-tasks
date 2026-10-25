@@ -373,3 +373,10 @@ All hashes VERIFIED on origin with `git log -1` at f5260b8.
 - **Not committed:** none.
 - **Stop condition:** none. Completed successfully. Review-gate requirement now non-bypassable at template level; all implementation agents inherit mandate that commit cannot proceed without (1) Reviewer GO + (2) Human Authorization.
 
+
+## 📝 Session Log — 2026-10-24 (GUARDRAILS Rule 12 lifecycle wording - Qwen)
+
+- **Changed:** `rules/GUARDRAILS.md` (Rule 12, 5 single-line edits: 5 insertions, 5 deletions). Task file moved from `backlog/` to `completed/2026-10/` and its Completion Report filled in.
+- **Committed:** `c9e010e` (the five edits; authorized by Tracy after reviewer GO 2026-10-24; pushed to origin/main; VERIFIED: Tracy's `git push` output).
+- **Not committed:** the task file move to `completed/2026-10/` and this entry, until Tracy commits them.
+- **Stop condition:** none for the edit. Notes: no synthesis report was saved; the Step 6 `git diff --stat` expectation did not allow for the Step 0 status edit; the first run stopped three times and needed nudges.

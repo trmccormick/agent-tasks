@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 resume: false
 priority: MEDIUM
 type: documentation
@@ -138,11 +138,18 @@ SYNTHESIS COMPLETE.
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**:
-**Completion date**:
-**Evidence basis:** [direct verification / review of pasted evidence / reported by agent / human assertion]
+**Completed by**: Qwen (Implementation Agent)
+**Completion date**: 2026-10-24
+**Evidence basis:** review of pasted evidence — reviewer GO 2026-10-24 (Claude): the edited rules/GUARDRAILS.md matches the specified result byte for byte (blob hash 88299af). Qwen reports the Step 6 checks passed (REPORTED; output not pasted).
 
 ### What was changed
--
+- Line 210: lifecycle diagram — added `[YYYY-MM]` to `tasks/completed/` path
+- Line 225: planner commits phrasing — added "pushed when the human tells" qualifier
+- Line 231: backlog subfolder organization — removed `drafts` from list, replaced with approved-tasks description and explicit "No drafts subfolder" note
+- Line 247: draft update procedure — separated commit-and-push into its own sentence with conditional "only when the human tells it to" phrasing
+- Line 281: stray-copy handling — changed from automated removal to stopping and reporting both paths to the human
 
 ### Issues discovered
+- The synthesis report was not saved to projects/agent-tasks/summaries/ as the dispatch block requires.
+- The Step 6 `git diff --stat` expectation (one file) did not allow for the task file's status edit from Step 0; the check should have been `git diff --stat -- rules/GUARDRAILS.md`.
+- Qwen stopped without a tool call three times during the run and announced a commit before the review gate; no commit was made. (Reported by the human.)
