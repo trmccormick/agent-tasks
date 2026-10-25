@@ -90,9 +90,9 @@ Only stop at: (a) an old text that is not found exactly once, (b) a check that s
    grep -c 'omit the `\[SUBFOLDER\]/` segment from the paths' TASK_TEMPLATE.md          # expect 1
    grep -c 'must be removed first' TASK_TEMPLATE.md                                     # expect 0
    grep -c 'Do not delete, move or overwrite either copy' TASK_TEMPLATE.md              # expect 1
-   git diff --stat   # expect only TASK_TEMPLATE.md, 3 insertions(+), 3 deletions(-)
+   git diff --stat -- TASK_TEMPLATE.md   # expect 1 file changed, 3 insertions(+), 3 deletions(-)
    ```
-   If any count differs, fix that one step and rerun once. If it still differs, stop (condition b).
+   If any count differs, fix that one step and rerun once. If it still differs, stop (condition b). A plain `git diff --stat` also lists this task file's own status edit from Step 0; ignore that line.
 
 5. **Step 5 — print this completion line, then go to the review gate:**
    `EDITS DONE: TASK_TEMPLATE.md backlog path and stale-copy wording, 3 edits, checks pass. STOP: requesting reviewer assessment.`
@@ -103,7 +103,7 @@ After Step 5, STOP. Paste the Step 4 output and `git diff` in chat. Do not commi
 
 ## After authorization
 
-- Commit (only after commit is authorized): `git add TASK_TEMPLATE.md` then `git commit -m "docs: TASK_TEMPLATE backlog path, flat-backlog substitution, stale copies reported"`. Never `git add .` or `git add -A`.
+- Commit (only after commit is authorized): `git commit -m "docs: TASK_TEMPLATE backlog path, flat-backlog substitution, stale copies reported" -- TASK_TEMPLATE.md` (path-limited, so a staged move of this task file is not swept into the commit). Never `git add .` or `git add -A`.
 - Push (only after push is authorized): `git push`, then `git status -sb`.
 - Then follow `SESSION_CLOSEOUT.md` only.
 
@@ -115,14 +115,14 @@ Task: 2026-10-23-MEDIUM-DOCUMENTATION-TASK-TEMPLATE-BACKLOG-PATH-AND-STALE-COPY-
 Date: YYYY-MM-DD
 About to do: three single-line edits in TASK_TEMPLATE.md (lines 17, 130, 421)
 Files: TASK_TEMPLATE.md only
-Done looks like: Step 4 counts match; git diff --stat shows 3 insertions, 3 deletions, one file
+Done looks like: Step 4 counts match; `git diff --stat -- TASK_TEMPLATE.md` shows 3 insertions, 3 deletions, one file
 Gotchas: no whole-file rewrite; nothing inside the dispatch code fence; stop only at (a), (b), (c)
 SYNTHESIS COMPLETE.
 ```
 
 ## Acceptance Criteria
 - [ ] Step 4 counts all match
-- [ ] `git diff --stat` shows only `TASK_TEMPLATE.md`, 3 insertions, 3 deletions
+- [ ] `git diff --stat -- TASK_TEMPLATE.md` shows 3 insertions, 3 deletions
 - [ ] Reviewer GO and human authorization recorded before any commit
 
 ## Dependencies
