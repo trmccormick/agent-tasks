@@ -103,9 +103,9 @@ Only stop at: (a) an old text that is not found exactly once, (b) a check that s
    grep -c '2. \*\*Commit to git\*\*' PLANNING_AGENT_SESSION_START.md                                      # expect 0
    grep -c 'commit and push when the human tells you to → stop and wait' PLANNING_AGENT_SESSION_START.md   # expect 1
    grep -c 'Create draft task → commit to git' PLANNING_AGENT_SESSION_START.md                             # expect 0
-   git diff --stat   # expect only PLANNING_AGENT_SESSION_START.md, 6 insertions(+), 6 deletions(-)
+   git diff --stat -- PLANNING_AGENT_SESSION_START.md   # expect 1 file changed, 6 insertions(+), 6 deletions(-)
    ```
-   If any count differs, fix that one step and rerun once. If it still differs, stop (condition b).
+   If any count differs, fix that one step and rerun once. If it still differs, stop (condition b). A plain `git diff --stat` also lists this task file's own status edit from Step 0; ignore that line.
 
 8. **Step 8 — print this completion line, then go to the review gate:**
    `EDITS DONE: PLANNING_AGENT_SESSION_START.md draft commit wording, 6 edits, checks pass. STOP: requesting reviewer assessment.`
@@ -116,7 +116,7 @@ After Step 8, STOP. Paste the Step 7 output and `git diff` in chat. Do not commi
 
 ## After authorization
 
-- Commit (only after commit is authorized): `git add PLANNING_AGENT_SESSION_START.md` then `git commit -m "docs: planning session start, drafts committed only when told; drop [handoff] step"`. Never `git add .` or `git add -A`.
+- Commit (only after commit is authorized): `git commit -m "docs: planning session start, drafts committed only when told; drop [handoff] step" -- PLANNING_AGENT_SESSION_START.md` (path-limited, so a staged move of this task file is not swept into the commit). Never `git add .` or `git add -A`.
 - Push (only after push is authorized): `git push`, then `git status -sb`.
 - Then follow `SESSION_CLOSEOUT.md` only.
 
@@ -128,14 +128,14 @@ Task: 2026-10-23-MEDIUM-DOCUMENTATION-PLANNING-SESSION-START-DRAFT-COMMIT-WORDIN
 Date: YYYY-MM-DD
 About to do: six single-line edits in PLANNING_AGENT_SESSION_START.md (lines 15, 16, 19, 43, 61, 103)
 Files: PLANNING_AGENT_SESSION_START.md only
-Done looks like: Step 7 counts match; git diff --stat shows 6 insertions, 6 deletions, one file
+Done looks like: Step 7 counts match; `git diff --stat -- PLANNING_AGENT_SESSION_START.md` shows 6 insertions, 6 deletions, one file
 Gotchas: no whole-file rewrite; leave other commit/push lines alone; stop only at (a), (b), (c)
 SYNTHESIS COMPLETE.
 ```
 
 ## Acceptance Criteria
 - [ ] Step 7 counts all match
-- [ ] `git diff --stat` shows only `PLANNING_AGENT_SESSION_START.md`, 6 insertions, 6 deletions
+- [ ] `git diff --stat -- PLANNING_AGENT_SESSION_START.md` shows 6 insertions, 6 deletions
 - [ ] Reviewer GO and human authorization recorded before any commit
 
 ## Dependencies
