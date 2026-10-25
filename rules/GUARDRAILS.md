@@ -207,7 +207,7 @@ specific mapping into general habit.
 Every task follows this exact path:
 ```
 tasks/drafts/ → (review agent assessment) → (human approval)
-  → tasks/backlog/[SUBFOLDER]/ → tasks/active/ → tasks/completed/
+  → tasks/backlog/[SUBFOLDER]/ → tasks/active/ → tasks/completed/[YYYY-MM]/
 ```
 
 **Three gates in this lifecycle are non-negotiable:**
@@ -222,13 +222,13 @@ tasks/drafts/ → (review agent assessment) → (human approval)
 
 - `tasks/drafts/` — **New draft tasks only** (status: draft, awaiting review)
   - Created by planning agents
-  - Committed to git for review access
+  - Committed and pushed when the human tells the planning agent to, so review agents can read it from git
   - Cannot move to backlog/ without human approval after review agent assessment
   - Filename: `YYYY-MM-DD-PRIORITY-TYPE-NAME.md` (same convention as backlog/active)
 
 - `tasks/backlog/[SUBFOLDER]/` — **Approved queue** (status: backlog, ready for implementation dispatch)
   - Moved here ONLY after review approval + human authorization
-  - Organized by domain/phase: `current`, `design`, `deferred-cleanup`, `drafts`, `procedural_generation`, `research`, `superseded`, `ui`, `ai-manager`, etc.
+  - Approved tasks only. One subfolder per phase or domain (examples: `current`, `design`, `deferred-cleanup`, `procedural_generation`, `research`, `superseded`, `ui`, `ai-manager`). No `drafts` subfolder and no date folders.
   - Implementation agents dispatch from here to active/
   - Handoffs reference backlog location
 
@@ -244,7 +244,7 @@ tasks/drafts/ → (review agent assessment) → (human approval)
 - ❌ **Agents CANNOT self-approve draft tasks** — review agent + human approval required
 - ✅ **Only human may run: `git mv tasks/drafts/[FILENAME].md tasks/backlog/[SUBFOLDER]/[FILENAME].md`**
 - ✅ **Only human may change YAML status: draft → backlog in the moved file**
-- If a planning agent needs to update a draft task after review feedback, it updates the file in-place in `tasks/drafts/` and commits the update; human still controls the move to backlog
+- If a planning agent needs to update a draft task after review feedback, it updates the file in-place in `tasks/drafts/`. It commits and pushes the update only when the human tells it to; human still controls the move to backlog
 
 **Note**: This list is deliberately maintained. New subfolders may be added for distinct work domains, but `backlog/` does NOT use date-based folders.
 
@@ -278,7 +278,7 @@ git add destination_path
 find <agent-tasks>/projects/[project]/tasks \
      -name "[FILENAME].md"
 ```
-Only ONE result should exist. If two appear, a stale copy exists — remove it before committing.
+Only ONE result should exist. If two appear, stop and report both paths to the human. Do not delete, move or overwrite either copy.
 
 **Why**: `git mv` preserves history and stages atomically. Human controls approval gates (draft→backlog). Agents execute operational moves (backlog→active) per explicit handoff instructions.
 
