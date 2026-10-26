@@ -1,0 +1,106 @@
+--- a/TASK_TEMPLATE.md
++++ b/TASK_TEMPLATE.md
+@@ -62,6 +62,8 @@
+ #     - Path to task file location
+ #     - Step 0 instructions (move task to active/, update status)
+ #     - Reference to synthesis report requirement
++#   (This list describes Variant A, Implementation. Review-only tasks use Variant B;
++#   see "Review-Only Dispatch" below.)
+ #   DO NOT put implementation details in the dispatch interface.
+ #   All that belongs in the task file sections below.
+ #   The interface is ONLY the startup contract.
+@@ -74,6 +76,7 @@
+ system_domain: AI_MANAGER | MANUFACTURING | TERRA_SIM | CONTROLLERS | UNITS | OTHER
+ mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT | ISRU_PRODUCTION | SPEC_HEALTH | OTHER
+ local_worker_safe: true | false
++dispatch_mode: implementation | review-only   # newly authored tasks declare this; existing tasks without it are implementation
+ ---
+ 
+ ## 🟡 DRAFT STATUS NOTE (for tasks in tasks/drafts/)
+@@ -127,8 +130,14 @@
+ **This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
+ Agents receive this exact text as the startup contract. Every word matters.
+ 
+-**One allowed substitution:** before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root). Fill `[project]`, `[SUBFOLDER]` and `[FILENAME]` as usual. Change nothing else.
++**Two dispatch variants exist.** The task's `dispatch_mode` field decides which one applies; the human selects it before dispatch.
++- **Variant A — Implementation:** `dispatch_mode: implementation`, or the field is absent (existing task files). The text in the block below, unchanged.
++- **Variant B — Review-Only:** only when `dispatch_mode: review-only`. See "Review-Only Dispatch" below.
+ 
++Newly authored task files declare `dispatch_mode` explicitly and keep only the selected variant's block. If the declared mode and the dispatch block in the task file do not match, the task is not ready for dispatch.
++
++**Allowed substitutions (these only):** before dispatch, (1) replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root); (2) fill `[project]`, `[SUBFOLDER]` and `[FILENAME]` as usual (Variant B: `[project_name]`, `[project]` and `[TASK_PATH]`); (3) use the variant that matches `dispatch_mode`. Change nothing else: no other role label, and no added or removed lines. Choosing a variant selects text only; it authorizes nothing beyond that text.
++
+ ```
+ You are **Implementation Agent**.
+ 
+@@ -161,13 +170,69 @@
+ Closeout: follow SESSION_CLOSEOUT.md only.
+ ```
+ 
+-**IMPORTANT: Do not modify or abbreviate the text above.**
++**IMPORTANT: Do not modify or abbreviate the text of the selected variant.**
+ Copy it exactly as-is when dispatching this task to an agent.
+ This is the startup contract — every element is required.
+ 
+ Everything else (details, gotchas, acceptance criteria, implementation steps) is in the sections below.
+ The dispatch interface above is ONLY the bootstrap instructions.
+ 
++### Review-Only Dispatch (Variant B)
++
++Use only when the task YAML has `dispatch_mode: review-only`: the deliverable is a review, audit, or documentation-recovery report. Variant B text (copy exactly; substitutions limited as above):
++
++```
++You are **Review-Task Agent**. Project: [project_name]
++Task: <agent-tasks>/[TASK_PATH]
++REVIEW-ONLY. Stay read-only until you have read <agent-tasks>/rules/GUARDRAILS.md, the task file, and its "Review-Only Dispatch Contract" section, which binds you. Do not edit the task file, commit, push, or open a pull request. If that section is missing, the task's `dispatch_mode` is not `review-only`, or anything is inaccessible, stop and report.
++Then follow the contract's order: save the synthesis as an MD file in <agent-tasks>/projects/[project]/summaries/, wait for approval, stop at the REVIEW GATE. Closeout: SESSION_CLOSEOUT.md only.
++```
++
++#### Review-Only Dispatch Contract (mandatory; copy verbatim into every task file whose `dispatch_mode` is `review-only`; delete from all other task files)
++
++**Declaration.** `dispatch_mode` is a declaration for the human and the agent to read. Nothing in this repository checks it automatically, and it does not detect or protect existing tasks. An existing review-only task is aligned deliberately (declare the mode and replace its dispatch block) before it is dispatched.
++
++**Two roles, never the same session.**
++- **Review-Task Agent** *produces* the task's review/recovery deliverable.
++- **Independent reviewer** *assesses* that deliverable and issues GO / REVISE / STOP at the REVIEW GATE. It is another session than the one that produced the deliverable (`REVIEW_AGENT_WORKFLOW.md`: "self-review requires another reviewer"). It is not dispatched with this block.
++- "Review Agent" and "Reviewer" are not valid Variant B role labels; they name the assessing role.
++
++**Eligibility.** The role label establishes no eligibility and overrides no existing eligibility rule. Eligibility of each role is determined at dispatch under MAG-3 and `REVIEW_AGENT_GUIDE.md`, and recorded in Agent Assignment. Whether that guide's local-model restriction covers the Review-Task Agent is an open policy question; until the human resolves it, the human decides for each dispatch.
++
++**Order of operations.**
++1. Read `rules/GUARDRAILS.md`. Read-only.
++2. Read the task file in full and the documents its Prerequisites list as read-first. Read-only. If `resume: true`, read the Progress / Resume block now; nothing is edited.
++3. Verify, read-only: the task file is at the dispatched path and no other copy of the same task identity exists (MAG-1); its YAML `status` agrees with its folder per the lifecycle convention (Rule 12); it declares `dispatch_mode: review-only` and embeds the Variant B block and this contract; its own text names the review deliverable and the work in scope. On any failure, or if required material is inaccessible, stop and report in chat. Write no artifact.
++4. Save the synthesis report as an MD file. This is the first write. The location and filename pattern come from the dispatch text and the report format from the task file's Status Synthesis Report section, both already read in steps 1–2.
++5. Wait for approval of the synthesis, as that section requires.
++6. Substantive task work (the task file's review steps and its named deliverable) starts only after step 5. Steps 1–3 are not substantive work.
++7. Stop at the task's REVIEW GATE: report the deliverable's location in chat and request independent reviewer assessment. Complete closeout as `SESSION_CLOSEOUT.md` requires.
++
++**Scope of this dispatch.**
++- Authorized writes: the synthesis report; the deliverable the task file names; the handoff file that `SESSION_CLOSEOUT.md` requires of a review session; and, where its §1b item 6 requires one, a `status.md` entry (not staged or committed). Nothing else.
++- The task file is read-only. `SESSION_CLOSEOUT.md` §2 and §2a do not move or modify it: no move, rename, `status` or `resume` change, or Progress / Completion / Handoff edits. The resume point and outcome go in the handoff file and the `status.md` entry.
++- Not authorized: executing any other task, approving the task, issuing a disposition on your own deliverable, creating or dispatching follow-on tasks, or any commit, push, or pull request.
++- The task file need not be in `active/` (MAG-1 allows this where the dispatch explicitly authorizes review-only work). The agent does not change its location or status.
++- A task file may narrow this scope or supply its own review steps. It may not widen it, reinstate Step 0 activation, lifecycle moves, or implementation for this dispatch, or authorize a publication step in advance (MAG-5). Work that needs those is not review-only: use Variant A, or obtain a separate explicit human instruction.
++
++**Publication prerequisites.** Each of the following, for this task, requires both prerequisites below: commit, push, pull request, marking complete, and moving the task to `completed/`.
++1. An independent reviewer GO on the version of the deliverable being published. A GO covers only the version assessed (identified by path and commit or content hash in the review artifact); later changes need reassessment.
++2. Explicit human authorization, in the session that performs the operation (Rule 26, MAG-2).
++
++A separate publication instruction satisfies prerequisite 2 only. It does not imply a GO and does not waive the gate. Exceptions to a required gate remain governed by the existing MAG-2 requirements for material task exceptions; this contract adds no waiver. Reviewer GO disposes of the deliverable only: it does not extend this dispatch or authorize any operation.
++
++**Template body in a review-only task file.** Only these adaptations apply; everything else stays as written:
++
++| Template body | In a review-only task file |
++|---|---|
++| Agent Assignment, and the AGENT SELECTION RULE comment | Fill "Assigned To / Why" from the MAG-3 eligibility screen against the task's actual requirements. The local-Qwen-first and cloud-fallback sentences are a fixed routing ladder, which MAG-3 prohibits, and are not applied. |
++| Prerequisites item 1 (README EXECUTOR Role), and the note "Synthesis report goes in chat BEFORE starting work" | Omit item 1: README's EXECUTOR Task Completion Workflow (task moves, commits) does not apply. The note reads: the synthesis report is saved as a file before substantive work. |
++| Status Synthesis Report: "create and post … in chat", "POST THIS TO CHAT BEFORE PROCEEDING", and the two "✅ Step 0" lines in its template | Save the synthesis report as a file (dispatch text). Delete the two Step 0 lines. Chat carries only the file location and a request for approval. "Do not start actual work until synthesis is approved" stays. |
++| REVIEW GATE: "implementation and verification steps", "paste your evidence in chat", and steps 7–8 (wait for authorization, then proceed to Commit Instructions) | Read "review steps". The deliverable is saved where the task names, and chat states its location and "All review work complete. Requesting independent reviewer assessment." At GO (steps 7–8): stop; the dispatch is complete. Steps 1–6, the two-condition rule, and the CAN/CANNOT table stay. |
++| Implementation Steps banner ("Complete Step 0 first"), Step 0, Step 3 (Docker/RSpec), Step 4 (root-cause/proposed-fix report) | Omit. The task file lists its own review steps (may be titled "Review Steps") and checks the deliverable against its Acceptance Criteria. |
++| Commit Instructions | Not part of this dispatch. Kept as the reference procedure and pre-commit check for a separately authorized publication. |
++| Progress / Resume, Completion Report, Handoff Summary | Not edited by the Review-Task Agent (see Scope above). |
++
+ ---
+ 
+ # TASK: [Short descriptive title]
