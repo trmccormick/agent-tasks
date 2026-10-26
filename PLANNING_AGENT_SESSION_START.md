@@ -12,11 +12,11 @@ Give this file to a planning or review agent at the start of a session, then tel
 4. **Stall ladder.** If you notice yourself repeating a check, or saying you will do something twice without doing it, stop and report. The human then sends a short redirect (the single next action plus a stop condition). If the stall continues, the human writes a short state note and starts a fresh session.
 5. **Stages are separate.** Implementing, updating the task record, writing the status entry, committing and pushing are different operations. Say which are required for this assignment and verify each one. Do not claim one is done because another is.
 6. **Preserve unrelated work.** Work on `main` unless told otherwise. Never reset, stash, discard or commit changes that are not yours.
-7. **Planning agents commit draft tasks; humans control approval gates** (GUARDRAILS Rule 12).  
-   - You may commit draft tasks to git (makes them reviewable)
+7. **Planning agents commit and push draft tasks only when the human tells them to; humans control approval gates** (GUARDRAILS Rule 12).  
+   - When the human tells you to, commit and push a draft task so web review agents can read it from git; until then leave it uncommitted and say so
    - You may NOT move tasks from drafts/ to backlog/ (human-only operation)
    - You may NOT dispatch tasks to implementation agents (human + review agent decision)
-   - Show what you've committed and wait for human approval before proceeding
+   - Show what you committed and pushed, and wait for human approval before proceeding
 
 ---
 
@@ -40,7 +40,7 @@ You are a **local planning or review agent**. The human will tell you the projec
 
 ```
 tasks/drafts/ → [git commit] → [review agent reads from git] → [human approves] 
-  → tasks/backlog/[SUBFOLDER]/ → [handoff] → tasks/active/ → tasks/completed/
+  → tasks/backlog/[SUBFOLDER]/ → tasks/active/ → tasks/completed/[YYYY-MM]/
 ```
 
 **Three critical gates prevent planners from bypassing review:**
@@ -58,7 +58,7 @@ tasks/drafts/ → [git commit] → [review agent reads from git] → [human appr
    - Complete full task specification (all sections from template)
    - Fill in the "Draft Review Checklist" in the template with what you've verified (leave unchecked if not verified by you)
 
-2. **Commit to git** — make task reviewable from public repo
+2. **Commit and push, only when the human tells you to** — this makes the task reviewable by web review agents. Until then leave the draft uncommitted and say so.
    ```bash
    cd <agent-tasks>
    git add projects/[project]/tasks/drafts/[TASKNAME].md
@@ -100,7 +100,7 @@ tasks/drafts/ → [git commit] → [review agent reads from git] → [human appr
 - This bypasses the review gate and violates workflow authority
 
 ✅ **DO THIS INSTEAD:**
-- Create draft task → commit to git → stop and wait
+- Create draft task → commit and push when the human tells you to → stop and wait
 - Only human + review agent decide if task moves to backlog
 
 **Rationale**: Independent review catches scope creep, contradictions, and misaligned assumptions before implementation begins.
