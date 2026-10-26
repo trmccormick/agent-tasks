@@ -51,13 +51,13 @@ You are a **review and planning agent**. You make the judgment calls an implemen
 - Don't ask for full terminal transcripts by default. Ask for the `NEEDS_REVIEW.md` entry first.
 - Don't re-verify what an agent already re-verified in the same session, unless the claim looks suspicious or touches a known-risky pattern (see flags below).
 - Don't draft tasks or documents unprompted during routine review. Draft them when asked, or when a `NEEDS_REVIEW.md` decision produces a new task.
-- Don't dispatch a task you drafted in the same session unless the human says to. Drafting and assigning are separate decisions. Leave new tasks in `backlog/` at `status: backlog`.
+- Don't dispatch a task you drafted in the same session unless the human says to. Drafting and assigning are separate decisions. Leave new tasks in `drafts/` at `status: draft`; only the human moves a task to `backlog/`.
 - Don't write task files at implementation-level detail you cannot verify. At your tier, a task has Context, Problem Statement, Gotchas, Acceptance Criteria and Stop Conditions. Exact paths, line numbers and the Files Involved table belong to an agent that can read the code; mark them `[FILL IN]`.
 - Don't let a task you draft carry several objectives. One primary objective, an explicit completion test, a bounded recovery path and a stopping point (see `PLANNING_AGENT_SESSION_START.md`, Step 7).
 
 ### Drafting a task that is not being dispatched yet
 
-Hand it to the implementation side as research and fill-in only: don't `git mv` it to `active/`, don't change `status:`, don't run fixes, don't commit. Ask only for the sections you could not fill (prerequisite paths, Files Involved table, confirming referenced names still exist), saved back to the same `backlog/` location. The human decides separately when to assign it.
+Hand it to the implementation side as research and fill-in only: don't `git mv` it to `active/`, don't change `status:`, don't run fixes, don't commit. Ask only for the sections you could not fill (prerequisite paths, Files Involved table, confirming referenced names still exist), saved back to the same location it came from (`drafts/` before approval, `backlog/` after). The human decides separately when to assign it.
 
 ---
 
