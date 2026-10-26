@@ -237,6 +237,37 @@ Qualifying a reviewer: it quotes three lines from a named file at a named commit
 **Priority**: MEDIUM — reduces limit-driven review gaps and removes the drafter-also-reviews conflict
 **Status**: OPEN. Direction decided 2026-10-25 (Tracy): pair non-repo drafters with Qwen; keep repo-capable agents as reviewers; REVISE goes back for adjustment. The three questions above and the doc edits are open.
 
+### 2026-10-25 — Portal task workflow concerns: startup, template compliance, and review tracking
+**What happened**: During portal-task session, multiple workflow procedures were not followed, and independent review findings were mixed into task definitions instead of being tracked separately:
+
+1. **Startup and template rules missed**: Required startup-instruction acknowledgment (GUARDRAILS.md Rule 0 startup check) was not performed; draft-gate, task-template, and draft-location rules in the dispatch message were not acknowledged.
+
+2. **Template compliance claimed without verification**: Task compliance asserted before checking for mandatory sections; actual files found missing sections later, requiring re-submission.
+
+3. **Review findings merged into task scope**: Independent review (web review session on 2026-10-15) identified issues (containerization, deployment steps, API endpoint scope); these findings were listed as "Concerns" in the task definition itself instead of tracked in a separate review artifact or re-review workflow. This pattern conflates drafting with reviewing.
+
+4. **Local file paths supplied for web reviewer**: Task file referenced local container paths and host-system file paths as context for a reviewer without container access; paths should be repo-relative or commit-sha-qualified for a web reviewer reading pasted evidence.
+
+5. **Staging status reported inconsistently**: Task completion and status changes were reported in non-standard formats; unclear whether changes were staged, committed, or in-progress.
+
+6. **Short, focused requests progressed without workflow pauses**: Earlier sessions observed that short, well-scoped requests often complete without the review and approval checkpoints. Portal task had multiple points where checkpoint would have caught template gaps earlier. Timeout cause remains unconfirmed — may be session length or request complexity, but short requests that skip checkpoints fail differently than long ones.
+
+**Observed in**: Portal task (galaxy_game project), draft and review phase, 2026-10-15 to present (REPORTED: session logs and commit history; independent verification of files not performed; another agent is currently working on this project).
+
+**Recommended assessment candidates**: 
+- Clearer startup acknowledgment procedures (GUARDRAILS.md Rule 0 checkpoint card or pre-checklist)
+- Lifecycle-specific placeholder requirements (e.g., `[FILL IN]` markers for draft stage, resolved before review)
+- Mechanical template validation (linter or checklist before draft submission)
+- Tracking independent-review findings in a separate review artifact (not in task definition), followed by re-review or correction loop if REVISE issued
+
+**What needs a second opinion**: (1) Overlap with existing OPEN entries: review-gate disposition vocabulary (2026-10-20), TASK_TEMPLATE contradictions (2026-10-18), SIMPLE_HANDOFF and dispatch-block confusion (2026-10-20)? (2) Should startup acknowledgment be added to GUARDRAILS or TASK_TEMPLATE? (3) Is a template linter or pre-flight checklist the right fix, or does this reflect a deeper pattern in how short requests are dispatched?
+
+**What I already checked**: Portal task file and commit history (REPORTED: reviewed by another agent; paths were local, status entries were ad-hoc; no independent verification of live project state performed in this review). Noted: another agent is working on this project, so no file modifications or further investigation were performed.
+
+**Priority**: MEDIUM — affects draft-to-review-to-approval workflow; intersection with multiple queued template and procedure OPEN entries suggests systematic fix rather than portal-specific one
+
+**Status**: OPEN. Concerns documented for Claude workflow-governance review session. No actions taken (another agent owns the portal-task project; GUARDRAILS Rule 29 observed).
+
 ### 2026-10-25 — Claude review: portal documentation recovery task dispatch-template conformance
 **What happened**: Independent review of the portal documentation recovery draft at pinned revision `b0d251d` found that its mandatory Agent Dispatch Interface is not copied from the repository's `TASK_TEMPLATE.md`. The draft substitutes a Review Agent role, rewrites the startup contract, and adds task-specific instructions while claiming the template structure is preserved verbatim. The template says the dispatch block is mandatory, must not be edited/paraphrased, and allows only the stated path/project substitutions. This is a task-draft readiness issue; it does not justify dispatching the task or changing its lifecycle.
 **Observed in**: `projects/galaxy_game/tasks/drafts/2026-10-25-MEDIUM-DOCUMENTATION-PORTAL-DESIGN-RECOVERY.md`, review by Claude on 2026-10-25 at pinned commit `b0d251d`.

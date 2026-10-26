@@ -399,3 +399,12 @@ All hashes VERIFIED on origin with `git log -1` at f5260b8.
 - **Committed:** none (human commits per rules)
 - **Not committed:** NEEDS_REVIEW.md (uncommitted draft entry for human review/disposition)
 - **Stop condition:** Session closeout complete. Main objective (portal documentation consolidation / technological backstory) remains the same; no code implementation started. Next session resumes from existing portal evidence and Gemini brainstorming, prepares bounded documentation work, avoids reopening the workflow detour. Grok's workflow suggestions are recorded in NEEDS_REVIEW.md for Claude disposition, not adopted. Workflow proposal artifacts published at `ff302b86022007e78193cb6758f158fb292fdb26`.
+
+## 📝 Session Log — 2026-10-25/26 (Workflow Review & NEEDS_REVIEW Documentation Update)
+
+- **Changed:** 
+  - `projects/agent-tasks/NEEDS_REVIEW.md` — Added one new entry documenting portal-task workflow concerns. Entry heading: `### 2026-10-25 — Portal task workflow concerns: startup, template compliance, and review tracking`. 29 lines added, appended to end of file. Documents six workflow issues observed during portal-task session: startup/template rules missed, template compliance claimed without verification, review findings merged into task scope, local paths supplied for web reviewers, inconsistent staging reports, short requests bypassing checkpoints. Entry identifies overlaps with existing OPEN entries (2026-10-18 TASK_TEMPLATE contradictions, 2026-10-20 review-gate vocabulary, 2026-10-20 dispatch-block confusion) and recommends assessment. (VERIFIED: `git diff projects/agent-tasks/NEEDS_REVIEW.md` shows only the new entry appended).
+- **Committed:** none.
+- **Not committed:** 
+  - `projects/agent-tasks/NEEDS_REVIEW.md` — Modified but not staged (per Rule 26: awaiting human approval before staging). (VERIFIED: `git status --short` shows `M projects/agent-tasks/NEEDS_REVIEW.md`)
+- **Stop condition:** Documentation update complete. Entry documented for human review; awaiting decision on workflow concerns raised. See handoff: `handoffs/claude-free-web/2026-10-25-WEB-DOCUMENTATION-SESSION.md`
