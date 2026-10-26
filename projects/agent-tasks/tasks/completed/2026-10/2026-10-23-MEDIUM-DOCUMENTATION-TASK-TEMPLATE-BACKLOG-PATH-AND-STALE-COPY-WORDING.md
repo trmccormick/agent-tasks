@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 resume: false
 priority: MEDIUM
 type: documentation
@@ -134,11 +134,12 @@ SYNTHESIS COMPLETE.
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**:
-**Completion date**:
-**Evidence basis:** [direct verification / review of pasted evidence / reported by agent / human assertion]
+**Completed by**: Qwen
+**Completion date**: 2026-10-25
+**Evidence basis:** review of pasted evidence (reviewer GO on file hash c7b55b9, commit 2cd19d2)
 
 ### What was changed
--
+- three single-line edits in TASK_TEMPLATE.md (lines 17, 130, 421)
 
 ### Issues discovered
+- the diff pasted at the first gate showed "Do NOT proceeding" although the file was correct, so a reviewer REVISE was needed; pasted diffs must be copied exactly from command output.

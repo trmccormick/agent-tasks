@@ -388,3 +388,6 @@ All hashes VERIFIED on origin with `git log -1` at f5260b8.
 - **Committed:** `e74096f` (the six edits; reviewer GO). Push pending — origin/main moved, resolved at closeout.
 - **Not committed:** the task file move to `completed/2026-10/`, the synthesis file, and this entry, until Tracy commits them.
 - **Stop condition:** none for the edit. Notes: Step 0 stalled after reading the task file and needed a nudge; push was pending because origin/main moved, resolved after closeout.
+- **Changed:** `TASK_TEMPLATE.md` (three single-line edits: lines 17, 130, 421; committed as `2cd19d2`, authorized by reviewer GO on file hash `c7b55b9`). Task file moved from `backlog/` to `completed/2026-10/` (git mv). Completion Report filled in. Synthesis file saved to `summaries/` (untracked).
+- **Committed:** `2cd19d2` (the three edits; reviewer GO). Push pending — origin/main moved, resolved at closeout.
+- **Not committed:** the task file move to `completed/2026-10/`, the synthesis file, and this entry, until Tracy commits them.
