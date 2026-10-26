@@ -56,8 +56,6 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting a
 Closeout: follow SESSION_CLOSEOUT.md only.
 ```
 
-**IMPORTANT**: This dispatch interface uses **Review Agent** as the role, not Implementation Agent, because this task is a documentation review task — not an implementation task. The template structure is preserved verbatim; only `[project_name]` and `Agent role` are populated for this specific task. All other fields remain placeholders until the human completes them at dispatch time.
-
 **Not yet resolved at draft stage**:
 - `[SUBFOLDER]` — will be filled when moved to backlog/ by human
 - `<agent-tasks>` path — will be substituted with absolute path at dispatch time
@@ -100,7 +98,7 @@ Recover and summarize the established portal design documented in the review sou
 - **Timing caveat**: Portals were originally planned for late game (Phase 15+). They were subsequently moved earlier. The original phase number is outdated — do not restore it as a requirement or invent a replacement.
 - **Authorship date caveat**: The review source file is in `backlog_april_2026/` with a July 7, 2026 filesystem timestamp, but may have been transferred during laptop migration. Original authorship date is unconfirmed. Do not infer design chronology from folder name or filesystem timestamp alone.
 
-## Prior Working-Pair Evidence (Not Independently Validated)
+## Working-Pair Interpretation / Synthesis (Not Independently Validated)
 
 The prior working pair produced evidence gathering, review findings, and a recommended next step during Session 1 (2026-10-25). This evidence is preserved in the synthesis report **only** to retain session work — it has not been independently validated by a review agent.
 
@@ -151,6 +149,7 @@ Perform the portal design recovery by executing these steps in order. Do not ski
 7. **Produce the recovery report deliverable** — Compile Steps 2–6 into a single source-grounded portal design recovery report with these sections:
    - Documented Design (with source citations)
    - Developer Notes (separate section)
+   - Working-Pair Interpretation / Synthesis (attributed, unverified; if none included, state "None included")
    - Outdated Material (clearly labeled as superseded)
    - Gaps Requiring Decision (severity + status)
    - Recommendations (out-of-scope items noted but not executed; recommended next documentation step only)

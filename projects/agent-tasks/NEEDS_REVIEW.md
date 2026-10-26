@@ -262,3 +262,21 @@ Qualifying a reviewer: it quotes three lines from a named file at a named commit
 
 ---
 
+### 2026-10-26 — Grok review: review-only dispatch proposal (published commit ff302b8)
+**What happened**: The human supplied an independent first-pass review of the published review-only dispatch proposal (commit `ff302b86022007e78193cb6758f158fb292fdb26`). Grok's verdict: "ready with minor revisions." No high-severity findings reported; four targeted adjustments recommended before adoption.
+**Observed in**: agent-tasks project, published proposal artifacts at `projects/galaxy_game/summaries/` (candidate patch, candidate template, provenance note). Reviewed by Grok against the three committed artifacts.
+**What I already checked**: PROPOSED (not independently verified): Grok flagged residual implementation language, an implementation-centric readiness checklist, ambiguous variant selection, and review-agent eligibility as adjustments. These are attributed to Grok's supplied review; they do not constitute independently verified findings or adoption approval.
+**What needs a second opinion (Claude evaluation)**: The four Grok recommendations below should be evaluated by Claude for accuracy, completeness, and implementation feasibility before any template change is drafted:
+
+1. **Residual implementation language — Medium**: The review-only adaptation instructions may leave inherited synthesis and REVIEW GATE text referring to Step 0, implementation, file modification, or testing changes. Suggested: explicitly state that residual implementation language cannot expand the review-only contract's authority; consider a pre-adapted review-only skeleton rather than requiring manual deletion.
+2. **Implementation-centric readiness checklist — Medium**: The checklist still refers to dispatching to implementation, Step 0–N, and Implementation Steps. Suggested: make readiness checks mode-aware; explicitly check the review-only contract, declared `dispatch_mode`, named deliverable, and removal of incompatible activation/implementation instructions.
+3. **Ambiguous variant selection — Low**: Make it an explicit dispatch-blocking condition if both variant blocks remain or the selected block conflicts with `dispatch_mode`.
+4. **Review-agent eligibility decision — Low**: The applicability of the local-model restriction remains an open policy question. Suggested: require the human's per-dispatch eligibility decision to be recorded in Agent Assignment. Do not present this as resolving or overriding the underlying eligibility policy.
+
+Grok considered the provenance disclosure informational and requested no change to it. Preserved separation between the Review-Task Agent and independent reviewer; preserved bounded write permissions, read-only preflight, stop conditions, and publication approval boundaries. Grok's first-pass verdict is not adoption approval.
+
+**Priority**: MEDIUM — minor revisions recommended before template adoption
+**Status**: OPEN. Routing: Claude evaluates the four suggested adjustments for accuracy and feasibility; may draft a corrected version if warranted. Research/ChatGPT/Grok reviews are supporting input, not substitutes for Claude's process. Human may perform straightforward supporting work directly with commands or scripts; agent delegation is not mandatory for every operation.
+
+---
+
