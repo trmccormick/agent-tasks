@@ -14,7 +14,7 @@
 # Copy this file, rename it to describe the task, fill in all sections.
 # Delete these instruction comments before saving.
 # For NEW TASKS: Place in tasks/drafts/ with status: draft
-# For APPROVED TASKS: Place in tasks/backlog/{YYYY-MM}/ or tasks/active/ as directed by human after review approval.
+# For APPROVED TASKS: Place in tasks/backlog/[SUBFOLDER]/ (grouped by phase or domain; no date folders; flat if the project has no subfolders) or tasks/active/ as directed by human after review approval.
 #
 # FILENAME CONVENTION — mandatory for all task files:
 #   YYYY-MM-DD-PRIORITY-TYPE-DESCRIPTIVE-NAME.md
@@ -127,7 +127,7 @@ After review agent has returned assessment:
 **This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
 Agents receive this exact text as the startup contract. Every word matters.
 
-**One allowed substitution:** before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root). Fill `[project]`, `[SUBFOLDER]` and `[FILENAME]` as usual. Change nothing else.
+**One allowed substitution:** before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root). Fill `[project]`, `[SUBFOLDER]` and `[FILENAME]` as usual; if the project's backlog is flat (no subfolders), omit the `[SUBFOLDER]/` segment from the paths. Change nothing else.
 
 ```
 You are **Implementation Agent**.
@@ -418,7 +418,7 @@ find <agent-tasks>/projects/[project]/tasks \
 **Paste the output of the find command in chat before proceeding.**
 Expected: exactly one result, at the `active/` path.
 
-> ❌ Do NOT proceed if two results appear — a stale copy exists and must be removed first.
+> ❌ Do NOT proceed if two results appear — stop and report both paths to the human. Do not delete, move or overwrite either copy.
 > ❌ Do NOT use cp or plain mv — always git mv for tracked files.
 
 ### Step 1 — [action]
