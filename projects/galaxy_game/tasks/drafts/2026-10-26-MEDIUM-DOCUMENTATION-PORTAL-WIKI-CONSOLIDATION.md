@@ -3,8 +3,8 @@ status: draft
 resume: false
 priority: MEDIUM
 type: documentation
-system_domain: OTHER
-mvp_alignment: OTHER
+system_domain: OTHER  # Pure documentation task; no AI Manager, manufacturing, or terraforming domain impact
+mvp_alignment: OTHER  # Preplanning for wiki consolidation; MVP alignment determined after portal mechanics finalized
 local_worker_safe: true
 ---
 
@@ -20,12 +20,10 @@ See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedu
 
 ---
 
-## 🔴 Agent Dispatch Interface (Mandatory — placed here per TASK_TEMPLATE.md requirement)
-
-**Status**: DRAFT — NOT YET READY FOR DISPATCH. This section will be populated by the human when the task is approved and ready to dispatch. It is intentionally left incomplete until that time because this task has not been independently reviewed or approved.
+## 🔴 Agent Dispatch Interface (Mandatory — copy this exactly at dispatch time)
 
 ```
-You are **Review Agent**.
+You are **Implementation Agent**.
 
 Project: galaxy_game
 Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/2026-10-26-MEDIUM-DOCUMENTATION-PORTAL-WIKI-CONSOLIDATION.md
@@ -56,8 +54,9 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting a
 Closeout: follow SESSION_CLOSEOUT.md only.
 ```
 
-**Not yet resolved at draft stage**:
-- `<agent-tasks>` path — will be substituted with absolute path at dispatch time
+**At dispatch time, human will**:
+- Replace `<agent-tasks>` with the absolute path to agent-tasks clone
+- Copy this section exactly (no modifications)
 
 ---
 
@@ -101,15 +100,15 @@ Establish a focused, bounded task plan for consolidating portal technology docum
 
 | Source | Location | Status | Purpose |
 |--------|----------|--------|---------|
-| Consolidated Portal Draft | `docs/wiki_reorganization/transportation/portals/portal-technology-wiki-draft.md` | ✅ Complete | ChatGPT/Qwen synthesis separating established/proposed/unresolved; lists sources and contradictions |
-| Gemini Brainstorming Package | `gemini-research-portals.md` | ✅ Complete | Detailed design exploration with Level 4a/4b variants, JSON blueprint specs (NOT approved as final) |
-| Prior Design Review | `projects/galaxy_game/tasks/review/backlog_april_2026/task_solar_system_locations_review.md` | ✅ Exists (not read by this task) | Original documented portal mechanics; used in prior recovery task |
+| Consolidated Portal Draft | `docs/wiki_reorganization/transportation/portals/portal-technology-wiki-draft.md` (galaxyGame repo) | ✅ Complete | ChatGPT/Qwen synthesis separating established/proposed/unresolved; lists sources and contradictions |
+| Gemini Brainstorming Package | `gemini-research-portals.md` (galaxyGame repo) | ✅ Complete | Detailed design exploration with Level 4a/4b variants, JSON blueprint specs (NOT approved as final) |
+| Prior Design Review | `projects/galaxy_game/tasks/review/backlog_april_2026/task_solar_system_locations_review.md` (agent-tasks repo) | ✅ Exists (not read by this task) | Original documented portal mechanics; used in prior recovery task |
 | Developer Clarifications | Referenced in consolidated draft | ✅ Referenced | Portal operation power/EM consumption, ownership partial treatment, endpoint initiation (attributed but not independently verified) |
 
 ### Related Prior Work
 
-- **Portal Design Recovery Task**: `projects/galaxy_game/tasks/drafts/2026-10-25-MEDIUM-DOCUMENTATION-PORTAL-DESIGN-RECOVERY.md` — recovers established design from review source (separate, independent task; not a blocker for this task)
-- **Status Summary**: `projects/galaxy_game/status.md` — contains handoff notes indicating wiki consolidation as next focus after design recovery
+- **Portal Design Recovery Task**: `projects/galaxy_game/tasks/drafts/2026-10-25-MEDIUM-DOCUMENTATION-PORTAL-DESIGN-RECOVERY.md` (agent-tasks repo) — recovers established design from review source (separate, independent task; not a blocker for this task)
+- **Status Summary**: `projects/galaxy_game/status.md` (agent-tasks repo) — contains handoff notes indicating wiki consolidation as next focus after design recovery
 
 ---
 
@@ -163,38 +162,74 @@ Based on the consolidated draft, define the target wiki structure:
    - Inter-system travel via spacecraft and wormhole infrastructure
    - Level 4b gates proposal (noted as unresolved, not approved)
 
-### Stage 2: Source Traceability Matrix
+### Stage 2: Source Traceability Matrix (Operationalized)
 
-For each wiki page section, document:
-- **Established claim** (with source citation: file path, line number if available)
-- **Developer clarification** (attributed but not independently verified)
-- **Proposal from brainstorming** (Gemini material, marked as not approved)
-- **Unresolved question** (gap requiring a decision)
+Implementation agent MUST produce a concrete source traceability matrix table in the deliverable report with these columns:
 
-### Stage 3: Caveat & Disclaimer List
+| Wiki Section | Claim / Statement | Source Type | Source Citation | Notes |
+|---|---|---|---|---|
+| [wiki page section] | [exact claim] | Established / Developer / Proposal / Unresolved | `file.md` § section or line range | [category, severity if unresolved] |
 
-Document all caveats that must appear in wiki pages:
+**Requirements for each row**:
+- **Established claim**: Source citation must include file path and section/approximate line range from consolidated draft or prior review
+- **Developer clarification**: Label as "Developer clarification" with context of conversation/synthesis where it appeared (not a file:line citation)
+- **Proposal**: Source must cite `gemini-research-portals.md` with section and note "Proposed, not approved"
+- **Unresolved question**: Source citation identifies where it originated; note severity (High/Med/Low) and decision owner (or "Deferred")
 
-| Caveat | Impact | Required Location |
-|--------|--------|---|
-| Phase timing outdated | Old phase numbers are not current; phase assignment deferred | Overview or operations page |
-| EM rate inconsistency | Gemini material shows 0.0125 kg/hr vs 12.5 mg/hr (1000× difference); resolved rate undefined | Operations page, unresolved questions |
-| Level 4b gates proposed | Inter-system gates at AWS are brainstorming, not approved design | Wormhole infrastructure page |
-| "Three-Link" constraint unclear | Gemini mentions it; primary source describes EM-limited networks, not hard link cap | Unresolved questions |
-| Endpoint deployment procedure unresolved | Both endpoints travel together? Separate missions? Co-deployment with station? Automatic vs manual activation? | Operations page, unresolved questions |
-| Ownership/access rules partial | Developer clarified partially; full rules undefined | Unresolved questions |
+**No claim appears in the matrix without a source citation.**
 
-### Stage 4: Acceptance Criteria
+### Stage 3: Caveat & Disclaimer List (Complete from §10 of Consolidated Draft)
+
+Implementation agent MUST preserve verbatim every caveat and source inconsistency listed in the consolidated draft:
+
+| Caveat | Source / Location | Impact | Required Wiki Location |
+|--------|---|---|---|
+| **Old phase placement** | Consolidated draft §10 | Portal phase references reflect outdated late-game plan (Phase 15+); do NOT restore or invent replacement | Overview page disclaimer |
+| **Phase timing outdated** | Consolidated draft §10 | Old phase numbers are not current; phase assignment deferred to implementation | Overview or operations page |
+| **EM rate inconsistency** | Consolidated draft §10, Gemini material | Gemini material shows 0.0125 kg/hr vs 12.5 mg/hr (1000× difference); resolved rate undefined | Operations page, unresolved questions section |
+| **Level 4b gates proposed** | Consolidated draft §10 | Inter-system gates at AWS (Level 4b) are Gemini brainstorming, not approved design; boundary between Level 4a (intra-system) and inter-system travel is unresolved | Wormhole infrastructure page |
+| **"Three-Link" constraint unclear** | Consolidated draft §10 | Gemini mentions "Three-Link" constraint; primary source describes EM-limited networks, not hard link cap; no approved constraint | Unresolved questions |
+| **Endpoint deployment procedure unresolved** | Consolidated draft §10 | Both endpoints travel together? Separate missions? Co-deployment with station? Automatic vs manual activation? | Operations page, unresolved questions section |
+| **Ownership/access rules partial** | Consolidated draft §10 | Developer clarified partially; full ownership and access rules undefined | Unresolved questions |
+| **Endpoint destruction/repair/re-pairing** | Consolidated draft §10 | Endpoint lifecycle (destruction, repair, replacement, re-pairing) is unresolved | Unresolved questions |
+| **Numerical network capacity limits** | Consolidated draft §10 | Per-hub hardware limits and network topology constraints are unresolved; no mandatory hub list imposed | Unresolved questions |
+| **Terminology authority** | Consolidated draft §10 | Prior synthesis recommended replacing "wormhole portal" with "wormhole link"; terminology decision not confirmed as authoritative | Unresolved questions |
+| **Older intra-system document authority** | Consolidated draft §10 | Older intra-system portal document was classified as reference/possibly outdated; current repository authority must be verified before merging | Unresolved questions |
+| **No implementation established** | Consolidated draft §10 | Portal technology is NOT currently implemented in codebase; no wiki pages exist; no blueprint is finalized | Disclaimer in all pages |
+
+**Deliverable requirement**: Every row above must appear verbatim in the implementation report. Caveats are not optional or consolidatable.
+
+### Stage 4: Unresolved Questions Format (Standardized)
+
+Implementation agent MUST format all unresolved questions in a structured table:
+
+| ID | Question | Severity | Decision Owner / Status | Source |
+|---|---|---|---|---|
+| Q1 | Exact endpoint transportation and installation procedure? | High | Deferred | Consolidated draft §9 |
+| Q2 | Do endpoints travel together or on separate missions? | High | Deferred | Consolidated draft §9 |
+| Q3 | Does deployment activate the link or require another operation? | Medium | Deferred | Consolidated draft §9 |
+| Q4 | Exact EM consumption and electrical power requirements? | High | Deferred; EM rate inconsistency noted | Consolidated draft §9 |
+| Q5 | Idle, standby, closure, and shutdown behavior models? | Medium | Deferred | Consolidated draft §9 |
+| Q6 | Complete ownership and access control rules? | Medium | Partial developer clarification; full rules deferred | Consolidated draft §9 |
+| Q7 | Endpoint destruction, repair, replacement, re-pairing procedures? | Low | Deferred | Consolidated draft §9 |
+| Q8 | Numerical network capacity limits and per-hub hardware constraints? | Medium | Deferred; no mandatory topology imposed | Consolidated draft §9 |
+| Q9 | Will inter-system Level 4b gates be introduced at AWS stations? | High | Deferred; Gemini proposal only, not approved | Consolidated draft §9 |
+| Q10 | Are safety and mounting practices mandatory or recommended? | Low | Deferred | Consolidated draft §9 |
+
+**Severity scale**: High = blocks basic operations or design; Medium = affects expansion/scaling; Low = refinement/edge cases
+**All entries must cite "Deferred" or specific decision owner; no questions are resolved by this task.**
+
+### Stage 5: Acceptance Criteria
 
 ✅ **Deliverable is a single focused task outline document** (not wiki pages themselves):
 
 1. **Wiki structure defined** — 4+ target wiki pages identified with purpose and content mapping
-2. **Source traceability complete** — Every planned wiki statement can cite its source (file path, line number, or "developer clarification" with context)
-3. **Proposals clearly marked** — Gemini brainstorming material is explicitly flagged as "proposed, not approved" wherever it appears in outline
-4. **Unresolved questions listed** — All 9+ gaps identified in consolidated draft appear in outline with severity and decision owner noted (or marked "deferred")
-5. **Out-of-scope excluded** — No implementation work, code, JSON finalization, or phase assignments appear in outline
-6. **Caveats documented** — All timing/inconsistency/authority caveats from consolidated draft are preserved verbatim in outline
-7. **Follow-on task outlined** — Skeleton of approved follow-on task(s) for actual wiki page creation is defined (separate tasks for each wiki page or logical grouping)
+2. **Source traceability matrix complete** — Every planned wiki statement appears in a concrete table with file path, section/line range, and source type (Established/Developer/Proposal/Unresolved)
+3. **Proposals clearly marked** — Gemini brainstorming material is explicitly flagged "Proposed, not approved" in source traceability matrix
+4. **Unresolved questions listed** — All 10+ questions in the standardized table above with severity and decision owner; no questions answered speculatively
+5. **All caveats preserved** — All 12 items from Stage 3 caveat table appear verbatim in deliverable report
+6. **Out-of-scope excluded** — No implementation work, code, JSON finalization, or phase assignments appear in outline
+7. **Follow-on tasks concretely outlined** — Skeleton task(s) for wiki page creation with title pattern, mandatory acceptance criteria (caveat/question preservation), and explicit prohibition on creating pages inside this task
 
 ---
 
@@ -220,17 +255,59 @@ Document all caveats that must appear in wiki pages:
 - **Relationship**: This consolidation task can proceed independently; recovery task provides additional evidence/validation but is not a blocker
 
 ### Next Tasks (Dependent on This Task's Completion)
-- **Portal Wiki Page Creation (4 separate tasks likely)**: One task per wiki page, created after this consolidation task is approved
-- **Each will reference this task's source traceability matrix and outline**
+
+**Follow-on Wiki Page Implementation Tasks** — 4 separate backlog tasks to be created by human after this task completes:
+
+Each task will follow this skeleton:
+
+**Task Skeleton for Portal Wiki Pages**
+
+```
+Filename Pattern: YYYY-MM-DD-MEDIUM-DOCUMENTATION-PORTAL-WIKI-[PAGE-NAME].md
+Example: 2026-11-15-MEDIUM-DOCUMENTATION-PORTAL-WIKI-TECHNOLOGY-OPERATIONS.md
+
+Purpose: Create wiki page [NAME] using the consolidation outline and source traceability matrix from the portal wiki consolidation planning task.
+
+Scope:
+✅ Create ONE wiki page file: docs/wiki_reorganization/transportation/portals/[page-name].md
+✅ Use source traceability matrix to populate content with citations
+✅ Include all applicable caveats from Stage 3 (verbatim)
+✅ Include all applicable unresolved questions from Stage 4 (formatted, labeled "Unresolved")
+✅ Preserve portal/cycler/wormhole boundaries (no false consolidation)
+
+❌ Out of Scope:
+- Updating transportation/README.md (separate task if needed)
+- Creating additional wiki pages beyond the assigned page
+- Resolving unresolved questions (listing them is sufficient)
+- Code implementation or JSON finalization
+
+Acceptance Criteria:
+1. Wiki page exists and is correctly located
+2. All statements include source citations (file path + section or "Developer clarification") in footnotes or inline brackets
+3. Proposals are flagged "[Proposed, not approved]" 
+4. All applicable caveats from consolidation task appear in page
+5. All applicable unresolved questions appear as a final "Unresolved Questions" section
+6. No invented mechanics or parameters
+7. No claim appears without a source trace
+```
+
+**Suggested page grouping** (human can combine or split as needed):
+1. **Portal Overview** — Purpose, system-local scope, relationship to cyclers
+2. **Portal Technology & Operations** — Endpoints, networks, EM constraints, deployment model
+3. **Portal Transportation Use Cases** — Personnel movement, settlement access, tourism
+4. **Portal & Wormhole Infrastructure Context** — Distinction from WS/AWS, inter-system travel, Level 4b proposal status
+
+Each will reference this consolidation task's source traceability matrix and unresolved questions table.
 
 ---
 
 ## Prerequisites — Read Before Review
 
-1. Consolidated Portal Draft: `docs/wiki_reorganization/transportation/portals/portal-technology-wiki-draft.md` (review agent must read this in full)
-2. Gemini Brainstorming: `gemini-research-portals.md` (review agent should skim for structure/proposals)
-3. GUARDRAILS: `rules/GUARDRAILS.md` (verify no implementation scope creep)
-4. This Task File (everything above)
+1. **GUARDRAILS**: `rules/GUARDRAILS.md` (agent-tasks repo) — mandatory read; verify no implementation scope creep
+2. **Project README**: `projects/galaxy_game/README.md` (agent-tasks repo) — mandatory read; project context
+3. **Consolidated Portal Draft**: `docs/wiki_reorganization/transportation/portals/portal-technology-wiki-draft.md` (galaxyGame repo) — implementation agent must read in full
+4. **Gemini Brainstorming**: `gemini-research-portals.md` (galaxyGame repo) — implementation agent should read to identify all proposals
+5. **This Task File**: Everything above
 
 ---
 
@@ -267,21 +344,25 @@ Document all caveats that must appear in wiki pages:
 
 When this task is approved and moved to active for implementation:
 
-1. Start with the consolidated draft (`docs/wiki_reorganization/transportation/portals/portal-technology-wiki-draft.md`)
-2. Create the wiki structure mapping using the 4-page outline above
-3. Build the source traceability matrix section by section
-4. Preserve every caveat and unresolved question verbatim
-5. Output a single consolidated planning document suitable for human review
-6. Propose specific follow-on task(s) for wiki page creation (one task per page, separate files)
-7. Stop before creating any wiki pages — that work is for follow-on tasks
+1. Start with the consolidated draft (`docs/wiki_reorganization/transportation/portals/portal-technology-wiki-draft.md` in galaxyGame repo)
+2. Read Gemini brainstorming (`gemini-research-portals.md` in galaxyGame repo) to identify all proposals
+3. Create the wiki structure mapping using the 4-page outline from Stage 1
+4. Build the complete source traceability matrix (Stage 2) with all rows populated and source citations verified
+5. Create the caveat & disclaimer table (Stage 3) with all 12 items verbatim from consolidated draft §10
+6. Create the unresolved questions table (Stage 4) with all 10+ items, severity, and decision owner
+7. Output a single consolidated planning report suitable for human review (save to summaries/ folder)
+8. Propose and outline specific follow-on task(s) for wiki page creation (4 separate tasks, using skeleton from Stage 5)
+9. Stop before creating any wiki pages — that work is for follow-on tasks only
 
 ---
 
 ## References
 
-- **Consolidated Draft**: `/Users/tam0013/Documents/git/galaxyGame/docs/wiki_reorganization/transportation/portals/portal-technology-wiki-draft.md`
-- **Gemini Research**: `/Users/tam0013/Documents/git/galaxyGame/gemini-research-portals.md`
-- **GUARDRAILS**: `/Users/tam0013/Documents/git/agent-tasks/rules/GUARDRAILS.md`
-- **Project README**: `/Users/tam0013/Documents/git/agent-tasks/projects/galaxy_game/README.md`
-- **Task Template**: `/Users/tam0013/Documents/git/galaxyGame/docs/new_agent/TASK_TEMPLATE.md`
+**Repository-relative paths** (agent should access via GitHub or local clone):
+- **Consolidated Portal Draft** (galaxyGame): `docs/wiki_reorganization/transportation/portals/portal-technology-wiki-draft.md`
+- **Gemini Research Package** (galaxyGame): `gemini-research-portals.md`
+- **Project README** (agent-tasks): `projects/galaxy_game/README.md`
+- **GUARDRAILS** (agent-tasks): `rules/GUARDRAILS.md`
+- **Prior Design Recovery Task** (agent-tasks): `projects/galaxy_game/tasks/drafts/2026-10-25-MEDIUM-DOCUMENTATION-PORTAL-DESIGN-RECOVERY.md`
+- **Status Summary** (agent-tasks): `projects/galaxy_game/status.md`
 
