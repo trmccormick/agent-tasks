@@ -61,7 +61,7 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 # Task: Clarify Review Gate Authorization Wording in TASK_TEMPLATE.md
 
 ## Concern
-The authorization wording in `TASK_TEMPLATE.md` needs to clearly separate commit and push authorizations, explicitly require human messages authorizing each action, remove references to "completion" in bundled phrasing, and provide decision options for handling approval prompts.
+The authorization wording in `TASK_TEMPLATE.md` needs to clearly separate commit and push authorizations, explicitly require human messages authorizing each action, remove references to "completion" in bundled phrasing, and state when confirming an agent's approval prompt counts as authorization.
 
 ## Out of Scope
 - The four distinct meanings of "stop" in workflow documentation
@@ -73,7 +73,7 @@ The authorization wording in `TASK_TEMPLATE.md` needs to clearly separate commit
 
 ## Implementation Steps
 
-1. Locate item 2 in `TASK_TEMPLATE.md` and make Edit 1 and Edit 4.
+1. Locate item 2 in `TASK_TEMPLATE.md` and apply Edit 1.
 
 Exact old text:
 ```markdown
@@ -84,9 +84,7 @@ Exact new text:
 ```markdown
 2. **Human authorization** — Requires an explicit human message that authorizes commit (for example, 'commit it') and an explicit human message that authorizes push (for example, 'push it'). Authorization to commit does not imply authorization to push, and authorization to push does not imply authorization to commit.
 
-HUMAN DECISION NEEDED: keep exactly one option before this task is approved.
-- Option A (existing decision, 2026-10-20): Confirming the command in an agent's own approval prompt counts as approval.
-- Option B: Confirming the command in an agent's own approval prompt counts as approval only after a reviewer GO is on record.
+Confirming a command in an agent's own approval prompt counts as authorization only after a reviewer GO is on record; before a GO, a click does not authorize commit or push.
 ```
 
 2. Locate item 7 in `TASK_TEMPLATE.md` and apply Edit 2.
@@ -123,15 +121,20 @@ Expected output: 0
 ```bash
 grep -c "HUMAN DECISION NEEDED:" TASK_TEMPLATE.md
 ```
-Expected output: 1
+Expected output: 0
 
 ```bash
 grep -c "Option A" TASK_TEMPLATE.md
 ```
-Expected output: 1
+Expected output: 0
 
 ```bash
 grep -c "Option B" TASK_TEMPLATE.md
+```
+Expected output: 0
+
+```bash
+grep -c "only after a reviewer GO is on record" TASK_TEMPLATE.md
 ```
 Expected output: 1
 
@@ -140,7 +143,7 @@ Expected output: 1
 ```bash
 git diff --stat -- TASK_TEMPLATE.md
 ```
-Expected: `TASK_TEMPLATE.md | 8 +4 -4` (4 insertions, 4 deletions across 4 separate edits — items 2a+2b each add one line for the HUMAN DECISION NEEDED block; item 7 adds one line; checklist adds one line)
+Expected: `5 insertions(+), 3 deletions(-)` (Edit 1 replaces one line with three; Edit 2 and Edit 3 replace one line each)
 
 ```bash
 grep -c 'authorized the command I am about to run' TASK_TEMPLATE.md
@@ -156,12 +159,12 @@ Task complete: REVIEW GATE authorization wording updated in TASK_TEMPLATE.md.
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**: Qwen
-**Completion date**: 2026-10-26
-**Evidence basis:** review of pasted evidence (reviewer GO on file hash TBD, commit TBD)
+**Completed by**:
+**Completion date**:
+**Evidence basis:** [direct verification / review of pasted evidence / reported by agent / human assertion]
 
 ### What was changed
-- four single-line edits in TASK_TEMPLATE.md (items 2a+2b, item 7, checklist item)
+-
 
 ### Issues discovered
 - 
