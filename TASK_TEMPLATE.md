@@ -322,7 +322,9 @@ Before navigating to any URLs, running any commands, or modifying any files, you
 **You MAY NOT commit, push, or mark any task step as "complete" until BOTH of the following conditions are met:**
 
 1. **Reviewer has issued a GO disposition** — a reviewer has assessed your work and disposed it as one of: `GO`, `REVISE`, or `STOP`. See REVIEW_AGENT_GUIDE.md for reviewer authority definitions.
-2. **Human has authorized commit/push/completion** — even after reviewer GO, you may not proceed to commit or push without explicit human authorization.
+2. **Human authorization** — Requires an explicit human message that authorizes commit (for example, 'commit it') and an explicit human message that authorizes push (for example, 'push it'). Authorization to commit does not imply authorization to push, and authorization to push does not imply authorization to commit.
+
+Confirming a command in an agent's own approval prompt counts as authorization only after a reviewer GO is on record; before a GO, a click does not authorize commit or push.
 
 ### What This Means In Practice
 
@@ -341,7 +343,7 @@ Before navigating to any URLs, running any commands, or modifying any files, you
 4. **Wait for reviewer disposition** (GO / REVISE / STOP)
 5. If **REVISE**: address the listed issues, re-test, return to step 3
 6. If **STOP**: do not proceed; await human guidance
-7. If **GO**: wait for explicit human authorization to commit/push/completion
+7. If **GO**: wait for an explicit human message that authorizes commit. Push needs a separate, later human message that authorizes push.
 8. Once **both** conditions are satisfied: proceed to Commit Instructions below
 
 > **This checkpoint is NOT optional.** It applies to all implementation tasks regardless of size or perceived risk. The reviewer does not commit directly; only the human authorizes commits.
@@ -498,7 +500,7 @@ Do not commit until the user explicitly approves.
 
 > ⚠️ **PRE-COMMIT CHECK**: Before running ANY of the commands below, confirm:
 > - [ ] Reviewer has issued GO disposition (not just pending)
-> - [ ] Human has explicitly authorized commit/push/completion
+> - [ ] Human has explicitly authorized the command I am about to run (commit or push) in a message that names it
 > - [ ] Both conditions documented in your completion report
 >
 > If either condition is unmet, DO NOT proceed. Wait for the missing authorization.
