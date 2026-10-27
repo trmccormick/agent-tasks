@@ -44,6 +44,33 @@
 - Knapsack's current workarounds (CatalogSearchBuilder, YAML config) may be superseded when upstream PRs merge
 - **ACTION AFTER PRANEETH'S MERGE**: Verify upstream PRs are in pinned hyrax-webapp commit; reconcile with workarounds
 
+**LaRita's Slack Message — Technical Detail:**
+> "@Tracy McCormick These are the PRs I mentioned regarding facets
+> Hyrax: github.com/samvera/hyrax/pull/7678 Adding limit: true causes it to honor your default limit for the facets that come in via the m3 profile.
+> Hyku: github.com/samvera/hyku/pull/3369 (I introduced `config.default_facet_limit = 5` and used it everywhere for facets defined in the catalog controller). The blacklight default is 10 and I wanted them all consistent."
+
+**Implications for Knapsack's current code:**
+- Current approach: Four-file workaround (CatalogSearchBuilder, YAML config, decorator initializer, facet_defaults) that injects `f.<field>.facet.limit` params
+- Upstream approach (PR #3369): Centralized `config.default_facet_limit = 5` applied everywhere catalog controller defines facets — no per-facet injection needed
+- Upstream approach (PR #7678): `limit: true` on M3 profile facets honors the default, so the four-file workaround may be entirely unnecessary after upstream merges
+
+**⚠️ TESTING STRATEGY — Remove workaround BEFORE testing upstream:**
+Cannot validate the upstream fix while our workaround code is still in place. Our facet-limiting code will mask whether the upstream solution actually works. The correct test sequence is:
+1. Remove knapsack's four-file facet-workaround code (CatalogSearchBuilder, catalog_search_builder initializer, wvu_facet_defaults.yml, force_registered_fields logic from decorator)
+2. Pin hyrax-webapp to a commit that includes both Hyku PR #3369 + Hyrax PR #7678
+3. Rebuild Stack Car
+4. Verify facet limits default to 5 (from upstream `config.default_facet_limit`) — NOT 10 (Blacklight default) and NOT from our workaround
+5. If facets show 10: upstream code not included or working; block deployment
+6. If facets show 5: upstream fix verified, clean baseline achieved
+
+**Current Behavior Detail** (before any fixes):
+- **Affected locations**: Homepage AND catalog view (both broken)
+- **Static/non-flexible facets**: Display correctly in both locations ✅
+- **Flexible facets (M3 profile-driven)**: Inconsistent — most default to Blacklight default of 10 instead of desired 5 ❌
+- This confirms the problem is specifically M3/profile-driven facets, not static config. Our workaround code (CatalogSearchBuilder) was added to fix this but has not resolved it on hykudev — which is exactly why the upstream solution is needed. Hyrax PR #7678's `limit: true` on M3 facets should address this by making M3 profiles honor `default_facet_limit`.
+
+- **Recommendation**: Wait for both PRs to merge → remove workaround code first → pin hyrax-webapp to commit that includes both PRs → verify upstream solution works on clean baseline
+
 **Praneeth's Date Range Work** (blocking 7.2 completion):
 - Working on date range limiting for Collections vs Works searches
 - Finding: Homepage searches Works only (1885–2014 real item dates), but catalog searches include Collections (1775–2024 from archival metadata spans)
