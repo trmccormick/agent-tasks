@@ -2,154 +2,153 @@
 status: backlog
 priority: HIGH
 type: upgrade-testing
-system_domain: OTHER
-mvp_alignment: OTHER
+system_domain: SEARCH | DISPLAY
+mvp_alignment: BLOCKER
 local_worker_safe: true
 ---
 
-## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching)
+## 📋 Task Revision (2026-10-27)
 
-**STOP. Do not send this task to an agent until ALL boxes are checked.**
-
-- [ ] Agent Dispatch Interface section below is complete and accurate (no placeholders)
-- [ ] All Step 0-N instructions are clear and actionable (not vague)
-- [ ] Synthesis report template is provided (copy/paste ready, not as example)
-- [ ] No placeholder text remains in Implementation Steps
-- [ ] All file paths are verified to exist
-- [x] Architecture Gotchas are specific (not generic)
-- [ ] Acceptance Criteria are measurable
-- [ ] Dependencies and Blocked/Blocks relationships are clear
-
-**Task is NOT READY until all checkboxes are completed.**
+**Revised for**: Hyku 7.2.1 testing with upstream PR #3369 + Hyrax #7678 integration
+**Branch**: `feature/hyku-v7.2.1-upgrade` (new — split from `feature/hyku-v7.2.0-upgrade`)
+**Scope**: Remove knapsack's facet-workaround code, verify upstream solution works on clean baseline
+**Not in scope**: Dev/prod deployment, IIIF/Bulkrax testing, date range work (separate task)
+**Prerequisite**: Both Hyku #3369 + Hyrax #7678 must be merged before testing can proceed
 
 ---
 
-## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
-
-```
-You are **Implementation Agent**.
-
-Project: wvulibraries_knapsack
-Task: /Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/backlog/HYKU-720-UPGRADE-TESTING.md
-
-STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/wvulibraries_knapsack/tasks/backlog/HYKU-720-UPGRADE-TESTING.md \
-         projects/wvulibraries_knapsack/tasks/active/HYKU-720-UPGRADE-TESTING.md
-  Then open the moved file and change: status: backlog → status: active
-  Paste the output of both commands in chat before proceeding.
-  Do NOT read the task file content, run any commands, or start synthesis until this is done.
-
-LIFECYCLE: backlog → active → completed
-  - Tracked file: git mv (never cp or plain mv)
-  - New/untracked file: mv then git add the final path
-  - Never leave stale copies in the source folder
-  - Verify with: find agent-tasks/projects/wvulibraries_knapsack/tasks -name "HYKU-720-UPGRADE-TESTING.md"
-    Only ONE result should exist. Paste this output before committing.
-
-READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
-
-CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
-  Summaries path: /Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/summaries/
-  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
-  Chat is for questions only — never paste synthesis into chat (formatting breaks).
-```
-
----
-
-# TASK: Local Hyku 7.2.0 Submodule Update & Validation Test
+# TASK: Hyku 7.2.1 Upgrade — Validate Upstream Facet Limiting Fix
 **Status**: BACKLOG
 **Priority**: HIGH
 **Type**: upgrade-testing
-**Created**: 2026-10-12
-**Last Updated**: 2026-10-12
-**Scope**: Local Stack Car validation only — NO dev/prod deployment in this task
-**Next step after approval**: Update `.gitmodules` branch reference, run Stack Car build + test locally
+**Created**: 2026-10-12 (original) | **Revised**: 2026-10-27
+**Scope**: Local Stack Car validation on `feature/hyku-v7.2.1-upgrade` branch
+**Branch**: `feature/hyku-v7.2.1-upgrade` (NEW — split from `feature/hyku-v7.2.0-upgrade`; old branch preserved)
+**Next step after approval**: Remove facet-workaround code → verify upstream PRs merged → pin hyrax-webapp → rebuild → test
 
 ---
 
 ## Background & Context
 
 ### Current State
-- **Submodule**: `hyrax-webapp/` is on `7.1-stable` branch (per `.gitmodules`)
-- **Upstream available**: `7.2-stable` branch and `v7.2.0` tag confirmed at commit `1ccae4e6`
-- **Local Stack Car**: Working correctly with Traefik wildcard HTTPS on `*.localhost.direct`
+- **Submodule**: `hyrax-webapp/` on `7.2-stable` branch ✅ (already updated)
+- **Current target**: Hyku 7.2.1 (released 2026-10-27) — CRITICAL security fix for multi-tenant GA4 data leakage
+- **Upstream PRs addressing facet limiting**:
+  - Hyku #3369: Introduced `config.default_facet_limit = 5`, used everywhere catalog controller defines facets
+  - Hyrax #7678: Added `limit: true` on M3 profile facets to honor the default limit
+- **Knapsack's workaround**: Four-file implementation (CatalogSearchBuilder + YAML config + decorator initializer) that injects `f.<field>.facet.limit` params at query time
 
 ### 🔐 SECURITY UPDATE (2026-10-27): Hyku 7.2.1 Released
 
 **Critical Security Fix**: Multi-tenant GA4 data leakage vulnerability fixed in 7.2.1
 - **Advisory**: https://github.com/samvera/hyku/security/advisories/GHSA-r6x6-wxm8-6994
 - **Issue**: Hyku 7.2.0 with Google Analytics 4 could send one tenant's page views to another tenant's GA property
-- **Resolution**: Upgrade to 7.2.1 recommended
+- **Resolution**: Upgrade to 7.2.1 recommended (CRITICAL for WVU's multi-tenant deployment)
 - **Release**: https://github.com/samvera/hyku/releases/tag/v7.2.1
+- **Credit**: Nick Steinwachs and Nic Don Stanton-Roark (Samvera community)
 
-**Recommendation for This Task**:
-- **Update target from 7.2.0 → 7.2.1** for this upgrade testing
-- This addresses the security issue while still testing 7.2 compatibility
-- Knapsack is a multi-tenant deployment (digitalhistory.lib.wvu.edu) — security fix is CRITICAL for us
-- `.gitmodules` should pin to `7.2-stable` branch (which will track 7.2.1) or explicitly pin `v7.2.1` tag
+### Why This Task Is Different from HYKU-720 Original
 
-**Testing Note**: All validation steps remain the same; 7.2.1 should not introduce breaking changes beyond 7.2.0
+The original task focused on "update submodule + rebuild." That's now done. This task addresses the **critical testing constraint**: we cannot validate upstream PR #3369 + Hyrax #7678 while our workaround code is in place — it masks whether the upstream fix actually works.
 
-### Why This Test Matters (Scope: Local Validation Only)
-Before upgrading the dev VM, we need to validate locally that:
-1. Submodule update + full Docker rebuild completes without errors
-2. IIIF functionality still works after `hyrax-iiif_av` gem is removed from Hyku core
-3. Bulkrax 9.5.x doesn't break import/export workflows
-4. All RSpec specs pass with the new base
+**Testing Strategy**: Remove workaround → pin hyrax-webapp to commit with both upstream PRs → rebuild → verify facets default to 5 (not 10)
 
-**This task covers Stack Car local validation only.** Dev/prod deployment is a separate follow-up.
-
-### Risk Assessment: LOW
-- Rails already at 7.2.0 in `hyrax-webapp/Gemfile` — no gem version changes needed
-- Decorator pattern isolates most knapsack customizations from upstream changes
-- Easy rollback: revert `.gitmodules` to `7.1-stable` and rebuild
+### Current Behavior (Before Fix)
+- **Static/non-flexible facets**: Show limit=5 ✅ (correct via Blacklight/default config)
+- **Flexible facets (M3 profile-driven)**: Default to Blacklight's 10 ❌ — on BOTH homepage AND catalog view
+- This is the exact problem upstream PRs #3369 + Hyrax #7678 solve
 
 ---
 
-## What to Verify During Local Test
+## Implementation Steps
 
-### 1. `hyrax-iiif_av` Gem Removed ⚠️
-**Known impact**: 46 references across 15 files in `hyrax-webapp/`. Most are in Hyku's own code — the key question: does functionality move to Hyrax core?
-- Watch for errors during rebuild at: `Gemfile` line 56, `config/routes.rb`, `config/initializers/hyrax.rb`
-- Knapsack decorator to verify: `app/presenters/concerns/hyrax/iiif_av/displays_content_decorator.rb` loads without error
+### STEP 1 — Remove knapsack's facet-workaround code
 
-### 2. Bulkrax 9.5.x Compatibility
-Knapsack uses Bulkrax ~> 9.3.0. Watch for import/export errors during local test.
+Remove these 4 files and their references. This is REQUIRED before testing upstream (our code masks whether the fix works):
 
-### 3. HTTP Basic Auth Changes (if applicable)
-Low priority — only matters if your dev/prod `.env` uses basic auth env vars.
+| File | Action | Commit Message |
+|------|--------|---------------|
+| `app/search_builders/catalog_search_builder.rb` | **DELETE** (git rm) | Remove CatalogSearchBuilder class |
+| `config/initializers/catalog_search_builder.rb` | **DELETE** (git rm) | Remove catalog_search_builder initializer |
+| `config/wvu_facet_defaults.yml` | **DELETE** (git rm) | Remove wvu_facet_defaults config |
+| `config/initializers/catalog_controller_decorator.rb` lines ~95-120 | **REMOVE**: delete the `yaml_path`, `force_registered_fields`, and force-registration block that imports from wvu_facet_defaults.yml | Remove force_registered_fields logic from decorator |
 
-### 4. New Features (evaluate later, not now)
-Compound metadata, guided deposit wizard, URL redirects, new themes — note for future consideration, don't test yet.
+**Before removing**, verify these files don't have other critical logic beyond facet limiting. If they serve other purposes, extract only the facet-workaround portions and keep the rest.
 
----
+**Rollback**: `git checkout feature/hyku-v7.2.0-upgrade -- app/search_builders/catalog_search_builder.rb config/initializers/catalog_search_builder.rb config/wvu_facet_defaults.yml` (restores files from old branch).
 
-## Test Steps (Local Only — Stack Car)
+### STEP 2 — Verify upstream PRs are merged
+
+Check both PRs on GitHub for merge status:
+```bash
+# Hyku #3369 — should show "Merged" with `config.default_facet_limit = 5`
+# Hyrax #7678 — should show "Merged" with `limit: true` on M3 facets
+
+git ls-remote origin refs/pull/3369/head  # if empty, PR not merged
+git ls-remote origin refs/pull/7678/head  # if empty, PR not merged
+```
+
+If **both merged**: proceed to STEP 3.
+If **either NOT merged**: block implementation; wait for merge or use branch tip as temporary source. Document which PR is blocking.
+
+### STEP 3 — Pin hyrax-webapp to correct commit
+
+Check what the `7.2-stable` branch currently resolves to:
+```bash
+git log --oneline hyrax-webapp -1  # current pinned commit
+```
+
+Verify this commit includes both upstream PRs. If it doesn't (PRs merged after current pin):
+```bash
+git submodule update --remote hyrax-webapp
+git log --oneline hyrax-webapp -3  # verify new tip includes both PRs
+```
+
+### STEP 4 — Rebuild \u0026 Test on Clean Baseline
 
 ```bash
-# STEP A — Update submodule branch reference from 7.1-stable to 7.2-stable
-cd /Users/tam0013/Documents/git/wvu_knapsack
-# Edit .gitmodules: change "branch = 7.1-stable" to "branch = 7.2-stable"
+# Full rebuild (no cached layers)
+docker compose down --remove-orphans && sleep 5 && sh up.sc.local.sh
 
-# STEP B — Update the submodule working tree
-git submodule update --recursive
-git log --oneline -1 hyrax-webapp  # verify we're at v7.2.0 / tip of 7.2-stable
-
-# STEP C — Full rebuild via Stack Car (builds web + worker from scratch)
-sh up.sc.local.sh
-
-# STEP D — Watch initialization, wait for "Listening on https://..."
+# Watch logs through boot
 sc logs web -f
 
-# STEP E — Run migrations inside container
+# Run migrations + assets
 sc exec bundle exec rails db:migrate
-
-# STEP F — Precompile assets
 sc exec bundle exec rake assets:precompile
-
-# STEP G — Verify application accessible
-open https://admin-wvu-knapsack.localhost.direct
 ```
+
+### STEP 5 — Verify Facet Limiting Works (Core Test)
+
+**Critical test**: With workaround REMOVED and upstream PRs in place, all facets should show limit=5:
+
+| Location | Test | Expected |
+|----------|------|----------|
+| **Homepage** — Flexible facets (People Represented, Location) | Check facet list item count | Exactly 5 items + "More" link |
+| **Catalog view** — Flexible facets | Check facet list item count | Exactly 5 items + "More" link |
+| **Homepage** — Static/non-flexible facets | Check unchanged behavior | Still exactly 5 items ✅ |
+| **Catalog view** — Static/non-flexible facets | Check unchanged behavior | Still exactly 5 items ✅ |
+
+If any flexible facet shows 10 → upstream PR not effective or hyrax-webapp doesn't include merged PRs. Block deployment.
+If all show 5 → upstream fix verified. Proceed to regression testing below.
+
+---
+
+## Regression Testing (After Facet Limiting Verified)
+
+Only run these AFTER Step 5 confirms facets work correctly:
+
+| Feature | How to Test | Expected Result |
+|---------|-------------|-----------------|
+| Homepage loads | Open https://admin-wvu-knapsack.localhost.direct | No errors |
+| Admin dashboard | Sign in as admin | Accessible, no NameError |
+| SAML authentication | Sign in via SAML (if enabled) | Works (saml_phase_patch.rb active) |
+| Search results | Various search queries | Results display correctly |
+| Facet drill-down | Click facet values | Drill-in works, limit applied |
+| IIIF viewer | Upload audio/video work, view on detail page | Media plays, thumbnails load |
+| Bulkrax import | Test CSV/JSON import workflows | Imports complete successfully |
+| M3 profiles | Create/edit work with all M3 fields | All fields render correctly |
+| Collections | Add/remove works from collections | Permissions propagate correctly |
 
 ---
 
