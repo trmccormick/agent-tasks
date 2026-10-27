@@ -257,6 +257,38 @@ SolrCore configuration files in `solr/` may reference schema changes. Verify:
 
 ---
 
+## ⚠️ CRITICAL UPDATE: Facet Limiting Work (Upstream PRs)
+
+**As of 2026-10-27**: LaRita Vega (Hyku maintainer) has submitted upstream PRs addressing facet limiting on Hyku 7.2:
+
+1. **Hyrax PR #7678** - Facet Limiting via M3 Profiles
+   - Adds `limit: true` configuration to honor default facet limits for M3 profile facets
+   - Status: See https://github.com/samvera/hyrax/pull/7678
+
+2. **Hyku PR #3369** - Default Facet Limit Configuration
+   - Introduces `config.default_facet_limit = 5` to override Blacklight's default of 10
+   - Applied to all facets defined in CatalogController
+   - Status: See https://github.com/samvera/hyku/pull/3369
+
+**Knapsack Status**:
+- ✅ Current feature branch has workarounds (CatalogSearchBuilder, YAML config) to enforce limit: 5
+- ❓ When upstream PRs are merged into hyrax-webapp 7.2-stable, these workarounds may be superseded
+- **ACTION**: After merging Praneeth's date range work, verify whether upstream PRs are included in pinned hyrax-webapp commit
+  - If YES: Consider removing workaround code in favor of upstream solution
+  - If NO: Keep workarounds as temporary patches (update comments to reference upstream PR status)
+
+**Testing During 7.2 Validation**:
+- Verify facets display with limit: 5 (before "more »" link shows)
+- Verify no conflicts between workaround code and upstream configuration
+- Document whether upstream PRs solve the issue completely
+
+**Praneeth's Date Range Work** (blocking):
+- Currently merging date range limiting logic to feature branch
+- Issue: homepage searches Works only (1885–2014), but catalog searches Works + Collections (1775–2024 from archival spans)
+- Awaiting merge completion before final 7.2 validation
+
+---
+
 ## Blocked By / Dependencies
 
 ### Blocks: Production Deployment

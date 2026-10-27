@@ -1,9 +1,37 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-10-20 (Evening) — Hyku 7.2 Facet Limiter Investigation
+**Last Updated:** 2026-10-27 — Stale session closeout; HYKU-720 remains paused pending Praneeth's date range work + upstream facet limiting PRs
 
 ---
 
-## 🔄 Session 2026-10-20 (Continued) — Facet Limiter Investigation
+## � Session 2026-10-27 — Stale Session Closeout & Backlog Triage
+
+**Closeout Actions**:
+- ✅ Archived 3 aging backlog tasks (superseded or deferred):
+  - `2026-09-30-HIGH-ARCHITECTURE-SIMPLIFY-FACET-LIMITER.md` → Superseded by upstream Hyku PRs #7678 and #3369 (facet limiting)
+  - `2026-10-12-HIGH-FEATURE-HTTPS-TERMINATION-LOCAL-SMOKETEST.md` → Deferred, local dev issue
+  - `2026-10-13-LOW-DOCS-CONTRIBUTING-COMMIT-MESSAGES.md` → Incomplete draft, low priority
+- ✅ Updated HYKU-720 task with upstream PR context (LaRita's facet limiting work)
+- ✅ Confirmed HYKU-720 remains **PAUSED** (testing only, Praneeth's date range work in progress)
+
+**Key Finding**: Facet Limiting Upstream Solution
+- LaRita Vega submitted **Hyrax PR #7678** + **Hyku PR #3369** addressing facet limits
+- These PRs introduce proper `limit: true` config and `default_facet_limit = 5` settings
+- Knapsack's current workarounds (CatalogSearchBuilder, YAML config) may be superseded when upstream PRs merge
+- **ACTION AFTER PRANEETH'S MERGE**: Verify upstream PRs are in pinned hyrax-webapp commit; reconcile with workarounds
+
+**Praneeth's Date Range Work** (blocking 7.2 completion):
+- Working on date range limiting for Collections vs Works searches
+- Finding: Homepage searches Works only (1885–2014 real item dates), but catalog searches include Collections (1775–2024 from archival metadata spans)
+- Awaiting merge to feature/hyku-v7.2.0-upgrade, then test on hykudev
+
+**Open Sessions**:
+| Agent | Task ID | State | Last Touched |
+|-------|---------|-------|--------------|
+| human/hykudev testing | HYKU-720-UPGRADE-TESTING.md | paused (in-progress, not dispatched) | 2026-10-27 (Praneeth working) |
+
+---
+
+## �🔄 Session 2026-10-20 (Continued) — Facet Limiter Investigation
 
 **Focus**: Diagnose why facet limiting remains stuck at 10 items on hykudev despite configuration code
 
