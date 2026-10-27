@@ -134,10 +134,11 @@ If all show 5 → upstream fix verified. Proceed to regression testing below.
 
 ---
 
-## Regression Testing (After Facet Limiting Verified)
+## What to Test (Post-Facet Verification)
 
-Only run these AFTER Step 5 confirms facets work correctly:
+Only run these AFTER Step 5 confirms facets work correctly. Consolidated from prior task sections — cleaned for 7.2.1 scope:
 
+### Manual Regression Tests
 | Feature | How to Test | Expected Result |
 |---------|-------------|-----------------|
 | Homepage loads | Open https://admin-wvu-knapsack.localhost.direct | No errors |
@@ -149,35 +150,21 @@ Only run these AFTER Step 5 confirms facets work correctly:
 | Bulkrax import | Test CSV/JSON import workflows | Imports complete successfully |
 | M3 profiles | Create/edit work with all M3 fields | All fields render correctly |
 | Collections | Add/remove works from collections | Permissions propagate correctly |
-
----
-
-## Testing Strategy
+| Work Types | Create works of each type | Metadata forms render correctly |
+| File Upload | Upload single/multiple files | Derivatives generated, thumbnails created |
 
 ### Automated Tests
-1. **RSpec Test Suite**: Run full suite locally, then on dev
-   - Focus on specs referencing `Hyrax::IiifAv` (27+ test lines across 4 spec files)
-   - Verify IIIF manifest presenter tests pass after gem removal
-   
-2. **Feature/Capability Tests** (manual):
-   | Feature | How to Test | Expected Result |
-   |---------|-------------|-----------------|
-   | User Authentication | Sign in/out as admin, regular user, superadmin | No changes expected |
-   | IIIF Viewer | Upload audio/video work, view on detail page | Media plays, thumbnails load |
-   | M3 Metadata Profiles | Create/edit work with all M3 fields | All fields render correctly |
-   | Search/Facets | Various search queries, facet drill-down | Same results as before 7.2.0 |
-   | Bulkrax Import | Test CSV/JSON import workflows | Imports complete successfully |
-   | Work Types | Create works of each type | Metadata forms render correctly |
-   | Collections | Add/remove works from collections | Permissions propagate correctly |
-   | File Upload | Upload single/multiple files | Derivatives generated, thumbnails created |
+Run `sc exec bundle exec rspec spec/` after Step 5 pass. Focus areas:
+- IIIF manifest presenter specs (prior hyrax-iiif_av removal)
+- SAML auth flow specs (verify saml_phase_patch.rb doesn't break anything)
+- M3 metadata profile specs
 
-### Regression Testing Checklist
-- [ ] Homepage loads without errors
-- [ ] Admin dashboard accessible
-- [ ] Tenant catalogs work (`*.localhost.direct` or prod URLs)
-- [ ] IIIF viewer works for all media types (image, audio, video, PDF)
-- [ ] Facets display "more" links correctly (verify prior fix still works)
-- [ ] M3 metadata profiles render all fields
+### What to NOT test yet (defer to follow-up tasks)
+- Compound metadata features
+- Guided deposit wizard
+- URL redirect changes
+- New theme rendering
+- Date range limiting (Praneeth's separate work on Collections vs Works)
 - [ ] Work decorators preserve WVU customizations
 - [ ] Bulkrax import/export workflows functional
 - [ ] Email notifications sent/received
