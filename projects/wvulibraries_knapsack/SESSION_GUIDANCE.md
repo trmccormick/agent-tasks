@@ -252,6 +252,8 @@ Use these in order. Each item is a check or an action; if a check fails, stop an
 - [ ] List every local override that could be affected: decorators (`*_decorator.rb`), initializers in `config/initializers/`, shims, and anything in `bundler.d/`. Note each one against the changelog.
 - [ ] Confirm you are using the Stack Car scripts for local work (`up.sc.local.sh`, `down.sc.local.sh`), not `up.sh` / `down.sh`.
 
+**NOTE**: The VERSION override was removed in commit `ac025ec` and replaced with a BlacklightAdvancedSearch shim (`e313f91`). PR `samvera/hyku#3399` was closed unmerged on 2026-10-15 — do not reference it as "approved, waiting merge". The upstream resolution is pending a new approach from Hyku maintainers (possibly via tag-based pinning rather than branch merge).
+
 **During the upgrade**
 - [ ] Bump the submodule pointer only (steps in the repo README, "Updating the Hyku submodule"). Make no edits to any file inside `hyrax-webapp/`. In SHA-pinned mode, set the pointer to the named SHA and record it. In branch-following mode, record the SHA the branch resolved to, so the run can be reproduced.
 - [ ] After the bump, `git -C hyrax-webapp status` must show a clean tree.

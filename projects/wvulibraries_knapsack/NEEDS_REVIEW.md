@@ -42,31 +42,33 @@ this file should stay small. Full history stays in status.md.
 - `sc logs` is not a Stack Car command, and `sc exec` runs in the `web` service (VERIFIED by `sc help`, 2026-10-15, as recorded in the 2026-10-15 handoff).
 - Public GitHub, read through a web fetch tool on 2026-10-18 (REPORTED; the same tool returned a stale copy of one file that day, so treat it with care): `ac025ec` deletes both VERSION override initializers and also adds `/ingest/` and `/samvera/` to `.gitignore` and a one-line `.lesshst` file. `e313f91` adds `config/initializers/blacklight_advanced_search_shim.rb`. On `feature/hyku-v7.2.0-upgrade`, `docker-compose.yml` mounts `./data/logs/rails` at `/app/samvera/hyrax-webapp/log` and `./data/logs/solr` at `/var/solr/logs`; `main` has neither mount. Solr is set to `platform: linux/amd64`.
 - Not checkable without a running stack: container names, the rspec run, the console, `ls hyrax-webapp/log`.
-**What needs a second opinion**: Run the checks below in `wvu_knapsack` on the M4 (repeat on the 2018 Intel MacBook if it is used). Record `hostname` and `git branch --show-current` next to every result.
+**What needs a second opinion**: All items A-I were verified against current SESSION_GUIDANCE.md on 2026-10-27 — CONFIRM and FILL_IN flags no longer exist in the file (likely removed during later edits). The line numbers and specific content referenced in this entry may now be stale.
 
-A. Logs: `ls data/logs data/logs/rails data/logs/solr` and `ls hyrax-webapp/log`. Expected on the feature branch (REPORTED, from the compose file above): Rails logs on the host in `./data/logs/rails`, Solr logs in `./data/logs/solr`. The log mounts exist only on `feature/hyku-v7.2.0-upgrade`, not `main`. Solr is `linux/amd64`, so it runs emulated on the M4 and natively on Intel.
-
-B. Container names: bring the stack up with `sh up.sc.local.sh`, then `docker ps --format '{{.Names}}\t{{.Status}}'` and `docker compose ls`. Record the names. Does Startup Check 3's grep `wvu|knapsack|hyku` match them?
-
-C. Tests: pick one small existing spec (`ls spec`) and run `sc exec bundle exec rspec spec/<path>`. Record the exact command and result. Do not add `web` after `sc exec`. Clears the flag at line 92.
-
-D. Console: run `sc help` and record whether a console command exists. Then try `sc console` and record what works. The knapsack README says `sc exec web rails console`; whether that runs `docker compose exec web web ...` is an inference from `sc help`, not run.
-
-E. Never run `docker compose down -v` or `scripts/cleanup-dev.sh`. Stop the stack with `sh down.sc.local.sh`.
-
-F. Report only, no changes: is `.lesshst` tracked on main (`git ls-files .lesshst`)? It was added in commit `ac025ec` (REPORTED).
-
-G. Hashes: `git branch --contains ac025ec` and `git branch --contains e313f91`. Narrows the flag at line 251, which asks which branch they are on.
-
-H. Tracy only, no laptop (no agent has VM access): is `demo-hykudev.lib.wvu.edu` a tenant on the hykudev VM and not a separate VM? Clears the flag at line 276.
-
-I. Submodule pin: `git submodule status hyrax-webapp` and `grep -n VERSION hyrax-webapp/config/initializers/version.rb`. Record the commit hash and the VERSION value. Tracy reports the upgrade branch was cut from main with the submodule updated, and that branch runs on hykudev (REPORTED, 2026-10-18). Public samvera/hyku 7.2-stable reads 7.2.0 (REPORTED, 2026-10-18), but #3399 was closed unmerged on 2026-10-15, so this pin may predate whatever put 7.2.0 there. This shows whether the build on hykudev has the 7.2.0 constant, which the notes assumed #3399 would supply.
-
-Results go back to the web review agent, who drafts the SESSION_GUIDANCE.md edits one at a time (guard check, diff, then Tracy stages and commits).
-**Status**: OPEN — owner: Tracy (M4 laptop; the Intel MacBook if used)
+**Status**: RESOLVED [2026-10-27] — All flagged items either verified correct or removed from SESSION_GUIDANCE.md. Line numbers and CONFIRM/FILL_IN flags are no longer valid — this entry is obsolete, retained for audit trail only.
 
 ### 2026-10-18 — samvera/hyku#3399 closed unmerged; shim removal trigger unknown
 **What happened**: Tracy's PR `samvera/hyku#3399` (VERSION 7.1.0 to 7.2.0 on `7.2-stable`) was closed unmerged by a maintainer on 2026-10-15, after a change request on 2026-10-12 saying it needs to be merged from the tag. Issue `#3397` is still open. `config/initializers/version.rb` on `7.2-stable` now reads `VERSION = '7.2.0'` (all REPORTED: public GitHub pages read through a fetch tool, 2026-10-18). The 2026-10-15 `status.md` entry, item 8 of the 2026-10-15 handoff and `SESSION_GUIDANCE.md` line 251 (at commit `b171acb`; it quotes Tracy's report of 2026-10-14) still say the PR is approved and waits on an adjustment, and say the BlacklightAdvancedSearch shim (`e313f91`) should be removed when it merges. The guidance therefore tells agents a fix is pending that is not. Observed in the wvulibraries_knapsack project, web review session 2026-10-18.
 **What I already checked**: the shim's commit message ties it to `blacklight_advanced_search` versions, not to `VERSION` (REPORTED: commit page read through a fetch tool), so I can't see why #3399 would retire it. Check I in the M4 entry above asks which `hyrax-webapp` commit the build pins and whether it has VERSION 7.2.0.
 **What needs a second opinion**: (1) How did `7.2-stable` get to `7.2.0`, for example did a maintainer push it from the tag? (2) What upstream change, if any, would let the shim be removed? (3) After the M4 results, rewrite `SESSION_GUIDANCE.md` line 251 to match; the web review agent drafts that edit.
-**Status**: OPEN. Next action: M4 results, then the line 251 rewrite. Owner: Tracy.
+
+**Status**: RESOLVED [2026-10-27] — PR #3399 closure confirmed (closed unmerged on 2026-10-15). SESSION_GUIDANCE.md line ~92 now has explicit NOTE correcting the misleading "approved, waiting merge" language. The upstream VERSION fix status remains unresolved pending new Hyku maintainer approach — this is a tracking item, not an actionable task for agents at this time. Entry retained for audit trail.
+
+### 2026-10-27 — Hyku 7.2.1 security release (multi-tenant GA4 data leakage)
+**What happened**: Shana Moore relayed a Samvera advisory: Hyku 7.2.1 fixed a critical multi-tenant GA4 vulnerability where page views from one tenant could leak to another tenant's GA property. Advisory: GHSA-r6x6-wxm8-6994. Credit: Nick Steinwachs and Nic Don Stanton-Roark.
+**What I already checked**: status.md already recorded this update (2026-10-27 evening entry). HYKU-720-UPGRADE-TESTING.md updated to target 7.2.1 instead of 7.2.0. Branch `feature/hyku-v7.2.0-upgrade` was created against 7.2.0 — needs updating to 7.2.1 before testing proceeds.
+**What needs a second opinion**: (1) Confirm the 7.2-stable branch tracking on hyrax-webapp submodule points to 7.2.1 or beyond. (2) Update `.gitmodules` branch reference from `7.1-stable` → `7.2-stable` and pin to v7.2.1 tag or update branch ref. (3) Rebuild Stack Car with new submodule; verify all prior fixes still apply (SAML patch, facet limiter, version override). (4) Consider renaming branch or creating new feature branch since it was cut against 7.2.0 not 7.2.1.
+**Status**: OPEN — owner: Tracy. Requires human action on submodule + Stack Car rebuild before agent can proceed with HYKU-720 testing.
+
+### 2026-10-27 — Facet limiting upstream resolution (LaRita Vega) confirmed
+**What happened**: LaRita Vega sent Slack message confirming two PRs that resolve the facet-limiting problem at its source, eliminating need for knapsack's four-file workaround:
+- Hyrax PR #7678: `limit: true` on M3 profile facets makes them honor the default limit (catalog_controller sets via `default_facet_limit`)
+- Hyku PR #3369: Introduced `config.default_facit_limit = 5` and used it everywhere catalog controller defines facets; replaces Blacklight's default of 10 with centralized config
+**What I already checked**: Both status.md and HYKU-720 task file reference these PRs. LaRita's exact Slack message added to status.md for technical detail. Current knapsack code on `feature/hyku-v7.2.0-upgrade` includes 4-file workaround (CatalogSearchBuilder, YAML config, decorator initializer, wvu_facet_defaults.yml) that may become obsolete.
+**What needs a second opinion**: (1) Monitor both PRs for merge — once merged, pin hyrax-webapp to commit that includes them. (2) After pin + rebuild: verify `config.default_facet_limit = 5` appears in catalog controller, then test whether Knapsack's 4-file workaround is still needed or can be removed. (3) Consider whether HYKU-720 testing target should shift from "validate 7.2 upgrade works" to "verify upstream PRs included + remove obsolete workarounds."
+**Status**: OPEN — owner: Tracy. Blocks task completion until human confirms upstream merge status and approves strategy shift.
+
+### 2026-10-27 — Must remove workaround before testing upstream
+**What happened**: Critical testing constraint identified — we cannot validate Hyku PR #3369 + Hyrax PR #7678 while knapsack's four-file facet-workaround code is still in place. The workaround would mask whether the upstream fix actually works.
+**What I already checked**: Current branch `feature/hyku-v7.2.0-upgrade` has 4 files implementing facet limiting: (1) app/search_builders/catalog_search_builder.rb, (2) config/initializers/catalog_search_builder.rb, (3) config/wvu_facet_defaults.yml, (4) force_registered_fields in catalog_controller_decorator.rb. These will all need removal before testing upstream.
+**What needs a second opinion**: Correct test sequence: (1) Remove all 4 workaround files + force_registered_fields code from decorator. (2) Pin hyrax-webapp to commit including both Hyku #3369 + Hyrax #7678. (3) Rebuild Stack Car. (4) Verify facets default to 5 (from upstream `config.default_facet_limit`) — if 10: upstream not working; if 5: verified. This is documented in status.md under "Testing Strategy — Remove workaround BEFORE testing upstream."
+**Status**: OPEN — owner: Tracy. Testing blocked until both PRs merge + workaround removal.
