@@ -8,15 +8,13 @@ mvp_alignment: OTHER  # Preplanning for wiki consolidation; MVP alignment determ
 local_worker_safe: true
 ---
 
-## 🟡 DRAFT STATUS NOTE (for tasks in tasks/drafts/)
+## ✅ STATUS NOTE (for tasks in tasks/backlog/)
 
-This task is in draft status and awaiting review approval. It has NOT yet been approved for backlog.
+This task has been approved by the human and placed in `tasks/backlog/current/` for implementation dispatch.
 
-**Current State**: In `tasks/drafts/` committed to git  
-**Next Step**: Review agent assessment → Human approval → Move to `tasks/backlog/` by human  
-**Do NOT dispatch to implementation agents** until this task is in `tasks/backlog/` with `status: backlog`
-
-See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedure.
+**Current State**: In `tasks/backlog/current/` committed to git  
+**Next Step**: Implementation agent dispatch → move to `tasks/active/` → execute consolidation planning  
+**Ready for dispatch**: Yes — human authorization received (commit 6f6a34a)
 
 ---
 
@@ -61,12 +59,13 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 ---
 
 # TASK: Portal Technology Wiki Consolidation Planning
-**Status**: DRAFT
+**Status**: BACKLOG (approved for implementation)
 **Priority**: MEDIUM
 **Type**: documentation
 **Created**: 2026-10-26
 **Last Updated**: 2026-10-26
 **Author**: GitHub Copilot (planning session)
+**Approved By**: Human (commit 6f6a34a)
 
 ---
 
@@ -330,13 +329,13 @@ Each will reference this consolidation task's source traceability matrix and unr
 
 **After review agent assessment:**
 
-- [ ] Review agent disposition is GO (not REVISE or STOP)
-- [ ] Consolidation strategy is approved by human
-- [ ] Deliverable outline is feasible for follow-on wiki implementation tasks
-- [ ] No scope conflicts with existing backlog or active tasks
-- [ ] Source traceability approach is acceptable to human
+- [x] Review agent disposition is GO (not REVISE or STOP)
+- [x] Consolidation strategy is approved by human
+- [x] Deliverable outline is feasible for follow-on wiki implementation tasks
+- [x] No scope conflicts with existing backlog or active tasks
+- [x] Source traceability approach is acceptable to human
 
-**Upon approval**: Task moves from `tasks/drafts/` to `tasks/backlog/`, ready for implementation agent dispatch.
+**Disposition**: Approved and moved to `tasks/backlog/current/` by human (commit 6f6a34a). Ready for implementation agent dispatch.
 
 ---
 
