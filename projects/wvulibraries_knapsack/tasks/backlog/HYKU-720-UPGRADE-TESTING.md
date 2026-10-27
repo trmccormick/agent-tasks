@@ -74,6 +74,22 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting a
 - **Upstream available**: `7.2-stable` branch and `v7.2.0` tag confirmed at commit `1ccae4e6`
 - **Local Stack Car**: Working correctly with Traefik wildcard HTTPS on `*.localhost.direct`
 
+### 🔐 SECURITY UPDATE (2026-10-27): Hyku 7.2.1 Released
+
+**Critical Security Fix**: Multi-tenant GA4 data leakage vulnerability fixed in 7.2.1
+- **Advisory**: https://github.com/samvera/hyku/security/advisories/GHSA-r6x6-wxm8-6994
+- **Issue**: Hyku 7.2.0 with Google Analytics 4 could send one tenant's page views to another tenant's GA property
+- **Resolution**: Upgrade to 7.2.1 recommended
+- **Release**: https://github.com/samvera/hyku/releases/tag/v7.2.1
+
+**Recommendation for This Task**:
+- **Update target from 7.2.0 → 7.2.1** for this upgrade testing
+- This addresses the security issue while still testing 7.2 compatibility
+- Knapsack is a multi-tenant deployment (digitalhistory.lib.wvu.edu) — security fix is CRITICAL for us
+- `.gitmodules` should pin to `7.2-stable` branch (which will track 7.2.1) or explicitly pin `v7.2.1` tag
+
+**Testing Note**: All validation steps remain the same; 7.2.1 should not introduce breaking changes beyond 7.2.0
+
 ### Why This Test Matters (Scope: Local Validation Only)
 Before upgrading the dev VM, we need to validate locally that:
 1. Submodule update + full Docker rebuild completes without errors

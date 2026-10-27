@@ -1,9 +1,33 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-10-27 — Stale session closeout; HYKU-720 remains paused pending Praneeth's date range work + upstream facet limiting PRs
+**Last Updated:** 2026-10-27 (Evening) — 🔐 SECURITY UPDATE: Hyku 7.2.1 released with critical GA4 multi-tenant fix; upgrading HYKU-720 testing target to 7.2.1
 
 ---
 
-## � Session 2026-10-27 — Stale Session Closeout & Backlog Triage
+## 🔐 CRITICAL SECURITY UPDATE (2026-10-27)
+
+**Hyku 7.2.1 Security Release — Multi-Tenant GA4 Data Leakage**
+
+- **Vulnerability**: Multi-tenant Hyku with Google Analytics 4 could send one tenant's page views to another tenant's GA property
+- **Severity**: HIGH (data leakage across tenants)
+- **Affected**: Hyku 7.2.0
+- **Resolution**: Upgrade to 7.2.1 (released today)
+- **Advisory**: https://github.com/samvera/hyku/security/advisories/GHSA-r6x6-wxm8-6994
+- **Release**: https://github.com/samvera/hyku/releases/tag/v7.2.1
+- **Credit**: Nick Steinwachs and Nic Don Stanton-Roark (Samvera community)
+
+**Impact for WVU Knapsack**:
+- ⚠️ We are a **multi-tenant deployment** (digitalhistory.lib.wvu.edu) 
+- ⚠️ We use Google Analytics (google-analytics.json in repo)
+- ✅ **HYKU-720 upgrade testing updated to target 7.2.1 instead of 7.2.0**
+- ✅ This security fix is CRITICAL for production deployment
+
+**Action Taken**:
+- Updated HYKU-720-UPGRADE-TESTING.md with 7.2.1 requirement and security context
+- Removed 7.2.0 as testing target; 7.2.1 is now the baseline for this upgrade
+
+---
+
+## 🔄 Session 2026-10-27 — Stale Session Closeout & Backlog Triage
 
 **Closeout Actions**:
 - ✅ Archived 3 aging backlog tasks (superseded or deferred):
@@ -12,6 +36,7 @@
   - `2026-10-13-LOW-DOCS-CONTRIBUTING-COMMIT-MESSAGES.md` → Incomplete draft, low priority
 - ✅ Updated HYKU-720 task with upstream PR context (LaRita's facet limiting work)
 - ✅ Confirmed HYKU-720 remains **PAUSED** (testing only, Praneeth's date range work in progress)
+- ✅ **UPDATED 2026-10-27 EVENING**: Added Hyku 7.2.1 security update context to HYKU-720 task
 
 **Key Finding**: Facet Limiting Upstream Solution
 - LaRita Vega submitted **Hyrax PR #7678** + **Hyku PR #3369** addressing facet limits
