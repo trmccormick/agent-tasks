@@ -392,6 +392,13 @@ All hashes VERIFIED on origin with `git log -1` at f5260b8.
 - **Committed:** `2cd19d2` (the three edits; reviewer GO). Push pending — origin/main moved, resolved at closeout.
 - **Not committed:** the task file move to `completed/2026-10/`, the synthesis file, and this entry, until Tracy commits them.
 
+## 📝 Session Log — 2026-10-26 (Clarify Review Gate Authorization Wording in TASK_TEMPLATE.md)
+
+- **Changed:** `TASK_TEMPLATE.md` (three single-line edits plus a one-sentence insertion: items 2, 7 and the pre-commit checklist; Option B wording; committed as `3cba0fe`, authorized by reviewer GO on file hash `948c27c`). Task file moved from `active/` to `completed/2026-10/` (git mv). Completion Report filled in.
+- **Committed:** `3cba0fe` (the edits; reviewer GO).
+- **Not committed:** this entry, until Tracy commits it.
+- **Stop condition:** Session closeout complete. Next session resumes from TASK_TEMPLATE.md or NEEDS_REVIEW.md per human direction.
+
 ## 📝 Session Log — 2026-10-26 (Review-only dispatch proposal: artifact preservation & Grok review recording)
 
 - **Changed:** 

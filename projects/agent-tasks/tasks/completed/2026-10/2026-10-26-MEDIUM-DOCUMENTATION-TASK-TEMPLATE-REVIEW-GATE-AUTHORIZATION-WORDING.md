@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 type: documentation
 priority: MEDIUM
 resume: false
@@ -159,12 +159,13 @@ Task complete: REVIEW GATE authorization wording updated in TASK_TEMPLATE.md.
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**:
-**Completion date**:
-**Evidence basis:** [direct verification / review of pasted evidence / reported by agent / human assertion]
+**Completed by**: Qwen
+**Completion date**: 2026-10-26
+**Evidence basis:** review of pasted evidence (reviewer GO on file hash 948c27c, commit 3cba0fe)
 
 ### What was changed
--
+- Three single-line edits in TASK_TEMPLATE.md plus a one-sentence insertion (items 2, 7 and the pre-commit checklist item; Option B wording)
 
 ### Issues discovered
-- 
+- The task's dispatch block had a wrong lifecycle path (drafts to backlog instead of backlog to active) and was fixed in 8e0dccc before dispatch
+- No synthesis report was produced: the task file has no synthesis section, although the dispatch block requires one 
