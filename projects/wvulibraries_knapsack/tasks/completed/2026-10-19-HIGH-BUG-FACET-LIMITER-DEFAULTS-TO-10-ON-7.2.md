@@ -121,3 +121,18 @@ Human to:
 3. Test facets: verify 5 items/facet + "More" link for facets with 6+ values
 4. Confirm both static and flexible facets working correctly
 5. After verification, create Phase 2 backport task for LaRita collaboration
+
+---
+## 🔄 SUPERSEDED by Hyku PR #3369
+
+**Superseded:** 2026-10-27  
+**Reason:** Upstream PR #3369 (LaRita Vega) implements  everywhere in catalog controller — same fix, no local workaround needed.  
+**Action Taken:** Workaround code (4-file architecture) should be removed after upstream merged and verified.  
+**Related:** HYKU-720 task now documents workaround removal steps.
+---
+## SUPERSEDED by Hyku PR #3369
+
+Superseded: 2026-10-27
+Reason: Upstream PR #3369 (LaRita Vega) implements default_facet_limit = 5 everywhere in catalog controller - same fix, no local workaround needed.
+Action Taken: Workaround code (4-file architecture) should be removed after upstream merged and verified.
+Related: HYKU-720 task now documents workaround removal steps.
