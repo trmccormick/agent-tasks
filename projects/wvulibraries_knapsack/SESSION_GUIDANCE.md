@@ -66,6 +66,8 @@ ls projects/wvulibraries_knapsack/handoffs/ 2>/dev/null || echo "No handoffs fol
 2. Once merged upstream, update the submodule reference in `wvu_knapsack/.gitmodules` and commit in the parent repo
 3. If a workaround is temporarily needed, implement it in knapsack via decorators or initializers ONLY
 
+**Submodule contents are safe to discard.** Anything changed inside `hyrax-webapp/` — including `Gemfile.lock` which gets regenerated when the app runs — can be safely discarded since the submodule is pulled from upstream. Run `git checkout -- .` in `hyrax-webapp/` or `git submodule update --init --force` to discard local changes.
+
 ### Architecture Rules
 1. **Use decorator pattern** for all customizations — prepend modules or copy views with override comments. Never monkey-patch upstream classes inline.
 3. **Gems go in `bundler.d/`** — never edit the top-level Gemfile directly to prevent drift during submodule updates.
