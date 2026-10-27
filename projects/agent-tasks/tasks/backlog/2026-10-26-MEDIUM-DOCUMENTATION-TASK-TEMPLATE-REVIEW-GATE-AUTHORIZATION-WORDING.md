@@ -31,15 +31,15 @@ Project: agent-tasks
 Task: <agent-tasks>/projects/agent-tasks/tasks/backlog/2026-10-26-MEDIUM-DOCUMENTATION-TASK-TEMPLATE-REVIEW-GATE-AUTHORIZATION-WORDING.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/agent-tasks/tasks/drafts/2026-10-26-MEDIUM-DOCUMENTATION-TASK-TEMPLATE-REVIEW-GATE-AUTHORIZATION-WORDING.md \
-         projects/agent-tasks/tasks/backlog/2026-10-26-MEDIUM-DOCUMENTATION-TASK-TEMPLATE-REVIEW-GATE-AUTHORIZATION-WORDING.md
-  Then open the moved file and change: status: draft → status: active
+  git mv projects/agent-tasks/tasks/backlog/2026-10-26-MEDIUM-DOCUMENTATION-TASK-TEMPLATE-REVIEW-GATE-AUTHORIZATION-WORDING.md \
+         projects/agent-tasks/tasks/active/2026-10-26-MEDIUM-DOCUMENTATION-TASK-TEMPLATE-REVIEW-GATE-AUTHORIZATION-WORDING.md
+  Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
 If the task YAML has `resume: true`, read the Progress / Resume block first, continue from "Next step", and set `resume: false` when you move the file to `active/`. Do not restart the task.
 
-LIFECYCLE: draft → active → completed
+LIFECYCLE: backlog → active → completed
   - Tracked file: git mv (never cp or plain mv)
   - New/untracked file: mv then git add the final path
   - Never leave stale copies in the source folder
