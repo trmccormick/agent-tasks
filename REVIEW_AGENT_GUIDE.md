@@ -20,7 +20,23 @@ Planning, research, implementation, and review are authorized session activities
 
 **Your role**: Assess whether the draft task is ready to move from `tasks/drafts/` to `tasks/backlog/`. You provide a GO/REVISE/STOP disposition that informs human approval decision.
 
-**Assessment checklist** — verify each before issuing disposition:
+**Assessment checklist** — verify each before issuing disposition. **Phase A (template) runs first; Phase B (content) only if Phase A passes.**
+
+### Phase A — Template Conformance (Mandatory Gate)
+
+Read TASK_TEMPLATE.md and compare every required section against the draft task file. **Template FAIL ⇒ disposition cannot be GO; issue REVISE with a punch-list of missing sections.**
+
+- **YAML frontmatter**: Includes `resume`, `system_domain`, `mvp_alignment`, `local_worker_safe` (and correct `status: draft`); when `status: draft`:
+  - DRAFT STATUS NOTE section present
+  - DRAFT REVIEW CHECKLIST section present
+- **Agent Dispatch Interface**: Exact template block — not a custom/abbreviated substitute. Verify:
+  - Step 0 `git mv` instruction present
+  - Lifecycle rules (backlog → active → completed) documented
+  - Summaries path specified
+  - Synthesis contract included
+- **Task Readiness Checklist** section present
+
+### Phase B — Content Assessment (only if Phase A passes)
 
 - **Acceptance Criteria**: Are they clear, measurable, and specific? ✅ Go / ⚠️ Needs clarification
 - **Task Scope**: Is it well-bounded? Does it overlap with active/backlog tasks? ✅ Focused / ⚠️ Too broad
@@ -28,8 +44,6 @@ Planning, research, implementation, and review are authorized session activities
 - **Architecture Alignment**: Does the approach match current codebase patterns? ✅ Yes / ⚠️ Needs verification
 - **No Contradictions**: Are there conflicting instructions or gotchas that contradict each other? ✅ Consistent / ⚠️ Found issues
 - **Files Referenced**: Are all file paths accurate (check codebase)? ✅ Verified / ❌ Broken paths
-
-**Output**: Save assessment as MD file to `projects/[project]/summaries/YYYY-MM-DD-DRAFT-REVIEW-[TASKNAME].md`
 
 **Disposition format:**
 ```markdown
@@ -39,7 +53,10 @@ Planning, research, implementation, and review are authorized session activities
 **Date**: YYYY-MM-DD  
 **Assessed by**: [Review Agent]
 
-### Assessment
+### Phase A — Template Conformance
+- Template Conformance: [PASS | FAIL: list missing sections]
+
+### Phase B — Content Assessment (only if Phase A passed)
 - Acceptance Criteria: [PASS | NEEDS CLARIFICATION]
 - Scope: [FOCUSED | TOO BROAD | OVERLAPPING]
 - Dependencies: [CLEAR | MISSING | BROKEN]
@@ -50,6 +67,8 @@ Planning, research, implementation, and review are authorized session activities
 ### Disposition
 **GO** | **REVISE** | **STOP**
 
+> **Rule**: Template Conformance must be PASS for GO disposition. If FAIL, issue REVISE with a punch-list of missing sections and do not proceed to content assessment.
+
 ### Notes
 [Any findings, required changes, or context for human decision]
 ```
@@ -58,6 +77,18 @@ Planning, research, implementation, and review are authorized session activities
 - `GO`: Task is ready for human approval to move to backlog/ and proceed to implementation dispatch
 - `REVISE`: Task needs changes before re-review (planning agent updates in-place in drafts/)
 - `STOP`: Task has critical issues; recommend human guidance before proceeding
+
+---
+
+## Human: Include in Every Draft Review Dispatch
+
+Copy the block below into every draft-review handoff prompt (human, planning agent, or automated dispatch). It ensures template compliance is always reviewed.
+
+```
+5. Template compliance (mandatory): Read TASK_TEMPLATE.md and compare every required section against the draft. Verify: all YAML fields (resume, system_domain, mvp_alignment, local_worker_safe), DRAFT STATUS NOTE, DRAFT REVIEW CHECKLIST, full Agent Dispatch Interface block (not abbreviated), Task Readiness Checklist. Flag any missing sections as REVISE requirements — do not GO if template is non-compliant.
+```
+
+**Where to use**: Include this in every draft-review dispatch prompt sent to a web review agent. Place it alongside your content/architecture review instructions so both are assessed together. If you already have a standard handoff template that ships review prompts (e.g., in PLANNING_AGENT_SESSION_START.md or any handoff template), add the fragment there as well and cross-link from this section.
 
 ---
 

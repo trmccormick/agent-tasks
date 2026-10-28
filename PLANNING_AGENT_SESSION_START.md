@@ -57,6 +57,7 @@ tasks/drafts/ → [git commit] → [review agent reads from git] → [human appr
    - Use TASK_TEMPLATE.md — ensure "DRAFT STATUS NOTE" section is included
    - Complete full task specification (all sections from template)
    - Fill in the "Draft Review Checklist" in the template with what you've verified (leave unchecked if not verified by you)
+   - **Self-check against TASK_TEMPLATE.md before recommending review**: Verify all YAML fields (`resume`, `system_domain`, `mvp_alignment`, `local_worker_safe`), DRAFT STATUS NOTE, DRAFT REVIEW CHECKLIST, full Agent Dispatch Interface block (not abbreviated), and Task Readiness Checklist are present. Note any gaps — the review agent will re-check and Template FAIL blocks GO, so catching issues early saves time.
 
 2. **Commit and push, only when the human tells you to** — this makes the task reviewable by web review agents. Until then leave the draft uncommitted and say so.
    ```bash
