@@ -2,25 +2,114 @@
 
 ---
 status: draft
+resume: false
 priority: HIGH
 type: refactor
+system_domain: CONTROLLERS
+mvp_alignment: OTHER
+local_worker_safe: true
 project: wvulibraries_knapsack
 created: 2026-10-28
 draft_review_checklist:
   - [x] File paths verified in codebase
   - [x] Upstream PR #3369 confirmed present in hyrax-webapp (commit 4148133d)
   - [x] Diff between workaround and upstream analyzed — no behavioral gap
-  - [ ] Review agent: pending assessment
+  - [ ] Template compliance: awaiting review
+  - [ ] Review agent disposition: pending GO/REVISE/STOP
 ---
 
-## Agent Dispatch Interface
+## 🟡 DRAFT STATUS NOTE (for tasks in tasks/drafts/)
+
+**This section applies ONLY if status: draft above.**
+
+This task is in draft status and awaiting review approval. It has NOT yet been approved for backlog.
+
+**Current State**: In `tasks/drafts/` committed to git  
+**Next Step**: Review agent assessment → Human approval → Move to `tasks/backlog/` by human  
+**Do NOT dispatch to implementation agents** until this task is in `tasks/backlog/` with `status: backlog`
+
+See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedure.
+
+## 🔨 DRAFT REVIEW CHECKLIST (Human — before approving move from drafts/ to backlog/)
+
+**APPLIES ONLY IF status: draft above. Use this checklist BEFORE moving task to tasks/backlog/.**
+
+After review agent has returned assessment:
+
+- [ ] Acceptance Criteria are clear and measurable (no ambiguity)
+- [ ] Task scope is well-bounded (not too broad, not overlapping with active tasks)
+- [ ] Dependencies listed and verified against status.md (all prerequisites exist)
+- [ ] No contradictions in the task specification
+- [ ] Architecture aligns with current codebase patterns (review agent verified)
+- [ ] Template compliance: all required YAML fields present, DRAFT STATUS NOTE section included, full Agent Dispatch Interface block present per TASK_TEMPLATE.md
+- [ ] Review agent disposition is GO (not REVISE or STOP)
+
+**Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/[SUBFOLDER]/` and changing `status: draft → status: backlog`.
+
+---
+
+## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching to implementation)
+
+**APPLIES ONLY IF status: backlog. STOP. Do not send this task to an agent until ALL boxes are checked.**
+
+- [ ] Agent Dispatch Interface section below is complete and accurate (no placeholders)
+- [ ] All Step 0-N instructions are clear and actionable (not vague)
+- [ ] Synthesis report template is provided (copy/paste ready, not as example)
+- [ ] No placeholder text remains in Implementation Steps
+- [ ] All file paths are verified to exist
+- [ ] Architecture Gotchas are specific (not generic)
+- [ ] Acceptance Criteria are measurable
+- [ ] Dependencies and Blocked/Blocks relationships are clear
+
+**Task is NOT READY until all checkboxes are completed.**
+
+---
+
+## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
+
+**This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
+Agents receive this exact text as the startup contract. Every word matters.
+
+**One allowed substitution:** before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root). Fill `[project]`, `[SUBFOLDER]` and `[FILENAME]` as usual; if the project's backlog is flat (no subfolders), omit the `[SUBFOLDER]/` segment from the paths. Change nothing else.
 
 ```
-ACTION: Remove four obsolete files, trim one initializer, commit, push
-VERIFY: Facets still limit to 5 after removal (clean build required)
-ENVIRONMENT: feature branch → deploy to hykudev for visual validation
-DEP: None — prerequisite (upstream fix confirmed) is complete
+You are **Implementation Agent**.
+
+Project: wvulibraries_knapsack
+Task: <agent-tasks>/projects/wvulibraries_knapsack/tasks/backlog/[SUBFOLDER]/2026-10-28-HIGH-REFACTOR-REMOVE-FACET-LIMITING-WORKAROUND.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/wvulibraries_knapsack/tasks/backlog/[SUBFOLDER]/2026-10-28-HIGH-REFACTOR-REMOVE-FACET-LIMITING-WORKAROUND.md \
+         projects/wvulibraries_knapsack/tasks/active/2026-10-28-HIGH-REFACTOR-REMOVE-FACET-LIMITING-WORKAROUND.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+If the task YAML has `resume: true`, read the Progress / Resume block first, continue from "Next step", and set `resume: false` when you move the file to `active/`. Do not restart the task.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find agent-tasks/projects/wvulibraries_knapsack/tasks -name "2026-10-28-HIGH-REFACTOR-REMOVE-FACET-LIMITING-WORKAROUND.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: <agent-tasks>/projects/wvulibraries_knapsack/summaries/
+  Filename pattern: YYYY-MM-DD-REFACTOR-FACET-WORKAROUND-REMOVE.md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+
+Closeout: follow SESSION_CLOSEOUT.md only.
 ```
+
+**IMPORTANT: Do not modify or abbreviate the text above.**
+Copy it exactly as-is when dispatching this task to an agent.
+This is the startup contract — every element is required.
+
+Everything else (details, gotchas, acceptance criteria, implementation steps) is in the sections below.
+The dispatch interface above is ONLY the bootstrap instructions.
 
 ## Problem
 
