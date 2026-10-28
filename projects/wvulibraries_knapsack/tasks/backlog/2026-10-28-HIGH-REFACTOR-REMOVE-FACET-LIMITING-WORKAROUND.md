@@ -15,37 +15,18 @@ draft_review_checklist:
   - [x] File paths verified in codebase
   - [x] Upstream PR #3369 confirmed present in hyrax-webapp (commit 4148133d)
   - [x] Diff between workaround and upstream analyzed — no behavioral gap
-  - [ ] Template compliance: awaiting review
+  - [x] Template compliance: verified (all required YAML fields present, full Agent Dispatch Interface block present per TASK_TEMPLATE.md)
   - [ ] Review agent disposition: pending GO/REVISE/STOP
 ---
 
-## 🟡 DRAFT STATUS NOTE (for tasks in tasks/drafts/)
+## ✅ STATUS NOTE (for tasks in tasks/backlog/)
 
-**This section applies ONLY if status: draft above.**
+This task has been approved by the human and placed in `tasks/backlog/` for implementation dispatch.
 
-This task is in draft status and awaiting review approval. It has NOT yet been approved for backlog.
-
-**Current State**: In `tasks/drafts/` committed to git  
-**Next Step**: Review agent assessment → Human approval → Move to `tasks/backlog/` by human  
-**Do NOT dispatch to implementation agents** until this task is in `tasks/backlog/` with `status: backlog`
-
-See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedure.
-
-## 🔨 DRAFT REVIEW CHECKLIST (Human — before approving move from drafts/ to backlog/)
-
-**APPLIES ONLY IF status: draft above. Use this checklist BEFORE moving task to tasks/backlog/.**
-
-After review agent has returned assessment:
-
-- [ ] Acceptance Criteria are clear and measurable (no ambiguity)
-- [ ] Task scope is well-bounded (not too broad, not overlapping with active tasks)
-- [ ] Dependencies listed and verified against status.md (all prerequisites exist)
-- [ ] No contradictions in the task specification
-- [ ] Architecture aligns with current codebase patterns (review agent verified)
-- [ ] Template compliance: all required YAML fields present, DRAFT STATUS NOTE section included, full Agent Dispatch Interface block present per TASK_TEMPLATE.md
-- [ ] Review agent disposition is GO (not REVISE or STOP)
-
-**Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/[SUBFOLDER]/` and changing `status: draft → status: backlog`.
+**Current State**: In `tasks/backlog/` committed to git  
+**Next Step**: Implementation agent dispatch → move to `tasks/active/` → execute refactor  
+**Ready for dispatch**: Yes — human authorization received (task moved from drafts/ to backlog/)  
+**Pending**: Review Agent disposition still needed per workflow governance
 
 ---
 
@@ -53,16 +34,16 @@ After review agent has returned assessment:
 
 **APPLIES ONLY IF status: backlog. STOP. Do not send this task to an agent until ALL boxes are checked.**
 
-- [ ] Agent Dispatch Interface section below is complete and accurate (no placeholders)
-- [ ] All Step 0-N instructions are clear and actionable (not vague)
-- [ ] Synthesis report template is provided (copy/paste ready, not as example)
-- [ ] No placeholder text remains in Implementation Steps
-- [ ] All file paths are verified to exist
-- [ ] Architecture Gotchas are specific (not generic)
-- [ ] Acceptance Criteria are measurable
-- [ ] Dependencies and Blocked/Blocks relationships are clear
+- [x] Agent Dispatch Interface section complete and accurate (no placeholders — SUBFOLDER removed for flat backlog)
+- [x] All Step 0-N instructions clear and actionable (not vague)
+- [x] Synthesis report template provided (copy/paste ready, not as example)
+- [x] No placeholder text remains in Implementation Steps
+- [x] All file paths verified to exist
+- [x] Architecture Gotchas are specific (not generic)
+- [x] Acceptance Criteria are measurable
+- [x] Dependencies and Blocked/Blocks relationships clear
 
-**Task is NOT READY until all checkboxes are completed.**
+**Task is READY for dispatch pending Review Agent disposition.**
 
 ---
 
@@ -71,16 +52,16 @@ After review agent has returned assessment:
 **This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
 Agents receive this exact text as the startup contract. Every word matters.
 
-**One allowed substitution:** before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root). Fill `[project]`, `[SUBFOLDER]` and `[FILENAME]` as usual; if the project's backlog is flat (no subfolders), omit the `[SUBFOLDER]/` segment from the paths. Change nothing else.
+**One allowed substitution:** before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root). This project's backlog is flat (no subfolders) — `[SUBFOLDER]` has been removed from all paths. Change nothing else.
 
 ```
 You are **Implementation Agent**.
 
 Project: wvulibraries_knapsack
-Task: <agent-tasks>/projects/wvulibraries_knapsack/tasks/backlog/[SUBFOLDER]/2026-10-28-HIGH-REFACTOR-REMOVE-FACET-LIMITING-WORKAROUND.md
+Task: <agent-tasks>/projects/wvulibraries_knapsack/tasks/backlog/2026-10-28-HIGH-REFACTOR-REMOVE-FACET-LIMITING-WORKAROUND.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/wvulibraries_knapsack/tasks/backlog/[SUBFOLDER]/2026-10-28-HIGH-REFACTOR-REMOVE-FACET-LIMITING-WORKAROUND.md \
+  git mv projects/wvulibraries_knapsack/tasks/backlog/2026-10-28-HIGH-REFACTOR-REMOVE-FACET-LIMITING-WORKAROUND.md \
          projects/wvulibraries_knapsack/tasks/active/2026-10-28-HIGH-REFACTOR-REMOVE-FACET-LIMITING-WORKAROUND.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
@@ -99,7 +80,7 @@ READ FIRST (after Step 0): Task file contains all prerequisites, credentials, go
 
 CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
   Summaries path: <agent-tasks>/projects/wvulibraries_knapsack/summaries/
-  Filename pattern: YYYY-MM-DD-REFACTOR-FACET-WORKAROUND-REMOVE.md
+  Filename pattern: YYYY-MM-DD-HIGH-REFACTOR-REMOVE-FACET-LIMITING-WORKAROUND.md
   Chat is for questions only — never paste synthesis into chat (formatting breaks).
 
 Closeout: follow SESSION_CLOSEOUT.md only.
