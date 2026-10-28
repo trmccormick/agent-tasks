@@ -1,7 +1,7 @@
-# Draft: Remove Knapsack Facet Limiting Workaround (Upstream Fix Active)
+# Task: Remove Knapsack Facet Limiting Workaround (Upstream Fix Active)
 
 ---
-status: draft
+status: backlog
 resume: false
 priority: HIGH
 type: refactor
@@ -10,6 +10,7 @@ mvp_alignment: OTHER
 local_worker_safe: true
 project: wvulibraries_knapsack
 created: 2026-10-28
+last_updated: 2026-10-28
 draft_review_checklist:
   - [x] File paths verified in codebase
   - [x] Upstream PR #3369 confirmed present in hyrax-webapp (commit 4148133d)
