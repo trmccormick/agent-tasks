@@ -1,5 +1,5 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-10-27 (Evening) — 🔐 SECURITY UPDATE: Hyku 7.2.1 released with critical GA4 multi-tenant fix; upgrading HYKU-720 testing target to 7.2.1
+**Last Updated:** 2026-10-28 — Draft review workflow hardened (Phase A template conformance gate); knapsack facet-limit refactor draft fixed for TASK_TEMPLATE compliance; pending re-review of fixed draft
 
 ---
 
@@ -80,6 +80,35 @@ Cannot validate the upstream fix while our workaround code is still in place. Ou
 | Agent | Task ID | State | Last Touched |
 |-------|---------|-------|--------------|
 | human/hykudev testing | HYKU-720-UPGRADE-TESTING.md | paused (in-progress, not dispatched) | 2026-10-27 (Praneeth working) |
+
+---
+
+## 📋 Session 2026-10-28 — Draft Review + Workflow Hardening
+
+**Draft Task**: `2026-10-28-HIGH-REFACTOR-REMOVE-FACET-LIMITING-WORKAROUND.md`
+- **Path**: `projects/wvulibraries_knapsack/tasks/drafts/`
+- **First review (Grok)**: Technical/architectural GO, but template compliance was not in scope → missed missing YAML fields, DRAFT STATUS NOTE, full Agent Dispatch Interface
+- **Planning agent (Qwen)**: Fixed draft for full TASK_TEMPLATE.md compliance; pushed as commit `4796493`
+- **Re-review**: Deferred until workflow docs were fixed (see below)
+
+**Workflow Process Fix (agent-tasks root)**:
+- **Root cause**: Draft-review prompts scoped only architecture/content; no mandatory template check
+- **Fix applied**: Two workflow docs updated to enforce Phase A Template Conformance gate:
+  - `REVIEW_AGENT_GUIDE.md` — Phase A first; FAIL blocks GO; disposition format updated; reusable dispatch fragment added
+  - `PLANNING_AGENT_SESSION_START.md` — planner self-check against TASK_TEMPLATE.md before recommending review
+- **Commits on remote**:
+  - `4796493` fix: Add missing TASK_TEMPLATE sections (knapsack draft structural compliance)
+  - `7f16fec` docs: require template conformance gate for draft task reviews
+
+**Decisions**:
+- Template FAIL must block GO on draft reviews (hard gate)
+- Standard draft-review prompt always includes item 5 (template compliance)
+- Sequence = fix draft → harden workflow → then re-review draft (Phase A template, then Phase B content)
+
+**Open**:
+1. ✅ Workflow commits confirmed on remote (`origin/main`)
+2. Re-review fixed knapsack draft against updated guide (Phase A + Phase B)
+3. If GO: human may git mv draft → backlog
 
 ---
 
