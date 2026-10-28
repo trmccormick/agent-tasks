@@ -850,3 +850,24 @@ Historical work from 2026-08-03 and earlier has been archived to keep status.md 
   - ✅ Facet limits verified: all facets show limit=5, Solr parameters correctly set f.<field>.facet.limit = limit+1
   - ✅ Ready for hykudev testing
   - Next action: Human pulls feature/hyku-v7.2.0-upgrade on demo-hykudev.lib.wvu.edu, rebuilds containers, verifies facets show 5 items + "More" link. Then create Phase 2 backport task for LaRita collaboration.
+
+---
+
+## 📝 Session Log — 2026-10-28 (Implementation: Facet Limiting Workaround Removal)
+
+**Work Done**: Implemented task to remove obsolete facet-workaround files; upstream PR #3369 provides global `default_facet_limit = 5` via Blacklight config, making the workaround unnecessary. Code committed and pushed on feature branch. Visual validation on hykudev pending human confirmation.
+
+- **Changed:**
+  - VERIFIED: `app/search_builders/catalog_search_builder.rb` — DELETED (custom search builder) per `git show 884c788 --stat`
+  - VERIFIED: `config/initializers/catalog_search_builder.rb` — DELETED (initializer override) per `git show 884c788 --stat`
+  - VERIFIED: `config/wvu_facet_defaults.yml` — DELETED (YAML-driven facet defaults) per `git show 884c788 --stat`
+  - VERIFIED: `config/initializers/catalog_controller_decorator.rb` — SURGICALLY TRIMMED (removed search_builder_class override + YAML config block; preserved pagination, M3 registration, Type removal) per `git show 884c788 --stat`
+  - VERIFIED: `projects/wvulibraries_knapsack/tasks/active/2026-10-28-HIGH-REFACTOR-REMOVE-FACET-LIMITING-WORKAROUND.md` → `tasks/completed/` per `git mv` + `find` verification
+
+- **Committed:**
+  - VERIFIED: `884c788` — "refactor: Remove obsolete facet limiting workaround (upstream PR #3369)" on `feature/hyku-v7.2.1-upgrade` (pushed) per `git log -1 --stat`
+
+- **Not committed:**
+  - agent-tasks closeout artifacts (task status update, session log entry, handoff file, closeout commit) — awaiting human authorization
+
+- **Stop condition:** PENDING human visual validation on hykudev (AC #5). Code ACs 1–4 complete. Hykudev facet check requires human confirmation before finalizing task closeout.
