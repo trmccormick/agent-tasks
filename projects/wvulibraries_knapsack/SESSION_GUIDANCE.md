@@ -146,6 +146,58 @@ No special handling needed for Gemfile.lock, storage/, or any other file — jus
 - `sh down.sh && sh up.sh` — Safe, standard deployment cycle
 - `git checkout [file]` — Safe on tracked files, potentially risky on untracked dirs
 
+**Deploying a Feature Branch to hykudev (Tracy/DevOps Procedure)**:
+
+When deploying a new feature branch (e.g. `feature/hyku-v7.2.1-upgrade`) that includes submodule updates or code changes:
+
+1. **Stop the running deployment** (critical first step):
+   ```bash
+   cd /path/to/wvu_knapsack
+   sh ./down.sh
+   ```
+
+2. **Preserve deployment-specific changes** (if `up.sh` or other files have local edits):
+   ```bash
+   # Stash only up.sh to preserve deployment customizations
+   git stash push -m "hykudev deployment changes" -- up.sh
+   ```
+
+3. **Clean the submodule** (hyrax-webapp will have Gemfile.lock + runtime artifacts from last run):
+   ```bash
+   cd hyrax-webapp
+   git checkout -- Gemfile.lock
+   git clean -fd  # Removes untracked files (but safe: submodule is tracked)
+   cd ..
+   ```
+
+4. **Fetch and checkout the new branch**:
+   ```bash
+   git fetch origin [branch-name]
+   git checkout [branch-name]
+   ```
+
+5. **Restore deployment customizations** (if stashed):
+   ```bash
+   git stash pop  # Or review first: git stash list
+   ```
+
+6. **Bring the deployment up** with the new code:
+   ```bash
+   sh ./up.sh
+   ```
+
+**Why this sequence?**
+- `down.sh` first: Ensures containers are stopped and volumes are cleanly unmounted
+- `git stash`: Preserves `up.sh` deployment edits without conflicting with branch switch
+- `hyrax-webapp` cleanup: Submodule Gemfile.lock is ephemeral and must be discarded before switching branches/submodule versions
+- `git checkout -- Gemfile.lock`: Safe — this is part of the submodule's normal build cycle; it will be regenerated when containers start
+- `git stash pop`: Reapplies deployment-specific changes after branch switch completes
+
+**If the submodule version changes in the branch:**
+- This is expected and correct — the branch may pin a different hyrax-webapp commit/tag
+- The new submodule version will be checked out when you run `git checkout [branch]`
+- Container rebuild will use the new `hyrax-webapp/` and generate a new Gemfile.lock for the updated gems
+
 **If you accidentally run a destructive command**:
 - Contact DevOps immediately — a snapshot may be available
 - Do NOT run additional git commands trying to "fix" it
