@@ -156,47 +156,59 @@ When deploying a new feature branch (e.g. `feature/hyku-v7.2.1-upgrade`) that in
    sh ./down.sh
    ```
 
-2. **Preserve deployment-specific changes** (if `up.sh` or other files have local edits):
+2. **Remove hyrax-webapp Gemfile.lock** (essential before submodule checkout):
+   ```bash
+   # Remove the lock file so it can be regenerated with the new submodule version
+   # File permissions can become restrictive during submodule updates
+   rm -f hyrax-webapp/Gemfile.lock
+   ```
+
+3. **Preserve deployment-specific changes** (if `up.sh` or other files have local edits):
    ```bash
    # Stash only up.sh to preserve deployment customizations
    git stash push -m "hykudev deployment changes" -- up.sh
    ```
 
-3. **Clean the submodule** (hyrax-webapp will have Gemfile.lock + runtime artifacts from last run):
+4. **Clean the submodule** (reset to tracked state):
    ```bash
    cd hyrax-webapp
-   git checkout -- Gemfile.lock
-   git clean -fd  # Removes untracked files (but safe: submodule is tracked)
+   git checkout -- .     # Restore all files to tracked state
+   git clean -fd         # Removes untracked files
    cd ..
    ```
 
-4. **Fetch and checkout the new branch**:
+5. **Fetch and checkout the new branch**:
    ```bash
    git fetch origin [branch-name]
    git checkout [branch-name]
    ```
 
-5. **Restore deployment customizations** (if stashed):
+6. **Restore deployment customizations** (if stashed):
    ```bash
    git stash pop  # Or review first: git stash list
    ```
 
-6. **Bring the deployment up** with the new code:
+7. **Bring the deployment up** with the new code:
    ```bash
    sh ./up.sh
    ```
 
 **Why this sequence?**
 - `down.sh` first: Ensures containers are stopped and volumes are cleanly unmounted
+- Remove Gemfile.lock: Critical step — this file gets restrictive permissions during submodule updates and prevents `initialize_app` container from regenerating it (exit code 23 error). Must be removed BEFORE stash to avoid conflicts
 - `git stash`: Preserves `up.sh` deployment edits without conflicting with branch switch
-- `hyrax-webapp` cleanup: Submodule Gemfile.lock is ephemeral and must be discarded before switching branches/submodule versions
-- `git checkout -- Gemfile.lock`: Safe — this is part of the submodule's normal build cycle; it will be regenerated when containers start
+- `hyrax-webapp` cleanup: Reset submodule to tracked state; new branch version will be checked out automatically
+- `git checkout -- Gemfile.lock`: Already removed in step 2, so this step won't restore it; new version will be generated fresh when containers start
 - `git stash pop`: Reapplies deployment-specific changes after branch switch completes
 
 **If the submodule version changes in the branch:**
 - This is expected and correct — the branch may pin a different hyrax-webapp commit/tag
 - The new submodule version will be checked out when you run `git checkout [branch]`
 - Container rebuild will use the new `hyrax-webapp/` and generate a new Gemfile.lock for the updated gems
+
+**Troubleshooting:**
+- If `initialize_app` fails with exit code 23 + "write permissions" error for Gemfile.lock: File permissions are too restrictive. Run `chmod -R u+w hyrax-webapp/` and retry `sh ./up.sh`
+- If the web container won't start: Check `docker compose logs web` for Rails initialization errors; may require `rails db:migrate`
 
 **If you accidentally run a destructive command**:
 - Contact DevOps immediately — a snapshot may be available
