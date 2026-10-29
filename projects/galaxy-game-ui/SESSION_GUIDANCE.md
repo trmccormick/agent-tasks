@@ -32,7 +32,7 @@ For every UI choice (layout, panel contents, names, colors, fixture shapes):
 1. **Look for the intent in the wiki first** (`docs/wiki/README.md` is the front door; `status-and-gaps.md` says how far each page can be trusted).
 2. **If the wiki does not cover it, research the deeper docs** (`docs/design/`, `docs/architecture/`, `docs/gameplay/`, `docs/developer/`) to find the intent. Those trees are uneven in quality; prefer the wiki when they disagree.
 3. **If no intent exists anywhere, do not decide it in the prototype.** Use a clearly marked placeholder value, add an OPEN entry to `NEEDS_REVIEW.md` ("proposed wiki update: <choice>"), and let Tracy decide where it gets documented.
-4. **Code wins over docs.** The wiki says design intent is allowed to move and many pages are still "verify against code". For data shapes (fixtures, field names), the main game's actual models and JSON are the source; the wiki explains why.
+4. **Conflicts go to Tracy; he has the final say.** Where the wiki, the deeper docs and the code disagree, do not pick a winner silently. Add an OPEN entry to `NEEDS_REVIEW.md` stating what each source says, and discuss it to get at the core design intent. Until Tracy decides, use the main game's actual models and JSON for data shapes (the wiki itself says to verify against code), and mark the choice as provisional.
 5. **Task files link to the wiki.** A UI task cites the wiki pages its choices come from. Work orders reference the wiki; they are not design truth.
 
 Current placeholders awaiting intent (see `NEEDS_REVIEW.md` entry 6): accent color (`--accent` is `#4aa8ff`), Eden identifier `AOL-732356`, wormhole link types (fixtures use `unknown`).
