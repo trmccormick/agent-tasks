@@ -287,9 +287,9 @@ If any fail, revise before proceeding to Step 4.5.
 
 ---
 
-### Step 4.5 — WAIT FOR REVIEWER ASSESSMENT AND HUMAN AUTHORIZATION
+### Step 4.5 — WAIT FOR REVIEWER GO, THEN SEPARATE HUMAN AUTHORIZATIONS
 
-⚠️ **STOP. Do not commit, push, or complete task until both approvals are received.**
+⚠️ **STOP. Do not commit or push until a reviewer GO is on record and the human has authorized each action in its own message.**
 
 1. Submit your synthesis report to the review channel with:
    - Link to synthesis report file (saved in `projects/agent-tasks/summaries/`)
@@ -301,21 +301,30 @@ If any fail, revise before proceeding to Step 4.5.
    - 🔄 **REVISE** — Reviewer identified issues. Implement feedback, regenerate synthesis, resubmit for review.
    - 🛑 **STOP** — Reviewer identified blocking issue. Do not commit. Follow reviewer guidance.
 
-3. Await human authorization:
-   - Once reviewer issues GO, await explicit human authorization: "Proceed with commit/push/task completion"
+3. Await human authorization, one action at a time:
+   - Once reviewer issues GO, wait for an explicit human message that authorizes commit (for example, "commit it").
+   - Push needs a separate, later human message that authorizes push (for example, "push it"). Authorization to commit does not imply authorization to push, and authorization to push does not imply authorization to commit.
+   - Confirming a command in your own approval prompt counts as authorization only after a reviewer GO is on record; before a GO, a click does not authorize commit or push.
    - Human may approve after reviewer GO, or may request additional review
 
 4. Only proceed to Step 5 if you have received:
    - ✅ Reviewer GO (not REVISE, not STOP)
-   - ✅ Human explicit authorization for commit/push/task completion
+   - ✅ A human message that authorizes the commit
 
 ---
 
 ### Step 5 — Stage and Commit
 
+Needs the commit authorization from Step 4.5.
+
 ```bash
 git add SESSION_CLOSEOUT.md
-git commit -m "docs: enhance stop condition guidance to surface blockers and risks explicitly"
+git commit -m "docs: enhance stop condition guidance to surface blockers and risks explicitly" -- SESSION_CLOSEOUT.md
+```
+
+Then STOP. Push only after a separate, later human message that authorizes push:
+
+```bash
 git push
 ```
 
@@ -323,11 +332,20 @@ git push
 
 ### Step 6 — Move Task to Completed
 
+This is a second commit. It needs its own commit authorization and its own push authorization from the human, in separate messages.
+
 ```bash
 git mv projects/agent-tasks/tasks/active/2026-10-19-MEDIUM-DOCUMENTATION-STOP-CONDITION-ENHANCEMENT.md \
        projects/agent-tasks/tasks/completed/2026-10/2026-10-19-MEDIUM-DOCUMENTATION-STOP-CONDITION-ENHANCEMENT.md
 git add projects/agent-tasks/tasks/completed/2026-10/2026-10-19-MEDIUM-DOCUMENTATION-STOP-CONDITION-ENHANCEMENT.md
-git commit -m "chore: complete stop condition enhancement documentation task"
+git commit -m "chore: complete stop condition enhancement documentation task" -- \
+  projects/agent-tasks/tasks/active/2026-10-19-MEDIUM-DOCUMENTATION-STOP-CONDITION-ENHANCEMENT.md \
+  projects/agent-tasks/tasks/completed/2026-10/2026-10-19-MEDIUM-DOCUMENTATION-STOP-CONDITION-ENHANCEMENT.md
+```
+
+Then STOP. Push only after a separate, later human message that authorizes push:
+
+```bash
 git push
 ```
 
@@ -346,9 +364,10 @@ git push
 - [ ] Total addition is ~25-30 lines (does not bloat section)
 - [ ] No restructuring of existing "1b" steps; subsection is purely additive
 - [ ] Reviewer issued GO (not REVISE or STOP)
-- [ ] Human explicitly authorized commit/push/task completion
+- [ ] Human authorized the commit in a separate message
+- [ ] Human authorized the push in a separate, later message
 - [ ] Changes staged, committed, and pushed
-- [ ] Task file moved to completed/ and pushed
+- [ ] Task file moved to completed/ and pushed (its own commit and push authorizations)
 
 ---
 
