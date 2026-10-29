@@ -1,5 +1,57 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-10-28 — Draft review workflow hardened (Phase A template conformance gate); knapsack facet-limit refactor draft fixed for TASK_TEMPLATE compliance; pending re-review of fixed draft
+**Last Updated:** 2026-10-29 — ✅ COMPLETED: Facet limiting workaround removal; AC #5 (search results facets) validated on hykudev; NEW: Homepage facet pagination bug discovered
+
+---
+
+## ✅ Session 2026-10-29 — Facet Limiting Workaround Removal COMPLETE + Homepage Bug Discovery
+
+**Work Completed**:
+- ✅ **Task**: 2026-10-28-HIGH-REFACTOR-REMOVE-FACET-LIMITING-WORKAROUND → **COMPLETED**
+- ✅ **Code cleanup**: Removed 3 obsolete workaround files (CatalogSearchBuilder, initializers, YAML config)
+- ✅ **Decorator trimmed**: Removed search_builder override; preserved pagination, type facet removal, M3 registration logic
+- ✅ **Branch strategy resolved**: Rebased feature/hyku-v7.2.0-upgrade with cleanup commits from 7.2.1-upgrade
+- ✅ **Submodule verified**: 279fe062 (origin/7.2-stable) — has PR #3369 facet limiting fix
+- ✅ **Deployed to hykudev**: feature/hyku-v7.2.0-upgrade (commit 3098226)
+- ✅ **Gemfile.lock fix verified**: Removal before docker stash prevents initialize_app exit code 23
+- ✅ **AC #5 VALIDATION PASS**: Search results facets showing exactly 5 values on hykudev ✓
+
+**Root Cause Resolution**:
+- **Problem**: M3 facets defaulted to Blacklight's 10 instead of desired 5
+- **Why it happened**: Hyrax::FlexibleCatalogBehavior auto-registers M3 facets without limit parameter
+- **Old approach**: Four-file workaround with per-field Solr param injection (not clean)
+- **Upstream fix (PR #3369)**: Global config.default_facet_limit = 5; all facets use limit: true
+- **Result**: Workaround now obsolete; upstream solution superior and cleaner
+
+**Branch/Release Discovery**:
+- **Critical finding**: v7.2.1 tag (7fa227b3) released Oct 5 but LACKS PR #3369
+- **Solution**: origin/7.2-stable (279fe062) has BOTH GA4 error handling AND PR #3369
+- **Branches divergent**: 7.2-stable not ancestor of v7.2.1 (different release paths)
+- **Decision**: Use 7.2-stable for now; monitor for v7.2.2+ with both fixes
+
+**NEW ISSUE DISCOVERED**:
+- **Scope**: Homepage facets only (NOT search results)
+- **Symptom**: Clicking "More" link on homepage facets shows only 5 values instead of ALL values
+- **Search results**: ✅ Working correctly (facet expansion shows all results)
+- **Status**: Created backlog task 2026-10-29-MEDIUM-BUG-FACET-MORE-LINK-PAGINATION.md for investigation
+
+**Commits (wvu_knapsack)**:
+- `3098226` - fix: Use hyrax-webapp 7.2-stable for PR #3369 facet limiting (v7.2.1 tag lacks this PR)
+- `687af48` - refactor: Complete surgical trim of decorator — remove search_builder_class reference
+- `ac6e001` - submodule: update hyrax-webapp to v7.2.1 (GA4 security + facet fix) [LATER REPLACED]
+- `884c788` - refactor: Remove obsolete facet limiting workaround (upstream PR #3369)
+
+**Commits (agent-tasks)**:
+- `8d22710` - task: Clarify facet more-link bug is homepage-specific, search results working correctly
+- `e2e2c82` - task: Mark facet-limiting-workaround removal as completed with AC #5 validation
+
+**Deployment Status**:
+- **Branch**: feature/hyku-v7.2.0-upgrade (hykudev testing)
+- **Status**: Running, AC #5 PASSING
+- **Next**: Investigate homepage facet pagination bug
+
+**Open Tasks**:
+1. **ACTIVE**: 2026-10-29-MEDIUM-BUG-FACET-MORE-LINK-PAGINATION.md (investigate homepage facet expansion)
+2. **PAUSED**: HYKU-720-UPGRADE-TESTING (Praneeth's date range work still in progress on 7.2.0-upgrade)
 
 ---
 
