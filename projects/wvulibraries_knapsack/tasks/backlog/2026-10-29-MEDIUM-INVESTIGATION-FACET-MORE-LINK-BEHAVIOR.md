@@ -14,40 +14,34 @@ project: wvulibraries_knapsack
 
 ## Issue Summary
 
-Two related issues observed after deploying feature/hyku-v7.2.0-upgrade to hykudev:
+### Working Behavior (main branch / production VM)
+- Homepage facets show collapsed values in sidebar (default count based on config)
+- "More" link → **no modal**, instead redirects to `/catalog/facet/{field_name}?locale=en`  
+- Expanded facet page shows ALL available facet values with pagination (Previous/Next)
+- Search results page works correctly: 5 values collapsed, all available via expansion
 
-### 1. Homepage Facet "More" Link Shows Limited Results (Still Limited)
-- **Expected**: "More" link expands to show ALL facet values
-- **Actual**: Shows only 5 values (same limit as collapsed view)
-- **Location**: Homepage facets, NOT search results page
+### Bug on hykudev (feature/hyku-v7.2.0-upgrade ONLY)
+After deploying the recent changes to hykudev:
+- Homepage "More" link now shows a **modal** that ALSO limits to 5 values instead of ALL
+- Both collapsed view AND modal show only 5 values — this is the bug
+- The original code on main does NOT show the modal; it redirects to `/catalog/facet/` page where all values appear
 
-### 2. Recent Modal Change Redirects to Separate Page Instead of Modal
-- The modal behavior has changed — no longer shows in-place expansion
-- Now redirects to `/catalog/facet/location_sim?locale=en` 
-- This needs verified: is the redirect intentional (Blacklight 8+)? Or regression?
-- Original expected behavior was a modal or in-page expansion
+## Root Cause Hypothesis
+The recent deployment changes (facet limiting fix + workaround removal) may have inadvertently changed the facet more link behavior:
+- Main branch works correctly — no modal, full expansion via redirect
+- Feature/hyku-v7.2.0-upgrade on hykudev introduces modal with limit applied to both collapsed AND expanded views
+- `config.default_facet_limit` is being applied where it shouldn't (to facet expansion)
 
 ## Investigation Scope
 
-1. **Check main branch vs hykudev** — What config changed between:
-   - Main branch / production VM (what we currently have deployed)
-   - Feature/hyku-v7.2.0-upgrade on hykudev (testing)
+1. **Diff between main and feature/hyku-v7.2.0-upgrade on hykudev**
+   - Compare config/initializers changes between the two branches
+   - Check if any facet more link / modal config was introduced or removed
+   - Verify which files were added/removed during the workaround removal (related_task)
 
-2. **Verify catalog/facet URL redirect behavior**:
-   - `https://digitalhistory.lib.wvu.edu/catalog/facet/location_sim?locale=en`
-   - Is this the intended Blacklight 8+ behavior?
-   - Confirmed with Jessica (catalog team) on expected behavior
-
-3. **Config changes to check**:
-   - `config.default_facet_limit = 5` — does this apply to "more" views?
-   - `limit: true` on facet fields in hyrax-webapp PR #3369
-   - Any Blacklight facet expansion config that was removed/changed
-
-4. **Determine if this is**:
-   - A Blacklight upgrade behavior change (intentional)
-   - A Hyku/Hyrax framework bug
-   - A WVU decorator issue
-   - A regression from facet limiting workaround removal
+2. **Check what changed that broke the working behavior:**
+   - Main branch works correctly — verify which file/state on hykudev differs
+   - Likely culprit: changes to `config.default_facet_limit`, Blacklight facet config, or Hyku PR #3369
 
 ## Files to Check First
 
@@ -58,13 +52,13 @@ Two related issues observed after deploying feature/hyku-v7.2.0-upgrade to hykud
 
 ## Acceptance Criteria
 
-- [ ] Confirmed whether redirect to `/catalog/facet/*` is intentional (with Jessica/catalog team)
-- [ ] If not intended: root cause identified + fix implemented
-- [ ] If intended but broken ("More" limited in expanded view): fix applied
-- [ ] Both behaviors working correctly on hykudev
+- [ ] Root cause identified (which file/config change on hykudev broke the working main branch behavior)
+- [ ] Restore original "More" link behavior: no modal, redirects to `/catalog/facet/*` page showing all values
+- [ ] Verify fix works on hykudev
+- [ ] Confirm not a regression from related_task (facet limiting workaround removal)
 
 ## Gotchas
 
-- May need to coordinate with catalog team (Jessica) on intended behavior change
-- Blacklight 8+ may have changed facet expansion from modal to page-based — check gem changelog
-- The "limited in expanded view" bug is separate from the modal→redirect behavior change
+- Main branch and production VM work correctly — this is ONLY reproducible on hykudev with feature/hyku-v7.2.0-upgrade
+- The "no modal, redirect to page" behavior is the expected/correct behavior
+- The modal behavior introduced on hykudev appears to be an unintended side effect
