@@ -1,5 +1,75 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-10-29 — ✅ COMPLETED: Facet limiting workaround removal; AC #5 (search results facets) validated on hykudev; NEW: Homepage facet pagination bug discovered
+**Last Updated:** 2026-10-30 — 🔴 CRITICAL BUG: Search results not displaying on hykudev (facets load, documents empty); initialize_app now completes; 3 fixes applied; handoff to Qwen for investigation
+
+---
+
+## 🔴 CRITICAL Session 2026-10-30 — Search Results Display Bug + Three Code Fixes
+
+**Status**: ⏳ **DEBUGGING IN PROGRESS** — Handoff to Qwen model (via GitHub Copilot/Ollama)
+
+**Critical Issue**:
+- **Symptom**: Facets load correctly with item counts (e.g., "Folk Music" shows 872), BUT clicking any facet returns ZERO result documents
+- **Localization**: ONLY on feature/hyku-v7.2.0-upgrade branch (hykudev); production (main branch) works correctly
+- **Root Cause**: UNKNOWN — requires investigation per task file procedures
+- **Impact**: Blocks Hyku 7.2.0/7.2.1 upgrade completion (security release cannot proceed)
+
+**Fixes Applied This Session**:
+1. **Commit f49e39b** (Oct 30): Fixed `configure_blacklight` block structure
+   - Issue: Premature block close (commit 069c7e3) broke facet suppression and before_action
+   - Fix: Restored complete block with all configuration inside
+   
+2. **Commit 399d4d8** (Oct 30): Restored facet configuration YAML and limit application
+   - Issue: Commits 884c788 & 687af48 removed facet limiting code, assuming upstream PR #3369 would replace it
+   - Assumption FAILED: PR #3369 provides global default but doesn't auto-apply to all facets
+   - Fix: Restored config/wvu_facet_defaults.yml (15 lines) and facet limit application logic in initializer
+   
+3. **Commit fb6b56a** (Oct 30): Fixed NoMethodError in facet limit check
+   - Issue: initialize_app crashed with `undefined method 'zero?' for true` during startup
+   - Root Cause: Some Blacklight facet fields have `limit: true` (boolean) instead of numeric
+   - Fix: Changed `.zero?` to `== 0` for safe comparison (works with nil, integers, and booleans)
+
+**Current State**:
+- ✅ initialize_app now completes successfully (no exit code 1)
+- ✅ Facet limits restored (defaults to 5 per _sim field)
+- ✅ M3 facets properly registered (28 facets from active metadata profile)
+- ❌ Search results still NOT displaying on hykudev (root cause unknown)
+- ✅ Production (main branch) search results working normally
+
+**Investigation Required**:
+- Task file created: `2026-10-30-CRITICAL-BUG-SEARCH-RESULTS-NOT-DISPLAYING-HYKU-720-UPGRADE.md` (424 lines)
+- 6 investigation steps documented with root cause hypotheses:
+  - **Hypothesis A**: search_builder_class removal (commit 887af48) broke core query logic
+  - **Hypothesis B**: Facet limit application (399d4d8) still incomplete or inconsistent
+  - **Hypothesis C**: Upstream PR #3369 doesn't provide equivalent functionality to removed custom code
+- Procedures: Solr query comparison, Rails log analysis, code diff inspection, debug logging
+- Next model: Qwen (via GitHub Copilot/Ollama) — starts with Step 1 (hykudev testing)
+
+**Critical Assumption Failure**:
+- **Assumption**: Commits 884c788 & 687af48 assumed Hyku PR #3369 provided equivalent facet limiting functionality
+- **Reality**: PR #3369 provides `config.default_facet_limit = 5` but does NOT automatically apply limits to all registered facets
+- **Result**: Removing custom search_builder code was incomplete; facet configuration needed restoration
+- **Lesson**: Cannot remove custom logic without verifying feature parity + testing with workaround code removed
+
+**Commits (wvu_knapsack — upgrade branch)**:
+- `fb6b56a` - fix: Change facet limit check from .zero? to == 0 (handle boolean values)
+- `399d4d8` - fix: Restore wvu_facet_defaults.yml and facet limit application logic
+- `f49e39b` - fix: Restore configure_blacklight block structure (close on correct line)
+
+**Commits (agent-tasks)**:
+- `051843a` - closeout: GitHub Copilot implementation session — search results bug debugging (final version with corrected architecture)
+- `88677c4` - task: Create comprehensive investigation task for Qwen model
+
+**Deployment Status**:
+- **Branch**: feature/hyku-v7.2.0-upgrade (hykudev testing)
+- **Status**: Containers running, initialize_app completes, facet counts display, **search results empty** ❌
+- **Next**: Qwen to investigate root cause via task file procedures
+
+**Handoff Details**:
+- Session completed at 99% token budget
+- Comprehensive handoff to Qwen (local model via Ollama, accessed through GitHub Copilot interface)
+- All code fixes pushed to origin/feature/hyku-v7.2.0-upgrade
+- All documentation committed to agent-tasks main branch
+- Task file ready for immediate dispatch
 
 ---
 
