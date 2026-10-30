@@ -323,6 +323,7 @@ Not checked: the rest of the task file; whether `PLANNING_AGENT_CLOSEOUT.md` or 
 **Proposed route** (pairing decision of 2026-10-25): do not dispatch as written. Qwen extracts the current gate text from both closeout docs first, one concern per message; a drafter writes the new wording from that text; a repo-capable reviewer who is not the drafter reads it from git; Tracy approves.
 **Priority**: MEDIUM
 **Status**: OPEN. REVISE recorded 2026-10-28; task file unchanged; not to be dispatched until redrafted.
+**Update 2026-10-30 (task 1 review)**: GO from Grok on `6a0762a`, independent of the drafter (7 of 7 checks PASS, REPORTED by Grok; his spot-check quotes of `TASK_TEMPLATE.md` L320, L325 and L346 and his claims about the task file re-verified by Claude against origin `5b289af`, VERIFIED). The review gate for `6a0762a` is closed. The push had already happened (Tracy, 2026-10-28), so the GO closes the review after the fact. This does not change the task 2 status above.
 
 ---
 
