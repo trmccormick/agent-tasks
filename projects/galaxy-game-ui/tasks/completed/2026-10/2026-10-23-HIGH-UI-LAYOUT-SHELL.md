@@ -1,5 +1,5 @@
 ---
-status: drafts
+status: completed
 resume: false
 priority: HIGH
 type: refactor
@@ -9,7 +9,31 @@ local_worker_safe: true
 last_updated: 2026-10-23
 ---
 
-## 🔴 DRAFT REVIEW CHECKLIST
+## Layout Shell Complete — T3a-2
+
+**Implementation Date**: 2026-10-29  
+**Agent**: Qwen (implementation)  
+**Branch**: `review/qwen-ui-prototype` (commit pushed)  
+**Screenshots**: Saved to `projects/galaxy-game-ui/summaries/`  
+
+### Changes Summary
+Only `galaxy-game-ui/app/views/layouts/application.html.erb` was modified:
+- Body background → dark (`--bg: #0e1114`) with token text color
+- Header → Galaxy Game brand + Dashboard link + auth nav (styled with tokens)
+- Main → `woodburn-hall` class removed, container kept
+- Flashes → notice uses `--accent`, alert uses `--red`, panel backgrounds
+- Footer → single line "Galaxy Game UI prototype"
+- Title/meta → "Galaxy Game" (not WVU Libraries Systems)
+
+### Verification
+- `grep -in "wvu|woodburn"` in layout returns **empty** ✅
+- Only application.html.erb changed (`18 insertions, 74 deletions`) ✅
+- Nothing staged or committed during implementation ✅
+- Commits pushed to remote branch ✅
+- `/`, `/session/new`, signed-in page load; login readable ✅
+
+### Dependencies Resolved
+- Depends on: `2026-10-23-HIGH-UI-CSS-FOUNDATION` (T3a) — verified complete
 
 - [ ] Acceptance Criteria are clear and measurable
 - [ ] Task scope is well-bounded (one layout file; no new pages, no new routes)
@@ -78,6 +102,7 @@ Facts (all VERIFIED from `app/views/layouts/application.html.erb` on the branch)
 - Flash messages styled with `wvu-*` colors.
 - A WVU footer with the library's address, phones and links.
 - `app/assets/images/logo.png` is the WVU Libraries logo, not a Galaxy Game asset.
+- Moved to active/ by human 2026-10-29 for T3a-2 dispatch. T3a tokens already on review/qwen-ui-prototype.
 
 ## Problem Statement
 
