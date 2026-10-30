@@ -28,30 +28,33 @@
 - **Branches divergent**: 7.2-stable not ancestor of v7.2.1 (different release paths)
 - **Decision**: Use 7.2-stable for now; monitor for v7.2.2+ with both fixes
 
-**NEW ISSUE DISCOVERED**:
+**ISSUE DISCOVERED & RESOLVED**:
 - **Scope**: Homepage facets only (NOT search results)
-- **Symptom**: Clicking "More" link on homepage facets shows only 5 values instead of ALL values
-- **Search results**: ✅ Working correctly (facet expansion shows all results)
-- **Status**: Created backlog task 2026-10-29-MEDIUM-BUG-FACET-MORE-LINK-PAGINATION.md for investigation
+- **Symptom**: Clicking "More" link on homepage facets showed only 5 values instead of ALL values
+- **Root Cause**: Workaround removal in commit 884c788 inadvertently deleted code that enforced facet.limit+1 for "more" link detection
+- **Resolution**: Reworked solution identified and deployed (via parallel session); issue now FIXED on hykudev
+- **Status**: ✅ RESOLVED — homepage "More" link now shows all facet values with pagination
 
 **Commits (wvu_knapsack)**:
 - `3098226` - fix: Use hyrax-webapp 7.2-stable for PR #3369 facet limiting (v7.2.1 tag lacks this PR)
 - `687af48` - refactor: Complete surgical trim of decorator — remove search_builder_class reference
 - `ac6e001` - submodule: update hyrax-webapp to v7.2.1 (GA4 security + facet fix) [LATER REPLACED]
 - `884c788` - refactor: Remove obsolete facet limiting workaround (upstream PR #3369)
+- [Latest fixes from parallel session working correctly on hykudev]
 
 **Commits (agent-tasks)**:
+- `2d63d47` - chore: remove draft research task — issue resolved in parallel session
 - `8d22710` - task: Clarify facet more-link bug is homepage-specific, search results working correctly
 - `e2e2c82` - task: Mark facet-limiting-workaround removal as completed with AC #5 validation
 
 **Deployment Status**:
 - **Branch**: feature/hyku-v7.2.0-upgrade (hykudev testing)
-- **Status**: Running, AC #5 PASSING
-- **Next**: Investigate homepage facet pagination bug
+- **Status**: Running, AC #5 PASSING, Homepage facet "More" link FIXED
+- **Next**: Monitor for remaining issues during v7.2.0-upgrade testing
 
 **Open Tasks**:
-1. **ACTIVE**: 2026-10-29-MEDIUM-BUG-FACET-MORE-LINK-PAGINATION.md (investigate homepage facet expansion)
-2. **PAUSED**: HYKU-720-UPGRADE-TESTING (Praneeth's date range work still in progress on 7.2.0-upgrade)
+1. **PAUSED**: HYKU-720-UPGRADE-TESTING (Praneeth's date range work still in progress on 7.2.0-upgrade)
+2. **BACKLOG**: 2026-10-29-MEDIUM-INVESTIGATION-INITIALIZE-APP-EXIT-CODE-23.md (transient issue, low priority)
 
 ---
 
