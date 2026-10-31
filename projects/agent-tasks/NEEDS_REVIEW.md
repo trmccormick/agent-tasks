@@ -473,3 +473,33 @@ Recommend only small clarifications to existing guidance if actual ambiguity rem
 **Priority**: LOW — affects review quality; no authorization boundary issue.
 
 **Status**: OPEN. For Claude's later planning review. No workflow-document changes are authorized by this entry.
+
+---
+
+### 2026-10-31 — Task-drafting workflow overhead exceeds the work it is meant to delegate
+
+**What happened**: The Galaxy Game UI sign-in refactor was intended to demonstrate a useful workflow: have a planning/review agent draft a bounded task file, review and correct it, then hand it to Qwen to perform the implementation. Instead, the task went through repeated rounds of drafting corrections, template-compliance checks, synthesis-report revisions, and further review. Even after multiple corrections, the task still contained disputed workflow language and required additional discussion. The human ultimately concluded that directly fixing the small CSS/view issue, or having ChatGPT provide the corrected file for the human to save, would take less effort than continuing the task workflow.
+
+The task-drafting process therefore failed its primary objective in this case: reducing the human's workload through effective delegation. The overhead of producing and validating the handoff exceeded the apparent effort of doing the underlying work directly.
+
+**Observed in**: `galaxy-game-ui` project, sign-in view refactor task (`2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md`), planning, review, and task-correction sessions on 2026-10-30 and 2026-10-31.
+
+**What I already checked**:
+- The task's original purpose and scope are narrow: remove WVU branding from the sign-in view and apply existing Galaxy Game design tokens without changing sign-in behavior.
+- Multiple correction rounds were needed to address missing or incorrect template material, dispatch placeholders, filename priority, approval-state wording, and synthesis-report structure.
+- The final correction still retained a task-specific synthesis template with pre-checked prerequisite claims.
+- The dispatch sequencing concern was initially described as preventing human readiness review, although the human can inspect and approve the task before dispatch. The actual concern is the implementation agent's required move-before-read sequence.
+- The task remains in `tasks/backlog/`; no implementation was dispatched and no implementation changes were made.
+- Existing entries already record template-compliance and Qwen execution/continuation problems. This entry records the additional end-to-end cost and failure to save human time.
+
+**What needs a second opinion**:
+1. Is the current task-drafting, correction, and review process proportionate to the size and risk of the implementation being delegated?
+2. Can the workflow distinguish small, well-bounded changes from complex or high-risk work, allowing a lightweight task and handoff for the former without requiring unnecessary synthesis, repeated template repair, or multiple review rounds?
+3. What is the minimum information Qwen actually needs to implement a small task reliably: objective, verified files and paths, constraints, acceptance criteria, verification, and stop conditions? Which additional template requirements genuinely improve execution enough to justify their cost?
+4. Can the drafting agent produce a task that is complete enough for one focused review, with corrections returned as a consolidated set rather than repeated incremental rounds?
+5. Should there be a practical decision point for abandoning delegation when task preparation and review are taking longer than direct implementation would reasonably take?
+6. How should the workflow preserve human approval, independent review, and scope control without making routine changes disproportionately bureaucratic?
+
+**Priority**: MEDIUM — the purpose of the workflow is to reduce human effort while maintaining reliable delegated implementation. If task preparation routinely costs more than the work it delegates, the process is not delivering its intended value.
+
+**Status**: OPEN. Human paused the sign-in task workflow on 2026-10-31. No implementation authorized. Request Claude's assessment of the end-to-end workflow and a proportionate approach for small, bounded changes before changing shared workflow documentation.
