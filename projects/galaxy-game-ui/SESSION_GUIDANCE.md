@@ -2,7 +2,7 @@
 
 Project-specific guidance for any agent working on the Galaxy Game UI prototype, read at startup once the project is named. Universal rules live in `rules/GUARDRAILS.md` and `SESSION_CLOSEOUT.md`; this file does not repeat them.
 
-Created 2026-10-29 by a Claude web session, drafted as text and saved by Tracy. **Evidence label:** items marked VERIFIED were read from GitHub `main` on that date. Everything else is REPORTED (stated by Tracy or carried from `status.md` and the 2026-10-26 handoff) unless an agent re-checks it and says so. Where this file and the live repo disagree, the live repo wins; report the difference.
+Created 2026-10-29 by a Claude web session, drafted as text and saved by Tracy. Updated 2026-10-30: section 8 now allows harvesting first-attempt work directly where it is usable. **Evidence label:** items marked VERIFIED were read from GitHub `main` on that date. Everything else is REPORTED (stated by Tracy or carried from `status.md` and the 2026-10-26 handoff) unless an agent re-checks it and says so. Where this file and the live repo disagree, the live repo wins; report the difference.
 
 ---
 
@@ -11,7 +11,7 @@ Created 2026-10-29 by a Claude web session, drafted as text and saved by Tracy. 
 - A **prototype UI** for Galaxy Game, built to develop and test UI choices outside the main game repo (the main repo's docs and code are mid-cleanup).
 - Based on `wvu_moonshot` (a Rails 8 prototype that read CSV files); WVU-specific parts are being removed and replaced with Galaxy Game styling and views.
 - It is tied closely to Galaxy Game main: what it shows and how it is shaped must follow the main game's models and data, not invent its own.
-- Repo: `https://github.com/trmccormick/galaxy-game-ui`. Working branch: `review/qwen-ui-prototype` (VERIFIED in `status.md`). Remote `main` holds the first-attempt dashboard panels, preserved as reference only.
+- Repo: `https://github.com/trmccormick/galaxy-game-ui`. Working branch: `review/qwen-ui-prototype` (VERIFIED in `status.md`). Remote `main` holds the first-attempt dashboard panels, preserved for reference and reuse (see section 8).
 
 ---
 
@@ -86,21 +86,26 @@ Current placeholders awaiting intent (see `NEEDS_REVIEW.md` entry 6): accent col
 - `tasks/drafts/2026-10-23-HIGH-DASHBOARD-EVE-CSS-FOUNDATION.md` and `TASK-3-REVISION-NOTES.md`: do not implement (GameState design).
 - `INCREMENTAL-TASK-PLAN.md` Tasks 4-8: stale until rewritten after T3c.
 - Seeds task: held. Its criterion 2 deletes `UserCsvLoader`, which contradicts the decision to keep it.
-- Local first-attempt tree (git-ignored): reference only, see section 8.
+- Local first-attempt tree (git-ignored): reference and reuse source, see section 8.
 
 ---
 
-## 8. First attempt as a source of examples
+## 8. First attempt: examples and reusable work
 
-The first attempt at the dashboard was broken by running all tasks too fast, then backed up and replaced by a clean `wvu_moonshot` base. It still holds working ideas worth reading before writing something new:
+The first attempt at the dashboard was broken by running all tasks too fast, then backed up and replaced by a clean `wvu_moonshot` base. Its work is still useful: read it before writing something new, and **harvest it directly into the new version wherever it can be used**, rather than rewriting it from scratch.
 
-- **Remote `main` of `galaxy-game-ui`:** first-attempt dashboard panels, preserved. Commit `8ce1250` holds `eve_dashboard.scss` (buttons, forms, bars, badges, utilities) and `dashboard.scss` (topbar, panel base). A small task after T3a-2 will port those into the Tailwind entry file as plain CSS using tokens only.
+Where it lives:
+
+- **App repo, remote `main` of `galaxy-game-ui`:** first-attempt dashboard panels, preserved. Commit `8ce1250` holds `eve_dashboard.scss` (buttons, forms, bars, badges, utilities) and `dashboard.scss` (topbar, panel base). A small task after T3a-2 will port those into the Tailwind entry file as plain CSS using tokens only.
+- **agent-tasks side, `projects/galaxy-game-ui-first-attempt/`:** its task files and notes, kept for reference. For example `tasks/backlog/2026-10-22-HIGH-FIX-SESSION-LOGIN-AND-DASHBOARD-STYLING.md` (VERIFIED on `main`, 245 lines) covers the WVU branding in the session view and describes that attempt's intended look ("glassmorphic cards, cyan accents"). That look is the first attempt's direction, not a decision for the rebuild.
 - **Local first-attempt tree (git-ignored):** `<first-attempt path> [FILL IN: Tracy to confirm where the backup lives]`. Check it for examples (panel markup, fixtures, helpers) before inventing new ones.
+- **Existing early Galaxy Game UI in the main game repo (REPORTED, not yet inventoried):** another possible source of domain-specific layouts and information organization.
 - `landing.scss` from the first attempt does not match the current landing view's classes (`hero-section`, `status-grid`, `stat-large`, ...). Treat it as a style reference, not a drop-in.
 
-How to use it:
+How to harvest:
 
-1. **Read, borrow, adapt. Do not copy whole files in.** The first attempt's failures were unchecked steps, CSS that never loaded, and view/route helpers that did not match the app.
-2. **Anything borrowed still passes the section 3 rule** (traces to the wiki or becomes a placeholder entry) and the section 5 checks (rebuild, load the live page, screenshot).
-3. **Tokens only.** Hard-coded colors and sizes from the first attempt are replaced with the Galaxy Game tokens from T3a.
-4. **Never write into the first-attempt tree** and do not stage or commit it; it is a read-only reference.
+1. **Copy out, never write in.** Copy the file or piece you want into the new version; never edit, stage or commit the first-attempt tree.
+2. **Record the source.** The task (and the commit message) names where it came from: path and commit.
+3. **Adapt only what is needed.** If it works as it is, use it as it is. Replace hard-coded colors and sizes with the Galaxy Game tokens from T3a.
+4. **It still passes the checks.** The choice traces to the wiki or becomes a placeholder entry (section 3), and the section 5 checks apply: rebuild, load the live page, screenshot. The first attempt's failures were unchecked steps, CSS that never loaded, and view/route helpers that did not match the app, so harvested pieces are verified like new work.
+5. **One piece at a time.** Harvest one component group per task, not a whole directory.
