@@ -400,3 +400,26 @@ These are proposals for Claude to evaluate, not approved edits. Grok advises aga
 **Priority**: MEDIUM — affects every drafted task that includes an Agent Dispatch Interface; the question is whether clarification is needed, not whether the template should change.
 
 **Status**: OPEN
+
+---
+
+### 2026-10-31 — End-to-end task creation and approval workflow: sign-in refactor
+
+**What happened**: The Galaxy Game UI sign-in refactor task exercised the workflow from recovering design intent and checking existing documentation, through a bounded draft, independent review and correction, final GO, human approval, backlog placement, and a fresh implementation session. The sequence deliberately separates the review agent's GO recommendation, the human's approval and promotion of the task into backlog, and the later implementation dispatch.
+
+**Observed in**: `projects/galaxy-game-ui` sign-in view refactor, task `2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md`, final review of commit `1fc5301` and subsequent approval preparation, 2026-10-31.
+
+**What I already checked**: The task remained in `tasks/drafts/` through independent review. The final reviewer returned GO and explicitly left human approval and dispatch authority with Tracy. The planned next step is a separate Qwen session to implement only after the task is approved and placed in backlog.
+
+**What needs a second opinion (Claude workflow tuning)**: Assess whether the existing workflow documentation makes these boundaries and sequence sufficiently clear:
+1. Wiki/documentation is the durable source of design intent; implementation tasks should point to it and stay narrowly scoped.
+2. Independent reviewer GO is a recommendation, not human approval.
+3. Human approval promotes a reviewed draft from `drafts/` to `backlog/` and changes its status.
+4. Backlog placement does not itself dispatch or authorize implementation; a separate handoff/new implementation session does that.
+5. Implementation should begin from the approved task and its minimal handoff in a fresh session, rather than continuing the drafting/review session.
+
+Recommend only small clarifications to existing guidance if actual ambiguity remains. Avoid duplicating instructions already present, adding unnecessary gates, or expanding the workflow. Treat this as a successful workflow observation for possible adoption/tuning, not as a defect or authorization to change documentation.
+
+**Priority**: LOW — workflow clarity and repeatability; the demonstrated sequence worked.
+
+**Status**: OPEN. For Claude's later planning review. No workflow-document changes are authorized by this entry.
