@@ -146,6 +146,24 @@ Items 1-4 are carried over from the archived Grok start doc (2026-09-06) and hav
 
 ---
 
-## 9. Keeping this file current
+## 9. Who usually does what (preference)
+
+REPORTED (Tracy, 2026-10-31). A preference, not a fixed assignment, like section 8. It covers all Galaxy Game work, including the galaxy-game-ui prototype, which takes its models and data from the main game.
+
+| Area | Usually |
+|---|---|
+| Assets and UI (views, CSS, design tokens) | ChatGPT |
+| AI Manager | Grok |
+| Main backend | Claude |
+| Cross-agent support; plans when needed | Perplexity |
+| Brainstorming, general work, wiki rebuild | Gemini |
+
+- The usual agent writes the change in its area. Qwen applies commands and rebuilds; it does not draft in that area unless Tracy says so.
+- A reviewer is a different agent from the writer and has read the repo directly.
+- An agent without repo read works from a pasted copy of the file and marks anything it can't see `[FILL IN]`.
+
+---
+
+## 10. Keeping this file current
 
 This file holds stable guidance only. Dated state (suite counts, active queues, what was last built) belongs in `status.md` and handoffs, never here. The planning agent proposes changes to this file; the human approves them.
