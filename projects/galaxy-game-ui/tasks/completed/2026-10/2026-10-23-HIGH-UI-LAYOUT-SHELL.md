@@ -129,13 +129,17 @@ Pages inherit WVU branding and light colors from the layout, so nothing can look
 
 ## Acceptance Criteria
 
-- [ ] `grep -in "wvu\|woodburn" app/views/layouts/application.html.erb` returns nothing
-- [ ] `/` renders with the new shell and no WVU masthead, footer or address
+- [x] `grep -in "wvu\|woodburn" app/views/layouts/application.html.erb` returns nothing
+- [x] `/` renders with the new shell and no WVU masthead, footer or address
 - [ ] Sign in and sign out both work (manual check, noted in the report)
 - [ ] Flash messages still render
-- [ ] `/session/new` is readable on the new background (screenshot)
-- [ ] Screenshots of `/`, `/session/new` and a signed-in page saved in `summaries/` and **approved by the human**
+- [x] `/session/new` is readable on the new background (screenshot)
+- [x] Screenshots of `/`, `/session/new` and a signed-in page saved in `summaries/` and **approved by the human**
 - [ ] `git diff --stat` pasted; only the layout (and token additions, if any) changed; nothing staged or committed
+
+## Approval
+
+Committed c01b23d, approved by Tracy 2026-10-30 after reviewing screenshots of `/`, `/session/new` and `/dashboard` (signed in). Leftovers for later small tasks: WVU text and white card on the sign-in page, faint placeholder text, WVU favicon, landing page unstyled and ignores sign-in state.
 
 ## Stop Conditions
 

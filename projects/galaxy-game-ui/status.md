@@ -1,14 +1,15 @@
 # Galaxy Game UI — Status
 
-**Last updated**: 2026-10-23  
+**Last updated**: 2026-10-30  
 **Canonical plan**: `PLANNING-SESSION-2026-10-23.md` · **Branches**: `BRANCHES.md`
 
 ## Active track
 
 - **Branch**: `review/qwen-ui-prototype`
-- **Next dispatch order**: T3a → T3a-2 → T3b (one at a time) → T3c → seeds if needed → landing residual
+- **Next task**: T3b (JSON fixture loader) or sign-in view cleanup (Tracy's choice); then T3c → seeds if needed → landing residual
 - **Architecture**: JSON fixtures + GameDataJsonLoader; no GameState; no world data in user metadata
-- **Approval**: T3a, T3a-2, T3b, T3c — reviewed GO by Grok (2026-10-23); approved by Tracy (2026-10-24) with edits applied (commit 9161b65).
+- **Completed**: T3a (commit `b1eb0d3`), T3a-2 (commit `c01b23d`, approved by Tracy 2026-10-30)
+- **Approval**: T3b, T3c — reviewed GO by Grok (2026-10-23); approved by Tracy (2026-10-24) with edits applied (commit 9161b65); both remain in drafts/ until dispatched.
 
 ## Routing Recommendation (Planning Agent Assessment — Tracy to approve)
 
@@ -41,10 +42,10 @@ T3a ──→ T3a-2 ──→ T3c
 
 | Session Label | Agent | Task | State | Last Touched | Local Commits | Notes |
 |---|---|---|---|---|---|---|
-| T3a-implementation | **(Tracy to assign)** | 2026-10-23-HIGH-UI-CSS-FOUNDATION | approved, pending dispatch | 2026-10-23 | No | Group A — low risk |
-| T3b-implementation | **(Tracy to assign)** | 2026-10-23-HIGH-JSON-FIXTURE-LOADER | approved, pending dispatch | 2026-10-23 | No | Group A — independent of T3a |
-| T3a-2-implementation | **(Tracy to assign)** | 2026-10-23-HIGH-UI-LAYOUT-SHELL | depends on T3a | 2026-10-23 | No | Group B — after T3a approved |
-| T3c-implementation | **(Tracy to assign)** | 2026-10-23-HIGH-DASHBOARD-OVERVIEW | depends on T3a + T3a-2 + T3b | 2026-10-23 | No | Group C — after T3a/T3a-2/T3b approved |
+| ~~T3a-implementation~~ | **(Tracy to assign)** | ~~2026-10-23-HIGH-UI-CSS-FOUNDATION~~ | ~~approved, pending dispatch~~ | ~~2026-10-23~~ | ~~No~~ | **COMPLETED** — commit `b1eb0d3` on `review/qwen-ui-prototype` |
+| T3b-implementation | **(Tracy to assign)** | 2026-10-23-HIGH-JSON-FIXTURE-LOADER | approved, pending dispatch | 2026-10-23 | No | Next task (or sign-in cleanup) |
+| ~~T3a-2-implementation~~ | **(Tracy to assign)** | ~~2026-10-23-HIGH-UI-LAYOUT-SHELL~~ | ~~depends on T3a~~ | ~~2026-10-23~~ | ~~No~~ | **COMPLETED** — commit `c01b23d`, approved by Tracy 2026-10-30 |
+| T3c-implementation | **(Tracy to assign)** | 2026-10-23-HIGH-DASHBOARD-OVERVIEW | status: drafts (not moved — depends on T3b) | 2026-10-23 | No | After T3b approved |
 
 ## Do not implement
 
@@ -78,3 +79,13 @@ T3a ──→ T3a-2 ──→ T3c
 - **Committed**: none (awaiting human approval for Issues 1–3).
 - **Not committed**: status.md (contains approved routing table for T3a–T3c dispatch; one file has incorrect YAML status requiring fix).
 - **Stop condition**: Inventory complete. Three issues identified and documented in handoff; planning agent awaiting human approval to proceed with fixes and commit. Next action: human approves Issue 1–3 fixes, then planning agent updates files, stages explicit paths, commits. See handoff: `handoffs/copilot-haiku/2026-10-26-PLANNING-SESSION-CLOSEOUT.md`
+
+---
+
+## 📝 Session Log — 2026-10-30 (Planning Inventory & Bookkeeping)
+
+- **Verified**: T3a committed as `b1eb0d3` on `review/qwen-ui-prototype`; T3a-2 committed as `c01b23d`, approved by Tracy 2026-10-30.
+- **Changed**: (a) T3a task file — status set to `completed`, completion note added citing `b1eb0d3`; (b) T3a-2 task file — four acceptance boxes ticked ([x] grep returns nothing, [x] / renders with new shell, [x] /session/new readable on new background, [x] screenshots approved by Tracy), approval section added; (c) status.md — header date updated to 2026-10-30, Open Sessions table refreshed (T3a/T3a-2 marked completed, T3b next, T3c left in drafts), next task set to T3b or sign-in cleanup at Tracy's choice; (d) T3c YAML status changed active → drafts (file not moved).
+- **Committed**: none (awaiting human approval).
+- **Not committed**: Four files modified (status.md, T3a task file moved to completed/2026-10/, T3a-2 task file with four acceptance boxes ticked, T3c YAML status changed active → drafts). No git diff pasted here.
+- **Next action**: Human approves changes, then planning agent stages explicit paths and commits. Next implementation task: T3b (JSON fixture loader) or sign-in view cleanup draft (being added separately).
