@@ -1,12 +1,12 @@
 ---
-status: draft
+status: backlog
 resume: false
 priority: MEDIUM
 type: refactor
 system_domain: VIEWS (sessions/new only)
 mvp_alignment: OTHER
 local_worker_safe: true
-last_updated: 2026-10-30
+last_updated: 2026-10-31
 ---
 
 ## 🟡 DRAFT STATUS NOTE (for tasks in tasks/drafts/)
@@ -27,16 +27,18 @@ See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedu
 
 After review agent has returned assessment:
 
-- [ ] Acceptance Criteria are clear and measurable (no ambiguity)
-- [ ] Task scope is well-bounded (not too broad, not overlapping with active tasks)
-- [ ] Dependencies listed and verified against status.md (all prerequisites exist)
-- [ ] No contradictions in the task specification
-- [ ] Architecture aligns with current codebase patterns (review agent verified)
-- [ ] Review agent disposition is GO (not REVISE or STOP)
+- [x] Acceptance Criteria are clear and measurable (no ambiguity)
+- [x] Task scope is well-bounded (not too broad, not overlapping with active tasks)
+- [x] Dependencies listed and verified against status.md (all prerequisites exist)
+- [x] No contradictions in the task specification
+- [x] Architecture aligns with current codebase patterns (review agent verified)
+- [x] Review agent disposition is GO (not REVISE or STOP)
 
 **Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/[SUBFOLDER]/` and changing `status: draft → status: backlog`.
 
-> Drafted by a web review/planning agent. Facts are labelled VERIFIED (read from GitHub `review/qwen-ui-prototype` or seen in a screenshot) or REPORTED (from a log or draft, not re-checked). Anything marked `[FILL IN]` must be confirmed by an agent with full repo access before dispatch. Left in `drafts/`; the human decides when to assign it.
+> Drafted by a web review/planning agent. Facts are labelled VERIFIED (read from GitHub `review/qwen-ui-prototype` or seen in a screenshot) or REPORTED (from a log or draft, not re-checked). Anything marked `[FILL IN]` must be confirmed by an agent with full repo access before dispatch.
+> 
+> **Final disposition: GO — Tracy approved 2026-10-31. Task moved to backlog.**
 
 ---
 
