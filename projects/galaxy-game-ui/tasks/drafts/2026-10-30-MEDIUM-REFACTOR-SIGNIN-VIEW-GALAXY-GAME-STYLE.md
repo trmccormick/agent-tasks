@@ -21,24 +21,28 @@ last_updated: 2026-10-30
 
 ---
 
-## 🔴 Agent Dispatch Interface (Required)
+## 🔴 Agent Dispatch Interface (Required — for use AFTER human approval)
+
+**This interface is NOT active while the task remains in `drafts/`.** Draft review and assessment happen while the task stays in `drafts/`. Only the human may approve and move it from `drafts/` to `backlog/[SUBFOLDER]/`. The implementation agent may move it from `backlog/` to `active/` only when explicitly dispatched.
+
+**When the human moves this task to `backlog/`, replace this note with the following dispatch block:**
 
 ```
 You are **Implementation Agent**.
 
 Project: galaxy-game-ui
-Task: <agent-tasks>/projects/galaxy-game-ui/tasks/drafts/2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md
+Task: <agent-tasks>/projects/galaxy-game-ui/tasks/backlog/[SUBFOLDER]/2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy-game-ui/tasks/drafts/2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md \
+  git mv projects/galaxy-game-ui/tasks/backlog/[SUBFOLDER]/2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md \
          projects/galaxy-game-ui/tasks/active/2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md
-  Then open the moved file and change: status: drafts → status: active
+  Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
 If the task YAML has `resume: true`, read the Progress / Resume block first, continue from "Next step", and set `resume: false` when you move the file to `active/`. Do not restart the task.
 
-LIFECYCLE: drafts → active → completed
+LIFECYCLE: backlog → active → completed
   - Tracked file: git mv (never cp or plain mv)
   - New/untracked file: mv then git add the final path
   - Never leave stale copies in the source folder
@@ -79,7 +83,7 @@ Facts (VERIFIED from `galaxy-game-ui/app/views/sessions/new.html.erb` on the bra
 - The form is `form_with url: session_path` with `email_address` and `password` fields. **Its behaviour is correct and must not change.**
 - Design tokens already exist on the branch (T3a): `--bg`, `--panel`, `--panel2`, `--line`, `--text`, `--muted`, `--accent`, `--green`, `--red`, `--gold`. `--accent` (`#4aa8ff`) is a placeholder pending a human decision, so use the token, never the hex.
 
-Wiki rule (SESSION_GUIDANCE §3): no intent for sign-in copy found. Subtitle is a placeholder; planning agent will add an OPEN entry to NEEDS_REVIEW.md ("proposed wiki update: sign-in page subtitle/copy"). Scope of that search: all 37 pages under `docs/wiki/` in `galaxyGame` were searched on 2026-10-30 for sign-in, log-in, login-page, landing and splash wording, with no match (VERIFIED). The deeper docs (`docs/design/` and similar) were not searched.
+Wiki rule (SESSION_GUIDANCE §3): no intent for sign-in copy found. Subtitle is a placeholder. Verified outcome: all 37 pages under `docs/wiki/` in `galaxyGame` were searched on 2026-10-30 for sign-in, log-in, login-page, landing and splash wording with no match (VERIFIED). No deeper docs (`docs/design/`, `docs/architecture/`, `docs/gameplay/`, `docs/developer/`) were searched. "Sign in to continue" is a temporary placeholder pending a human decision; an OPEN entry for this was added to `NEEDS_REVIEW.md` on 2026-10-31.
 
 ## Problem Statement
 
@@ -95,7 +99,13 @@ The sign-in page still shows WVU text and a light WVU-styled card. It should loo
 6. **Inputs**: `--panel2` background, `--line` border, `--text` text, `--accent` for the focus border and ring.
 7. **Submit button**: `--accent` background with readable text on it (check contrast in the screenshot); a visible hover state using tokens.
 8. **"Forgot password?" link**: `--accent`.
-9. **Rebuild** the Tailwind CSS inside the `galaxy_game` container. `Procfile.dev` runs a watcher (`bin/rails tailwindcss:watch`), which rebuilds on save if it is running; if not, run `bin/rails tailwindcss:build`. `[FILL IN: confirm which applies in this container]`. Then confirm the new token utility classes appear in `app/assets/builds/tailwind.css` (grep for two or three of them), because Tailwind v4 drops classes it does not find. Reload the page.
+9. **Rebuild** the Tailwind CSS inside the `galaxy_game` container (the UI app's container; never use `web`, which is the main game server). Run:
+
+```bash
+docker exec -it galaxy_game bash -c 'rails tailwindcss:build'
+```
+
+Then confirm the new token utility classes appear in `app/assets/builds/tailwind.css` (grep for two or three of them), because Tailwind v4 drops classes it does not find. Reload the page.
 10. **Capture** screenshots in `summaries/` for human approval: `/session/new` signed out, and `/session/new` after a failed sign-in (to see the flash message on the dark page).
 
 ## Gotchas

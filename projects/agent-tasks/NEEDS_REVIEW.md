@@ -372,3 +372,13 @@ These are proposals for Claude to evaluate, not approved edits. Grok advises aga
 **Claude web evaluation (2026-10-30, checked against `main`):** Finding 4 is resolved: `WEB_AGENT_SESSION_START.md` lines 54 and 60 now say drafts-first, so Grok's second proposed edit is moot. Findings 1, 2, 3 and 5 duplicate `projects/agent-tasks/summaries/2026-10-24-REVIEW-PROMPT-CONSTRUCTION-INCIDENT.md`, whose R2 recommendation was blocked on Tracy's answers (what "the basic header" was; whether a no-task single bounded edit by Qwen is an approved path). `SIMPLE_HANDOFF_TEMPLATE.md` still exists, and `README.md` still references it at lines 96, 643 and 723. Rule 13a ("9 lines maximum") and the 29-line dispatch block in `TASK_TEMPLATE.md` still contradict each other. Open item for Tracy: answer the two questions above; then the smallest fix is R2 (pointers in Rule 13a and the README, retire the simple template).
 
 ---
+
+### 2026-10-31 — Sign-in page subtitle/copy has no established intent
+**What happened**: The sign-in view refactor task (`projects/galaxy-game-ui/tasks/drafts/2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md`) uses "Sign in to continue" as a temporary subtitle placeholder. SESSION_GUIDANCE §3 requires that any UI choice without established intent get an OPEN entry here.
+**Observed in**: galaxy-game-ui project, sign-in view refactor draft
+**What I already checked**: All 37 pages under `docs/wiki/` in `galaxyGame` searched on 2026-10-30 for sign-in, log-in, login-page, landing and splash wording — no match (VERIFIED). Deeper docs (`docs/design/`, `docs/architecture/`, `docs/gameplay/`, `docs/developer/`) were not searched. No existing entry in this file covers sign-in copy intent.
+**What needs a second opinion**: Proposed wiki update: establish sign-in page subtitle/copy intent (or confirm "Sign in to continue" as the permanent placeholder). Scope: all sign-in, login-page, landing and splash wording across `docs/wiki/` and deeper docs.
+**Priority**: LOW — temporary placeholder; no implementation blocked
+**Status**: OPEN
+
+---
