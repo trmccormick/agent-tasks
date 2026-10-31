@@ -442,4 +442,6 @@ Recommend only small clarifications to existing guidance if actual ambiguity rem
 
 **Priority**: LOW — affects implementation session efficiency; no authorization boundary issue.
 
+**Contrasting evidence (Session B)**: On the same day, Qwen3.6:35B completed a planning documentation update (`projects/agent-tasks/NEEDS_REVIEW.md`) without any user continuation nudges. It checked for duplicates, modified only the intended file, verified the result, committed (`83c4ba5`), pushed, and produced a closeout report — all in one uninterrupted flow. The same model, different behavior.
+
 **Status**: OPEN. For Claude's later planning review. No workflow-document changes are authorized by this entry.
