@@ -382,3 +382,17 @@ These are proposals for Claude to evaluate, not approved edits. Grok advises aga
 **Status**: OPEN
 
 ---
+
+### 2026-10-31 — Draft tasks contain dispatch blocks referencing a future backlog location: workflow ambiguity
+
+**What happened**: During review of the Galaxy Game UI sign-in task (`projects/galaxy-game-ui/tasks/drafts/2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md`), the task remains in `tasks/drafts/` with `status: drafts` but contains a fully prepared Agent Dispatch Interface block whose `git mv`, `find`, and handoff paths reference the task's *eventual* backlog location (`tasks/backlog/[SUBFOLDER]/`). The task explicitly states "This interface is NOT active while the task remains in `drafts/`" and that only the human may approve and move it. However, the workflow documentation does not clearly distinguish between: (1) a draft awaiting human review versus an approved backlog task eligible for implementation dispatch, (2) whether drafts should contain fully prepared dispatch blocks whose paths and instructions are forward-looking, or (3) how reviewers should recognize that a pre-filled dispatch block is preparation, not authorization to execute.
+
+**Observed in**: galaxy-game-ui project, sign-in view refactor draft; also relevant to any task drafted with a complete Agent Dispatch Interface per TASK_TEMPLATE.md guidance.
+
+**What I already checked**: VERIFIED: Rule 12 (GUARDRAILS.md) defines the drafts → review → backlog → active lifecycle and states only the human may move from `drafts/` to `backlog/`. TASK_TEMPLATE.md requires an Agent Dispatch Interface in every task but does not address whether a *draft* should contain one filled with eventual-backlog paths versus a placeholder. The sign-in draft's own note ("NOT active while in drafts") is an ad hoc clarification, not a workflow-standard convention. Related entries: "TASK_FILE_LIFECYCLE_VALIDATION.md conflicts..." (2026-10-20) and "Draft-gate commit 442a462" (2026-10-22) cover related authority questions but not the dispatch-block-in-draft scenario specifically.
+
+**What needs a second opinion**: (1) Should the task-creation workflow explicitly state whether drafts contain fully prepared dispatch blocks (with placeholder paths like `[SUBFOLDER]`) or only a minimal stub indicating dispatch will be prepared at approval time? (2) Should reviewers have a visual or structural marker that distinguishes "prepared for future use" from "ready to execute"? (3) Must the human approval explicitly include a statement such as "approved, move to backlog and dispatch" rather than relying on the file's `status:` change alone? The workflow must preserve the human's exclusive authority to approve a draft — a draft must not become executable merely because it contains a complete-looking dispatch block.
+
+**Priority**: MEDIUM — affects every drafted task that includes an Agent Dispatch Interface; unclear boundaries create risk of agents executing drafts prematurely or reviewers misinterpreting preparation as authorization.
+
+**Status**: OPEN
