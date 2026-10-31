@@ -9,6 +9,14 @@ local_worker_safe: true
 last_updated: 2026-10-30
 ---
 
+## 🔴 DRAFT REVIEW CHECKLIST
+
+- [x] Acceptance Criteria are clear and measurable
+- [x] Task scope is well-bounded (one view file; no controllers, routes or auth changes)
+- [x] Dependencies listed and verified (T3a and T3a-2 are in `tasks/completed/2026-10/` on `main`; checked by the web agent 2026-10-30)
+- [x] No contradictions in specification
+- [x] Review agent disposition: GO WITH EDITS (Grok, 2026-10-30); required edits and both suggestions applied by the web agent. Not yet approved by the human; do not move to `backlog/` until Tracy approves.
+
 > Drafted by a web review/planning agent. Facts are labelled VERIFIED (read from GitHub `review/qwen-ui-prototype` or seen in a screenshot) or REPORTED (from a log or draft, not re-checked). Anything marked `[FILL IN]` must be confirmed by an agent with full repo access before dispatch. Left in `drafts/`; the human decides when to assign it.
 
 ---
@@ -71,7 +79,7 @@ Facts (VERIFIED from `galaxy-game-ui/app/views/sessions/new.html.erb` on the bra
 - The form is `form_with url: session_path` with `email_address` and `password` fields. **Its behaviour is correct and must not change.**
 - Design tokens already exist on the branch (T3a): `--bg`, `--panel`, `--panel2`, `--line`, `--text`, `--muted`, `--accent`, `--green`, `--red`, `--gold`. `--accent` (`#4aa8ff`) is a placeholder pending a human decision, so use the token, never the hex.
 
-Wiki rule (SESSION_GUIDANCE section 3): no intent for sign-in copy has been looked up. `[FILL IN: confirm whether the wiki or docs say anything about sign-in text; if not, the subtitle below is a placeholder and the planning agent adds an OPEN entry to NEEDS_REVIEW.md]`.
+Wiki rule (SESSION_GUIDANCE §3): no intent for sign-in copy found. Subtitle is a placeholder; planning agent will add an OPEN entry to NEEDS_REVIEW.md ("proposed wiki update: sign-in page subtitle/copy"). Scope of that search: all 37 pages under `docs/wiki/` in `galaxyGame` were searched on 2026-10-30 for sign-in, log-in, login-page, landing and splash wording, with no match (VERIFIED). The deeper docs (`docs/design/` and similar) were not searched.
 
 ## Problem Statement
 
@@ -79,7 +87,7 @@ The sign-in page still shows WVU text and a light WVU-styled card. It should loo
 
 ## Implementation Steps
 
-1. **Inspect** (read-only): list every `wvu` string in `app/views/sessions/new.html.erb`. Also list (do not edit) every `wvu` string in `app/views/passwords/`.
+1. **Inspect** (read-only): list every `wvu` string in `app/views/sessions/new.html.erb` only.
 2. **Title**: change the `content_for :title` text to "Sign in — Galaxy Game".
 3. **Subtitle**: replace "WVU Libraries Systems — Donor Check-In" with the placeholder "Sign in to continue".
 4. **Card**: replace the white WVU card with a dark card using tokens (panel background, `--line` border, `--text` text). Keep `mx-auto max-w-md` and the rounded corners.
@@ -87,7 +95,7 @@ The sign-in page still shows WVU text and a light WVU-styled card. It should loo
 6. **Inputs**: `--panel2` background, `--line` border, `--text` text, `--accent` for the focus border and ring.
 7. **Submit button**: `--accent` background with readable text on it (check contrast in the screenshot); a visible hover state using tokens.
 8. **"Forgot password?" link**: `--accent`.
-9. **Rebuild** the Tailwind CSS in the `galaxy_game` container (the same way as in T3a) and reload the page.
+9. **Rebuild** the Tailwind CSS inside the `galaxy_game` container. `Procfile.dev` runs a watcher (`bin/rails tailwindcss:watch`), which rebuilds on save if it is running; if not, run `bin/rails tailwindcss:build`. `[FILL IN: confirm which applies in this container]`. Then confirm the new token utility classes appear in `app/assets/builds/tailwind.css` (grep for two or three of them), because Tailwind v4 drops classes it does not find. Reload the page.
 10. **Capture** screenshots in `summaries/` for human approval: `/session/new` signed out, and `/session/new` after a failed sign-in (to see the flash message on the dark page).
 
 ## Gotchas
@@ -95,13 +103,14 @@ The sign-in page still shows WVU text and a light WVU-styled card. It should loo
 1. **View file only.** No controller, route, model or JavaScript changes. Keep `form_with url: session_path`, the field names, `autocomplete`, `autofocus`, `maxlength` and the submit label exactly as they are.
 2. **Do not delete `wvu-*` tokens or the passwords views.** The passwords pages are out of scope and will still look WVU-styled; that is a separate small task. The "Forgot password?" link must still reach them.
 3. **No hard-coded colors.** Use the tokens; if a needed color has no token, stop and ask.
-4. **The built CSS changes.** Rebuilding rewrites `app/assets/builds/tailwind.css`. Whether to commit it is the human's decision; report it in `git diff --stat`, do not commit.
+4. **The built CSS changes.** Rebuilding rewrites `app/assets/builds/tailwind.css`. If the dev watcher is running it rewrites this file on every template save, so expect it to show as modified. Whether to commit it is the human's decision; report it in `git diff --stat`, do not commit.
 5. **Out of scope** (each is its own task): the WVU favicon, the unstyled landing page, the passwords pages.
 6. **Run everything in the UI container, `galaxy_game`.** `web` is the main game's container; never run UI commands there.
 
 ## Acceptance Criteria
 
 - [ ] `grep -in "wvu" app/views/sessions/new.html.erb` returns nothing
+- [ ] The new token utility classes appear in `app/assets/builds/tailwind.css` after the rebuild (grep output pasted)
 - [ ] `/session/new` shows no WVU text and no white WVU card (screenshot)
 - [ ] Heading, labels, placeholders and the submit button are all readable on the new background (screenshot)
 - [ ] A failed sign-in shows the flash message readably (screenshot)
