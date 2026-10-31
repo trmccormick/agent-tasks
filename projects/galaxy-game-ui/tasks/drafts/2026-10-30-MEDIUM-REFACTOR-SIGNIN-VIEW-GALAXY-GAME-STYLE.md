@@ -1,5 +1,5 @@
 ---
-status: drafts
+status: draft
 resume: false
 priority: MEDIUM
 type: refactor
@@ -9,33 +9,70 @@ local_worker_safe: true
 last_updated: 2026-10-30
 ---
 
-## 🔴 DRAFT REVIEW CHECKLIST
+## 🟡 DRAFT STATUS NOTE (for tasks in tasks/drafts/)
 
-- [x] Acceptance Criteria are clear and measurable
-- [x] Task scope is well-bounded (one view file; no controllers, routes or auth changes)
-- [x] Dependencies listed and verified (T3a and T3a-2 are in `tasks/completed/2026-10/` on `main`; checked by the web agent 2026-10-30)
-- [x] No contradictions in specification
-- [x] Review agent disposition: GO WITH EDITS (Grok, 2026-10-30); required edits and both suggestions applied by the web agent. Not yet approved by the human; do not move to `backlog/` until Tracy approves.
+**This section applies ONLY if status: draft above.**
+
+This task is in draft status and awaiting review approval. It has NOT yet been approved for backlog.
+
+**Current State**: In `tasks/drafts/` committed to git  
+**Next Step**: Review agent assessment → Human approval → Move to `tasks/backlog/` by human  
+**Do NOT dispatch to implementation agents** until this task is in `tasks/backlog/` with `status: backlog`
+
+See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedure.
+
+## 📋 DRAFT REVIEW CHECKLIST (Human — before approving move from drafts/ to backlog/)
+
+**APPLIES ONLY IF status: draft above. Use this checklist BEFORE moving task to tasks/backlog/.**
+
+After review agent has returned assessment:
+
+- [ ] Acceptance Criteria are clear and measurable (no ambiguity)
+- [ ] Task scope is well-bounded (not too broad, not overlapping with active tasks)
+- [ ] Dependencies listed and verified against status.md (all prerequisites exist)
+- [ ] No contradictions in the task specification
+- [ ] Architecture aligns with current codebase patterns (review agent verified)
+- [ ] Review agent disposition is GO (not REVISE or STOP)
+
+**Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/[SUBFOLDER]/` and changing `status: draft → status: backlog`.
 
 > Drafted by a web review/planning agent. Facts are labelled VERIFIED (read from GitHub `review/qwen-ui-prototype` or seen in a screenshot) or REPORTED (from a log or draft, not re-checked). Anything marked `[FILL IN]` must be confirmed by an agent with full repo access before dispatch. Left in `drafts/`; the human decides when to assign it.
 
 ---
 
-## 🔴 Agent Dispatch Interface (Required — for use AFTER human approval)
+## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching to implementation)
 
-**This interface is NOT active while the task remains in `drafts/`.** Draft review and assessment happen while the task stays in `drafts/`. Only the human may approve and move it from `drafts/` to `backlog/[SUBFOLDER]/`. The implementation agent may move it from `backlog/` to `active/` only when explicitly dispatched.
+**APPLIES ONLY IF status: backlog. STOP. Do not send this task to an agent until ALL boxes are checked.**
 
-**When the human moves this task to `backlog/`, replace this note with the following dispatch block:**
+- [ ] Agent Dispatch Interface section below is complete and accurate (no placeholders)
+- [ ] All Step 0-N instructions are clear and actionable (not vague)
+- [ ] Synthesis report template is provided (copy/paste ready, not as example)
+- [ ] No placeholder text remains in Implementation Steps
+- [ ] All file paths are verified to exist
+- [ ] Architecture Gotchas are specific (not generic)
+- [ ] Acceptance Criteria are measurable
+- [ ] Dependencies and Blocked/Blocks relationships are clear
+
+**Task is NOT READY until all checkboxes are completed.**
+
+---
+
+## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
+
+**This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
+Agents receive this exact text as the startup contract. Every word matters.
+
+**One allowed substitution:** before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root). Fill `[project]`, `[SUBFOLDER]` and `[FILENAME]` as usual; if the project's backlog is flat (no subfolders), omit the `[SUBFOLDER]/` segment from the paths. Change nothing else.
 
 ```
 You are **Implementation Agent**.
 
-Project: galaxy-game-ui
-Task: <agent-tasks>/projects/galaxy-game-ui/tasks/backlog/[SUBFOLDER]/2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md
+Project: [project_name]
+Task: <agent-tasks>/projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy-game-ui/tasks/backlog/[SUBFOLDER]/2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md \
-         projects/galaxy-game-ui/tasks/active/2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md
+  git mv projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md \
+         projects/[project]/tasks/active/[FILENAME].md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
@@ -46,13 +83,13 @@ LIFECYCLE: backlog → active → completed
   - Tracked file: git mv (never cp or plain mv)
   - New/untracked file: mv then git add the final path
   - Never leave stale copies in the source folder
-  - Verify with: find agent-tasks/projects/galaxy-game-ui/tasks -name "2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md"
+  - Verify with: find agent-tasks/projects/[project]/tasks -name "[FILENAME].md"
     Only ONE result should exist. Paste this output before committing.
 
 READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
 CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
-  Summaries path: <agent-tasks>/projects/galaxy-game-ui/summaries/
+  Summaries path: <agent-tasks>/projects/[project]/summaries/
   Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
   Chat is for questions only — never paste synthesis into chat (formatting breaks).
 
@@ -60,6 +97,11 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 ```
 
 **IMPORTANT: Do not modify or abbreviate the text above.**
+Copy it exactly as-is when dispatching this task to an agent.
+This is the startup contract — every element is required.
+
+Everything else (details, gotchas, acceptance criteria, implementation steps) is in the sections below.
+The dispatch interface above is ONLY the bootstrap instructions.
 
 ---
 
