@@ -445,3 +445,31 @@ Recommend only small clarifications to existing guidance if actual ambiguity rem
 **Contrasting evidence (Session B)**: On the same day, Qwen3.6:35B completed a planning documentation update (`projects/agent-tasks/NEEDS_REVIEW.md`) without any user continuation nudges. It checked for duplicates, modified only the intended file, verified the result, committed (`83c4ba5`), pushed, and produced a closeout report — all in one uninterrupted flow. The same model, different behavior.
 
 **Status**: OPEN. For Claude's later planning review. No workflow-document changes are authorized by this entry.
+
+---
+
+### 2026-10-31 — Template completion failures during sign-in refactor task review
+
+**What happened**: During the GalaxyGame sign-in refactor task preparation and review, multiple agents failed to identify that the task contained incomplete template material. Specific examples:
+
+- The Agent Dispatch Interface retained unresolved placeholders such as `[project_name]`, `[project]`, `[SUBFOLDER]`, and `[FILENAME]`.
+- Required sections from the canonical task template, including the Status Synthesis Report template, were missing.
+- The task's own readiness checklist required these items to be complete.
+- The task was nevertheless given a GO disposition by independent review and subsequently received human approval.
+- The incomplete minimal handoff was only identified when preparing to dispatch the task.
+- ChatGPT and Grok also failed to identify the broader template-compliance problems during their earlier reviews.
+
+**Observed in**: `projects/galaxy-game-ui` sign-in view refactor task preparation, 2026-10-30–31.
+
+**What I already checked**: The existing entry "Draft tasks contain dispatch blocks referencing a future backlog location" (same date) addresses forward-looking placeholder paths in drafts but does not cover unresolved placeholders that should have been resolved before review. No existing entry documents multiple agents failing to catch incomplete template material in a task that received GO disposition.
+
+**What needs a second opinion (Claude review)**:
+1. How should agents verify that copied template content has been completed and adapted for the specific task rather than merely copied?
+2. Should reviewers compare the entire task against the current canonical template and readiness checklist, rather than relying on previous review findings?
+3. How should unresolved placeholders, omitted required sections, and incomplete task-specific handoff information be treated?
+4. Should actual dispatch readiness be validated before a task receives a final GO disposition?
+5. How can this be addressed without creating redundant checklists or unnecessary workflow gates?
+
+**Priority**: LOW — affects review quality; no authorization boundary issue.
+
+**Status**: OPEN. For Claude's later planning review. No workflow-document changes are authorized by this entry.
