@@ -423,3 +423,23 @@ Recommend only small clarifications to existing guidance if actual ambiguity rem
 **Priority**: LOW — workflow clarity and repeatability; the demonstrated sequence worked.
 
 **Status**: OPEN. For Claude's later planning review. No workflow-document changes are authorized by this entry.
+
+---
+
+### 2026-10-31 — Qwen stops at intermediate stages during authorized sign-in refactor work
+
+**What happened**: During the sign-in view refactor task implementation, six user continuation nudges were required before Qwen completed the authorized work. Qwen repeatedly stopped at intermediate stages (verification, moving the task, committing, handling the remote update/rebase, pushing, final closeout) even though the work and intended next steps had been specified in the task file. The user had to prompt it to continue through each remaining stage.
+
+**Observed in**: `projects/galaxy-game-ui` sign-in view refactor implementation session, 2026-10-31.
+
+**What I already checked**: The task file (`tasks/drafts/2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md`) specifies all steps including verification, git operations, and closeout. No existing entry in this file covers Qwen stopping at intermediate stages during authorized work. The closest related entries are: "End-to-end task creation and approval workflow" (same session) and "Handoff file lifecycle undefined" (different issue).
+
+**What needs a second opinion (Claude review)**:
+1. Does the current guidance adequately distinguish prompt/task sizing from end-to-end execution persistence?
+2. Should the guidance clarify that, when explicitly instructed to complete an authorized task, Qwen should continue through all remaining authorized stages and ordinary recoverable errors without requiring the user to repeatedly say "continue"?
+3. Are the existing stop conditions sufficiently clear? Persistence must never override missing approval, a genuine blocker, a safety concern, or a decision reserved for the user.
+4. Can this be addressed with a small clarification to existing guidance, rather than adding unnecessary workflow gates, automation, or duplicated documentation?
+
+**Priority**: LOW — affects implementation session efficiency; no authorization boundary issue.
+
+**Status**: OPEN. For Claude's later planning review. No workflow-document changes are authorized by this entry.
