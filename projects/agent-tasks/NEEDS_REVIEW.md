@@ -327,3 +327,44 @@ Not checked: the rest of the task file; whether `PLANNING_AGENT_CLOSEOUT.md` or 
 
 ---
 
+### 2026-10-30 — Grok review: prompt-construction incident and conflicting handoff instructions
+
+**What happened**: During a documentation-correction workflow, ChatGPT produced an over-scoped, multi-section implementation-agent prompt for a small, bounded edit. The prompt omitted the established basic handoff header, expanded the reading requirements and scope, and introduced unnecessary lifecycle and approval instructions. The human repeatedly corrected the prompt-construction approach. Whether the original prompt was actually sent to Qwen is not established.
+
+Grok independently reviewed the incident against a clone of the live `trmccormick/agent-tasks` repository. Its overall finding is that the incident reflects both assistant noncompliance and genuine documentation gaps: competing handoff formats and no clearly defined path for a single bounded edit that does not use a saved task.
+
+**Observed in**: agent-tasks project, prompt-construction incident and subsequent independent Grok review, 2026-10-30. Related existing review: `projects/agent-tasks/summaries/2026-10-24-REVIEW-PROMPT-CONSTRUCTION-INCIDENT.md`.
+
+**What I already checked**: The existing `NEEDS_REVIEW.md` contains earlier workflow findings, including handoff-format inconsistencies, the retirement decision for `SIMPLE_HANDOFF_TEMPLATE.md`, and draft-gate wording decisions. The incident and Grok's review were supplied in this conversation.
+
+Grok reports the following findings from its live-repository inspection (not independently re-verified in this entry):
+
+1. Multiple competing handoff formats remain in `TASK_TEMPLATE.md`, `rules/GUARDRAILS.md` Rule 13a, `README.md`, and `SIMPLE_HANDOFF_TEMPLATE.md`.
+2. Existing handoff formats assume a saved task file and lifecycle activation; there is no explicit minimal path for a single bounded edit that does not use a saved task.
+3. `WEB_AGENT_SESSION_START.md` already has a three-row delivery-method table and requires the agent to state its chosen delivery method, but does not resolve the no-task prompt/header case.
+4. Residual backlog wording in `WEB_AGENT_SESSION_START.md` reportedly conflicts with the drafts-first lifecycle decision.
+5. The original ChatGPT prompt and whether Qwen received it cannot be verified from repository evidence.
+
+Grok distinguishes documentation gaps from assistant noncompliance. It identifies failure to state the delivery method, scope expansion, unnecessary lifecycle instructions, and treating a small edit as a full task-template dispatch as assistant failures against existing guidance.
+
+**What needs a second opinion (Claude evaluation)**: Please review the incident and Grok's findings against the current repository and the existing October 24 incident review. Evaluate:
+
+1. **Canonical handoff formats**: Are the competing formats still present and genuinely contradictory? What is the smallest way to make the authoritative format clear while preserving the existing saved-task dispatch contract?
+2. **No-task single-edit path**: Is a minimal delivery/header path needed for a single bounded edit that deliberately does not use a saved task? If so, where should it be documented, and how should it distinguish exact-text/command delivery from an implementation-agent prompt?
+3. **Backlog versus drafts wording**: Verify whether `WEB_AGENT_SESSION_START.md` retains wording that conflicts with the current draft gate and determine whether correction is warranted.
+4. **Retirement of `SIMPLE_HANDOFF_TEMPLATE.md`**: Verify its current status and references. Do not assume retirement is complete merely because a prior decision was recorded.
+5. **Assistant noncompliance versus workflow gaps**: Determine which failures were already preventable under existing instructions and which require documentation clarification.
+
+Grok's proposed direction is three surgical documentation changes:
+- Clarify the no-task single-edit path immediately after the delivery table in `WEB_AGENT_SESSION_START.md`.
+- Correct residual backlog wording to reflect drafts-first task creation and human promotion.
+- Replace duplicated handoff-format text in Rule 13a and the README with pointers to the authoritative saved-task and no-task instructions, preserving any independent requirements.
+
+These are proposals for Claude to evaluate, not approved edits. Grok advises against a new workflow document, a new pre-flight checklist, additional mandatory reading, or expanding `TASK_TEMPLATE.md` with further caveats.
+
+**Priority**: MEDIUM — affects prompt construction, handoff consistency, and the distinction between simple edits and saved-task work.
+
+**Status**: OPEN. Await Claude's independent evaluation when available. No workflow-document changes or implementation task are authorized by this entry. Preserve the existing task lifecycle, human approval and promotion authority, review gate, three-row delivery table, and implementation dispatch contract unless Claude identifies a specific, justified correction for human decision.
+
+---
+
