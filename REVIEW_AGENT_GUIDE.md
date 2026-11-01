@@ -34,6 +34,7 @@ Read TASK_TEMPLATE.md and compare every required section against the draft task 
   - Lifecycle rules (backlog → active → completed) documented
   - Summaries path specified
   - Synthesis contract included
+  - No bracketed placeholders remain in the block (search for `[project_name]`, `[project]`, `[SUBFOLDER]`, `[FILENAME]`); only `<agent-tasks>` may remain until dispatch
 - **Task Readiness Checklist** section present
 
 ### Phase B — Content Assessment (only if Phase A passes)
