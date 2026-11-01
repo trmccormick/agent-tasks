@@ -94,6 +94,17 @@ Pick the delivery method from the kind of change, say in one line which you chos
 | A small edit to one file | The exact command or the exact text to paste. One at a time, then the human checks `git diff --stat`. |
 | Edits that span several files, or need the repo read, a test run or a command on the project machine first | A prompt for an implementation agent. Review its pasted diff before anything is committed. |
 
+### When a task file is not needed
+
+Before drafting a task, check: does it change one file, with no change to behavior, routes, data or infrastructure, and is it easy to revert? If yes, do not draft a task. Use the table above (a whole file, or the exact text to paste), and let the human or the project's usual agent apply it. Who writes it follows the project's session guidance (for Galaxy Game, `projects/galaxy_game/SESSION_GUIDANCE.md`, section 9).
+
+- Before the change is pushed, check that every class, token, route or file name it uses exists in the repo. For CSS classes, search the built stylesheet.
+- A reviewer who did not write the change reads it from git.
+- If a one-file change needs a second round of corrections, stop. Do not keep revising a task file; deliver the file or the exact text.
+- A task file is for work that touches several files, behavior, data, containers or security, or that must carry on in another session.
+
+Approval does not change: the human approves, commits and pushes.
+
 **No scripts.** Do not hand the human a bash or Python script that edits several files. It hides each change and runs code that was not reviewed. Give a script only when the human asks for one.
 
 **Pacing**
