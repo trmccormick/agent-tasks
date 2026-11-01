@@ -1,5 +1,5 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-10-27 — review sessions closed out (Oct 26 Haiku Task C candidate review blocked by HEAD mismatch; Oct 27 Grok web review completed); planning session created closeout handoff documenting blockers and next steps; status.md appended with both session entries, awaiting human authorization to commit
+**Last Updated:** 2026-10-26 — portal wiki consolidation planning task created, approved (Grok GO), moved to backlog/current/, ready for implementation dispatch
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
@@ -1033,61 +1033,3 @@ This section preserves session records, known issues, and completed work from pr
 - **Committed:** `f0f6920`, `e5d09b0`, `00d3899`, `98dc382`, `6f6a34a`, `2039411` (6 commits: task creation + 1 NO-GO review cycle corrections + 1 Grok GO verification + final placement in backlog/current/). VERIFIED by `git log --oneline -6` and `git push origin main` showing all commits on origin/main.
 - **Not committed:** none (all commits pushed).
 - **Stop condition:** none (planning session complete; task ready for implementation agent dispatch). See handoff for full details: `handoffs/claude-copilot/2026-10-26-PLANNING-PORTAL-WIKI-CONSOLIDATION-SESSION.md`
-
----
-
-## 📝 Session Log — 2026-10-26 (Read-Only Verification: Commit State Check)
-
-- **Changed:** none (read-only verification session). Handoff created documenting findings: `handoffs/copilot-haiku/2026-10-26-READVERIFICATION-COMMIT-STATE-CHECK.md`
-- **Committed:** none (no changes to code or tasks; handoff file created but not staged).
-- **Not committed:** galaxy-game-ui modified files (tailwind.css, application.css) left as-is — from earlier work, not touched this session. VERIFIED by `git status --short`.
-- **Stop condition:** none (session complete). Read-only verification of commit 5e3fbd6 in agent-tasks confirmed: commit exists locally, contains portal design recovery task move + 79-line synthesis report. Push status unknown (previous session timed out after saying "Pushing now"). No follow-up actions required from this session.
-
----
-
-## 📝 Session Log — 2026-10-25 (Documentation: Portal Design Recovery Task Correction)
-
-- **Changed:** `projects/galaxy_game/tasks/drafts/2026-10-25-MEDIUM-DOCUMENTATION-PORTAL-DESIGN-RECOVERY.md` (renamed from `...TASK-PORTAL-DOCUMENTATION-REVIEW.md`; all TASK_TEMPLATE.md compliance sections added: Agent Dispatch Interface, Acceptance Criteria, Prerequisites, Critical Information, REVIEW GATE, ordered Review Steps with two critical wording corrections), `projects/galaxy_game/summaries/2026-10-25-synthesis-portal-documentation-review.md` (created; 79 lines; preserved prior working-pair evidence as unvalidated).
-- **Committed:** `5e3fbd6` (message: "task: Portal design recovery — corrected filename, added synthesis report [2026-10-25]"). VERIFIED by `git log -1 --stat 5e3fbd6` (shows 2 files: synthesis report created, draft renamed) and `git log --oneline origin/main..HEAD` (empty, confirming push succeeded).
-- **Not committed:** none (all work committed and pushed).
-- **Stop condition:** none (documentation review task corrections complete; ready for independent review). Draft remains `status: draft` pending independent reviewer assessment and human approval. See handoff: `handoffs/copilot-haiku/2026-10-25-DOCUMENTATION-PORTAL-DESIGN-RECOVERY-SESSION.md`
-
----
-
-## 📝 Session Log — 2026-10-26 (Documentation: Session Closeout — Task File Correction)
-
-- **Changed:** 
-  - `projects/galaxy_game/tasks/drafts/2026-10-25-MEDIUM-DOCUMENTATION-PORTAL-DESIGN-REVIEW.md` — created (properly formatted task file using TASK_TEMPLATE.md, correcting prior misplacement in tasks/review/; includes full review findings, 6 identified gaps, recommendations, and review workflow requirement)
-  - `projects/galaxy_game/handoffs/qwen3.6/2026-10-25-DOCUMENTATION-PORTAL-REVIEW-SESSION.md` — created (handoff file documenting evidence-based findings, working pair identification, independent review requirement, and next actions for planning agent)
-- **Committed:** none (task file and handoff awaiting review approval before any commits).
-- **Not committed:** 
-  - Task file in `tasks/drafts/` (status: draft, awaiting independent review agent assessment: GO/REVISE/STOP)
-  - Handoff file (for planning agent coordination, not staged)
-  - `projects/galaxy_game/tasks/review/task_portal_documentation_review.md` — misplaced copy from prior session (superseded; awaits removal by planning agent or human)
-- **Stop condition:** Session complete. Task file properly formatted per TASK_TEMPLATE.md guidelines and placed in tasks/drafts/. Requires independent review agent assessment (Claude, ChatGPT, or Grok — NOT Qwen, NOT Perplexity). Review workflow: findings return to working pair if REVISE; proceed to wiki page drafting task if GO. See handoff for full technical details: `handoffs/qwen3.6/2026-10-25-DOCUMENTATION-PORTAL-REVIEW-SESSION.md`
-
----
-
-## 📝 Session Log — 2026-10-26 (Task C Candidate Review — Read-Only)
-
-- **Changed:** none in repo (read-only session).
-- **Committed:** none.
-- **Not committed:** 
-  - `~/agent-out/task-c-baseline-check.md` — baseline check confirming HEAD advanced from `5a4bd34c...` to `48802e30...`, Task C identical between the two commits, candidate diff matches saved candidate diff.
-  - `~/agent-out/task-c-candidate-review.md` — candidate review confirming 3 task-specific changes (new Critical Info item 7 on credential-safe diagnostic output, revised AC4 with content-type/byte-length-only requirement, removed redundant Stop Conditions bullet), all protected regions byte-identical to HEAD, no contradictions.
-  - `~/agent-out/task-c-candidate.diff` — HEAD-to-candidate diff (8,542 bytes).
-  - Candidate file `/Users/tam0013/Downloads/2026-10-17-HIGH-BUG-FIX-CATALOG-IMAGE-CONTAINMENT-C-HTTP-VERIFICATION-REVISED.md` — left in Downloads untouched.
-- **Stop condition:** Two install preconditions failed (HEAD hash mismatch, then HEAD vs old-HEAD byte difference for Task C). Install not attempted. Next action: Tracy must re-attempt installation when Task C at HEAD matches the candidate's base, or update the reviewed diff to reflect current HEAD. See handoff: `handoffs/copilot-haiku/2026-10-26-TASK-C-CANDIDATE-REVIEW-SESSION.md`
-
----
-
-## 📝 Session Log — 2026-10-27 (Planning Closeout — Mixed Review Sessions)
-
-- **Changed:** `projects/galaxy_game/status.md` (appended Oct 26 review session entry and this closeout entry). Verified with `git diff projects/galaxy_game/status.md | grep "^+" | wc -l` = 28 new lines.
-- **Committed:** none yet; awaiting human authorization per Rule 26.
-- **Not committed:** 
-  - `projects/galaxy_game/handoffs/copilot-haiku/2026-10-26-TASK-C-CANDIDATE-REVIEW-SESSION.md` — Haiku review session (Oct 26); not staged; left as-is per SESSION_CLOSEOUT.md section 0.
-  - `projects/galaxy_game/handoffs/grok-free-web/2026-10-27-WEB-REVIEW-SESSION-CLOSEOUT.md` — Grok review session (Oct 27); not staged; left as-is per SESSION_CLOSEOUT.md section 0.
-  - `projects/galaxy_game/handoffs/qwen(planning agent)/` — Planning session drafts; not staged; left as-is per SESSION_CLOSEOUT.md section 0.
-  - 6 untracked items from paused sessions (summaries, temp-files, housekeeping, reconciliation): left untouched per PLANNING_AGENT_CLOSEOUT.md Rule 6 (older than 2026-10-27; owned by earlier sessions).
-- **Stop condition:** Planning session ended. Multiple review sessions (Haiku Oct 26, Grok Oct 27) generated handoff files and status updates but work remained uncommitted due to stale session state. Created planning closeout handoff to document current state and blockers for next planning session. Next action: human reviews handoff at `handoffs/copilot-haiku/2026-10-27-PLANNING-CLOSEOUT.md`, then plans next dispatch. See handoff for inventory and blockers.
