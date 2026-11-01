@@ -506,4 +506,29 @@ The task-drafting process therefore failed its primary objective in this case: r
 
 ---
 
+### 2026-11-01 — Host-side Bundler command attempt during galaxy-game-ui dashboard CSS integration
+
+**What happened**: During the galaxy-game-ui dashboard CSS integration task, Qwen attempted to run a `bundle exec` command on the host instead of inside the project's Docker container. The project repository is mounted at `/home/galaxy_game` inside the application container. Project-runtime commands — including Rails, Ruby, Bundler, database operations, asset builds, and tests — are expected to run inside the appropriate Docker container.
+
+The attempted command was not verified as having executed successfully on the host; the evidence establishes only that it was attempted. No confirmation of successful execution was recorded.
+
+**Observed in**: `galaxy-game-ui` project, dashboard CSS integration task implementation session, 2026-11-01.
+
+**What I already checked**: 
+- GUARDRAILS.md Rule 1: "All Rails and RSpec commands MUST run inside Docker" and "Never run Rails or RSpec on the host system directly."
+- Existing entry "2026-10-25 — Container execution boundary rule" in this file (covers the same general principle).
+- docker-compose.dev.yml confirms the `web` container is the UI app; `galaxy_game` is the container name.
+
+**What needs a second opinion**: 
+1. Does the existing GUARDRAILS.md Rule 1 already prohibit this behavior? (Yes — it explicitly states "Never run Rails or RSpec on the host system directly.")
+2. Did the agent fail to follow an existing rule, or does the rule need clarification for Bundler-specific commands (which are not named in Rule 1)?
+3. Should the host/container boundary be made more explicit across all projects — e.g., a general principle that any dependency-dependent command (bundle, rails, rake, rspec, node, etc.) must run inside the container?
+4. Are additional safeguards appropriate: should task dispatch blocks for Ruby/Rails projects include an explicit "run bundle/rails/rake/rspec inside the container" instruction in the Agent Dispatch Interface?
+
+**Priority**: MEDIUM — affects all containerized projects; a host-side Bundler execution could use wrong gem versions, miss environment variables, or corrupt the host bundle cache.
+
+**Status**: OPEN. For Claude's independent review. No rule changes authorized by this entry.
+
+---
+
 **Update 2026-10-31 (evening, Claude web review)**: Outcome of the sign-in change. The task in `backlog/` was bypassed. A direct prompt (written by Claude; passed to ChatGPT by Tracy, REPORTED) produced a replacement view, pushed on `review/qwen-ui-prototype` as `209d37a` (built CSS, 15:19) and `2e10b1d` (view, 15:26) (VERIFIED: origin). The commits are authored as Tracy, so the link to ChatGPT is INFERRED from the matching title and subtitle strings. Elapsed time from prompt to push was about 20 minutes (INFERRED from message and commit times); the task route took 5 commits over about 14 hours with no implementation dispatched. Defect: the pushed view uses `galaxy-*` color classes that are defined nowhere in the tree at `2e10b1d` or at `f07953b`, the head when read at about 19:50 (VERIFIED: origin). Tracy reports ChatGPT fixed it directly, but the fix was not on origin at `f07953b`, and a screenshot Tracy says was taken after the fix still showed no button fill and a white "Forgot password?" link (REPORTED); the cause is not established (a missing Tailwind rebuild is one possibility, INFERRED). Tracy accepted the page and moved on, tweaking CSS in small steps while the work is in progress (REPORTED). A second change followed the same path: `f07953b` (17:39) ported the public landing page (10 files, +1004/-38) with no task file, while `projects/galaxy-game-ui/tasks/drafts/2026-10-23-CRITICAL-LANDING-PAGE-FOR-PUBLIC-ACCESS.md` covers that area and is still in `drafts/`. A mechanical check that the classes a view uses exist in the built CSS would have caught the defect, so the proposed direct-edit lane should keep it. The sign-in task is still in `backlog/` and is superseded; its disposition is Tracy's call.
