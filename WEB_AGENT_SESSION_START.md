@@ -100,6 +100,7 @@ Before drafting a task, check: does it change one file, with no change to behavi
 
 - Before the change is pushed, check that every class, token, route or file name it uses exists in the repo. For CSS classes, search the built stylesheet.
 - A reviewer who did not write the change reads it from git.
+- Record it: add a short line to the project's `status.md` with the commit, the files changed and which agent wrote it. With no task file, that line is the record.
 - If a one-file change needs a second round of corrections, stop. Do not keep revising a task file; deliver the file or the exact text.
 - A task file is for work that touches several files, behavior, data, containers or security, or that must carry on in another session.
 
