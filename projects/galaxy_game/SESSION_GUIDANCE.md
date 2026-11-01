@@ -158,7 +158,7 @@ REPORTED (Tracy, 2026-10-31). A preference, not a fixed assignment, like section
 | Cross-agent support; plans when needed | Perplexity |
 | Brainstorming, general work, wiki rebuild | Gemini |
 
-- The usual agent writes the change in its area. Qwen applies commands and rebuilds; it does not draft in that area unless Tracy says so.
+- The usual agent directs the change in its area, or writes it directly for quick changes. Qwen often implements under that direction. Either way, the change is checked against what is in git, not against the chat.
 - A reviewer is a different agent from the writer and has read the repo directly.
 - An agent without repo read works from a pasted copy of the file and marks anything it can't see `[FILL IN]`.
 
