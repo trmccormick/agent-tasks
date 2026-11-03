@@ -533,4 +533,40 @@ The attempted command was not verified as having executed successfully on the ho
 
 ---
 
+<<<<<<< HEAD
 **Update 2026-10-31 (evening, Claude web review), to the "Task-drafting workflow overhead" entry above**: Outcome of the sign-in change. The task in `backlog/` was bypassed. A direct prompt (written by Claude; passed to ChatGPT by Tracy, REPORTED) produced a replacement view, pushed on `review/qwen-ui-prototype` as `209d37a` (built CSS, 15:19) and `2e10b1d` (view, 15:26) (VERIFIED: origin). The commits are authored as Tracy, so the link to ChatGPT is INFERRED from the matching title and subtitle strings. Elapsed time from prompt to push was about 20 minutes (INFERRED from message and commit times); the task route took 5 commits over about 14 hours with no implementation dispatched. Defect: the pushed view uses `galaxy-*` color classes that are defined nowhere in the tree at `2e10b1d` or at `f07953b`, the head when read at about 19:50 (VERIFIED: origin). Tracy reports ChatGPT fixed it directly, but the fix was not on origin at `f07953b`, and a screenshot Tracy says was taken after the fix still showed no button fill and a white "Forgot password?" link (REPORTED); the cause is not established (a missing Tailwind rebuild is one possibility, INFERRED). Tracy accepted the page and moved on, tweaking CSS in small steps while the work is in progress (REPORTED). A second change followed the same path: `f07953b` (17:39) ported the public landing page (10 files, +1004/-38) with no task file, while `projects/galaxy-game-ui/tasks/drafts/2026-10-23-CRITICAL-LANDING-PAGE-FOR-PUBLIC-ACCESS.md` covers that area and is still in `drafts/`. A mechanical check that the classes a view uses exist in the built CSS would have caught the defect, so the proposed direct-edit lane should keep it. The sign-in task is still in `backlog/` and is superseded; its disposition is Tracy's call.
+=======
+**Update 2026-10-31 (evening, Claude web review)**: Outcome of the sign-in change. The task in `backlog/` was bypassed. A direct prompt (written by Claude; passed to ChatGPT by Tracy, REPORTED) produced a replacement view, pushed on `review/qwen-ui-prototype` as `209d37a` (built CSS, 15:19) and `2e10b1d` (view, 15:26) (VERIFIED: origin). The commits are authored as Tracy, so the link to ChatGPT is INFERRED from the matching title and subtitle strings. Elapsed time from prompt to push was about 20 minutes (INFERRED from message and commit times); the task route took 5 commits over about 14 hours with no implementation dispatched. Defect: the pushed view uses `galaxy-*` color classes that are defined nowhere in the tree at `2e10b1d` or at `f07953b`, the head when read at about 19:50 (VERIFIED: origin). Tracy reports ChatGPT fixed it directly, but the fix was not on origin at `f07953b`, and a screenshot Tracy says was taken after the fix still showed no button fill and a white "Forgot password?" link (REPORTED); the cause is not established (a missing Tailwind rebuild is one possibility, INFERRED). Tracy accepted the page and moved on, tweaking CSS in small steps while the work is in progress (REPORTED). A second change followed the same path: `f07953b` (17:39) ported the public landing page (10 files, +1004/-38) with no task file, while `projects/galaxy-game-ui/tasks/drafts/2026-10-23-CRITICAL-LANDING-PAGE-FOR-PUBLIC-ACCESS.md` covers that area and is still in `drafts/`. A mechanical check that the classes a view uses exist in the built CSS would have caught the defect, so the proposed direct-edit lane should keep it. The sign-in task is still in `backlog/` and is superseded; its disposition is Tracy's call.
+---
+
+### 2026-11-02 — ChatGPT review: wiki README changes (commit b04cf2f)
+**What happened**: ChatGPT reviewed Claude's recent changes to `docs/wiki/README.md` and identified four documentation consistency suggestions. These are review notes for planning consideration, not implemented changes.
+
+#### Rule 5 — No links out of the wiki
+- Clarify that no new links to frozen documentation should be added.
+- Existing external links are transitional and should be replaced as relevant content is absorbed into the wiki.
+- Do not remove links before their useful content is recovered or the links are no longer needed.
+- Historical source paths belong in the migration log as plain text.
+
+#### Rule 11 — Moving content
+- Clarify that deleting duplicates applies to duplicate wiki content being consolidated.
+- Do not interpret this as permission to delete frozen source documents or task files.
+- Preserve the migration log's existing owner-approval requirement for archiving or removing source documents.
+- Tasks should become thin implementation work orders, not disappear simply because design text moved to the wiki.
+
+#### Rule 6 — Established intent
+- Owner-confirmed decisions can be classified as `ESTABLISHED INTENT`.
+- Material recovered from older documents must be evaluated against other sources and current owner direction; its presence in an old document alone does not establish approval.
+- Conflicting, unsupported, or unconfirmed material should remain qualified as `DIRECTION` or `OPEN` until resolved.
+
+#### README portal navigation statement
+- The existing statement that portal topics stay out of the front door is now too broad.
+- Player-facing local-system portal travel intent is documented in `player/getting_started.md`.
+- Detailed portal technology and implementation documentation may still be under development.
+- This is a consistency suggestion, not a request to change the README now.
+
+**Observed in**: galaxyGame project, wiki review session 2026-11-02 (ChatGPT review of Claude's changes at commit b04cf2f).
+**What I already checked**: Current `docs/wiki/README.md` content; `player/getting_started.md` portal mobility section; `status-and-gaps.md` portal gap entry.
+**What needs a second opinion**: (1) Should Rule 5 be formalized as an explicit wiki standard? (2) Should Rule 11 clarify the boundary between duplicate consolidation and source preservation? (3) Is the portal navigation statement in README's "Section status" section still accurate given player mobility intent is now documented?
+**Priority**: LOW — consistency suggestions for planning review; no immediate action required.
+**Status**: OPEN. For Claude's later planning review. No documentation changes are authorized by this entry.

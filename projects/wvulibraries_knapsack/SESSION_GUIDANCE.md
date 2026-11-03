@@ -76,6 +76,28 @@ git submodule update --force --init --recursive hyrax-webapp
 
 No special handling needed for Gemfile.lock, storage/, or any other file — just checkout/clean and update. The entire submodule directory is pulled from upstream and can be discarded at will.
 
+### ⚠️ Branch Switching Procedure (MUST REMOVE GEMFILE.LOCK)
+
+When switching branches in the main repo (e.g., `main` → `feature/hyku-v7.2.0-upgrade`), the `hyrax-webapp/Gemfile.lock` file in the submodule will block the git checkout if it has been modified. **Always remove it before switching:**
+
+```bash
+cd /Users/tam0013/Documents/git/wvu_knapsack
+rm -f hyrax-webapp/Gemfile.lock
+git checkout <target-branch>
+git submodule update
+```
+
+**Why this happens**: When Docker containers build/run, they update `Gemfile.lock` in the submodule. This modified file prevents git from checking out a different submodule reference when switching branches. The lock file is auto-regenerated during the next `docker build` / `bundle install`, so it's always safe to delete.
+
+**Error without cleanup**:
+```
+error: Your local changes to the following files would be overwritten by checkout:
+        hyrax-webapp/Gemfile.lock
+Please commit your changes or stash them before you switch branches.
+```
+
+**Solution**: Just `rm -f hyrax-webapp/Gemfile.lock` and retry.
+
 ### Architecture Rules
 1. **Use decorator pattern** for all customizations — prepend modules or copy views with override comments. Never monkey-patch upstream classes inline.
 3. **Gems go in `bundler.d/`** — never edit the top-level Gemfile directly to prevent drift during submodule updates.
