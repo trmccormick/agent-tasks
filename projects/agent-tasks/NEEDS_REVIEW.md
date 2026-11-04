@@ -570,3 +570,35 @@ The attempted command was not verified as having executed successfully on the ho
 **What needs a second opinion**: (1) Should Rule 5 be formalized as an explicit wiki standard? (2) Should Rule 11 clarify the boundary between duplicate consolidation and source preservation? (3) Is the portal navigation statement in README's "Section status" section still accurate given player mobility intent is now documented?
 **Priority**: LOW — consistency suggestions for planning review; no immediate action required.
 **Status**: OPEN. For Claude's later planning review. No documentation changes are authorized by this entry.
+---
+
+### 2026-11-03 — Alternating independent review while refining task files
+
+**What happened**: During preparation of the GalaxyGame UI wiki-recovery task (`projects/galaxy_game/tasks/drafts/2026-11-03-MEDIUM-DOCUMENTATION-UI-WIKI-RECOVERY.md`), ChatGPT drafted and revised the task in response to independent reviews from Grok and Claude. Each review was read-only and tied to a specific commit. ChatGPT assessed the findings against the task template, guardrails, and source documentation, then applied justified corrections before sending the next revision to the other reviewer. The reviewers alternated as needed. Grok ultimately returned **PASS — no changes required** on commit `caf383d5e38ebf5beaea4ad24347e980c359d04e`. The task remains subject to Tracy's human review and approval; reviewer approval does not promote or dispatch it.
+
+**Observed in**: GalaxyGame project, UI wiki-recovery task drafting and review, 2026-11-03.
+
+**What I already checked**:
+- The task went through multiple correction rounds addressing findings from both reviewers.
+- The latest Grok review explicitly confirmed that prior findings were resolved, identified no new blockers or material omissions, and said the task could be approved without further edits.
+- The final review target was an exact commit, and the review was read-only.
+- This pattern separates independent task-quality review from Tracy's decision about whether the task's scope and intent should be approved.
+
+**What needs a second opinion (Claude workflow review)**:
+1. Should alternating Grok and Claude reviews become the recommended pattern for task files that need independent review and correction?
+2. Is the sequence clear and proportionate: ChatGPT drafts/edits; one independent reviewer examines an exact commit; ChatGPT evaluates and applies justified findings; the reviewers alternate after corrections until one returns an explicit no-changes-required pass; Tracy then performs the human review?
+3. Should the workflow require reviewers to work read-only, cite the exact commit reviewed, distinguish blockers/major/minor/cosmetic findings, and avoid reopening already-resolved findings without new evidence?
+4. How should the process avoid unnecessary review churn—for example, by consolidating valid findings into one correction pass and not making cosmetic edits solely to satisfy optional suggestions?
+5. Should the workflow be documented in an existing task-review or planning guide, or is recording the pattern here sufficient until it has been used on more than one task?
+
+**Proposed pattern for evaluation**:
+- ChatGPT prepares and maintains the task file, checking findings against the actual repository guidance and source material rather than accepting reviewer suggestions automatically.
+- Grok and Claude alternate as independent, read-only reviewers. Each review names the exact commit and returns a clear verdict with actionable findings.
+- After a review, ChatGPT consolidates and applies justified corrections, then sends the new commit to the other reviewer.
+- Continue only while a reviewer identifies valid changes. The stopping condition is an explicit **PASS — no changes required** from either independent reviewer.
+- Tracy performs the final human review and decides whether to approve/promote the task. Independent approval does not authorize moving, committing, pushing, or dispatching a task unless separately authorized by the human.
+- Optional cosmetic suggestions do not require another edit/review cycle unless Tracy considers them worthwhile.
+
+**Priority**: LOW — promising workflow improvement demonstrated on one task; worth validating before broad adoption.
+
+**Status**: OPEN. Request Claude's assessment before changing shared workflow documentation. The pattern is proposed for evaluation, not yet a mandatory process. Human review and approval remain required.
