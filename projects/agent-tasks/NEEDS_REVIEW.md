@@ -602,3 +602,33 @@ The attempted command was not verified as having executed successfully on the ho
 **Priority**: LOW — promising workflow improvement demonstrated on one task; worth validating before broad adoption.
 
 **Status**: OPEN. Request Claude's assessment before changing shared workflow documentation. The pattern is proposed for evaluation, not yet a mandatory process. Human review and approval remain required.
+
+### 2026-11-04 — Cross-project design-intent authority and documentation-sprawl prevention
+
+**What happened**: During GalaxyGame wiki and UI workflow work, Tracy reiterated that documentation sprawl must not recur. The same design intent should not be copied across project READMEs, task files, handoffs, planning notes, and multiple reference documents. A project’s documentation/wiki should be the durable source for its established design intent and development direction; implementation tasks should use that source rather than restating or independently redefining it.
+
+**Observed in**: GalaxyGame wiki rebuild and GalaxyGame UI project documentation cleanup, 2026-11-03 to 2026-11-04.
+
+**What I already checked**:
+- rules/GUARDRAILS.md contains documentation rules, task lifecycle rules, duplicate-task safeguards, and universal governance rules (MAG-1 through MAG-6).
+- MAG-6 says durable universal workflow rules belong in rules/GUARDRAILS.md, and project guidance must not become a duplicate task tracker or duplicate durable records.
+- The current documentation rules do not clearly establish a cross-project rule that a project's canonical docs/wiki govern design intent, nor do they explicitly require agents to reuse/update the existing authoritative source instead of creating parallel explanations.
+- projects/agent-tasks/README.md describes shared workflow infrastructure but does not establish this project-level design-intent/documentation pattern.
+
+**What needs a second opinion (Claude workflow review)**:
+1. Confirm whether this is a genuine gap in the current shared workflow, or whether an existing rule already establishes it sufficiently. Cite the exact rule and explain how agents are expected to apply it across projects.
+2. If it is a gap, recommend the smallest change to an existing authoritative workflow document—preferably rules/GUARDRAILS.md—rather than creating another policy or guidance file.
+3. Assess a universal development-documentation pattern along these lines:
+   - Each project uses its existing canonical documentation/wiki as the durable source of established design intent, goals, constraints, rationale, and approved direction.
+   - Agents inspect the relevant docs/wiki, current code/data, and existing tasks before drafting or changing development work. Do not treat an old task, handoff, frozen document, or copied summary as independent authority.
+   - Code and data define what is currently implemented; when implementation conflicts with documented intent, report the discrepancy for human resolution rather than silently changing either source. (GalaxyGame's stated principle is “code wins; document conflicts” for describing current implementation, while the wiki preserves owner-confirmed intent.)
+   - If required design intent is missing or contradictory, surface the gap and resolve it in the appropriate existing canonical documentation before expanding implementation tasks. Do not invent intent or create a parallel spec.
+   - Keep task files focused on actionable work, scope, dependencies, and acceptance criteria; reference the canonical docs/wiki instead of copying design explanations. Move durable decisions and intent into their proper source, not into repeated task/handoff text.
+   - Before creating any README, planning note, status document, reference guide, or other artifact, inspect existing files and determine whether the information belongs in an existing source. Prefer updating that source or linking to it. Do not create a new document merely to describe this anti-sprawl policy.
+   - Apply this consistently across all projects, while respecting projects that do not yet have a wiki: use their existing canonical design documentation and do not mandate bulk wiki creation without a project need and human approval.
+4. Identify the appropriate existing rule/section and any necessary boundary or wording changes so this principle complements, rather than conflicts with, task-file authority, code reality, project-specific guidance, and human decision authority.
+
+**Priority**: HIGH — cross-project development practice; intended to prevent recurrence of duplicated and conflicting project documentation.
+
+**Status**: OPEN. Claude to assess the existing workflow and recommend the minimal in-place guidance change. No shared workflow documentation changes are authorized by this entry; Tracy will decide whether to approve a follow-up change.
+
