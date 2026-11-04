@@ -2,7 +2,7 @@
 
 Short, active list of items that need a second opinion or a human decision. Primary interface for review and planning agents: read this first, then `status.md`.
 
-**Last updated:** 2026-11-03 (entry 9 added by Claude web session; drafted as text, saved by Tracy)
+**Last updated:** 2026-11-03 (entries 1, 2, 5, 8 closed; entries 11-13 added; entry 6 and 7 refreshed. Drafted by a Claude web session as text, saved by Tracy)
 **Evidence labels:** VERIFIED = a command or a read of GitHub `main` shows it. REPORTED = stated by a person or agent, not re-checked.
 
 ## How this file works
@@ -20,46 +20,28 @@ Short, active list of items that need a second opinion or a human decision. Prim
 
 ## OPEN
 
-### 1. T3a bookkeeping not done
-- **State:** OPEN — owner: Qwen (one prompt), Tracy approves
-- **Evidence:** T3a is still in `tasks/drafts/` and `tasks/completed/` has no copy (VERIFIED, GitHub `main`, 2026-10-29). Code commit `b1eb0d3` on `review/qwen-ui-prototype` is REPORTED in the 2026-10-26 handoff; not re-checked (app repo not readable from the web session).
-- **Next action:** move T3a to `completed/` with a short completion note; set `status: drafts` in `2026-10-23-HIGH-DASHBOARD-OVERVIEW-FROM-FIXTURES.md` (VERIFIED `status: active` while in `drafts/`); refresh `status.md` (header date still 2026-10-23, Open Sessions rows stale, 2026-10-26 closeout entry not appended).
-
-### 2. Two lessons must go into T3a-2 before dispatch
-- **State:** OPEN — owner: Claude web (draft text), Tracy applies
-- **Detail:** (a) body background/text color is set in the layout in T3a-2, not in CSS; (b) new tokens live in `@theme static`.
-- **Next action:** edit the T3a-2 task, then dispatch T3a-2. Do not dispatch T3a-2 on top of unreviewed CSS.
-
 ### 3. Seeds draft contradicts a decision
 - **State:** OPEN — owner: Tracy
-- **Detail:** the seeds draft's criterion 2 deletes `UserCsvLoader`. Tracy decided to keep it and says login/seed work (REPORTED).
+- **Detail:** the seeds draft's criterion 2 deletes `UserCsvLoader`. Tracy decided to keep it. Login works: the 2026-11-03 screenshots show a signed-in session as `admin@galaxygame.local` (VERIFIED from the images).
 - **Next action:** retire the seeds task, or reduce it to "run `db:seed`, confirm login" with the `UserCsvLoader` deletion removed.
 
 ### 4. Task lifecycle docs disagree
 - **State:** OPEN — owner: planning agent, human decides
-- **Detail:** the dispatch block's Step 0 moves `drafts → active`; Rule 12 as summarized in a Haiku log (REPORTED) says `drafts → backlog (human) → active`.
-- **Next action:** reconcile in the 2026-10-26 template-wording draft in the agent-tasks project; confirm against the actual GUARDRAILS text first.
-
-### 5. Possible uncommitted `status.md` edits
-- **State:** OPEN — owner: Tracy
-- **Detail:** a stale Haiku planning session reported uncommitted edits to `projects/galaxy-game-ui/status.md`; the routing table is already on `main`.
-- **Next action:** `git status --short` in both repos and `git diff` on `status.md` before staging anything there. Also check whether `~/scratch/qwen-reports/` still exists (cleanup: `rm -r ~/scratch/qwen-reports`).
+- **Detail:** the dispatch block's Step 0 moves `drafts → active`; Rule 12 as summarized in a Haiku log (REPORTED) says `drafts → backlog (human) → active`. The sign-in task went `drafts → backlog` by Tracy's approval (VERIFIED, `f7ea1b5`), the T3a-2 task went `drafts → completed`.
+- **Next action:** reconcile in the agent-tasks workflow project (see its `NEEDS_REVIEW.md` entries on the prompt-construction incident, including the 2026-10-30 evaluation); confirm against the actual GUARDRAILS text first.
 
 ### 6. Decisions waiting on Tracy
 - **State:** OPEN — owner: Tracy
-- T3c routing: Claude Sonnet (premium) vs Qwen first.
-- Galaxy Game accent color (`--accent` is `#4aa8ff` pending a human choice).
-- Eden identifier `AOL-732356` and wormhole link types (fixtures use `unknown` until confirmed).
+- **Accent color:** the running prototype now uses a bright cyan on headings, borders and buttons (2026-11-03 screenshots, VERIFIED from the images); the actual token value was not checked (`--accent` was `#4aa8ff`, a placeholder). The cyan look comes from the first attempt's direction. It is not yet recorded as a decision. If Tracy confirms it, it goes into the UI design references page of the wiki (per the wiki-intent rule in `SESSION_GUIDANCE.md` section 3) and `--accent` is set to match.
+- **Eden identifier** `AOL-732356` and wormhole link types: fixtures use `unknown` until confirmed.
+- (T3c routing was a question here; see entry 12.)
 
-### 7. Later tasks to draft (not yet started)
-- **State:** OPEN — owner: Claude web drafts when asked; do not dispatch
-- Port base components from the first attempt (commit `8ce1250`: `eve_dashboard.scss` buttons/forms/bars/badges/utilities; `dashboard.scss` topbar/panel base) into the Tailwind entry file as plain CSS using tokens only. Comes after T3a-2.
-- `landing.scss` does not match the current landing view's classes (`hero-section`, `status-grid`, `stat-large`, ...); needs a small new stylesheet. Landing comes after the dashboard.
-
-### 8. Commit authorship is invisible
-- **State:** OPEN — owner: Tracy
-- **Detail:** all four task commits carry Tracy's git identity, so history does not show which agent acted.
-- **Next action:** decide whether to add an `Agent: <name>` line to commit messages.
+### 7. Later tasks (status refreshed 2026-11-03)
+- **State:** OPEN — owner: Tracy; Claude web drafts when asked; do not dispatch
+- Landing page: shipped without a task (`f07953b` "Port Galaxy Game public landing page", VERIFIED title). Remaining issues are in entry 13.
+- Sign-in page: shipped (`2e10b1d`); record not closed, see entry 11.
+- Base components port (first-attempt `8ce1250`): not confirmed done; the dashboard has panels, cards and a sidebar, but which pieces were harvested is not recorded.
+- Not started or unverified: the passwords pages (still WVU-styled before the sign-in work; current state not checked) and the WVU favicon (seen in the 2026-10-29 tabs; current state not checked).
 
 ### 9. Backend work paused; wiki intent that screens may depend on
 - **State:** OPEN — owner: Tracy and ChatGPT (UI and gameplay intent); Claude web keeps the wiki wording
@@ -79,8 +61,28 @@ Short, active list of items that need a second opinion or a human decision. Prim
 - **Finding 3 (status labels):** four status formats seen on four pages (frontmatter `status: DESIGN INTENT — owner-confirmed`, `LIVE (design intent + code-verified note…)`, a "short intent page" line, a "Code Alignment Status" banner). UI work needs one vocabulary; entry 9 already uses ESTABLISHED INTENT / DIRECTION.
 - **Next action:** Tracy decides whether to pass this to the wiki session; if yes, apply findings 1-3 as small edits, one page at a time.
 
+### 11. Sign-in task: implemented, record not closed, not verified by the web agent
+- **State:** OPEN — owner: Tracy confirms; planning agent does the bookkeeping
+- **Evidence:** app repo `review/qwen-ui-prototype` has "Update sign-in page for Galaxy Game" (`2e10b1d`) and "updated tailwind.css" (`209d37a`) (VERIFIED titles). The task file is still `tasks/backlog/2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md` with `status: backlog` (VERIFIED 2026-11-03). No screenshot of `/session/new` (signed out) or of a failed sign-in has been reviewed by the web agent; the task's acceptance criteria ask for both.
+- **Next action:** Tracy looks at both pages. If fine, the planning agent `git mv`s the task to `tasks/completed/` with a one-line completion note citing `2e10b1d`; if not, list the fixes first.
+
+### 12. T3b and T3c drafts are stale; where did the dashboard data come from?
+- **State:** OPEN — owner: Tracy decides
+- **Evidence:** T3b (`2026-10-23-HIGH-JSON-FIXTURE-LOADER-SYSTEMS`) and T3c (`...DASHBOARD-OVERVIEW-FROM-FIXTURES`) are still `status: drafts`, and `status.md` still lists T3b as the next task. The "Command Center" dashboard exists with mock data and a "mock data for demonstration purposes only" footer (2026-11-03 screenshots), so it was built without them. Whether its data comes from a JSON fixture loader or from hard-coded or helper data is not recorded.
+- **Next action:** ask the implementing agent how the dashboard gets its data. Then Tracy decides: retire both drafts, or rewrite them against the wiki-recovery task and entry 9. The fixture rule in `docs/gameplay/sol_core_buildup.md` (label the mock state; do not present post-Snap wormhole/admin screens as the default first login) applies either way. Update `status.md` "Next task" to match.
+
+### 13. Prototype screen findings (2026-11-03 screenshots; each is a small separate change)
+- **State:** OPEN — owner: Tracy decides which to fix
+- **Currency name (VERIFIED):** the dashboard says "GCC (Galactic Credits)"; `docs/architecture/intent/PLAYER_UI_VISION.md` line 5 says "Galactic Crypto Currency".
+- **Landing page (VERIFIED from the images):** while signed in as admin it still shows "Sign In" and "Create Account" in the hero, plus a "Create Account / Watch Demo" call to action at the bottom. Its footer says "Galaxy Game UI prototype" without the "mock data" wording the dashboard footer has, and it shows invented figures ("147 decisions today", "12%") and wormhole hubs.
+- **Two header styles:** the landing page uses the T3a-2 header (gold brand, no logo); the dashboard uses a logo, a cyan brand and a sidebar.
+- **Dashboard details:** the stat card says 8 settlements but the table lists 3; the bottom Navigation card repeats the sidebar; the "Sign out" button looks clipped at the right edge (may be the screenshot crop).
+
 ---
 
 ## RESOLVED
 
-(none yet)
+- **1. T3a bookkeeping** — closed by agent-tasks `ccd9ca7` (VERIFIED): T3a moved to `tasks/completed/2026-10/`, T3c `status: drafts`, `status.md` refreshed. T3a code is `b1eb0d3`.
+- **2. Two lessons for T3a-2** — closed: T3a-2 was implemented as `c01b23d` (one file changed, VERIFIED) and approved by Tracy 2026-10-30; both lessons are in its task file.
+- **5. Possible uncommitted `status.md` edits** — closed: Tracy's `git status --short` on 2026-11-03 showed no such edits. Housekeeping left: delete the scratch folder with `rm -r ~/scratch/qwen-reports`.
+- **8. Commit authorship** — closed: commits now carry an `Agent: <name>` line (`c01b23d`, `ccd9ca7`, `e223b62`, `5cdc4ea`, `48a7e0b`, VERIFIED).
