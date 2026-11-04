@@ -168,7 +168,7 @@ Inspect:
 
 Search by concepts and feature names as well as known page names. Follow source links far enough to understand the surrounding design context. Do not perform an indiscriminate repository-wide rewrite.
 
-For each material design statement, preserve provenance with a source path and, where practical, a section heading or line reference. Cite older/frozen source documents as plain-text paths (and, where appropriate, add a row to the wiki Migration log); do not add hyperlinks from `docs/wiki/` to documentation outside the wiki. Links between tracked wiki pages may use explicit relative paths that follow the wiki standards.
+For each material design statement, preserve provenance with a source path and, where practical, a section heading or line reference. Within `docs/wiki/`, do not create hyperlinks to anything outside that directory, including code files, the `agent-tasks` repository, the prototype repository or external URLs. Cite source locations as plain-text paths instead. For every legacy source from which content is harvested, add a row to the wiki Migration log. Links between tracked wiki pages may use explicit relative paths that follow the wiki standards. Existing outbound links elsewhere in the wiki are outside this task: do not copy them or clean them up. Record any encountered outbound links in the recovery report. Do not make archival decisions; those remain with Tracy.
 
 ## Required distinctions and decisions to preserve
 
@@ -196,18 +196,20 @@ External products and games are inspiration, not specifications. Do not copy the
 
 **Use the main wiki's mandatory vocabulary, not a new task-specific label system.** Wiki page banners and section labels must follow rule 6 in `docs/wiki/README.md`: page banners are `VERIFIED AGAINST CODE`, `PARTIALLY IMPLEMENTED` or `DESIGN INTENT`; section labels are `ESTABLISHED INTENT` (owner-confirmed and dated), `DIRECTION`, `OPEN` or `RETIRED / DO NOT USE`. The categories below are a mapping aid for investigation and the recovery report; do not introduce them as competing wiki labels.
 
-Do not label any material `ESTABLISHED INTENT` without explicit owner confirmation and a date. In particular, the November 3 session-supplied decisions below must not automatically be promoted to `ESTABLISHED INTENT`; present them as reported session direction unless Tracy confirms that status. The report's evidence labels (such as `VERIFIED`, `REPORTED` and `SESSION-DIRECTION`) apply only to report evidence and must not be used as wiki page or section labels.
+Do not label any material `ESTABLISHED INTENT` without explicit owner confirmation and a date. In particular, the November 3 session-supplied decisions below must not automatically be promoted to `ESTABLISHED INTENT`; present them as reported session direction unless Tracy confirms that status. A category supported only by authoritative documentation or a developer decision is a **candidate established intent** until that owner confirmation is recorded. The report's evidence labels (such as `VERIFIED`, `REPORTED` and `SESSION-DIRECTION`) apply only to report evidence and must not be used as wiki page or section labels.
 
-The wiki must distinguish at least:
+The wiki and recovery report must distinguish at least the following investigation states, using the wiki's rule 6 labels for wiki pages rather than introducing these task categories as competing labels:
 
-- **Established design intent** — explicitly supported by authoritative current documentation or an approved developer decision.
-- **Implemented** — verified in the current code; cite the implementation location.
-- **Partially implemented** — some behavior exists but the documented capability is incomplete.
-- **Planned** — explicitly documented as future work.
-- **Proposed** — a suggestion or unapproved direction, not an established decision.
-- **Placeholder / mock** — temporary or simulated content, not a functioning game capability.
-- **Unresolved / conflicting** — sources disagree or evidence is insufficient to determine the intended outcome.
-- **Obsolete / superseded** — older material that should not be treated as current direction, with the reason and source recorded where known.
+| Task investigation category | Wiki treatment |
+|---|---|
+| Established design intent | Use `ESTABLISHED INTENT` only after explicit owner confirmation and include the confirmation date. Until then, treat it as a candidate and use `DIRECTION` or `OPEN` as appropriate. |
+| Proposed | `DIRECTION` |
+| Unresolved / conflicting | `OPEN` |
+| Obsolete / superseded | `RETIRED / DO NOT USE` |
+| Implemented, partially implemented, placeholder / mock | Use the appropriate page banner (`VERIFIED AGAINST CODE`, `PARTIALLY IMPLEMENTED` or `DESIGN INTENT`) and a concise dated code note where code is discussed. |
+| Planned | Use `DIRECTION` unless the owner has confirmed it as established intent; do not infer owner approval from documentation alone. |
+
+For the recovery report, retain the more detailed investigation categories (implemented, partially implemented, planned, proposed, placeholder/mock, unresolved/conflicting and obsolete/superseded) so findings are not lost when mapped to the smaller wiki vocabulary.
 
 Do not infer status solely from a task's folder, a file's timestamp, or a previous agent's summary. Verify current state where possible. Separate developer-supplied/session decisions from repository evidence when their provenance differs.
 
@@ -217,7 +219,7 @@ Create or update the following **in the main `galaxyGame` repository only**:
 
 1. A coherent set of UI wiki pages under `docs/wiki/`, following and integrating with the existing wiki structure.
 2. An appropriate UI wiki index or entry in the existing wiki navigation so readers can find the recovered material.
-3. Plain-text source-path citations for relevant older/frozen documentation (with Migration-log entries where appropriate), plus relative links only to related pages within `docs/wiki/`. Do not add outbound hyperlinks from the wiki to frozen or other non-wiki documentation.
+3. Plain-text source-path citations for harvested legacy documentation, with one Migration-log row for each legacy source from which content is harvested; relative links only to related tracked pages within `docs/wiki/`. Do not add hyperlinks from the wiki to anything outside `docs/wiki/`, including code, agent-tasks files, prototype-repository files or external URLs. Do not copy or clean up pre-existing outbound links elsewhere in the wiki; report any encountered. Archival decisions remain with Tracy.
 4. A concise recovery report saved in `projects/galaxy_game/summaries/` in the agent-tasks repository. The report must list:
    - Sources examined.
    - Wiki pages created or updated.
@@ -243,13 +245,13 @@ If the investigation reveals a decision is needed, document the competing eviden
 ## Acceptance criteria
 
 1. **Correct destination:** All authoritative UI wiki content and its index/navigation updates are made in `galaxyGame/docs/wiki/` in the main game repository. No authoritative UI wiki is created in the prototype repository.
-2. **Source-first recovery:** The report demonstrates that current wiki material, relevant deeper/frozen documentation, task history and both repositories' actual UI implementation were investigated. Important claims link to evidence.
+2. **Source-first recovery:** The report demonstrates that current wiki material, relevant deeper/frozen documentation, task history and both repositories' actual UI implementation were investigated. Important claims in wiki pages are supported by plain-text source paths; hyperlinks to sources are permitted only in the agent-tasks recovery report, not in `docs/wiki/`.
 3. **Coverage:** All seven subject areas in Review Scope are addressed, either with recovered content or an explicit statement that the sources do not establish the relevant intent.
 4. **Accurate status and provenance:** Implemented, partial, planned, proposed, placeholder/mock, unresolved and obsolete material are not conflated. Code claims are verified against the current implementation. Session-supplied decisions are not misrepresented as historical source documentation.
 5. **Key distinctions preserved:** Planetary Monitor reuse-as-is-first, sphere-versus-layer distinction, Digital Twin boundaries and inspiration-versus-requirement distinction are represented accurately, with conflicts flagged.
 6. **No invented decisions:** Contradictions and gaps remain visible and are listed in the report for human review. No unsupported behavior, data shape or design requirement is introduced.
-7. **Wiki coherence:** New or updated pages fit the existing wiki organization, have useful cross-links and are reachable through the wiki's navigation/index.
-8. **Scope respected:** No implementation, refactoring, source deletion/archive or unrelated documentation rewrite occurs.
+7. **Wiki coherence:** New or updated pages fit the existing wiki organization, have useful cross-links and are reachable through the wiki's navigation/index. All new wiki links are explicit relative links to tracked wiki pages, resolve case-sensitively against `git ls-files docs/wiki/`, and use `lower_snake_case` file names. There are no hyperlinks from `docs/wiki/` to anything outside that directory; legacy sources are cited as plain-text paths and harvested sources have Migration-log rows (wiki rules 1–5 and 12).
+8. **Scope respected:** No implementation, refactoring, source deletion/archive or unrelated documentation rewrite occurs. The thin-task step in wiki rule 10 is deferred until after Tracy has reviewed the recovery report and explicitly authorizes follow-on task creation.
 9. **Reviewable report:** A concise Markdown recovery report is saved in the agent-tasks summaries directory and identifies deliverables, source evidence, unresolved questions and acceptance-criteria results.
 
 ## Ordered workflow
@@ -264,7 +266,7 @@ If the investigation reveals a decision is needed, document the competing eviden
 8. Draft or update the UI wiki pages in the main `galaxyGame/docs/wiki/` repository, preserving existing organization and cross-links.
 9. Update the appropriate wiki index/navigation.
 10. Finalise the recovery report in `projects/galaxy_game/summaries/` in the agent-tasks repository, including the verified source inventory, branch attribution, findings and acceptance-criteria results.
-11. Verify every acceptance criterion. Review the resulting diffs and ensure only the intended documentation files changed.
+11. Verify every acceptance criterion. Check every new wiki link and anchor case-sensitively against tracked files using `git ls-files docs/wiki/`; confirm all new wiki links stay within `docs/wiki/`, use `lower_snake_case` file names and resolve correctly. Confirm harvested legacy sources each have a Migration-log row, and that existing outbound links encountered elsewhere were reported but not copied or cleaned up. Review the resulting diffs and ensure only the intended documentation files changed.
 12. Stop and present the report, changed-file list and unresolved questions for Tracy's review. Do not commit or push without explicit human approval, consistent with the project guardrails.
 
 ## Stop and approval gates
@@ -275,7 +277,7 @@ If the investigation reveals a decision is needed, document the competing eviden
 - For prototype inspection, treat `review/qwen-ui-prototype` as the clean implementation branch and `main` as read-only first-attempt salvage, consistent with `BRANCHES.md`. If the available checkout/branch layout does not permit that distinction, stop and ask rather than attributing findings to the wrong source.
 - If the wiki structure is unclear or a proposed change would substantially reorganize unrelated pages, stop and ask before proceeding.
 - If sources conflict on a material design decision, document both sides and leave the decision open.
-- Do not implement UI changes or create follow-on implementation tasks.
+- Do not implement UI changes or create follow-on implementation tasks. Wiki rule 10's thin-task step is deferred until after Tracy reviews the recovery report and explicitly authorizes that next step.
 - Do not commit or push without explicit human approval.
 - Follow the applicable project closeout instructions after the human reviews and authorizes completion.
 
@@ -288,7 +290,7 @@ The report should be concise and include:
 3. **Source inventory** — grouped by the seven UI subject areas.
 4. **Wiki pages created or updated**
 5. **Recovered design intent** — concise summary with source references.
-6. **Implementation comparison** — implemented / partial / planned / placeholder / not found, with branch and commit attribution for code findings.
+6. **Implementation comparison** — implemented / partial / planned / placeholder / not found, with branch and commit attribution for code findings. Any wiki section that reports code verification must name the checked commit and date; prototype-code notes must also name the branch, in accordance with wiki rule 7.
 7. **Contradictions and unresolved questions** — source A, source B, why they differ, decision needed.
 8. **Potentially obsolete material** — references only; no deletion or archival.
 9. **Acceptance criteria** — pass/fail with brief evidence.
