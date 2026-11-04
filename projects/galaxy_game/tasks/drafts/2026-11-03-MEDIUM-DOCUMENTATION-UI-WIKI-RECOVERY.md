@@ -168,7 +168,7 @@ Inspect:
 
 Search by concepts and feature names as well as known page names. Follow source links far enough to understand the surrounding design context. Do not perform an indiscriminate repository-wide rewrite.
 
-For each material design statement, preserve provenance with a source path and, where practical, a section heading or line reference. Link related source documents from the wiki so future readers can trace the recovered intent.
+For each material design statement, preserve provenance with a source path and, where practical, a section heading or line reference. Cite older/frozen source documents as plain-text paths (and, where appropriate, add a row to the wiki Migration log); do not add hyperlinks from `docs/wiki/` to documentation outside the wiki. Links between tracked wiki pages may use explicit relative paths that follow the wiki standards.
 
 ## Required distinctions and decisions to preserve
 
@@ -217,7 +217,7 @@ Create or update the following **in the main `galaxyGame` repository only**:
 
 1. A coherent set of UI wiki pages under `docs/wiki/`, following and integrating with the existing wiki structure.
 2. An appropriate UI wiki index or entry in the existing wiki navigation so readers can find the recovered material.
-3. Cross-links to relevant source documentation and related wiki subjects.
+3. Plain-text source-path citations for relevant older/frozen documentation (with Migration-log entries where appropriate), plus relative links only to related pages within `docs/wiki/`. Do not add outbound hyperlinks from the wiki to frozen or other non-wiki documentation.
 4. A concise recovery report saved in `projects/galaxy_game/summaries/` in the agent-tasks repository. The report must list:
    - Sources examined.
    - Wiki pages created or updated.
