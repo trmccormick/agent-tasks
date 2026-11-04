@@ -78,6 +78,12 @@ Short, active list of items that need a second opinion or a human decision. Prim
 - **Two header styles:** the landing page uses the T3a-2 header (gold brand, no logo); the dashboard uses a logo, a cyan brand and a sidebar.
 - **Dashboard details:** the stat card says 8 settlements but the table lists 3; the bottom Navigation card repeats the sidebar; the "Sign out" button looks clipped at the right edge (may be the screenshot crop).
 
+
+### 14. Misplaced historical review file in active drafts folder
+- **State:** OPEN — owner: Claude (housekeeping); Tracy approves any destructive cleanup
+- **Detail:** `tasks/drafts/NEEDS_REVIEW.md` is an October 23 first-attempt review artifact, not a current draft task. The active review tracker is this project-level `NEEDS_REVIEW.md`. The first-attempt archive already has its own `NEEDS_REVIEW.md`, so the historical drafts copy must not be moved over or overwrite it.
+- **Next action:** Claude compares the drafts copy with the archived review material, identifies an appropriate historical archive location/name if it is not already preserved, and proposes the exact move/removal. Keep the active drafts folder limited to current draft tasks and its README. Do not delete or overwrite anything until the archival destination and duplicate status are confirmed.
+
 ---
 
 ## RESOLVED
