@@ -71,6 +71,14 @@ Short, active list of items that need a second opinion or a human decision. Prim
 - **Code facts that affect screens** (VERIFIED, read of `main` at `09bf11f`): a market (`Market::Marketplace`) belongs to a `Settlement::BaseSettlement`; I found no market association for orbital settlements or orbital structures. `Settlement::LifeSupport#life_support_status` always returns `'operational'` (a stub). The population rule that sets a settlement's type never assigns `station`.
 - **Next action:** ChatGPT: when you document a screen, note which of the items above it depends on. Anything that depends on a DIRECTION or OPEN item is marked as such in the screen notes and is not built as settled fact. Tracy decides.
 
+### 10. Wiki spot-check feedback: unsourced numbers, authority wording, status labels
+- **State:** OPEN — owner: Tracy decides; the wiki session (Qwen/Gemini) applies
+- **Evidence:** web-agent spot check of galaxyGame `main` on 2026-11-03: `docs/wiki/technical/isru_fabrication_chain.md` read in full (`26a4c88`), plus status headers of four other pages (VERIFIED). Small sample: patterns to check, not a verdict on the wiki.
+- **Finding 1 (sources):** the per-tier kW and thermal tables in the ISRU page are arithmetically consistent, but the three docs it cites as authority (`docs/architecture/isru/README.md`, `cnt_production.md`, `logistics/SYSTEM_INDUSTRIAL_CHAINS.md`) contain no matching figures, and the banner says the profiles were added in this expansion. Not proven invented (blueprint data was not searched properly). Label them PROPOSED/placeholder or cite a source; UI fixtures and power panels may borrow them.
+- **Finding 2 (authority wording):** "If code contradicts these specs, the code is wrong" is on the ISRU page (VERIFIED today) and, per an earlier snapshot to re-check, on `eap_and_ai_manager_escalation.md` and `precursor_mission_deployment.md`. It conflicts with the wiki's own "verify against code" stance and with Tracy's rule that doc/code conflicts are discussed and he decides. Suggested wording: "a mismatch is logged as a gap for the owner to decide".
+- **Finding 3 (status labels):** four status formats seen on four pages (frontmatter `status: DESIGN INTENT — owner-confirmed`, `LIVE (design intent + code-verified note…)`, a "short intent page" line, a "Code Alignment Status" banner). UI work needs one vocabulary; entry 9 already uses ESTABLISHED INTENT / DIRECTION.
+- **Next action:** Tracy decides whether to pass this to the wiki session; if yes, apply findings 1-3 as small edits, one page at a time.
+
 ---
 
 ## RESOLVED
