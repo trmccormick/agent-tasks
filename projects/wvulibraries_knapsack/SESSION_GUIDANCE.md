@@ -168,74 +168,91 @@ Please commit your changes or stash them before you switch branches.
 - `sh down.sh && sh up.sh` — Safe, standard deployment cycle
 - `git checkout [file]` — Safe on tracked files, potentially risky on untracked dirs
 
-**Deploying a Feature Branch to hykudev (Tracy/DevOps Procedure)**:
+**Deploying a Feature Branch or Updating hykudev (Tracy/DevOps Procedure)**:
 
-When deploying a new feature branch (e.g. `feature/hyku-v7.2.1-upgrade`) that includes submodule updates or code changes:
+⚠️ **CRITICAL**: This sequence is EXACT. Do not skip or reorder steps. Deviating causes build failures, stale code, or exit 23 errors.
 
-1. **Stop the running deployment** (critical first step):
-   ```bash
-   cd /path/to/wvu_knapsack
-   sh ./down.sh
-   ```
+When deploying a new feature branch (e.g. `feature/hyku-v7.2.1-upgrade`) or pulling main with code/submodule updates:
 
-2. **Remove hyrax-webapp Gemfile.lock** (essential before submodule checkout):
-   ```bash
-   # Remove the lock file so it can be regenerated with the new submodule version
-   # File permissions can become restrictive during submodule updates
-   rm -f hyrax-webapp/Gemfile.lock
-   ```
+```
+1. STOP containers
+   └─ sh ./down.sh
+   
+2. STASH deployment changes (if any)
+   └─ git stash
+   
+3. UPDATE code
+   └─ git checkout [branch]
+   └─ git pull origin [branch]
+   
+4. CLEAN dependencies
+   └─ rm -f hyrax-webapp/Gemfile.lock
+   └─ git submodule update
+   
+5. BUILD images (MUST come before ./up.sh!)
+   └─ docker compose -f docker-compose.production.yml build --no-cache web worker
+   
+6. BRING UP containers
+   └─ sh ./up.sh
+   
+7. WAIT for initialize_app
+   └─ Look for "done" message in logs
+```
 
-3. **Preserve deployment-specific changes** (if `up.sh` or other files have local edits):
-   ```bash
-   # Stash only up.sh to preserve deployment customizations
-   git stash push -m "hykudev deployment changes" -- up.sh
-   ```
+**Why this exact sequence matters:**
 
-4. **Clean the submodule** (reset to tracked state):
-   ```bash
-   cd hyrax-webapp
-   git checkout -- .     # Restore all files to tracked state
-   git clean -fd         # Removes untracked files
-   cd ..
-   ```
+- **Step 5 (build) MUST precede Step 6 (up.sh)**
+  - Images must be rebuilt to pick up code changes from git
+  - Running `./up.sh` immediately after git changes uses old cached images or fails
+  - This is the most common mistake on hykudev
 
-5. **Fetch and checkout the new branch**:
-   ```bash
-   git fetch origin [branch-name]
-   git checkout [branch-name]
-   ```
+- **Step 4 (Gemfile.lock cleanup)**
+  - Must be removed BEFORE `git submodule update`
+  - File gets locked with restrictive permissions from Docker layer caching
+  - Prevents "exit code 23" errors during `initialize_app` bundle install
+  - Required even if not changing Hyku version — runtime generates this file with strict perms
 
-6. **Restore deployment customizations** (if stashed):
-   ```bash
-   git stash pop  # Or review first: git stash list
-   ```
-
-7. **Bring the deployment up** with the new code:
-   ```bash
-   sh ./up.sh
-   ```
-
-**Why this sequence?**
-- `down.sh` first: Ensures containers are stopped and volumes are cleanly unmounted
-- Remove Gemfile.lock: Critical step — this file gets restrictive permissions during submodule updates and prevents `initialize_app` container from regenerating it (exit code 23 error). Must be removed BEFORE stash to avoid conflicts
-- `git stash`: Preserves `up.sh` deployment edits without conflicting with branch switch
-- `hyrax-webapp` cleanup: Reset submodule to tracked state; new branch version will be checked out automatically
-- `git checkout -- Gemfile.lock`: Already removed in step 2, so this step won't restore it; new version will be generated fresh when containers start
-- `git stash pop`: Reapplies deployment-specific changes after branch switch completes
+- **Step 2 (git stash)**
+  - Always stash before branch switches
+  - Prevents merge conflicts on `./up.sh` or other deployment files
 
 **If the submodule version changes in the branch:**
 - This is expected and correct — the branch may pin a different hyrax-webapp commit/tag
-- The new submodule version will be checked out when you run `git checkout [branch]`
-- Container rebuild will use the new `hyrax-webapp/` and generate a new Gemfile.lock for the updated gems
+- Step 4 (`git submodule update`) checks out the new submodule version automatically
+- Step 5 (docker build) uses the new `hyrax-webapp/` and generates fresh Gemfile.lock for updated gems
+
+**Common Mistakes & Fixes:**
+
+| Mistake | Symptom | Fix |
+|---------|---------|-----|
+| Skip Step 5 (build) | Containers run old code; no changes visible | Stop, rebuild with `docker compose build`, restart with `./up.sh` |
+| Wrong directory for docker build | Error: "No services to build" | Ensure in `/home/git_pulls/wvu_knapsack`, NOT `hyrax-webapp/` subdirectory |
+| Don't remove Gemfile.lock | Initialize_app fails with "exit code 23" + permission error | `rm -f hyrax-webapp/Gemfile.lock` before `git submodule update` |
+| Skip git stash | Branch switch blocked by local changes | Stash first: `git stash`, then retry branch switch |
 
 **Troubleshooting:**
-- If `initialize_app` fails with exit code 23 + "write permissions" error for Gemfile.lock: File permissions are too restrictive. Run `chmod -R u+w hyrax-webapp/` and retry `sh ./up.sh`
-- If the web container won't start: Check `docker compose logs web` for Rails initialization errors; may require `rails db:migrate`
 
-**If you accidentally run a destructive command**:
-- Contact DevOps immediately — a snapshot may be available
-- Do NOT run additional git commands trying to "fix" it
-- Do NOT power cycle the VM without checking with DevOps first
+- **Initialize_app exit code 23 + "write permissions" on Gemfile.lock**:
+  ```bash
+  rm -f hyrax-webapp/Gemfile.lock
+  sh ./up.sh  # Retry startup
+  ```
+
+- **Web container won't start after deploy**:
+  ```bash
+  docker compose -f docker-compose.production.yml logs web | tail -50
+  # Check for Rails initialization errors or missing migrations
+  ```
+
+- **Code changes not visible after deploy**:
+  - Did you run `docker compose build`? (Step 5 is mandatory)
+  - Verify image was rebuilt: `docker images | grep wvu-knapsack`
+  - If image is old, stop containers, rebuild, restart
+
+- **If you accidentally run a destructive command**:
+  - Contact DevOps immediately — snapshot may be available
+  - Do NOT run additional git commands trying to "fix" it
+  - Do NOT power cycle VM without checking with DevOps first
 
 ### File Naming Conventions
 - Task files: `YYYY-MM-DD-PRIORITY-TYPE-DESCRIPTIVE-NAME.md`
