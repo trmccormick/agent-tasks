@@ -12,6 +12,24 @@
 
 ---
 
+---
+
+## 🔴 CRITICAL STATUS — November 2026
+
+**Hyku Version Status**:
+- **Production (main branch)**: Hyku 7.1.3 — Working correctly ✅
+- **hykudev (testing)**: Currently reverted to 7.1.0; search bug confirmed as **Solr data issue (NOT code bug)**
+- **Planned Soon**: Hyku 7.3 release within next week (upstream)
+
+**Current Work**:
+- **Issue**: Empty search results on hykudev (facets load but no documents returned)
+- **Root Cause**: Pre-existing UUID collection on hykudev; Rails queries empty `hydra-production` collection
+- **Remediation**: Upgrade to 7.1.3 (match production), clear/reimport Solr data
+- **Blocker for upgrades**: All Hyku versions (7.2.0, 7.2.1, planned 7.3) blocked until Solr data is cleaned
+- **See**: `projects/wvulibraries_knapsack/tasks/active/2026-11-02-HYKU-7.2.0-UPGRADE-REVERT-CLEAN.md` for detailed remediation steps
+
+---
+
 ## Agent Tasks Folder Structure (This Repository)
 
 **This agent-tasks project folder** (`/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/`) contains:

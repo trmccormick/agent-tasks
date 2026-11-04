@@ -1,17 +1,42 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-10-30 — 🔴 CRITICAL BUG: Search results not displaying on hykudev (facets load, documents empty); initialize_app now completes; 3 fixes applied; handoff to Qwen for investigation
+**Last Updated:** 2026-11-04 — 🔴 CRITICAL: Solr data issue confirmed (NOT code bug); hykudev reverted to 7.1.0; bug persists; need to upgrade to 7.1.3 and clear/reimport Solr; 7.3 Hyku update planned within week
 
 ---
 
-## 🔴 CRITICAL Session 2026-10-30 — Search Results Display Bug + Three Code Fixes
+## 🔴 CRITICAL Session 2026-11-04 — Root Cause Identified: Solr Data Issue (NOT 7.2.0 Code Bug)
 
-**Status**: ⏳ **DEBUGGING IN PROGRESS** — Handoff to Qwen model (via GitHub Copilot/Ollama)
+**Status**: ⏳ **ACTIVE REMEDIATION** — Fixing Solr data issue on hykudev
 
-**Critical Issue**:
-- **Symptom**: Facets load correctly with item counts (e.g., "Folk Music" shows 872), BUT clicking any facet returns ZERO result documents
-- **Localization**: ONLY on feature/hyku-v7.2.0-upgrade branch (hykudev); production (main branch) works correctly
-- **Root Cause**: UNKNOWN — requires investigation per task file procedures
-- **Impact**: Blocks Hyku 7.2.0/7.2.1 upgrade completion (security release cannot proceed)
+**MAJOR DISCOVERY**:
+- **Snapshot restored**: Oct 29 1:20 PM (clean baseline)
+- **Current version on hykudev**: 7.1.0 (expected 7.1.3 to match production)
+- **Bug status**: ✅ PERSISTS on 7.1.0 (facets load, search results empty)
+- **Conclusion**: 🔴 **BUG IS NOT A 7.2.0 CODE ISSUE — CONFIRMED SOLR DATA PROBLEM**
+- **Root cause**: UUID collection pre-existing on hykudev; Rails queries empty `hydra-production` collection; documents indexed to UUID collection instead
+- **Impact**: Blocks all Hyku upgrades (7.2.0, 7.2.1, planned 7.3) until Solr is cleaned and reimported
+
+**Current State on hykudev**:
+- ✅ Reverted to 7.1.0 (Oct 29 snapshot)
+- ❌ Search broken (same bug as 7.2.0, empty results)
+- ⚠️ UUID collection still present (pre-existing, not created by upgrade)
+- 📋 Need: Upgrade to 7.1.3 (match production), clear Solr, reimport data
+
+**Next Steps** (Immediate):
+1. Upgrade hykudev from 7.1.0 → 7.1.3 (match production version)
+2. Clear `hydra-production` collection completely (delete all records)
+3. Re-import fresh data via `rake index_works`
+4. Verify search works on clean state
+5. Take fresh snapshot (insurance policy before future upgrades)
+
+**Upcoming**: Hyku 7.3 release planned within next week (new upgrades may need same remediation)
+
+**Critical Assumption Failure** (Previous Session):
+- **False assumption**: Bug was 7.2.0-specific code issue
+- **Reality**: Root cause is Solr data misconfiguration (pre-existing UUID collection)
+- **Lesson**: Always revert to known-good baseline to isolate code vs. data issues
+
+**Commits (agent-tasks)**:
+- `2026-11-02-HYKU-7.2.0-UPGRADE-REVERT-CLEAN.md` — Detailed remediation task with Solr cleanup procedures
 
 **Fixes Applied This Session**:
 1. **Commit f49e39b** (Oct 30): Fixed `configure_blacklight` block structure
