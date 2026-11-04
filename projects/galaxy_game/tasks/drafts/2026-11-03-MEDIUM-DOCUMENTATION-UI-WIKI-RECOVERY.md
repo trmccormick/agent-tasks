@@ -18,7 +18,42 @@ This task is a draft awaiting human review. It has NOT been approved for backlog
 
 ## 🔴 Agent Dispatch Interface
 
-**Status**: DRAFT — NOT READY FOR DISPATCH. The human will complete this section when approving the task. Do not execute from this draft.
+**Status**: DRAFT — NOT READY FOR DISPATCH. This section will be completed by the human when the task is approved and ready for dispatch. Do not execute this task while it remains in `tasks/drafts/`.
+
+```
+You are **Documentation / Recovery Agent**.
+
+Project: galaxy_game
+Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/[SUBFOLDER]/2026-11-03-MEDIUM-DOCUMENTATION-UI-WIKI-RECOVERY.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/[SUBFOLDER]/2026-11-03-MEDIUM-DOCUMENTATION-UI-WIKI-RECOVERY.md \\
+         projects/galaxy_game/tasks/active/2026-11-03-MEDIUM-DOCUMENTATION-UI-WIKI-RECOVERY.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or begin source investigation until this is done.
+
+If the task YAML has `resume: true`, read the Progress / Resume block first, continue from "Next step", and set `resume: false` when moving it to `active/`. Do not restart the task.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify only one task-file copy remains and paste the verification output before committing.
+
+CRITICAL: Save the synthesis/recovery report as a Markdown file in:
+  <agent-tasks>/projects/galaxy_game/summaries/
+  Use the filename pattern YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md.
+  Save the report before beginning wiki edits, then update it as findings are verified.
+  Chat is for questions and concise status only; do not paste the full synthesis report into chat.
+
+Closeout: follow SESSION_CLOSEOUT.md only.
+```
+
+**Not yet resolved at draft stage**:
+- `[SUBFOLDER]` — human fills this when moving the task to backlog.
+- `<agent-tasks>` — substituted with the local checkout path at dispatch time.
+- The human must complete any remaining dispatch-specific details and approve the task before execution.
 
 ---
 
@@ -213,7 +248,7 @@ If the investigation reveals a decision is needed, document the competing eviden
 
 ## Ordered workflow
 
-1. Complete required reading and verify current repository/branch state. Do not assume handoff-reported implementation status is still current.
+1. Complete required reading. Before source inventory, verify the live state of both the `galaxyGame` and `galaxy-game-ui` checkouts: record each repository's current branch, confirm whether its working tree is clean (or document any existing changes), and note recent commits. Do not assume handoff-reported implementation status is still current.
 2. Inspect the existing main-game wiki structure and identify relevant existing pages before drafting anything.
 3. Build a source inventory for the seven subject areas. Read relevant source documents in context, including older/frozen documents and related task history.
 4. Inspect the corresponding main-game and prototype code. Record concrete implementation evidence and distinguish it from design intent.
@@ -237,8 +272,9 @@ If the investigation reveals a decision is needed, document the competing eviden
 
 The report should be concise and include:
 
-1. **Scope and repositories inspected**
-2. **Source inventory** — grouped by the seven UI subject areas
+1. **Scope and repositories inspected** — include current branch, working-tree state and recent commit checkpoint for both code repositories.
+2. **Evidence labels used** — distinguish directly verified repository/code evidence from reported status or session-supplied direction (for example, VERIFIED and REPORTED).
+3. **Source inventory** — grouped by the seven UI subject areas
 3. **Wiki pages created or updated**
 4. **Recovered design intent** — concise summary with source links
 5. **Implementation comparison** — implemented / partial / planned / placeholder / not found
