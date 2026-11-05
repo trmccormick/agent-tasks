@@ -151,7 +151,11 @@ LIFECYCLE: backlog → active → completed
   - Verify with: find agent-tasks/projects/[project]/tasks -name "[FILENAME].md"
     Only ONE result should exist. Paste this output before committing.
 
-READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
+READ FIRST (after Step 0), in this order:
+  1. <agent-tasks>/rules/GUARDRAILS.md
+  2. <agent-tasks>/projects/[project]/README.md
+  3. <agent-tasks>/projects/[project]/SESSION_GUIDANCE.md (if the project has one)
+  4. The task file. It holds what is specific to this task; the files above hold the standing rules.
 
 CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
   Summaries path: <agent-tasks>/projects/[project]/summaries/
