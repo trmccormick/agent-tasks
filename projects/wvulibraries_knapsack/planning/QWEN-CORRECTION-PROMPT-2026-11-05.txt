@@ -156,23 +156,74 @@ Before this task goes to review:
 
 ---
 
-## CRITICAL: Do NOT Commit/Push
+## CRITICAL: Workflow After You're Done
 
-❌ Leave the file **uncommitted** in your working directory  
-❌ Do NOT run `git add` or `git commit`  
-❌ Do NOT run `git push`  
+**You (Qwen) MUST:**
 
-The human will review and approve the commit when ready (per PLANNING_AGENT_SESSION_START.md Rule 7).
+✅ Create and push the draft task to git  
+✅ Prepare a review prompt for the web agent
+
+**Here's what you do:**
+
+1. **Commit and push the draft task:**
+   ```bash
+   cd /Users/tam0013/Documents/git/agent-tasks
+   git add projects/wvulibraries_knapsack/tasks/drafts/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md
+   git commit -m "draft task: Hyku 7.2.0 local testing plan [2026-11-05]"
+   git push origin main
+   ```
+
+2. **Prepare a review prompt** for the web agent (Claude/Grok/ChatGPT). This prompt should:
+   - Ask the web agent to review the draft task file
+   - Point to the GitHub path: `projects/wvulibraries_knapsack/tasks/drafts/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md`
+   - Ask for assessment: scope clarity, procedure feasibility, dependencies, acceptance criteria
+   - Ask for disposition: GO (approved) / REVISE (needs changes) / STOP (fundamentally flawed)
+   - Ask for specific feedback if REVISE (what needs to change)
+
+**Example review prompt structure:**
+```
+Please review this draft task from the WVU Knapsack project:
+
+**File:** projects/wvulibraries_knapsack/tasks/drafts/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md
+
+**Context:** This task is a testing plan to investigate a Solr collection mismatch bug in Hyku 7.2.0 upgrade. The hypothesis is that the Valkyrie indexer writes to one collection while search queries another, causing empty search results despite records in the index.
+
+**Review requested:**
+1. Is the task scope clear and bounded?
+2. Are the 5-phase procedures realistic and specific enough for an implementation agent?
+3. Are the acceptance criteria measurable?
+4. Any dependencies or gotchas the planner missed?
+
+**Disposition:** GO / REVISE / STOP
+
+**If REVISE:** What specific changes are needed?
+```
+
+**Here's what happens next:**
+
+1. **Human sends your review prompt to web agent** — agent reads the draft from GitHub
+2. **Web agent assesses and returns feedback** — GO, REVISE, or STOP
+3. **If REVISE:** Human sends feedback back to you (Qwen)
+4. **You update the draft** — fix issues, push new version
+5. **Loop with different agents if needed** — until one approves (GO)
+6. **When GO is achieved:** Human reviews final version, suggests final tweaks
+7. **Human approves** — task moves to backlog for implementation
+
+Your job: create → push → prepare review prompt. Then wait for feedback and iterate until approved.
 
 ---
 
 ## Expected Output
 
 When you're done:
-1. Report: "Draft task created at `projects/wvulibraries_knapsack/tasks/drafts/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md`"
+
+**Report (to human):**
+1. "Draft task pushed to GitHub at: `projects/wvulibraries_knapsack/tasks/drafts/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md`"
 2. List what it covers: "Phases 0-4 testing + root cause investigation + comparative report generation"
-3. Recommend review agent: "[Suggest: Claude or Grok — architectural familiarity with Hyku/Valkyrie collection logic needed]"
-4. Stop and wait (don't commit, don't move to backlog, don't dispatch)
+3. Recommend reviewer: "[Suggest: Claude or Grok — Hyku/Valkyrie architecture expertise helpful]"
+4. Provide the review prompt you prepared (see CRITICAL section above)
+
+**Then:** Stop and wait for web agent feedback. When corrections come back, you'll update the draft and re-push for another review cycle.
 
 ---
 
