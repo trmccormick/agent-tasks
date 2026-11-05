@@ -1,0 +1,189 @@
+# QWEN PLANNING AGENT PROMPT — Hyku 7.2.0 Local Testing Strategy
+
+## Context: Create a Local Testing Plan for Hyku 7.2.0 Bug
+
+You are a **planning agent** designing a comprehensive local testing strategy for the Hyku 7.2.0 upgrade bug.
+
+**Problem Summary:**
+- Hyku 7.2.0 has broken search (empty results despite records in Solr)
+- Root cause: Valkyrie indexer writes to wrong collection; search queries different collection
+- Current state: hykudev v7.1.3 stable with snapshot taken
+- Next phase: Local testing to understand bug before fixing
+
+**Your Task:**
+Design a **detailed local testing plan** that will:
+1. Test on local Stack Car setup (safe environment)
+2. Verify the bug exists locally at both v7.1.3 and v7.2.0
+3. Systematically compare behavior between versions
+4. Identify exactly what changes between versions
+5. Collect diagnostic data for root cause analysis
+6. Inform next steps (fix strategy, hykudev testing sequence)
+
+---
+
+## What You Should Plan
+
+### 1. Local Environment Setup
+- What state should local Stack Car be in before testing?
+- Do we need clean database/Solr, or can we use existing data?
+- What branches should be tested? (main for 7.1.3, feature/hyku-v7.2.0-upgrade for 7.2.0)
+- How do we capture initial baseline state?
+
+### 2. Baseline Testing (v7.1.3)
+- What should we test on v7.1.3 locally to confirm it works there?
+- Where exactly does the search work vs. fail?
+- Which Solr collection is used when indexing works correctly?
+- What diagnostic commands should we run to document working state?
+- Success criteria: What does "working correctly" look like?
+
+### 3. Broken Testing (v7.2.0)
+- What specific steps should we follow to test v7.2.0 locally?
+- Which tests should we run (same as v7.1.3 for comparison)?
+- Where does it fail? At what point does search stop working?
+- How should we capture the broken state (logs, Solr queries, Rails output)?
+- Success criteria: What evidence confirms the bug exists locally?
+
+### 4. Comparative Analysis
+- How should we systematically compare v7.1.3 vs v7.2.0?
+- What metrics/measurements should be collected for both versions?
+- Which code files should be compared using git diff?
+- What changes are significant vs. noise?
+- How do we trace the exact commit that breaks search?
+
+### 5. Diagnostic Data Collection
+- What logs should be captured? (Rails, Solr, Docker)
+- What Solr queries should we run to understand collection state?
+- Should we check which collection Rails thinks it's using?
+- Should we inspect the actual Solr index for both versions?
+- How should we document findings for the next session?
+
+### 6. Risk & Fallback Strategy
+- What could go wrong during local testing?
+- How do we safely revert if something breaks?
+- Should we take snapshots between test phases?
+- Are there any breaking changes we should be aware of?
+- How do we minimize impact on hykudev?
+
+---
+
+## Planning Questions to Address
+
+1. **Sequence:** What order should we test? (v7.1.3 first, then v7.2.0? Or both in parallel?)
+
+2. **Data:** Should we use production data (imported from snapshot) or clean/synthetic data?
+
+3. **Scope:** Which components should we isolate in testing?
+   - Just Solr/indexing?
+   - Also faceting/search builder?
+   - Full end-to-end UI testing?
+
+4. **Diagnostics:** What should we measure/capture?
+   - Solr collection names and doc counts?
+   - Rails logs showing which collection is used?
+   - Git diff output comparing versions?
+   - Code snippets showing the difference?
+
+5. **Documentation:** How should findings be formatted for the next session?
+   - Side-by-side code comparison?
+   - List of commits that changed collection logic?
+   - Screenshots/logs showing the bug?
+   - Hypothesis about the fix?
+
+6. **Timing:** Is local testing blocking, or can hykudev investigation happen in parallel?
+
+7. **Next Steps:** After local testing, what should the implementation plan be?
+   - Test fix locally?
+   - Apply to hykudev?
+   - Full reindex and snapshot?
+
+---
+
+## Context for Your Planning
+
+**What We Know:**
+- Gem version drift caused startup crash (FIXED via Gemfile.lock)
+- Collection mismatch hypothesis is strong (facets work = Solr has data; search empty = wrong collection queried)
+- Jr dev confirmed local setup works at base version (so it's not a universal local problem)
+- hykudev snapshot taken; safe baseline exists
+
+**Key Learnings from Previous Sessions:**
+1. Test locally FIRST before troubleshooting on production VM
+2. Collection mismatch is CODE issue, not data loss
+3. Fresh snapshots are checkpoints for safety
+4. Document EVERYTHING (values, code snippets, before/after)
+
+**Files Available:**
+- `/Users/tam0013/Documents/git/wvu_knapsack/` (full codebase with all branches)
+- `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/handoffs/2026-11-05-HYKU-UPGRADE-TESTING-STRATEGY.md` (testing strategy doc)
+- `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/status.md` (project status)
+
+---
+
+## Expected Output
+
+Deliver a **detailed testing plan** document that includes:
+
+**Section 1: Testing Phases**
+- Phase 1: Environment setup (what's needed, how to prepare)
+- Phase 2: v7.1.3 baseline testing (specific tests, expected results)
+- Phase 3: v7.2.0 broken testing (same tests, comparison points)
+- Phase 4: Comparative analysis (code diffs, findings)
+
+**Section 2: Diagnostic Steps**
+- Exact commands to run on each version
+- What data to capture at each step
+- How to compare results between versions
+- Success/failure criteria for each phase
+
+**Section 3: Risk & Mitigation**
+- What could go wrong
+- How to revert if needed
+- Snapshots/checkpoints to take
+- Dependencies on hykudev work
+
+**Section 4: Handoff to Implementation**
+- What findings should trigger code investigation?
+- How to identify the exact commit/code change?
+- Recommended fix strategy (if obvious)
+- Whether to test fix locally before hykudev
+
+**Section 5: Timeline & Resources**
+- Estimated time for each phase
+- CPU/memory/disk requirements
+- Parallel work possibilities
+- Blocking dependencies
+
+---
+
+## Guidelines
+
+✅ **DO:**
+- Think systematically about comparison methodology
+- Document assumptions and success criteria clearly
+- Plan for data capture and analysis
+- Include risk mitigation and fallback strategies
+- Design for reusability (this pattern may apply to future upgrades)
+
+❌ **DON'T:**
+- Execute the plan (this is PLANNING only)
+- Make assumptions about what will happen without stating them
+- Assume local = identical to production
+- Skip documentation/data capture steps
+- Plan without considering parallel/blocking work
+
+---
+
+## Deliverable Format
+
+Create a structured plan document with:
+- Clear section headers
+- Bulleted steps where appropriate
+- Specific commands/procedures
+- Success criteria for each phase
+- Risk assessment
+- Timeline estimate
+- Assumptions clearly stated
+
+This plan will be handed off to an implementation agent who will execute it.
+
+Good luck! 🚀
