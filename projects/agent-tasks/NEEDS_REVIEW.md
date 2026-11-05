@@ -792,3 +792,35 @@ This is particularly important because:
 
 **Status**: OPEN. Recommendation: Clarify in PLANNER_ROLE_BOUNDARIES.md (or new section in PLANNING_AGENT_SESSION_START.md): when to do research in-session vs. spawn separate research session; context-length boundaries; handoff separation for deep research vs. planning output.
 
+
+### 2026-11-05 — Prompt lifecycle and modification rules not documented for multi-agent workflows
+
+**What happened**: Workflow practice clarified for prompt management in multi-agent sessions (planning + review agent coordination):
+1. **Prompts sent to agents are locked** — once sent (to user, another session, or review agent), no modifications to that prompt
+2. **Steering can be sent to active sessions** — if an agent is actively running/working, steering/guidance can be sent mid-session to refine work
+3. **New full prompts only on explicit request** — if changes needed after sending, require explicit "create new prompt" instruction, not assumed updates
+
+**Observed issue**: This rule isn't documented for review agents or web agents coordinating with planning agents (Qwen + Claude/Grok/M365 workflows). Result: agents may not understand when prompts can be modified vs. when they're locked, or when steering vs. new prompts are appropriate.
+
+**What I already checked**:
+- REVIEW_AGENT_GUIDE.md (VERIFIED: does not document prompt lifecycle or modification rules)
+- PLANNING_AGENT_SESSION_START.md (VERIFIED: does not document prompt workflow for multi-agent coordination)
+- DIRECT_SESSION_TEMPLATE.md (VERIFIED: does not document prompt lifecycle)
+
+**Root cause**: Clear practice in sessions (user enforces it) but not written into agent responsibilities. Affects coordination between planning agents and review/web agents.
+
+**What needs a second opinion**:
+1. Should REVIEW_AGENT_GUIDE.md include a "Prompt Workflow" section explaining:
+   - Prompts sent to you are final; no modifications after sending
+   - Steering/guidance may arrive mid-review if clarification needed
+   - If significant changes needed, you'll receive explicit "new prompt" instruction, not assumed updates
+2. Should PLANNING_AGENT_SESSION_START.md clarify planning agent's responsibility:
+   - Once review prompt is sent (for dispatch to M365/Claude/Grok), it's locked
+   - Can only add steering to active agent session or request new prompt
+   - When coordinating with review agents, prompt stability is critical
+3. Should multi-agent coordination docs (if they exist) document prompt stability as a standing rule?
+
+**Priority**: MEDIUM — affects multi-agent workflow clarity and coordination patterns. Important for planning + review agent workflows (Qwen + M365/Claude pairings).
+
+**Status**: OPEN. Recommendation: Add "Prompt Lifecycle and Modification Rules" section to REVIEW_AGENT_GUIDE.md and PLANNING_AGENT_SESSION_START.md, explaining locked prompts, steering for active sessions, and explicit new-prompt requests.
+
