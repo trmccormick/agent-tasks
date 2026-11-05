@@ -1,5 +1,3 @@
-# Task File Template
-
 ---
 status: draft
 resume: false
@@ -66,12 +64,12 @@ Agents receive this exact text as the startup contract. Every word matters.
 ```
 You are **Implementation Agent**.
 
-Project: WVU Libraries Knapsack
-Task: <agent-tasks>/projects/wvulibraries_knapsack/tasks/active/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md
+Project: [project_name]
+Task: <agent-tasks>/projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/wvulibraries_knapsack/tasks/backlog/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md \
-         projects/wvulibraries_knapsack/tasks/active/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md
+  git mv projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md \
+         projects/[project]/tasks/active/[FILENAME].md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
@@ -82,17 +80,17 @@ LIFECYCLE: backlog → active → completed
   - Tracked file: git mv (never cp or plain mv)
   - New/untracked file: mv then git add the final path
   - Never leave stale copies in the source folder
-  - Verify with: find agent-tasks/projects/wvulibraries_knapsack/tasks -name "2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md"
+  - Verify with: find agent-tasks/projects/[project]/tasks -name "[FILENAME].md"
     Only ONE result should exist. Paste this output before committing.
 
 READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
 
 CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
-  Summaries path: <agent-tasks>/projects/wvulibraries_knapsack/summaries/
+  Summaries path: <agent-tasks>/projects/[project]/summaries/
   Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
   Chat is for questions only — never paste synthesis into chat (formatting breaks).
 
-Closeout: follow IMPLEMENTATION_AGENT_SESSION_CLOSEOUT.md when finished.
+Closeout: follow SESSION_CLOSEOUT.md only.
 ```
 
 **IMPORTANT: Do not modify or abbreviate the text above.**
@@ -110,6 +108,28 @@ The dispatch interface above is ONLY the bootstrap instructions.
 **Type**: bug-fix  
 **Created**: 2026-11-05  
 **Last Updated**: 2026-11-05  
+
+---
+
+## Local Worker Triage Report (Optional — for backlog review only)
+*Filled in by local model (Qwen via GitHub Copilot custom agent config) during backlog review*
+*This section is NOT sent to agents — it's for human task management only*
+
+- **Template Conformance**: PENDING REVIEW (REVISE items pending)
+- **MVP Alignment**: VALID — directly addresses hyku-7.2.0-upgrade blocker
+- **Action Line**: NEEDS MANUAL REVIEW — template conformance must be fixed before dispatch
+
+---
+
+## Agent Assignment (Human-filled, not seen by agents)
+
+**Assigned To**: Qwen local via Copilot (primary)
+**Why This Agent**: Requires terminal access to run docker commands, Solr queries, Rails runner on Stack Car
+**Local attempts before cloud**: N/A — first dispatch for this task
+**Supervision Level**: Watched carefully — all agents on first dispatch of a task
+
+> **Primary executor is always local Qwen via the GitHub Copilot custom agent config.**
+> Cloud/paid agents are fallback only.
 
 ---
 
@@ -134,7 +154,7 @@ The Hyku 7.2.0 upgrade has a search bug where:
 The root cause is a **code-level bug in how SolrEndpoint determines which collection to use**. Both indexing and search paths are misaligned on collection selection. Local testing on Stack Car (safe, disposable environment) will systematically verify, capture diagnostics, and pinpoint the exact file/line responsible for this mismatch.
 
 **Relevant Architecture Docs:**
-- `IMPLEMENTATION_AGENT_SESSION_CLOSEOUT.md` — closeout procedures
+- `SESSION_CLOSEOUT.md` — closeout procedures
 - `REVIEW_AGENT_GUIDE.md` — review criteria and dispositions
 
 ---
@@ -193,6 +213,26 @@ When upgrading Hyku from v7.1.3 to v7.2.0, search returns empty results while re
 | 2.x | Same tests on v7.2.0 show bug | Evidence of collection mismatch or search failure |
 | 3.x | Root cause identified | Exact file/line causing collection mismatch is named |
 | Overall | Fix strategy informed | Findings specify which file to patch and what change needed |
+
+---
+
+## Files Involved
+
+### Primary Files — you will inspect these (read-only, no edits)
+| File | Purpose | Key Method/Section |
+|---|---|---|
+| `hyrax-webapp/app/models/solr_endpoint.rb` | SolrEndpoint model — resolves collection name | `#url`, `#id` |
+| `hyrax-webapp/app/models/account.rb` | Account model — belongs_to solr_endpoint | `#solr_endpoint` association |
+| `hyrax-webapp/app/jobs/create_solr_collection_job.rb` | Indexing logic | Collection creation/assignment |
+
+### Reference Files — read but do not edit
+| File | Why You Need It |
+|---|---|
+| `hyrax-webapp/Gemfile` | Verify hyrax/valkyrie/blacklight gem versions |
+| `hyrax-webapp/app/models/concerns/solr_query_parameters_extension.rb` | Blacklight query parameter handling (if exists) |
+
+### Migration (if needed)
+- [ ] No migration needed — this task is pure investigation only
 
 ---
 
@@ -600,13 +640,14 @@ Exact identification of which file/line causes SolrEndpoint to resolve the wrong
 
 ---
 
-## Task Readiness Checklist
+## Planner Self-Validation (Draft Author Checklist)
+
+*Planner self-validation — not sent to agents. For draft author only.*
 
 - [x] YAML frontmatter complete (status: draft, resume, priority, type, system_domain, mvp_alignment, local_worker_safe)
 - [x] DRAFT STATUS NOTE filled (says what was verified, what wasn't)
-- [x] DRAFT REVIEW CHECKLIST filled (marks items reviewed by planner vs. deferred to implementation agent)
+- [x] DRAFT REVIEW CHECKLIST filled (marks items reviewed by planner vs. deferred to review agent)
 - [x] Agent Dispatch Interface complete and accurate (no bracketed placeholders except <agent-tasks>)
-- [x] Task Readiness Checklist present and marked
 - [x] Full task body present (all 6 phases, all commands, all success criteria)
 - [x] No placeholder text or [FILL IN HERE] markers
 - [x] File is in tasks/drafts/ with status: draft
@@ -628,3 +669,98 @@ Exact identification of which file/line causes SolrEndpoint to resolve the wrong
 4. ✅ Root cause identified: specific file(s) and code path in hyrax-webapp that causes the mismatch
 5. ✅ Comparison report generated at handoffs/2026-11-05-HYKU-7.2.0-SEARCH-BUG-LOCAL-TESTING-RESULTS.md
 6. ✅ Stack Car reverted to v7.1.3 baseline after testing complete
+
+---
+
+## Stop Conditions — escalate to user immediately if:
+- Fix causes new failures in specs you did not touch
+- Same failure persists after two attempts
+- Root cause is in a shared concern, base class, or factory used across many specs
+- A database migration is needed that wasn't anticipated
+- Any architectural decision is required
+- Fix requires changing more files than the task specifies
+
+---
+
+## Commit Instructions
+
+> ⚠️ **PRE-COMMIT CHECK**: Before running ANY of the commands below, confirm:
+> - [ ] Reviewer has issued GO disposition (not just pending)
+> - [ ] Human has explicitly authorized the command I am about to run (commit or push) in a message that names it
+> - [ ] Both conditions documented in your completion report
+>
+> If either condition is unmet, DO NOT proceed. Wait for the missing authorization.
+
+Run git commands on **host only** — never inside the Docker container:
+```bash
+git add [specific files only — never git add .]
+git commit -m "[type]: [spec/file name] — [brief description of root cause and fix]"
+git push
+```
+
+**Task file move on completion:**
+```bash
+# Tracked file (already committed): use git mv
+git mv projects/galaxy_game/tasks/active/[FILENAME] projects/galaxy_game/tasks/completed/[YYYY-MM]/[FILENAME]
+
+# New/untracked file (just created this session): move with filesystem, then add the final path
+mv projects/galaxy_game/tasks/active/[FILENAME] projects/galaxy_game/tasks/completed/[YYYY-MM]/[FILENAME]
+git add projects/galaxy_game/tasks/completed/[YYYY-MM]/[FILENAME]
+
+git commit -m "chore: move [FILENAME] to completed/"
+```
+
+---
+
+## Documentation
+- [ ] No doc changes needed
+- [ ] Update `docs/[path]/[file].md` — [what to update]
+- [ ] Flag doc gap: [description] — do not create the doc, add to backlog instead
+
+---
+
+## Dependencies
+**Blocked by**: none
+**Blocks**: hyku-v7.2.0-upgrade fix strategy development
+**Related tasks**: 2026-11-05 HYKU-UPGRADE-TESTING-STRATEGY (handoff document)
+
+---
+
+## Progress / Resume
+
+*Updated by the session whenever it stops before the task is finished (SESSION_CLOSEOUT.md section 2a).*
+
+- **Done so far:**
+- **Next step:**
+- **Last verified fact (with command):**
+- **Local-only commits (`git log --oneline origin/main..HEAD`):**
+- **Owning session / window label:**
+
+---
+
+## Completion Report
+*Filled in by the implementing agent after completion*
+
+**Completed by**: [agent name]
+**Completion date**: YYYY-MM-DD
+**Final test result**: X examples, Y failures
+**Evidence basis:** [direct verification / review of pasted evidence / reported by agent / human assertion] — [one-line source or note when not direct verification]
+
+### What was changed
+- `[file]` — [description of change]
+
+### Issues discovered
+[Any problems found during implementation that weren't in the original task]
+
+### Follow-up tasks needed
+[Any new backlog items identified — do not create the files, just list them here]
+
+### Lessons learned
+[What worked, what didn't, what future tasks in this area should know]
+
+---
+
+## Handoff Summary
+*Filled in at end of session — one scannable line for next agent*
+
+HANDOFF SUMMARY: [files updated] | [structural changes] | [next action needed]
