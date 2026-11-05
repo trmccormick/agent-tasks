@@ -33,14 +33,14 @@ Follow the repository and environment instructions in those files. After startup
 
 If this is a **continuation of the existing session**, STEP 0 is already complete. Do not repeat the startup reading sequence or reread the handoff unless the user asks, the session context has been lost, or a specific instruction requires it. Continue from the current approved objective and the work already reviewed with Tracy.
 
-### Direct collaboration versus draft tasks
+### Direct collaboration versus formal tasks
 
-Choose the workflow to match the size and autonomy of the work:
+Choose the workflow to match the size and autonomy of the work. The universal distinction and dispatch requirements are in `<agent-tasks>/rules/GUARDRAILS.md` Rule 13b; use `<agent-tasks>/DIRECT_SESSION_TEMPLATE.md` when preparing a direct-session prompt.
 
-- **Direct Qwen session:** Use for small, iterative, one-on-one adjustments where Tracy is reviewing the work as it progresses. State one clear objective and keep the prompt concise. Work on that objective only; pause for Tracy's review before moving to the next distinct objective. Do not create a task file, separate report, or handoff unless Tracy asks or the work genuinely grows beyond direct collaboration.
-- **Draft task:** Use for larger, well-bounded work intended for more autonomous execution. The draft task is the detailed execution contract: include scope, relevant wiki/design references, constraints, acceptance criteria, and required verification. Follow the task lifecycle and review gates in GUARDRAILS.md. Do not turn small conversational adjustments into formal tasks merely for the sake of documentation.
+- **Direct Qwen session:** Use for small, iterative, one-on-one adjustments where Tracy is reviewing the work as it progresses. Use the shared direct-session template, but follow this project's startup sequence and handoff conventions below. State one clear objective and keep the prompt concise. Work on that objective only; pause for Tracy's review before moving to the next distinct objective. Do not create a task file, separate report, or handoff unless Tracy asks or the work genuinely grows beyond direct collaboration.
+- **Formal task:** Use for larger, well-bounded work intended for more autonomous execution. The task file is the detailed execution contract: include scope, relevant wiki/design references, constraints, acceptance criteria, and required verification. Follow the task lifecycle and review gates in GUARDRAILS.md. Do not turn small conversational adjustments into formal tasks merely for the sake of documentation.
 
-A direct session prompt should not repeat the full project guidance or become a multi-step task specification. The startup sequence belongs in the fresh-session prompt; a continued-session prompt should not repeat it.
+The shared template supplies the prompt structure; this file supplies Galaxy Game UI-specific startup reading, handoff location, and project constraints. A direct session prompt should not repeat the full project guidance or become a multi-step formal task specification. A continued-session prompt should not repeat startup reading.
 ---
 
 ## 3. UI choices come from the wiki (project rule)
