@@ -1,0 +1,229 @@
+# QWEN PLANNING SESSION PROMPT — Hyku 7.2.0 Local Testing Strategy
+
+## Start Here: Read This First
+
+**File:** `/Users/tam0013/Documents/git/agent-tasks/PLANNING_AGENT_SESSION_START.md`
+
+Read this file to understand:
+- Rules for the session (one objective, bounded recovery, stall ladder)
+- Your role as a local planning agent
+- How draft tasks are created and approved
+- What evidence shows completion
+
+---
+
+## Your Assignment
+
+**Project:** `wvulibraries_knapsack`
+
+**Objective:** Design a comprehensive **local testing strategy** for the Hyku 7.2.0 upgrade bug
+
+**Success Criteria:** Deliver a detailed testing plan document that:
+- Defines clear testing phases (setup → baseline → broken → analysis)
+- Includes specific diagnostic commands (copy-paste ready)
+- Has success/failure criteria for each phase
+- Addresses risk mitigation and fallback procedures
+- Is ready for implementation in follow-up session
+- Includes timeline estimate and resource requirements
+
+**Evidence of completion:** 
+- Testing plan document committed and pushed to `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/planning/HYKU-7.2.0-LOCAL-TESTING-PLAN.md`
+- Document references all required diagnostic procedures
+- Ready for handoff to implementation agent
+
+---
+
+## Session Context & Priorities
+
+### Problem Summary
+- Hyku 7.2.0 breaks search (empty results despite records in Solr)
+- Root cause identified: Valkyrie indexer writes to wrong Solr collection; search queries different collection
+- Gemfile.lock already fixed (startup crash)
+- hykudev v7.1.3 baseline stable with snapshot taken
+
+### Why Local Testing First
+- Stack Car is safe (can restart freely, no production risk)
+- Jr dev confirmed local setup works at base version
+- Local testing can isolate code changes quickly
+- Production hykudev troubleshooting is expensive and risky
+
+### What You're Planning (NOT Executing)
+You design the testing strategy. An implementation agent will execute it later.
+- Research: What tests should be run?
+- Document: How should they be compared?
+- Plan: What diagnostic data matters?
+- Procedure: Exact commands for each phase
+
+---
+
+## Files to Read (In Order)
+
+**1. Project Context** (read first):
+- `projects/wvulibraries_knapsack/status.md` — Current project status, what's been tried
+- `projects/wvulibraries_knapsack/handoffs/2026-11-05-HYKU-UPGRADE-TESTING-STRATEGY.md` — 4 testing lessons learned
+
+**2. Session Context** (reference):
+- `projects/wvulibraries_knapsack/handoffs/2026-11-05-QWEN-SESSION-HYKU-7.2.0-ROOT-CAUSE-INVESTIGATION.md` — Current state summary, what needs testing
+
+**3. Architecture Details** (if needed during planning):
+- Conversation summary from VS Code session (contains detailed architectural findings)
+- `wvu_knapsack/` codebase (can browse branches, commit history, file structure)
+
+---
+
+## Planning Priorities (In Order)
+
+### Priority 1: Define Testing Phases (HIGH)
+**What:** Create a structured approach to test v7.1.3 (working) vs v7.2.0 (broken)
+
+**Required sections:**
+- Phase 1: Environment setup — What state should Stack Car be in?
+- Phase 2: v7.1.3 baseline testing — What proves it works?
+- Phase 3: v7.2.0 broken testing — Same tests, showing difference
+- Phase 4: Comparative analysis — How to isolate the code change?
+
+**Output:** Clear, step-by-step procedures for each phase
+
+### Priority 2: Diagnostic Data Collection (HIGH)
+**What:** Define what data will be collected at each phase to understand the bug
+
+**Required sections:**
+- Which logs to capture? (Rails, Solr, Docker)
+- Which Solr queries to run? (collection list, doc counts, index structure)
+- How to check which collection Rails thinks it's using?
+- Code comparison procedures (git diff between versions)
+- How to document findings for hand-off
+
+**Output:** Diagnostic checklist with specific commands
+
+### Priority 3: Risk & Sequencing (MEDIUM)
+**What:** Address what could go wrong and how to proceed
+
+**Required sections:**
+- Potential failure points
+- Rollback/revert procedures
+- Should we take snapshots? When?
+- After local testing, what's next?
+- Timeline estimate with contingencies
+- Parallel/blocking dependencies
+
+**Output:** Risk assessment and mitigation strategy
+
+---
+
+## Key Questions Your Plan Should Answer
+
+1. **Baseline:** What exactly should we test on v7.1.3 to prove it works?
+2. **Comparison:** What's the minimal test set that shows the difference between v7.1.3 and v7.2.0?
+3. **Root Cause:** What diagnostic procedures will help identify the exact code change?
+4. **Data Collection:** What must be captured to answer "why does 7.2.0 break search?"?
+5. **Safety:** How do we safely revert if something breaks locally?
+6. **Next Phase:** After planning is approved, what does implementation need to execute?
+
+---
+
+## Constraints & Resources
+
+**Available:**
+- Full wvu_knapsack codebase (all branches, all commits)
+- Docker Compose files (local and production configs to compare)
+- Stack Car setup (local testing environment)
+- Production snapshot on hykudev (reference)
+
+**NOT doing:**
+- Executing the tests (that's implementation)
+- Fixing code (that's later phase)
+- Troubleshooting hykudev (that's after local testing)
+
+**Local agent status:**
+- You have repository read access
+- You can read/compare files and commits
+- You can research procedures and commands
+- You cannot execute Docker commands (planning only)
+
+---
+
+## Rules From PLANNING_AGENT_SESSION_START.md (Critical)
+
+1. **One objective** — Design the local testing strategy, nothing more
+2. **Act, don't re-plan** — Research, then write the plan; don't keep saying "I will plan"
+3. **Bounded recovery** — If something doesn't work, report it and stop (don't loop endlessly)
+4. **Stall ladder** — If you notice yourself repeating, stop and report
+5. **Stages are separate** — Planning ≠ execution; you're designing, not running
+6. **Preserve unrelated work** — Don't touch other projects or branches
+7. **Commit only when human tells you** — Draft tasks go to git only on human approval
+
+---
+
+## Deliverable Format
+
+Create a file at:
+```
+projects/wvulibraries_knapsack/planning/HYKU-7.2.0-LOCAL-TESTING-PLAN.md
+```
+
+Structure:
+```markdown
+# Hyku 7.2.0 Local Testing Strategy
+
+## Overview
+[Brief summary of what's being tested and why]
+
+## Phase 1: Environment Setup
+[Specific procedures and requirements]
+
+## Phase 2: v7.1.3 Baseline Testing
+[Exact tests, expected results, diagnostic commands]
+
+## Phase 3: v7.2.0 Broken Testing
+[Same tests from Phase 2, showing difference]
+
+## Phase 4: Comparative Analysis
+[How to identify code changes, git diff procedures]
+
+## Diagnostic Procedures
+[Complete command reference]
+
+## Success Criteria
+[For each phase]
+
+## Risk Mitigation
+[Failure points, rollback procedures]
+
+## Timeline & Resources
+[Estimate with contingencies]
+
+## Next Phase Handoff
+[What implementation agent needs to execute]
+```
+
+---
+
+## Session Checklist
+
+- [ ] Read PLANNING_AGENT_SESSION_START.md (understand rules and workflow)
+- [ ] Read project status and session context files
+- [ ] Research: What testing is needed to isolate v7.1.3 vs v7.2.0?
+- [ ] Design Phase 1 (environment setup)
+- [ ] Design Phase 2 (v7.1.3 baseline)
+- [ ] Design Phase 3 (v7.2.0 broken)
+- [ ] Design Phase 4 (comparative analysis)
+- [ ] Create diagnostic procedures document
+- [ ] Add risk/mitigation section
+- [ ] Add timeline and resource estimates
+- [ ] Write testing plan file
+- [ ] Report completion (file created, ready for review)
+
+---
+
+## When You're Done
+
+Report:
+1. File created at: `projects/wvulibraries_knapsack/planning/HYKU-7.2.0-LOCAL-TESTING-PLAN.md`
+2. Testing plan covers all 4 phases
+3. Diagnostic procedures documented
+4. Risk mitigation addressed
+5. Timeline estimate provided
+6. Ready for implementation session
+
+Do NOT commit/push — wait for human approval per PLANNING_AGENT_SESSION_START.md Rule 7.
