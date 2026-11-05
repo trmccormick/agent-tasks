@@ -160,7 +160,7 @@ Hyku 7.2.0 upgrade symptom: the catalog search page shows "0 results" even thoug
 
 **Note on earlier framing:** earlier status.md / README entries described the hykudev issue as a Solr *data* issue (clean/reimport), not a code bug. The 2026-11-05 handoff proposed a code-level cause instead. This task tests that proposal; neither framing is assumed true. Record which one the evidence supports.
 
-**Facts about the pinned Hyku source** (checked by the independent review against `samvera/hyku@279fe062`, the submodule pin on `feature/hyku-v7.2.0-upgrade`; re-verify against the SHAs you record in Step 1):
+**Facts about the pinned Hyku source** (checked during review against `samvera/hyku@279fe062`, the submodule pin on `feature/hyku-v7.2.0-upgrade`, which is also the head of Hyku's `7.2-stable` branch; `main` pins `2c49cfbbd72466c3b8c382b43a49e0b56503b832`, which is Hyku's `v7.1.3` tag). These file/line references are PROVISIONAL until re-verified against the SHAs you record in Step 1:
 - `hyrax-webapp/` is a **git submodule** (`.gitmodules`: `samvera/hyku`, branch `7.2-stable`). Its files are not tracked by the parent repo's own diffs.
 - `SolrEndpoint#switch!` sets `Valkyrie::IndexingAdapter.adapters[:solr_index].connection`, `Blacklight.connection_config` and `Hyrax::SolrService` from `connection_options`; `connection_options` sets `base_options['core'] ||= switchable_options['collection']`. `url` is the Solr base URL; the collection is the separate `collection` option.
 - `CreateSolrCollectionJob#perform` branches on `Hyku.single_tenant?`. In single-tenant mode the core is pre-created by the container entrypoint from the `SOLR_COLLECTION` env var and the job only points the account's SolrEndpoint at it. Multi-tenant mode names collections from `account.tenant.parameterize`.
@@ -310,7 +310,7 @@ echo "BASE   $BASE_REF   -> $BASE_SHA   ($(git -C hyrax-webapp describe --tags "
 echo "TARGET $TARGET_REF -> $TARGET_SHA ($(git -C hyrax-webapp describe --tags "$TARGET_SHA" 2>&1))"
 ```
 
-**Decision point:** if `BASE_SHA` equals `TARGET_SHA`, or the `describe` output for `BASE_SHA` does not indicate a 7.1.x Hyku, STOP and ask the human which ref is the 7.1.3 baseline. Do not continue on an assumption.
+**Decision point:** the expected values are `BASE_SHA=2c49cfbbd72466c3b8c382b43a49e0b56503b832` (Hyku tag v7.1.3) and `TARGET_SHA=279fe062968abf7a00dec10959fc6a9f0fc69680`. If either recorded SHA differs from its expected value, or the two are equal, STOP, show the output in chat, and wait for the human to confirm which SHA is the intended baseline/target. The `describe` output is informational only (it depends on tag naming). Do not continue on an assumption.
 
 Create the three helper scripts (they make both versions run IDENTICAL queries):
 
@@ -378,6 +378,7 @@ acct = Account.first
 ep = acct&.solr_endpoint
 probe("single_tenant")                 { Hyku.single_tenant? }
 probe("account")                       { acct.name }
+probe("account_count")                { Account.count }
 probe("switch")                        { acct.switch!; "ok" }
 probe("endpoint_id")                   { ep.id }
 probe("endpoint_url")                  { ep.url }
@@ -533,6 +534,8 @@ Then, for EACH version, state in the report (quoting file contents, not summarie
 - Whether the web UI search found records (`catalog-summary.txt`).
 
 Conclusion rules:
+- `catalog-summary.txt` is a regex over Blacklight HTML and is a convenience signal only. The Solr counts and the endpoint probes are the authoritative evidence; keep `catalog.html` for manual inspection.
+- The report must state which account was inspected (`account`) and how many accounts exist (`account_count`). If `account_count` is greater than 1, say so; the probes only describe `Account.first`.
 - **Mismatch confirmed** only if documents exist in collection A and the search path's numFound/collection points at B, with the captured lines quoted.
 - Name the file and line (from Step 2 evidence) that decides each side.
 - If the evidence shows the collections agree (e.g. an empty index because indexing never ran, or a UI/permissions problem), say "mismatch NOT confirmed" and state what the evidence does show. Do not force the hypothesis.
@@ -654,7 +657,7 @@ For each version: the collection holding documents, the collection the search pa
 
 ## Acceptance Criteria
 
-- [ ] 1. `BASE_SHA` and `TARGET_SHA` recorded, differ, and the baseline's `git describe` shows a 7.1.x Hyku
+- [ ] 1. `BASE_SHA` and `TARGET_SHA` recorded and differ, and each matches its expected value in Step 1 (or the human confirmed a different SHA in chat)
 - [ ] 2. Step 2 questions 1-5 answered with file and line citations from both SHAs
 - [ ] 3. The exact seed command is recorded and the same seeded record count is shown at both versions
 - [ ] 4. `capture.sh` completed for 713 and 720 with all output files present (collections, counts, endpoint, catalog, log)
