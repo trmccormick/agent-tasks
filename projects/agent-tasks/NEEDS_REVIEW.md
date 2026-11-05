@@ -660,3 +660,37 @@ The attempted command was not verified as having executed successfully on the ho
 **Priority**: MEDIUM — affects planning-session output quality and delays task dispatch into review gate; impacts wvulibraries_knapsack Hyku testing workflow immediately; may recur if prompt clarity is not improved before future planning sessions across all projects.
 
 **Status**: OPEN. Immediate action: Determine whether to ask Qwen to convert existing content to task-file format (efficient reuse of research) or re-prompt with improved example + specificity. Longer-term: Consider adding a concrete TASK_TEMPLATE.md example to PLANNING_AGENT_SESSION_START.md or creating a dedicated "Draft Task Format Example" document for planning agents.
+
+### 2026-11-05 — Draft-task review workflow: when human reviews (not documented clearly)
+
+**What happened**: User clarified the actual draft-task review workflow during planning session setup: (1) Planning agent creates draft + pushes to git, (2) Planning agent prepares review prompt, (3) Web agent (Claude/Grok/ChatGPT) reviews and issues disposition (GO/REVISE/STOP), (4) If REVISE: planning agent gets feedback, updates draft, re-pushes, web agent re-reviews (loop with different agents if needed), (5) Once any web agent issues GO: human reviews the finally-approved draft, (6) Human suggests final tweaks, then approves for implementation. Human does NOT review intermediate drafts or iterations — only when a web agent issues GO.
+
+**Observed in**: wvulibraries_knapsack project, planning session 2026-11-05 setup (workflow clarification).
+
+**What I already checked**:
+- REVIEW_AGENT_GUIDE.md (VERIFIED: defines GO/REVISE/STOP dispositions, says human authorizes commits after reviewer GO, but does NOT explicitly state that human waits for reviewer GO before reviewing draft)
+- PLANNING_AGENT_SESSION_START.md § "Procedure for Creating Draft Tasks" (VERIFIED: describes draft creation and review gates, but does not clearly state the human-review timing: specifically, that human reviews only after web agent GO)
+- TASK_TEMPLATE.md (VERIFIED: describes draft status and dispatch, but does not clarify human-review checkpoint)
+- Related workflow docs (VERIFIED searches for "human reviews" / "approval workflow" / "disposition timing")
+
+**Root cause**: Workflow timing ambiguity. The docs say:
+- "Review agent provides GO/REVISE/STOP" ✅
+- "Human authorizes commits after GO" ✅
+- But NOT: "Human reviews draft only after web agent GO (not before)" ❌
+- And NOT: "Web agents iterate with planning agent until GO; human doesn't see intermediate versions" ❌
+
+This is particularly important because:
+1. **Efficiency**: Human doesn't waste review time on drafts that haven't passed web agent quality gate
+2. **Sequence clarity**: Planning agent must know to push + prepare review prompt immediately (not wait for human approval first)
+3. **Iteration loop**: Planning agent iterates with web agents until GO, then hands off to human
+4. **Scope boundary**: Separates "web agent assessment" (GO/REVISE/STOP) from "human approval" (final tweaks + move to backlog)
+
+**What needs a second opinion**:
+1. Should PLANNING_AGENT_SESSION_START.md § "Procedure for Creating Draft Tasks" add an explicit step explaining: "Human will not review the draft until a web agent issues GO. Planning agent iterates with web agents (possibly multiple review cycles with different agents) until GO is achieved. Once GO, human reviews the approved draft, suggests final tweaks, then approves for implementation."?
+2. Should REVIEW_AGENT_GUIDE.md's "GO disposition" section (currently line 78) be expanded to explicitly say: "When you issue GO, human will review the draft next (no additional review iterations needed). Human approves and the task moves to backlog for implementation dispatch."?
+3. Should TASK_TEMPLATE.md (Agent Dispatch Interface section) clarify that planning agent pushes immediately after creating draft, not after human approval?
+4. Is a separate "Human Review Checkpoint" section needed in one of the core workflow docs to define: what human is looking for (final tweaks, not fundamental issues), what authority human has (suggest changes, approve, or request revision from web agent), and what "final approval" means?
+
+**Priority**: MEDIUM — affects efficiency and clarity of multi-agent review workflow. Currently working as intended (user confirmed the workflow), but not documented clearly enough for future agents to follow without explicit guidance.
+
+**Status**: OPEN. Recommendation: Add explicit human-review-timing section to PLANNING_AGENT_SESSION_START.md under "Procedure for Creating Draft Tasks," explaining that human reviews only after web agent GO, and planning agent iterates with web agents until that point. Consider adding similar clarification to REVIEW_AGENT_GUIDE.md's GO disposition section.
