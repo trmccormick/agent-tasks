@@ -349,6 +349,29 @@ CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting a
 **If you (as agent or human) catch yourself writing more than the template above, STOP:** 
 Move that content to the task file instead. Task file completeness is the agent's job during synthesis review; handoff is only dispatch.
 
+### Rule 13b — Direct Session Dispatch (All Projects)
+
+**Applies to every agent preparing or receiving direct, iterative work from a human.**
+
+Before drafting a direct-session prompt, choose the workflow that matches the work:
+
+- **Direct session:** Small, focused work where the human is collaborating with the coding agent and reviewing progress incrementally. Use the shared `DIRECT_SESSION_TEMPLATE.md`.
+- **Formal task:** Larger, independently executable work with defined scope, prerequisites, acceptance criteria, and task lifecycle. Use `TASK_TEMPLATE.md` and follow all applicable review, synthesis, and lifecycle gates.
+- **Task handoff:** Dispatch of an already approved task file. Use `SIMPLE_HANDOFF_TEMPLATE.md` or the applicable handoff template.
+
+For direct sessions:
+
+1. Use `DIRECT_SESSION_TEMPLATE.md` as the standard prompt structure; do not invent a project-specific replacement.
+2. The project's `SESSION_GUIDANCE.md` supplies project-specific startup reading order, handoff location, repository/environment instructions, and constraints. The shared template does not override those details.
+3. Fresh sessions complete the project's required startup reading and read the relevant latest handoff. Continuations do not repeat startup reading when STEP 0 is already complete, unless context was lost or the human requests it.
+4. State one clear objective, inspect current repository state before editing, preserve existing work, and keep changes within the approved scope.
+5. Work incrementally and pause for human review at agreed checkpoints. Do not proceed to a distinct objective without review.
+6. Do not create a formal task file, separate report, summary, or handoff by default. Create one only when the human asks or the work grows beyond direct collaboration; in that case, stop and recommend the formal task workflow.
+7. Direct-session format does not waive any applicable guardrail or required synthesis/review gate.
+8. Do not commit or push without explicit human approval.
+
+Agents must not turn a small direct session into a formal task merely for documentation, nor use a direct session to bypass the formal task workflow for work that needs it.
+
 ### Rule 14 — Code Payload Protocol
 All agents must output a raw code block for any file changes.
 Precede every block with `[CODE_PAYLOAD: path/to/file]`:
