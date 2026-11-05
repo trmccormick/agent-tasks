@@ -731,3 +731,33 @@ This is particularly important because:
 
 **Status**: OPEN. Recommendation: Create "File Creation Guidelines" section in HUMAN_WORKFLOW_GUIDE.md or similar, with decision tree + examples. Then update agent-specific docs (PLANNING_AGENT_SESSION_START.md, IMPLEMENTATION_AGENT_SESSION_CLOSEOUT.md) to reference it.
 
+
+### 2026-11-05 — Planning agent responsibilities for status.md and handoff content not explicitly documented
+
+**What happened**: Workflow clarification revealed standing practices for planning agents:
+1. **Update status.md during planning session** — keep current with where project is (not just at closeout)
+2. **Purge/archive old data** — keep status.md lean and focused on current work (not historical cruft)
+3. **Handoffs contain exact work** — handoff files (.md in handoffs/) should contain completed work output or deliverables (research findings, testing results, analysis); task files go to tasks/drafts/ for review gates
+
+**Observed issue**: This responsibility isn't explicitly stated in PLANNING_AGENT_SESSION_START.md or PLANNING_AGENT_CLOSEOUT.md, leaving it to interpretation. Result: status.md may become cluttered with old entries, or planning agents may not know to update it during the session.
+
+**What I already checked**:
+- PLANNING_AGENT_SESSION_START.md (VERIFIED: mentions handoffs briefly but doesn't explicitly state planning agent should update status.md mid-session)
+- PLANNING_AGENT_CLOSEOUT.md (VERIFIED: does not specify status.md update responsibility or purge/archive guidance)
+- README.md (VERIFIED: project-level status tracking not explained)
+
+**Root cause**: Clear practice (user has mental model) but not written into agent responsibilities. Similar to file-creation guidelines gap.
+
+**What needs a second opinion**:
+1. Should PLANNING_AGENT_SESSION_START.md include a step: "Begin by reviewing and updating status.md to reflect current project state (add new items, archive old ones)"?
+2. Should PLANNING_AGENT_CLOSEOUT.md specify: "Update status.md before closing session to ensure next session has clean, current state"?
+3. Should there be a "Status.md Maintenance" guideline clarifying:
+   - What stays in status.md (active work, blockers, current focus)
+   - What moves to handoffs or archive (completed work, historical context)
+   - When/how to purge old entries
+4. Should handoff format guidance clarify: "Handoffs contain the completed work output (research findings, test results, reports); they are NOT task files. Task files go to tasks/drafts/"?
+
+**Priority**: MEDIUM — affects clarity of planning agent role and project tracking cleanliness. Can be bundled with file-creation guidelines work in Qwen planning session.
+
+**Status**: OPEN. Recommendation: Incorporate into "Planning Agent Responsibilities" section (new or updated) covering: session startup (review + update status.md), mid-session (maintain status.md), closeout (finalize status.md), and handoff/task file distinction.
+
