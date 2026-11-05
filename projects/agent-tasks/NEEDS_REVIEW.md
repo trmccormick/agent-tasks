@@ -633,3 +633,30 @@ The attempted command was not verified as having executed successfully on the ho
 
 **Status**: OPEN. Claude to assess the existing workflow and recommend the minimal in-place guidance change. No shared workflow documentation changes are authorized by this entry; Tracy will decide whether to approve a follow-up change.
 
+
+### 2026-11-05 — Planning Agent created handoff doc instead of draft task file (TASK_TEMPLATE.md format gap)
+
+**What happened**: Planning Agent (Qwen) was tasked to research Hyku 7.2.0 testing requirements and create draft task file(s) in `tasks/drafts/` using TASK_TEMPLATE.md format. Instead, Qwen created comprehensive testing plan content but stored it as a handoff-style document (`2026-11-05-HYKU-7.2.0-SEARCH-BUG-LOCAL-TESTING-PLAN.md` in `handoffs/` directory, untracked/uncommitted). The document contains excellent research and testing phases, but violates the planning workflow: wrong location, wrong format (no YAML frontmatter, no DRAFT STATUS NOTE, no DRAFT REVIEW CHECKLIST, no Agent Dispatch Interface block), and wrong artifact type (handoff report vs. task file).
+
+**Observed in**: wvulibraries_knapsack project, planning session 2026-11-05 (Qwen, Hyku 7.2.0 root-cause investigation research).
+
+**What I already checked**:
+- PLANNING_AGENT_SESSION_START.md § "Procedure for Creating Draft Tasks" (VERIFIED: requires tasks/drafts/ location, TASK_TEMPLATE.md format, YAML frontmatter with `status: draft`, DRAFT STATUS NOTE section, DRAFT REVIEW CHECKLIST section, full Agent Dispatch Interface block).
+- TASK_TEMPLATE.md (VERIFIED: defines mandatory YAML fields `status`, `priority`, `type`, `system_domain`, `mvp_alignment`, `local_worker_safe`, and mandatory post-YAML sections including DRAFT STATUS NOTE, DRAFT REVIEW CHECKLIST, and Agent Dispatch Interface).
+- Planning prompt delivered to Qwen (REPORTED: prompt referenced PLANNING_AGENT_SESSION_START.md and TASK_TEMPLATE.md, but did not include concrete example showing YAML frontmatter structure or explicitly contrast task-file format vs. handoff-document format).
+- Current Qwen output state (VERIFIED: file at `projects/wvulibraries_knapsack/handoffs/2026-11-05-HYKU-7.2.0-SEARCH-BUG-LOCAL-TESTING-PLAN.md` is untracked, uncommitted; `tasks/drafts/` directory exists and contains previous drafts in correct format).
+
+**Root cause analysis**:
+1. **Prompt ambiguity**: The planning prompt said "create draft tasks" but did not sufficiently distinguish between research-output documents (which look like handoff reports or testing plans) and task-file artifacts (which require YAML + specific sections). Qwen appears to have interpreted "create a testing plan" as a deliverable document (which is reasonable from a general perspective) rather than as task file wrapper.
+2. **Format specificity gap**: The prompt mentioned TASK_TEMPLATE.md but did not provide a concrete before/after example showing what a draft task file looks like (YAML frontmatter, section headers, DRAFT STATUS NOTE populated, etc.). Without that visual anchor, the distinction between "comprehensive planning document" and "TASK_TEMPLATE.md-formatted draft task" can blur.
+3. **Handoff vs. task vocabulary**: The prompt correctly stated "leave uncommitted" (good), but the artifact type was ambiguous. Handoff documents are typically stored in `handoffs/` and often represent research output or session summaries. Draft tasks are structured differently and stored in `tasks/drafts/`. The vocabulary collision (both can contain planning/research content) led to wrong directory and wrong format.
+
+**What needs a second opinion**:
+1. Should the planning prompt be enhanced to include a concrete TASK_TEMPLATE.md example showing YAML frontmatter, DRAFT STATUS NOTE section, and DRAFT REVIEW CHECKLIST with sample content? This would give agents a visual anchor for what "task file" means.
+2. Is there a gap in PLANNING_AGENT_SESSION_START.md § "Procedure for Creating Draft Tasks" in distinguishing research-output (handoff docs) from task-file (TASK_TEMPLATE.md format)? Should that section explicitly say "DO NOT create a handoff document; create a task file instead"?
+3. For this specific session: Should Qwen be asked to convert the existing comprehensive testing-plan content into a proper TASK_TEMPLATE.md-formatted draft task file (moving phases/procedures into task sections, filling YAML frontmatter, populating DRAFT STATUS NOTE/CHECKLIST, adding dispatch interface)? Or should the handoff document be discarded and Qwen start over with the format-correct task file?
+4. Is this a one-off misunderstanding or a sign that the planning workflow needs stronger format guidance for all future planning agents?
+
+**Priority**: MEDIUM — affects planning-session output quality and delays task dispatch into review gate; impacts wvulibraries_knapsack Hyku testing workflow immediately; may recur if prompt clarity is not improved before future planning sessions across all projects.
+
+**Status**: OPEN. Immediate action: Determine whether to ask Qwen to convert existing content to task-file format (efficient reuse of research) or re-prompt with improved example + specificity. Longer-term: Consider adding a concrete TASK_TEMPLATE.md example to PLANNING_AGENT_SESSION_START.md or creating a dedicated "Draft Task Format Example" document for planning agents.
