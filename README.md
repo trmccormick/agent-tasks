@@ -83,6 +83,9 @@ Why this matters:
 ## Where to Find Agent Guidance
 
 ### ⭐ Shared Agent Workspace (All Projects)
+
+**Choose the workflow before dispatching:** use `DIRECT_SESSION_TEMPLATE.md` for small, human-supervised iterative work; use `TASK_TEMPLATE.md` for larger, autonomous or formally scoped work; use `SIMPLE_HANDOFF_TEMPLATE.md` to dispatch an approved task file. The universal requirements are in `rules/GUARDRAILS.md` Rule 13b. Project-specific startup reading and handoff conventions remain in each project's `SESSION_GUIDANCE.md`.
+
 **Location**: `<agent-tasks>/`  
 **Contains:**
 - `README.md` — Main agent workspace guide (READ THIS FIRST)
@@ -93,6 +96,8 @@ Why this matters:
 - `PLANNING_AGENT_CLOSEOUT.md` — Planning session closeout and workspace maintenance (status curation, active-task checks)
 - `rules/AGENT_ROUTING.md` — Full routing table matrices *(historical, June 2026)*
 - `TASK_TEMPLATE.md` — Template blueprint for constructing new tasks
+- `DIRECT_SESSION_TEMPLATE.md` — Standard prompt structure for focused, iterative direct work with a local coding agent
+- `SIMPLE_HANDOFF_TEMPLATE.md` — Minimal dispatch for an already approved formal task
 - `SIMPLE_HANDOFF_TEMPLATE.md` — Concise agent task dispatch format (copy-paste ready)
 - `COMMUNICATION_PROTOCOL.md` — Agent output formatting rules
 - `SESSION_STRATEGIST.md` — Detailed strategist role definition and workflow
