@@ -1,8 +1,9 @@
-# Qwen Session Handoff — Hyku 7.2.0 Root Cause Investigation
+# Qwen Session Handoff — Hyku 7.2.0 Local Testing Strategy Planning
 **Date:** 2026-11-05  
-**Session Type:** Root cause analysis and code investigation  
+**Session Type:** Planning session (design local testing strategy)  
 **Status:** Ready for Qwen to begin  
-**Token Saved:** Switched to local Qwen model (Claude Haiku reserved for expensive operations)
+**Token Saved:** Switched to local Qwen model (Claude Haiku reserved for expensive operations)  
+**Session Focus:** Plan, don't execute (implementation in follow-up session)
 
 ---
 
@@ -37,177 +38,143 @@ but search returns 0 results (queries empty collection)
 
 ---
 
-## Next Steps (Qwen's Tasks)
+## Next Steps (Qwen's Planning Tasks)
 
-### Task 1: Confirm Collection Mismatch (10 min)
-**Objective:** Verify that indexing and search use different collections
+### Task 1: Design Local Testing Phases (30 min)
+**Objective:** Create a structured local testing plan with clear phases
 
-**Steps:**
-1. SSH to hykudev:
-   ```bash
-   ssh tam0013@hykudev.lib.wvu.edu
-   cd /Users/tam0013/Documents/git/wvu_knapsack
-   ```
+Steps:
+1. Define environment setup requirements (what state does Stack Car need to be in?)
+2. Plan v7.1.3 baseline testing (what tests prove it works?)
+3. Plan v7.2.0 broken testing (same tests to show difference)
+4. Plan comparative analysis (how to systematically compare versions)
+5. Identify diagnostic data to collect at each phase
+6. Plan risk mitigation and fallback strategy
 
-2. Check SolrEndpoint configuration:
-   ```bash
-   docker compose -f docker-compose.production.yml exec web bin/rails runner \
-     "endpoint = Account.first.solr_endpoint; puts endpoint.inspect; puts '---'; puts endpoint.connection_options"
-   ```
-   **Look for:** Which collection name is stored/used
+**Success Criteria:** 
+- Clear phase structure (setup → baseline → broken → analysis)
+- Specific commands/procedures documented
+- Success/failure criteria defined for each phase
+- Data capture procedures detailed
 
-3. Check Solr collections and doc counts:
-   ```bash
-   curl -s 'http://localhost:8983/solr/admin/collections?action=LIST' | jq .collections
-   ```
-   **Look for:** Collection names (likely "uuid" and "hydra-production")
+### Task 2: Plan Diagnostic Data Collection (20 min)
+**Objective:** Design what data will be collected to understand the bug
 
-4. Count documents per collection:
-   ```bash
-   curl -s 'http://localhost:8983/solr/uuid/select?q=*:*&rows=0' | jq .response.numFound
-   curl -s 'http://localhost:8983/solr/hydra-production/select?q=*:*&rows=0' | jq .response.numFound
-   ```
-   **Expected:** uuid has docs (4000+), hydra-production has 0
+Questions to address:
+- Which logs should be captured? (Rails, Solr, Docker)
+- Which Solr queries should we run? (collection list, doc counts, sample docs)
+- Should we inspect Rails logs to see which collection is used?
+- How should we capture code diffs between versions?
+- What metrics/measurements are comparable?
+- How should findings be documented for hand-off?
 
-**Success Criteria:** If uuid has docs and hydra-production is empty → collection mismatch **CONFIRMED**
+**Success Criteria:**
+- Comprehensive checklist of diagnostic commands
+- Clear procedure for capturing and comparing results
+- Template for documenting findings
 
----
+### Task 3: Plan Risk & Implementation Sequencing (15 min)
+**Objective:** Identify risks and plan what comes next
 
-### Task 2: Investigate Code Changes in 7.2.0 (20-30 min)
-**Objective:** Find what changed in collection selection logic between 7.1.3 and 7.2.0
+Questions to address:
+- What could go wrong during local testing?
+- How do we safely revert if something breaks?
+- Should we take snapshots? When?
+- After local testing, should we test locally further or move to hykudev?
+- Are there blocking dependencies?
+- Should this work happen in parallel with other work?
 
-**Files to Compare:**
-- `hyrax-webapp/app/models/solr_endpoint.rb` (lines 35-47)
-  - `connection_options` method: How does it set the 'core' value?
-  - `switchable_options` method: Where does collection name come from?
-  
-- `hyrax-webapp/app/jobs/create_solr_collection_job.rb` (lines 8-114)
-  - `perform_for_normal_tenant(account, name)` (line 112)
-  - What collection name is passed? How is it determined?
-  
-- `hyrax-webapp/config/initializers/wings.rb` (Valkyrie config)
-  - How is the Solr indexing adapter configured?
-  - Does it use a specific collection by default?
-
-**Git Comparison:**
-```bash
-cd /Users/tam0013/Documents/git/wvu_knapsack
-
-# Compare key files between 7.1.3 and 7.2.0
-git log --oneline --all | grep -i "7.1.3\|7.2.0" | head -10
-# Find the commit hashes for these versions
-
-git diff 7.1.3-tag 7.2.0-tag -- hyrax-webapp/app/models/solr_endpoint.rb
-git diff 7.1.3-tag 7.2.0-tag -- hyrax-webapp/app/jobs/create_solr_collection_job.rb
-git diff 7.1.3-tag 7.2.0-tag -- hyrax-webapp/config/initializers/wings.rb
-```
-
-**Investigation Questions:**
-- Did `create_solr_collection_job.rb` change how collection name is derived?
-- Did Valkyrie indexing adapter change its default collection behavior?
-- Is there a new environment variable or configuration in 7.2.0?
-- Does the account/tenant name change how collection is selected?
-
-**Success Criteria:** Identify at least one code change that explains why collection selection differs
-
----
-
-### Task 3: Test the Hypothesis Locally (Optional, if needed)
-**Objective:** Confirm fix works by testing locally before hykudev
-
-**If hypothesis suggests a fix:**
-1. Check out local Stack Car setup
-2. Test on 7.2.0 branch with the proposed fix
-3. Verify search returns results
-4. Report back with success/failure
+**Success Criteria:**
+- Risk assessment document
+- Fallback/rollback procedures defined
+- Clear handoff to next phase (implementation)
+- Timeline estimate with contingencies
 
 ---
 
 ## Files to Read (Before Starting)
 
 **High Priority** (read first):
-- `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/handoffs/2026-11-05-HYKU-UPGRADE-TESTING-STRATEGY.md` (4 testing lessons)
+- `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/handoffs/2026-11-05-HYKU-UPGRADE-TESTING-STRATEGY.md` (4 testing lessons, architecture overview)
 - `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/status.md` (current project status)
 
-**Context** (reference):
+**Context** (reference as needed):
+- Conversation summary in VS Code session (has architecture details, previous findings)
 - `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/tasks/active/` (active task files if any)
-- Conversation summary in current VS Code session (has architecture details)
-
-**Code** (investigate):
-- `hyrax-webapp/app/models/solr_endpoint.rb` (SolrEndpoint class)
-- `hyrax-webapp/app/jobs/create_solr_collection_job.rb` (Collection creation)
-- `hyrax-webapp/config/initializers/wings.rb` (Valkyrie init)
 
 ---
 
-## VM Access & Utilities
+## VM Access & Resources (For Reference)
 
-**SSH to hykudev:**
+If planning requires checking specific details:
+
+**Local Stack Car Access:**
 ```bash
-ssh tam0013@hykudev.lib.wvu.edu
 cd /Users/tam0013/Documents/git/wvu_knapsack
+# Can browse code, check branches, view recent commits
+git log --oneline feature/hyku-v7.2.0-upgrade | head -20
+git log --oneline main | head -20
 ```
 
-**Docker commands on hykudev:**
-```bash
-# View logs
-docker compose -f docker-compose.production.yml logs web -f
-
-# Run Rails command
-docker compose -f docker-compose.production.yml exec web bin/rails runner "CODE_HERE"
-
-# Access Rails console
-docker compose -f docker-compose.production.yml exec web bin/rails console
-```
-
-**Solr queries:**
-```bash
-# List collections
-curl -s 'http://localhost:8983/solr/admin/collections?action=LIST' | jq
-
-# Query a collection
-curl -s 'http://localhost:8983/solr/COLLECTION_NAME/select?q=*:*&rows=10'
-
-# Get doc count
-curl -s 'http://localhost:8983/solr/COLLECTION_NAME/select?q=*:*&rows=0' | jq .response.numFound
-```
+**Docker Compose Files:**
+- `docker-compose.yml` (main development)
+- `docker-compose.local.yml` (hykudev production)
+- `docker-compose.production.yml` (reference for production config)
 
 ---
 
-## Success Criteria for This Session
+## Success Criteria for Planning Session
 
 ✅ **Minimal Success:**
-- Collection mismatch confirmed (uuid has docs, hydra-production empty)
-- At least one code change identified that explains the difference
+- Clear testing plan with 3-4 phases defined
+- Specific diagnostic commands documented
+- Risk mitigation strategy identified
+- Handoff ready for implementation session
 
 ✅ **Ideal Success:**
-- Collection mismatch confirmed
-- Root code change isolated and understood
-- Proposed fix identified (even if not tested yet)
-- Local test run (if feasible)
+- Comprehensive testing plan with success/failure criteria for each phase
+- Data collection procedures detailed
+- Code comparison strategy outlined
+- Risk assessment and fallback procedures documented
+- Timeline estimate with parallel work identification
+- Clear hypothesis about expected root cause
+- Recommendations for next phase (implementation approach)
 
 ---
 
-## Related Tasks & History
+## Planning Session Structure
 
-**Previous Sessions:**
-- 2026-10-30: Three code fixes applied (facet blocks, config, limit checks)
-- 2026-11-02: Root cause diagnosed as Solr data issue (wrong collection)
-- 2026-11-05: Gem version drift fixed, collection mismatch theory strengthened
-
-**Active Investigation:**
-- `2026-10-30-CRITICAL-BUG-SEARCH-RESULTS-NOT-DISPLAYING-HYKU-720-UPGRADE.md` (original detailed investigation)
-- `2026-11-02-HYKU-7.2.0-UPGRADE-REVERT-CLEAN.md` (remediation procedures)
+This session produces a **test plan document** that will be:
+1. Reviewed/approved by human stakeholder
+2. Handed off to implementation agent in follow-up session
+3. Executed by implementation agent on local Stack Car
+4. Results used to inform next phase (code fix and hykudev testing)
 
 ---
 
 ## Notes for Qwen
 
-- hykudev is production environment (treat data carefully, no destructive operations without confirmation)
-- Snapshot taken before starting (safe to revert if something breaks)
-- Fresh Gemfile.lock applied (builds now consistent)
-- Focus on **understanding the code change**, not implementing fixes yet
-- Report back with findings; may need another session to implement fix
+This is a **planning session**, not execution:
+- Your job is to DESIGN a test strategy, not run tests
+- Think systematically about methodology and data collection
+- Document assumptions and success criteria clearly
+- Plan for risk mitigation and fallback procedures
+- Make it executable (next agent will follow your plan)
 
-**Time Estimate:** 30-45 min for full investigation
+**Key Principles:**
+- Test locally FIRST (Stack Car is safe environment)
+- v7.1.3 = baseline (should work); v7.2.0 = broken (should fail)
+- Compare systematically to isolate the exact code change
+- Collect ALL diagnostic data (logs, Solr state, Rails output)
+- Document everything for hand-off
+
+**Context:**
+- hykudev is production (treat carefully)
+- Snapshot taken (safe fallback exists)
+- Jr dev confirmed local setup works (reference baseline)
+- Gem version drift is already fixed
+
+**Time Estimate:** 45-60 min for comprehensive planning
+
+**Deliverable:** Detailed testing plan ready for implementation session
 
