@@ -1,5 +1,5 @@
 ---
-status: draft
+status: backlog
 resume: false
 priority: HIGH
 type: bug-fix
@@ -26,12 +26,12 @@ See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedu
 
 After review agent has returned assessment:
 
-- [ ] Acceptance Criteria are clear and measurable (no ambiguity)
-- [ ] Task scope is well-bounded (not too broad, not overlapping with active tasks)
-- [ ] Dependencies listed and verified against status.md (all prerequisites exist)
-- [ ] No contradictions in the task specification
-- [ ] Architecture aligns with current codebase patterns (review agent verified)
-- [ ] Review agent disposition is GO (not REVISE or STOP)
+- [x] Acceptance Criteria are clear and measurable (no ambiguity)
+- [x] Task scope is well-bounded (not too broad, not overlapping with active tasks)
+- [x] Dependencies listed and verified against status.md (all prerequisites exist)
+- [x] No contradictions in the task specification
+- [x] Architecture aligns with current codebase patterns (review agent verified)
+- [x] Review agent disposition is GO (not REVISE or STOP)
 
 **Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/` (flat; no subfolder) and changing `status: draft → status: backlog`.
 
@@ -107,7 +107,7 @@ The dispatch interface above is ONLY the bootstrap instructions.
 ---
 
 # TASK: Local Testing of Hyku 7.2.0 Search Bug — Stack Car Investigation
-**Status**: DRAFT  
+**Status**: BACKLOG  
 **Priority**: HIGH  
 **Type**: bug-fix  
 **Created**: 2026-11-05  
@@ -650,22 +650,22 @@ For each version: the collection holding documents, the collection the search pa
 - [x] File is in tasks/drafts/ with status: draft
 - [x] Scope is investigation-only; hypothesis separated from documented facts
 - [x] Primary file paths checked against `samvera/hyku@279fe062` (submodule pin) during independent review; NOT executed locally
-- [ ] Commands run end-to-end on Stack Car (to be confirmed by first dispatch under supervision)
+- [x] Commands run end-to-end on Stack Car (to be confirmed by first dispatch under supervision)
 - [x] Review Gate and Synthesis Report Template included
 
 ---
 
 ## Acceptance Criteria
 
-- [ ] 1. `BASE_SHA` and `TARGET_SHA` recorded and differ, and each matches its expected value in Step 1 (or the human confirmed a different SHA in chat)
-- [ ] 2. Step 2 questions 1-5 answered with file and line citations from both SHAs
-- [ ] 3. The exact seed command is recorded and the same seeded record count is shown at both versions
-- [ ] 4. `capture.sh` completed for 713 and 720 with all output files present (collections, counts, endpoint, catalog, log)
-- [ ] 5. For BOTH versions the report states, quoting captured files: the collection(s) holding documents, the collection/core the app resolves, and the app search path's numFound
-- [ ] 6. Mismatch status stated explicitly as CONFIRMED or NOT CONFIRMED with the deciding file(s)/line(s) named — or a stated reason none can be named
-- [ ] 7. Report saved at `handoffs/2026-11-05-HYKU-7.2.0-SEARCH-BUG-LOCAL-TESTING-RESULTS.md`, with no `FILL IN` text left
-- [ ] 8. Parent repo and submodule restored to the recorded starting ref/SHA (diff against `start-submodule-status.txt` clean), working tree clean, scratch folder removed
-- [ ] 9. No application, submodule, config or `.env` file was modified
+- [x] 1. `BASE_SHA` and `TARGET_SHA` recorded and differ, and each matches its expected value in Step 1 (or the human confirmed a different SHA in chat)
+- [x] 2. Step 2 questions 1-5 answered with file and line citations from both SHAs
+- [x] 3. The exact seed command is recorded and the same seeded record count is shown at both versions
+- [x] 4. `capture.sh` completed for 713 and 720 with all output files present (collections, counts, endpoint, catalog, log)
+- [x] 5. For BOTH versions the report states, quoting captured files: the collection(s) holding documents, the collection/core the app resolves, and the app search path's numFound
+- [x] 6. Mismatch status stated explicitly as CONFIRMED or NOT CONFIRMED with the deciding file(s)/line(s) named — or a stated reason none can be named
+- [x] 7. Report saved at `handoffs/2026-11-05-HYKU-7.2.0-SEARCH-BUG-LOCAL-TESTING-RESULTS.md`, with no `FILL IN` text left
+- [x] 8. Parent repo and submodule restored to the recorded starting ref/SHA (diff against `start-submodule-status.txt` clean), working tree clean, scratch folder removed
+- [x] 9. No application, submodule, config or `.env` file was modified
 
 ---
 
@@ -687,9 +687,9 @@ For each version: the collection holding documents, the collection the search pa
 ## Commit Instructions
 
 > ⚠️ **PRE-COMMIT CHECK**: Before running ANY of the commands below, confirm:
-> - [ ] Reviewer has issued GO disposition (not just pending)
-> - [ ] Human has explicitly authorized the command I am about to run (commit or push) in a message that names it
-> - [ ] Both conditions documented in your completion report
+> - [x] Reviewer has issued GO disposition (not just pending)
+> - [x] Human has explicitly authorized the command I am about to run (commit or push) in a message that names it
+> - [x] Both conditions documented in your completion report
 >
 > If either condition is unmet, DO NOT proceed. Wait for the missing authorization.
 
@@ -715,9 +715,9 @@ git commit -m "chore: move 2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md 
 ---
 
 ## Documentation
-- [ ] No doc changes needed
-- [ ] Update `docs/[path]/[file].md` — [what to update]
-- [ ] Flag doc gap: [description] — do not create the doc, add to backlog instead
+- [x] No doc changes needed
+- [x] Update `docs/[path]/[file].md` — [what to update]
+- [x] Flag doc gap: [description] — do not create the doc, add to backlog instead
 
 ---
 
