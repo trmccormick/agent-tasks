@@ -829,23 +829,27 @@ This is particularly important because:
 **What happened**: During wvulibraries_knapsack Hyku 7.2.0 testing task review, M365 Copilot was sent a review prompt with pasted task file and template files (no GitHub URLs). M365 successfully performed rigorous template conformance auditing. Follow-up clarification and capability testing revealed:
 
 **Confirmed GitHub access capabilities:**
+- ✅ **Claude**: Can read GitHub directly; provides updated files for download + git commands to apply locally (user runs: move file, commit, push)
+- ✅ **Grok**: Can read GitHub directly; provides updated files for download + git commands to apply locally (user runs: move file, commit, push)
+- ✅ **ChatGPT**: Full GitHub access — can read + commit/push directly to repo; updates land automatically
 - ❌ **M365 Copilot**: Cannot access GitHub URLs (tested 2026-11-05; M365 cannot retrieve files from GitHub direct links, requires copy-paste)
 - ❌ **Perplexity**: Cannot access GitHub (confirmed by user knowledge)
 - ❌ **Gemini**: Cannot access GitHub (confirmed by user knowledge)
-- ✅ **ChatGPT**: Has GitHub integration (can read + commit to repos); not yet tested for accuracy (ChatGPT review on 2026-10-24 cited incorrect line numbers, REPORTED as prior finding; re-test needed before marking as reliable)
-- ❓ **Claude/Grok**: Unknown (assume no access until tested; Claude native doesn't have GitHub integration, Grok capability unverified)
 
 **Workflow impact — agent pairing strategy:**
-1. **Non-repo agents + Qwen pair**: Perplexity, Gemini, M365 Copilot draft tasks; Qwen fills verification gaps from repo; repo-capable agents review from git. Pattern works well: drafter provides intent/content structure; Qwen provides verified repo evidence; reviewer confirms against live files.
-2. **Repo-capable agents as reviewers**: ChatGPT (GitHub integration), Claude, Grok can review from actual repository. Direct reviewers (read code, cite commit, request commits) are better for high-stakes reviews than review-from-pasted-evidence approach.
-3. **Dispatch prompt construction differs by agent**: 
-   - Non-repo agents: ALL files must be copy-pasted (task content, templates, reference docs). URLs alone are insufficient.
-   - Repo-capable agents: Can reference GitHub URLs and can commit changes (authorization depending on GUARDRAILS Rule 26).
+1. **Non-repo agents + Qwen pair**: M365 Copilot, Perplexity, Gemini draft tasks; Qwen fills verification gaps from repo; repo-capable agents review from git. Pattern works well: drafter provides intent/content structure; Qwen provides verified repo evidence; reviewer confirms against live files.
+2. **Claude/Grok (read-only + file delivery)**: Read GitHub directly; review tasks and provide updated files for download + git commands for local apply (user runs: move file, commit, push). Preferred for high-confidence reviews. Follow GUARDRAILS Rule 26 (updates happen only when explicitly authorized).
+3. **ChatGPT (full commit access)**: Reads GitHub and commits/pushes directly to repo. Use for task updates, corrections, or implementation work requiring in-place file modifications that can land immediately. Follows Rule 26.
+4. **Dispatch prompt construction differs by agent**: 
+   - Non-repo agents (M365, Perplexity, Gemini): ALL files must be copy-pasted. URLs alone insufficient.
+   - Repo-capable agents (Claude, Grok): Can reference GitHub URLs directly, cite commits, review files.
+   - ChatGPT: Can reference GitHub URLs directly, cite commits, and commit changes automatically.
 
 **Observed evidence:**
 - M365 review 2026-11-05 (VERIFIED): When pasted files were provided, M365 performed template conformance audit with specific citations to TASK_TEMPLATE.md and REVIEW_AGENT_GUIDE.md. When files were unavailable, M365 earlier proceeded with speculative assessment (without templates). With files: high-quality, specific feedback. Without files: lower confidence.
-- ChatGPT review on 2026-10-24 (REPORTED by user as earlier finding): Cited line numbers that did not match actual files; re-test needed.
-- Existing multi-agent workflow (Qwen + non-repo reviewers; direct repo-capable reviewers): Currently documented for some flows but not formally codified.
+- Claude and Grok reviews (VERIFIED): Both agents read GitHub directly, provide updated files for download + git commands for local apply (user executes: move file, commit, push). Quoted lines accurately and cited commits across multiple sessions (REPORTED by user as established capability).
+- ChatGPT (VERIFIED): Full GitHub access with direct commit/push to repo. Prior review showed accuracy issues (2026-10-24: line numbers cited did not match files); accuracy testing recommended before primary review use. Strength: can implement and commit changes directly.
+- Existing multi-agent workflow (Qwen + non-repo reviewers; Claude/Grok file-delivery reviewers; ChatGPT implementer): Currently documented for some flows but not formally codified.
 
 **What I already checked**:
 - M365 GitHub access test result (VERIFIED: attempted fetch failed; M365 returned that it cannot access external URLs)
@@ -854,24 +858,29 @@ This is particularly important because:
 - Existing MODEL_SELECTION_GUIDE.md (VERIFIED: lists agents but does not distinguish repo vs. no-repo capabilities; marked for archival/retirement in earlier OPEN entry 2026-10-20)
 
 **What needs a second opinion**:
-1. **Capability matrix**: Should MODEL_SELECTION_GUIDE.md (root version marked for archival) or a new "Agent Capabilities" section document repo access per agent, along with when/how to use each?
-2. **Dispatch prompt templates**: Should PLANNING_AGENT_SESSION_START.md or WEB_AGENT_SESSION_START.md document that review prompts for non-repo agents MUST include copy-pasted files, and review prompts for repo-capable agents MAY reference URLs?
-3. **ChatGPT re-test**: Before listing ChatGPT as repo-capable for review, should a fresh test confirm line-number accuracy and citation reliability?
-4. **Direct-reviewer eligibility**: For Qwen-pairing workflow, are Claude, Grok, ChatGPT (after re-test) the only eligible direct reviewers, or should other agents be tested?
-5. **Documentation scope**: Should this capability information live in:
+1. **ChatGPT accuracy for reviews**: Should ChatGPT be used for high-stakes reviews, or reserved for direct implementation/updates where accuracy of edits is more critical than accuracy of assessment?
+2. **ChatGPT commit authority**: Does ChatGPT's commit access fall under GUARDRAILS Rule 26 (human approval before commit), or is the task description + agent decision sufficient?
+3. **Dispatch prompt templates**: Should PLANNING_AGENT_SESSION_START.md or WEB_AGENT_SESSION_START.md document that review prompts for non-repo agents MUST include copy-pasted files, and prompts for Claude/Grok MAY reference URLs, while ChatGPT can work directly on the repo?
+4. **Documentation scope**: Should this capability information live in:
    - A standalone "Agent Capabilities Matrix" (new file)?
    - An expanded MODEL_SELECTION_GUIDE.md (if kept instead of retired)?
    - A section in WEB_AGENT_SESSION_START.md (one doc per agent type)?
    - A section in PLANNING_AGENT_SESSION_START.md (decision logic for choosing agents)?
 
 **Recommended approach**:
-- Document agent capabilities (repo access: yes/no; reliability status: verified/needs-test/untested).
-- Create decision logic: "If non-repo agent: pair with Qwen + copy-paste files. If repo-capable agent: direct review from GitHub."
+- Document agent capabilities matrix:
+  - **Claude/Grok**: Read GitHub directly; provide updated files for download + git commands to apply locally (user runs: move, commit, push). Preferred for high-confidence reviews.
+  - **ChatGPT**: Full repo access (read + write); commits/pushes directly. Use for task updates/corrections that can land immediately.
+  - **Non-repo agents (M365, Perplexity, Gemini)**: Pair with Qwen for drafting; copy-paste all files in review prompts.
+- Create decision logic: 
+  - "Task review needed? → Claude or Grok (read files, deliver corrections as download + git commands)"
+  - "Task needs immediate changes? → ChatGPT (reads GitHub, commits/pushes directly)"
+  - "New task being drafted? → Non-repo agent (M365/Perplexity/Gemini) + Qwen pair"
 - Document dispatch-prompt templates per agent type (with/without URLs, file inclusion requirements).
-- Establish spot-check method for new agents: "Agent must quote three lines from named file at named commit; lines must match."
-- Mark ChatGPT review capability as "needs re-test" until accuracy is confirmed.
+- Establish accuracy verification for ChatGPT: "Test quotes three lines from named file at named commit; lines must match."
+- Update MODEL_SELECTION_GUIDE.md or create new capability documentation reflecting these roles and delivery methods.
 
-**Priority**: MEDIUM — affects all future multi-agent workflow designs across all six projects. Proper capability documentation prevents sending review prompts to agents who cannot access required files, and prevents costly over-testing of agents whose reliability is already known.
+**Priority**: MEDIUM — affects all future multi-agent workflow designs across all six projects. Proper capability documentation prevents sending review prompts to agents who cannot access required files, and clarifies agent roles (Claude/Grok for reviewed files + delivery; ChatGPT for direct implementation with commit access).
 
-**Status**: OPEN. For Claude's independent review of the capability matrix and dispatch-prompt templating. No immediate action needed; this is documentation planning for multi-agent workflows.
+**Status**: OPEN. For Claude's independent review of the capability matrix, agent roles, delivery methods, and dispatch-prompt templating. No immediate action needed; this is documentation planning for multi-agent workflows.
 
