@@ -761,3 +761,34 @@ This is particularly important because:
 
 **Status**: OPEN. Recommendation: Incorporate into "Planning Agent Responsibilities" section (new or updated) covering: session startup (review + update status.md), mid-session (maintain status.md), closeout (finalize status.md), and handoff/task file distinction.
 
+
+### 2026-11-05 — Planning agent scope and research session separation not explicitly documented
+
+**What happened**: Workflow clarification revealed standing practice for planning agent role boundaries:
+1. **Planning agents focus on specific work** — research OR planning, not both simultaneously when possible
+2. **Implementation agents do implementation** — not planning agents
+3. **Separate research sessions** — can spawn dedicated research session to keep planning session lean and low-context
+4. **Keep planning sessions focused** — narrow scope reduces context length, improves quality
+
+**Observed issue**: PLANNING_AGENT_SESSION_START.md describes planning agent role but doesn't clarify:
+- Whether planning agents should do deep research + planning in one session (context bloat) or separate them
+- When to spawn a separate research session vs. keep research in planning session
+- Clear boundary between planning agent and implementation agent responsibilities
+- How to recognize when a planning session is becoming too context-heavy and should split
+
+**What I already checked**:
+- PLANNING_AGENT_SESSION_START.md (VERIFIED: describes planning role but doesn't address context management or research separation)
+- PLANNER_ROLE_BOUNDARIES.md (VERIFIED: exists, but need to check if it addresses research separation)
+
+**Root cause**: Planning agent role is understood in practice (user has clear model) but not documented for agents. Leaves interpretation to individual sessions, risking context bloat and reduced work quality.
+
+**What needs a second opinion**:
+1. Should PLANNING_AGENT_SESSION_START.md or PLANNER_ROLE_BOUNDARIES.md include guidance: "If research is deep/extensive, consider spawning separate research session to keep planning session focused"?
+2. Should there be a context-length threshold: "If research investigation exceeds X lines, spawn research session instead of combining"?
+3. Should handoff format clarify: "Deep research findings go to research handoff; planning session handoff contains only the planning output (task files, recommendations, next steps)"?
+4. Should implementation agent docs explicitly state: "Implementation agents execute; planning agents do not implement"?
+
+**Priority**: MEDIUM — affects quality of planning sessions and context efficiency. Can be bundled with other planning agent responsibility improvements in Qwen planning session.
+
+**Status**: OPEN. Recommendation: Clarify in PLANNER_ROLE_BOUNDARIES.md (or new section in PLANNING_AGENT_SESSION_START.md): when to do research in-session vs. spawn separate research session; context-length boundaries; handoff separation for deep research vs. planning output.
+
