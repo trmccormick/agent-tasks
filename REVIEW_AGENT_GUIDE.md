@@ -35,6 +35,7 @@ Read TASK_TEMPLATE.md and compare every required section against the draft task 
   - Summaries path specified
   - Synthesis contract included
   - No bracketed placeholders remain in the block (search for `[project_name]`, `[project]`, `[SUBFOLDER]`, `[FILENAME]`); only `<agent-tasks>` may remain until dispatch
+  - READ FIRST lists `rules/GUARDRAILS.md`, the project's `README.md` and `SESSION_GUIDANCE.md` (if the project has one), then the task file. A task drafted before 2026-11-05 that still has the earlier one-line READ FIRST passes this item; a new draft must use the current block
 - **Task Readiness Checklist** section present
 
 ### Phase B — Content Assessment (only if Phase A passes)
