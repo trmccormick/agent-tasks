@@ -79,6 +79,8 @@ Current placeholders awaiting intent (see `NEEDS_REVIEW.md` entry 6): accent col
 
 ## 5. Critical rules
 
+- **Run commands in the container, never on the host.** `bundle`, `rails`, `rake`, `rspec`, `tailwindcss`, `node` and `yarn` all run with `docker exec -it galaxy_game bash -c '...'`, for example the CSS build: `docker exec -it galaxy_game bash -c 'rails tailwindcss:build'`. GUARDRAILS Rule 1 shows `web`; that is the main game's container, not this app's.
+- **`projects/galaxy_game/` is the main game's folder, and the container `galaxy_game` is this app's.** The names collide. Commands and containers in the main game's docs do not apply here; this file wins for running this app.
 - **Architecture (approved 2026-10-24, REPORTED):** JSON fixtures read by `GameDataJsonLoader`; no `GameState`; no world data in user metadata. `UserCsvLoader` is kept (login works).
 - **Fixtures go under `db/mock_data/`.** The root `.gitignore` has `/data/` anchored to the repo root, so `data/` is not tracked (GUARDRAILS Rule 28). Nothing is routed around a gitignore boundary.
 - **Tailwind v4 drops unused `@theme` variables.** New design tokens go in an `@theme static { ... }` block. The WVU `@theme` block is left alone until the layout task replaces it.
