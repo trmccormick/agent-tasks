@@ -1,0 +1,65 @@
+# QWEN ADJUSTMENT — Templates to Include with M365 Review Handoff
+
+**Context:** You're building the draft task file. Before you hand it off to M365 for review, make sure you include these templates so M365 has full context for assessment.
+
+---
+
+## Templates to Copy-Paste When Handing to M365
+
+When you send the review prompt to the human (who will forward it to M365), also provide these three attachments/copy-pastes:
+
+### 1. TASK_TEMPLATE.md (from agent-tasks repo root)
+This is the canonical format that all draft tasks must follow. Copy the entire file from:
+`/Users/tam0013/Documents/git/agent-tasks/TASK_TEMPLATE.md`
+
+M365 uses this to verify:
+- All required YAML fields present (`status`, `priority`, `type`, `system_domain`, `mvp_alignment`, `local_worker_safe`)
+- All required sections present (DRAFT STATUS NOTE, DRAFT REVIEW CHECKLIST, Agent Dispatch Interface, full task body)
+- No placeholder text or [FILL IN HERE] markers
+
+### 2. REVIEW_AGENT_GUIDE.md (from agent-tasks repo root)
+This explains what M365 is assessing and what GO/REVISE/STOP means. Copy from:
+`/Users/tam0013/Documents/git/agent-tasks/REVIEW_AGENT_GUIDE.md`
+
+Key sections M365 needs:
+- Lines ~19-30 (what review agent role is)
+- Lines ~69-80 (GO/REVISE/STOP definitions)
+- Lines ~86-90 (template compliance requirements)
+
+### 3. Your Draft Task File (the one you just created)
+Full path: `projects/wvulibraries_knapsack/tasks/drafts/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md`
+
+M365 will review this from GitHub, but having it in the chat context helps M365 cross-reference inline.
+
+---
+
+## What You Do (Step-by-Step)
+
+**Step 1:** Create draft task (formatted per correction prompt)
+**Step 2:** `git add` + `git commit` + `git push`
+**Step 3:** Write review prompt (asking M365 to assess scope/clarity/feasibility)
+**Step 4:** Copy-paste these into the review prompt message:
+   - TASK_TEMPLATE.md (full file)
+   - REVIEW_AGENT_GUIDE.md (full file, or just key sections ~19-30, 69-80, 86-90)
+   - Your draft task file (full content)
+
+**Step 5:** Send to human with note: "Draft pushed to GitHub at `projects/wvulibraries_knapsack/tasks/drafts/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md`. Review prompt + templates included below."
+
+---
+
+## Why Templates Matter
+
+M365 doesn't have access to your repo automatically. By copy-pasting templates into the chat, you give M365:
+- ✅ The format standard to verify against
+- ✅ The review criteria to apply
+- ✅ Full context for quick assessment (no context-switching to GitHub)
+
+This speeds up review and reduces back-and-forth revisions.
+
+---
+
+## If You're Stuck
+
+If you're unsure which sections of REVIEW_AGENT_GUIDE.md to include, just copy the whole file. M365 will use what it needs.
+
+Good luck! 🚀
