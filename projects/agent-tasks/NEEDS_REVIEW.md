@@ -633,6 +633,7 @@ The attempted command was not verified as having executed successfully on the ho
 
 **Status**: OPEN. Claude to assess the existing workflow and recommend the minimal in-place guidance change. No shared workflow documentation changes are authorized by this entry; Tracy will decide whether to approve a follow-up change.
 
+**Update 2026-11-05 (Claude web review)**: Applied as the design-intent paragraph at the end of `rules/GUARDRAILS.md` (`dc1ef40`, VERIFIED on origin). It makes the project's `SESSION_GUIDANCE.md` (or README) name where design intent lives, recommends but does not require a wiki, has drafting agents propose missing intent as unconfirmed wording for Tracy to approve, and says to check for an existing source before creating a README, plan, status or reference document. No new rule or file was added. Status: RESOLVED, except that each project's guidance still has to name its intent source. Galaxy Game's is the wiki rebuild in progress; other projects add the line when they next touch their guidance.
 
 ### 2026-11-05 — Planning Agent created handoff doc instead of draft task file (TASK_TEMPLATE.md format gap)
 
