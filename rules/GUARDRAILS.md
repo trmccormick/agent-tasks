@@ -35,6 +35,7 @@ docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec [c
 ```
 Never use `docker compose exec` — use `docker exec -it web`.
 Never run Rails or RSpec on the host system directly.
+In a project whose container is not named `web`, use the container named in that project's `SESSION_GUIDANCE.md` (Galaxy Game UI prototype: `galaxy_game`). `bundle`, `rails`, `rake`, `rspec`, `tailwindcss`, `node` and `yarn` all count; never run them on the host.
 
 > **Working Directory**: The `web` container working directory is already
 > `/home/galaxy_game`. Do NOT prefix commands with `cd /home/galaxy_game &&`.
