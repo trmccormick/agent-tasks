@@ -885,3 +885,19 @@ This is particularly important because:
 
 **Status**: OPEN. For Claude's independent review of the capability matrix, agent roles, delivery methods, and dispatch-prompt templating. No immediate action needed; this is documentation planning for multi-agent workflows.
 
+---
+
+### 2026-11-05 — Review-gate artifact provisioning affects review consistency across agents
+
+**What happened**: During Hyku task review work, some agents could read URLs directly while others could not. Review outcomes became more consistent when all required governing artifacts were attached to the review request (task file + TASK_TEMPLATE.md + REVIEW_AGENT_GUIDE.md) rather than referenced by URL. A reviewer without the governing files could not reliably perform template-conformance checks. The key distinction is that this is not fundamentally a tool-access issue; it is about whether the review request itself includes the artifacts necessary for reliable assessment.
+
+**Observed in**: agent-tasks project, Hyku task review session 2026-11-05
+
+**What I already checked**: Review workflows and dispatch guidance do not clearly state whether review requests should always include governing artifacts. No existing NEEDS_REVIEW entry covers this specific concern (VERIFIED: all existing entries address vocabulary conflicts, document duplication, artifact lifecycle, authority boundaries, tool-access limitations, or delegation overhead — none address whether the review request format should mandate including governing artifacts as attachments for consistency).
+
+**What needs a second opinion**: (1) Should the Agent Dispatch Interface (TASK_TEMPLATE.md dispatch block) or REVIEW_AGENT_GUIDE.md explicitly mandate that every review request includes all governing artifacts as attachments rather than URLs? (2) Does this apply universally for consistency, or only to reviewers who may lack direct URL access?
+**Priority**: MEDIUM — affects review-gate validity across agents with different tool capabilities
+**Status**: OPEN. No governance decision at capture time. Awaiting later Claude workflow-review pass to determine whether this becomes: (a) required review package, (b) recommended review package, or (c) non-issue after future workflow adjustments.
+
+---
+

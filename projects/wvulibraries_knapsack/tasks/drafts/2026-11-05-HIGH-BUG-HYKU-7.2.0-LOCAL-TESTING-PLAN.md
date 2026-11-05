@@ -14,7 +14,7 @@ local_worker_safe: true
 
 This task is in draft status and awaiting review approval. It has NOT yet been approved for backlog.
 
-**Current State**: In `tasks/drafts/` committed to git  
+**Current State**: In `tasks/drafts/` — revision 2 (incorporates the 2026-11-05 independent review, disposition REVISE: submodule handling, seeding, command fixes). Needs a fresh independent review.  
 **Next Step**: Review agent assessment → Human approval → Move to `tasks/backlog/` by human  
 **Do NOT dispatch to implementation agents** until this task is in `tasks/backlog/` with `status: backlog`
 
@@ -26,10 +26,10 @@ See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedu
 
 After review agent has returned assessment:
 
-- [x] Acceptance Criteria are clear and measurable (no ambiguity)
-- [x] Task scope is well-bounded (not too broad, not overlapping with active tasks)
-- [x] Dependencies listed and verified against status.md (all prerequisites exist)
-- [x] No contradictions in the task specification
+- [ ] Acceptance Criteria are clear and measurable (no ambiguity)
+- [ ] Task scope is well-bounded (not too broad, not overlapping with active tasks)
+- [ ] Dependencies listed and verified against status.md (all prerequisites exist)
+- [ ] No contradictions in the task specification
 - [ ] Architecture aligns with current codebase patterns (review agent verified)
 - [ ] Review agent disposition is GO (not REVISE or STOP)
 
@@ -111,7 +111,7 @@ The dispatch interface above is ONLY the bootstrap instructions.
 **Priority**: HIGH  
 **Type**: bug-fix  
 **Created**: 2026-11-05  
-**Last Updated**: 2026-11-05  
+**Last Updated**: 2026-11-05 (revision 2)  
 
 ---
 
@@ -119,9 +119,9 @@ The dispatch interface above is ONLY the bootstrap instructions.
 *Filled in by local model (Qwen via GitHub Copilot custom agent config) during backlog review*
 *This section is NOT sent to agents — it's for human task management only*
 
-- **Template Conformance**: PENDING REVIEW (REVISE items pending)
+- **Template Conformance**: PENDING — revision 2 not yet assessed
 - **MVP Alignment**: VALID — directly addresses hyku-7.2.0-upgrade blocker
-- **Action Line**: NEEDS MANUAL REVIEW — template conformance must be fixed before dispatch
+- **Action Line**: PENDING independent review of revision 2
 
 ---
 
@@ -142,22 +142,29 @@ The dispatch interface above is ONLY the bootstrap instructions.
 1. **Workflow**: `/Users/tam0013/Documents/git/agent-tasks/README.md` (EXECUTOR Role section)
 2. **Project Guide**: `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/README.md`
 3. **Project Status**: `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/status.md`
-4. **Previous Testing Strategy**: `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/handoffs/2026-11-05-HYKU-UPGRADE-TESTING-STRATEGY.md` (testing lessons learned)
+4. **Previous Testing Strategy**: `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/handoffs/2026-11-05-HYKU-UPGRADE-TESTING-STRATEGY.md` (context source — NOT the task to execute)
 5. **This Task File**: Everything below
 
 ---
 
 ## Context
 
-The Hyku 7.2.0 upgrade has a search bug where:
-- Search returns empty results despite records existing in Solr
-- Records are indexed to the wrong Solr collection (Valkyrie indexer writes to UUID-based collection)
-- CatalogSearchBuilder reads from a different collection (hydra-production)
-- This is NOT 7.2.0-specific — it also affects v7.1.3 if the code path differs
+Hyku 7.2.0 upgrade symptom: the catalog search page shows "0 results" even though records appear to exist in Solr.
 
-The root cause is a **code-level bug in how SolrEndpoint determines which collection to use**. Both indexing and search paths are misaligned on collection selection. Local testing on Stack Car (safe, disposable environment) will systematically verify, capture diagnostics, and pinpoint the exact file/line responsible for this mismatch.
+**Documented in the 2026-11-05 testing-strategy handoff (treat as reported, not re-verified):**
+- Valkyrie indexing appears to write to a different Solr collection than the one Blacklight's catalog search reads.
+- The mismatch may also exist at v7.1.3 but be masked by defaults.
+- An earlier Gemfile.lock drift problem (`blacklight_advanced_search` v8.x removing constants Hyrax v7.1.3 references) was resolved by pinning. It is a SEPARATE problem — do not conflate it with the Solr collection question.
 
-**Note on earlier framing**: Prior status.md / README entries described the hykudev issue primarily as a “Solr data issue (NOT code bug)” and focused remediation on data clean/reimport. Subsequent diagnosis (captured in the 2026-11-05 testing-strategy handoff) elevated the root cause to a code-level collection-resolution bug that affects both versions. This task verifies the code hypothesis with controlled local testing. Do not treat the older “data issue” framing as contradictory; it has been superseded by the more precise diagnosis.
+**Hypothesis (to be tested, NOT assumed):** the cause is code-level — the way `SolrEndpoint` / `Account` / `CreateSolrCollectionJob` resolve the collection ("core") name causes the indexing path and the search path to disagree. The task must also be able to conclude "not a code-level mismatch" if the evidence says so.
+
+**Note on earlier framing:** earlier status.md / README entries described the hykudev issue as a Solr *data* issue (clean/reimport), not a code bug. The 2026-11-05 handoff proposed a code-level cause instead. This task tests that proposal; neither framing is assumed true. Record which one the evidence supports.
+
+**Facts about the pinned Hyku source** (checked by the independent review against `samvera/hyku@279fe062`, the submodule pin on `feature/hyku-v7.2.0-upgrade`; re-verify against the SHAs you record in Step 1):
+- `hyrax-webapp/` is a **git submodule** (`.gitmodules`: `samvera/hyku`, branch `7.2-stable`). Its files are not tracked by the parent repo's own diffs.
+- `SolrEndpoint#switch!` sets `Valkyrie::IndexingAdapter.adapters[:solr_index].connection`, `Blacklight.connection_config` and `Hyrax::SolrService` from `connection_options`; `connection_options` sets `base_options['core'] ||= switchable_options['collection']`. `url` is the Solr base URL; the collection is the separate `collection` option.
+- `CreateSolrCollectionJob#perform` branches on `Hyku.single_tenant?`. In single-tenant mode the core is pre-created by the container entrypoint from the `SOLR_COLLECTION` env var and the job only points the account's SolrEndpoint at it. Multi-tenant mode names collections from `account.tenant.parameterize`.
+- `solr_query_parameters_extension.rb` does NOT exist at that SHA. Do not look for it.
 
 **Relevant Architecture Docs:**
 - `SESSION_CLOSEOUT.md` — closeout procedures
@@ -167,43 +174,54 @@ The root cause is a **code-level bug in how SolrEndpoint determines which collec
 
 ## Critical Information for This Task
 
-### Credentials (if needed)
-| Field | Value | Notes |
-|-------|-------|-------|
-| Local Docker | Already configured | Run `docker compose ps` from wvu_knapsack root to verify |
-| Solr endpoint | http://localhost:8983/solr/ | Local Stack Car only |
-| Rails app URL | http://localhost:3000 | Local Stack Car only |
+### Environment
+| Item | Value | Notes |
+|------|-------|-------|
+| App repo | `/Users/tam0013/Documents/git/wvu_knapsack` | Run all app commands from its root |
+| Solr | http://localhost:8983/solr | Local Stack Car only |
+| Rails app | http://localhost:3000 | Local Stack Car only |
+| Scratch folder | `$HOME/hyku-720-testing` | ALL outputs go here; removed in Step 7 |
+| Compose service | `web` | Confirm with `docker compose ps --services`; if it differs, use the real name everywhere |
 
 ### Architecture Gotchas (Critical to understand BEFORE starting)
 
-⚠️ **GOTCHA 1: Collection mismatch affects BOTH versions, not just 7.2.0**
-- ❌ Wrong: Assume 7.1.3 baseline works perfectly on its own
-- ✅ Right: v7.1.3 also has the collection issue — but SolrEndpoint may point to a "good enough" collection by default
-- Why: The mismatch is in how SolrEndpoint resolves the collection name; defaults can mask it at 7.1.3
+⚠️ **GOTCHA 1: The mismatch may affect BOTH versions, not just 7.2.0**
+- ❌ Wrong: Assume the 7.1.3 baseline is "correct" because search returns results
+- ✅ Right: At each version record WHICH collection holds documents and WHICH collection the app's search path queries. A baseline that "works" may just have both pointing at the same default.
+- Why: defaults can mask a resolution bug at 7.1.3.
 
-⚠️ **GOTCHA 2: Stack Car volumes are disposable**
-- ❌ Wrong: Keep old data between version switches
-- ✅ Right: `docker compose down --volumes` before each version switch to ensure clean state
-- Why: Old Solr collections from previous version will contaminate comparison
+⚠️ **GOTCHA 2: `docker compose down --volumes` wipes the database AND Solr**
+- ❌ Wrong: Expect records to survive a version switch, or compare a seeded 7.1.3 run to an empty 7.2.0 run
+- ✅ Right: Run `down --volumes` before each switch, then seed the SAME data the SAME way on each version (Step 3).
+- Why: contamination from old collections ruins the comparison, but an unseeded run proves nothing.
 
-⚠️ **GOTCHA 3: Save /tmp test data BEFORE docker compose down**
-- ❌ Wrong: Assume /tmp persists across container rebuilds
-- ✅ Right: Copy all diagnostic files out of /tmp before any restart; save to project handoffs/ if critical
-- Why: Docker volume operations may affect ephemeral container filesystems
+⚠️ **GOTCHA 3: `hyrax-webapp` is a submodule — `git checkout` alone does NOT switch Hyku**
+- ❌ Wrong: `git checkout <branch>` and assume 7.2.0 is running
+- ✅ Right: `git checkout <ref> && git submodule update --init --recursive`, then record `git submodule status hyrax-webapp` and confirm the SHA differs between the two runs.
+- Why: without the submodule update both "versions" are the same code.
 
-⚠️ **GOTCHA 4: No code changes — pure investigation**
-- ❌ Wrong: Fix the bug during testing (scope creep)
-- ✅ Right: Only run read queries, capture diffs, collect data — report findings
-- Why: This task is to INFORM the fix strategy, not to implement it
+⚠️ **GOTCHA 4: Do not assume `main` is v7.1.3**
+- ✅ Right: Step 1 verifies what `main` pins before it is used as the baseline. If it is not a 7.1.x Hyku, STOP and ask.
+
+⚠️ **GOTCHA 5: Scratch files live on the HOST**
+- ❌ Wrong: Write to `/tmp` (cleared on reboot, collides with other work) or leave files in the home folder root
+- ✅ Right: Write only under `$HOME/hyku-720-testing`; copy final evidence into `handoffs/` before cleanup.
+
+⚠️ **GOTCHA 6: `rails runner` does not run `switch!` for you**
+- ❌ Wrong: Read `Blacklight.connection_config` in a bare runner and treat it as what the web process uses
+- ✅ Right: Call `account.switch!` first (the provided `capture.sh` does), and treat runner output as "what the app resolves for this account".
+
+⚠️ **GOTCHA 7: No code changes — pure investigation**
+- ✅ Only read, query, diff and record. Do not edit app, submodule, config or `.env` files. Report findings; the fix strategy is a separate task.
 
 ---
 
 ## Problem Statement
 
-When upgrading Hyku from v7.1.3 to v7.2.0, search returns empty results while records remain visible in Solr at document level. The root cause hypothesis is a Valkyrie indexer misrouting documents to a UUID-based Solr collection instead of the standard hydra-production collection.
+After the Hyku 7.2.0 upgrade, catalog search returns "0 results" while records appear to be present in Solr. Working hypothesis: indexing and search resolve different Solr collections. This task determines, with identical controlled runs at the 7.1.3 baseline and at 7.2.0, **which collection holds the documents, which collection the app's search path queries, and which file/line decides each.**
 
-**Current behavior**: Search page shows "0 results found" despite records existing
-**Expected behavior**: Search returns matching documents (same as production at v7.1.3)
+**Current behavior**: Search page shows "0 results found" despite records in Solr
+**Expected behavior**: Search returns matching documents, as at the 7.1.3 baseline
 
 ---
 
@@ -211,34 +229,35 @@ When upgrading Hyku from v7.1.3 to v7.2.0, search returns empty results while re
 
 | Phase | Test | Pass Condition |
 |-------|------|----------------|
-| 0 | Stack Car starts | `docker compose ps` shows web + solr healthy |
-| 1.1 | Solr has docs at v7.1.3 | At least one collection with doc count > 0 |
-| 1.2 | Search API returns results at v7.1.3 | `numFound > 0` for at least one query |
-| 1.3 | Rails connects to correct SolrEndpoint | URL points to a collection with documents |
-| 1.4 | Web UI displays results at v7.1.3 | Response contains document data (not empty) |
-| 2.x | Same tests on v7.2.0 show bug | Evidence of collection mismatch or search failure |
-| 3.x | Root cause identified | Exact file/line causing collection mismatch is named |
-| Overall | Fix strategy informed | Findings specify which file to patch and what change needed |
+| 0 | Stack Car starts clean | `wait_stack.sh` reports up; `git status` clean at start |
+| 1 | Static code analysis | Collection-resolution code path at both submodule SHAs captured; questions in Step 2 answered |
+| 2 | Baseline (7.1.3) seeded and captured | Seed command recorded; `capture.sh 713` completed; at least one collection has docs |
+| 3 | 7.2.0 seeded and captured | Submodule SHA differs from baseline; same seed; `capture.sh 720` completed |
+| 4 | Comparison | Documents-collection vs search-path-collection stated for BOTH versions, from captured files |
+| 4 | Root cause | Exact file(s) and line(s) deciding the collection named — or an explicit "not code-level" conclusion with evidence |
+| 5 | Revert and report | Original ref + submodule SHA restored; report in `handoffs/`; scratch removed |
 
 ---
 
 ## Files Involved
 
-### Primary Files — you will inspect these (read-only, no edits)
+### Primary Files — inspect read-only (inside the `hyrax-webapp` submodule; line numbers approximate at 279fe062)
 | File | Purpose | Key Method/Section |
 |---|---|---|
-| `hyrax-webapp/app/models/solr_endpoint.rb` | SolrEndpoint model — resolves collection name | `#url`, `#id` |
-| `hyrax-webapp/app/models/account.rb` | Account model — belongs_to solr_endpoint | `#solr_endpoint` association |
-| `hyrax-webapp/app/jobs/create_solr_collection_job.rb` | Indexing logic | Collection creation/assignment |
+| `hyrax-webapp/app/models/solr_endpoint.rb` | Resolves URL/collection/core and switches live connections | `SwitchMethod#switch!`, `#connection_options` (`core ||= collection`), `store :options` (`url`, `collection`) |
+| `hyrax-webapp/app/models/account.rb` | Owns the SolrEndpoint | `belongs_to :solr_endpoint`, `build_solr_endpoint`, call to `solr_endpoint.switch!` |
+| `hyrax-webapp/app/jobs/create_solr_collection_job.rb` | Creates/assigns the collection | `#perform` (`Hyku.single_tenant?` branch), `ensure_single_tenant_endpoint`, `perform_for_normal_tenant` |
 
 ### Reference Files — read but do not edit
 | File | Why You Need It |
 |---|---|
-| `hyrax-webapp/Gemfile` | Verify hyrax/valkyrie/blacklight gem versions |
-| `hyrax-webapp/app/models/concerns/solr_query_parameters_extension.rb` | Blacklight query parameter handling (if exists) |
+| `.gitmodules` (parent repo) | Submodule URL/branch |
+| `hyrax-webapp/Gemfile` and `Gemfile.lock` | Record the actual `hyrax` revision (the Gemfile uses `branch: 'main'`, which moves — the lock file is the real version) |
+| `up.sc.local.sh`, `docker-compose*.yml`, `.env*` (parent repo) | How Stack Car sets `SOLR_COLLECTION`, tenancy mode and whether images are rebuilt |
+| Parent-repo overrides under `app/`, `config/`, `lib/` mentioning solr | Knapsack-level overrides of the above |
 
 ### Migration (if needed)
-- [ ] No migration needed — this task is pure investigation only
+- [x] No migration needed — this task is pure investigation only
 
 ---
 
@@ -258,349 +277,310 @@ git mv projects/wvulibraries_knapsack/tasks/backlog/2026-11-05-HIGH-BUG-HYKU-7.2
 # Paste the output of both commands in chat before proceeding.
 ```
 
-### Step 1 — Prerequisites & Safety Setup (Phase 0)
-
-Run from `/Users/tam0013/Documents/git/wvu_knapsack`:
+### Step 1 — Phase 0: Safety setup, refs and helper scripts
 
 ```bash
+export SCRATCH="$HOME/hyku-720-testing"
+mkdir -p "$SCRATCH"
 cd /Users/tam0013/Documents/git/wvu_knapsack
 
-# Verify Stack Car can start
-docker compose ps
+# Working tree must be clean — if not, STOP (do not stash or discard anything)
+git status --porcelain
 
-# If nothing running, start fresh (safe — can restart freely)
-sh up.sc.local.sh 2>&1 | tee /tmp/sc-startup.log &
+# Record the starting point so Step 6 can restore it exactly
+git rev-parse --abbrev-ref HEAD > "$SCRATCH/start-ref.txt"
+git submodule status hyrax-webapp > "$SCRATCH/start-submodule-status.txt"
+cat "$SCRATCH/start-ref.txt" "$SCRATCH/start-submodule-status.txt"
 
-# Wait for containers to be healthy
-sleep 30
-docker compose ps
+# Define the two refs under test and record the submodule SHA each one pins
+cat > "$SCRATCH/refs.env" <<'EOF'
+export SCRATCH="$HOME/hyku-720-testing"
+export SOLR="http://localhost:8983/solr"
+export BASE_REF="main"
+export TARGET_REF="feature/hyku-v7.2.0-upgrade"
+EOF
+. "$SCRATCH/refs.env"
 
-# Verify current branch gem versions
-grep -A 2 "hyrax" hyrax-webapp/Gemfile
-grep -A 2 "valkyrie" hyrax-webapp/Gemfile
-
-# Check which branch we are on
-git branch --show-current
+git -C hyrax-webapp fetch --all --tags --quiet
+BASE_SHA=$(git ls-tree "$BASE_REF" hyrax-webapp | awk '{print $3}')
+TARGET_SHA=$(git ls-tree "$TARGET_REF" hyrax-webapp | awk '{print $3}')
+echo "export BASE_SHA=$BASE_SHA"     >> "$SCRATCH/refs.env"
+echo "export TARGET_SHA=$TARGET_SHA" >> "$SCRATCH/refs.env"
+echo "BASE   $BASE_REF   -> $BASE_SHA   ($(git -C hyrax-webapp describe --tags "$BASE_SHA" 2>&1))"
+echo "TARGET $TARGET_REF -> $TARGET_SHA ($(git -C hyrax-webapp describe --tags "$TARGET_SHA" 2>&1))"
 ```
 
-**Save to handoffs/ the full content of this step's output.**
+**Decision point:** if `BASE_SHA` equals `TARGET_SHA`, or the `describe` output for `BASE_SHA` does not indicate a 7.1.x Hyku, STOP and ask the human which ref is the 7.1.3 baseline. Do not continue on an assumption.
 
-### Step 2 — v7.1.3 Baseline Testing (Phase 1)
-
-Run ALL commands below, capturing output to /tmp files:
-
-#### Phase 1.1: Verify Records Exist in Solr at v7.1.3
+Create the three helper scripts (they make both versions run IDENTICAL queries):
 
 ```bash
-# List all collections in Solr
-curl -s "http://localhost:8983/solr/admin/cores?wt=json" | python3 -c "import sys, json; [print(c) for c in json.load(sys.stdin)['status'].keys()]" > /tmp/solr-coll-list-713.txt
-
-cat /tmp/solr-coll-list-713.txt
-```
-
-#### Phase 1.2: Document Counts Per Collection at v7.1.3
-
-```bash
-for coll in $(cat /tmp/solr-coll-list-713.txt); do
-  count=$(curl -s "http://localhost:8983/solr/$coll/select?q=*:*&rows=0&wt=json" | python3 -c "import sys, json; print(json.load(sys.stdin)['response']['numFound'])")
-  echo "$coll: $count docs"
-done > /tmp/solr-doc-counts-713.txt
-
-cat /tmp/solr-doc-counts-713.txt
-```
-
-**Save criteria**: At least one collection must have doc count > 0. If all are 0, v7.1.3 also has no data (different problem).
-
-#### Phase 1.3: Verify Rails SolrEndpoint Configuration at v7.1.3
-
-```bash
-docker compose exec web bin/rails runner "
-  acct = Account.first
-  puts 'Account: ' + acct.name
-  puts 'Solr Endpoint URL: ' + acct.solr_endpoint.url
-  puts 'Solr Endpoint ID: ' + acct.solr_endpoint.id
-" > /tmp/solr-endpoint-details-713.txt 2>&1
-
-cat /tmp/solr-endpoint-details-713.txt
-
-# Check Rails logs for Solr connection info
-docker compose logs web 2>&1 | grep -i "solr\|collection\|endpoint" | tail -30 > /tmp/rails-solr-logs-713.log
-```
-
-#### Phase 1.4: Verify Search Returns Results at v7.1.3
-
-```bash
-# API-level test (hydra-production collection)
-curl -s "http://localhost:8983/solr/hydra-production/select?q=*:*&rows=10&wt=json" | python3 -c "import sys, json; d=json.load(sys.stdin); print('hydra-production Found:', d['response']['numFound'])" > /tmp/search-hydra-713.txt
-
-# Web UI test
-curl -s "http://localhost:3000/catalog?q=test&per_page=5" > /tmp/search-ui-response-713.html 2>&1
-grep -i "found\|result\|document\|no_results" /tmp/search-ui-response-713.html | head -10 > /tmp/search-ui-summary-713.txt
-
-cat /tmp/search-hydra-713.txt
-cat /tmp/search-ui-summary-713.txt
-```
-
-**Save criteria**: Search must return documents (numFound > 0 OR response contains document data). This proves v7.1.3 baseline is functional.
-
-### Step 3 — v7.2.0 Broken Testing (Phase 2)
-
-#### Phase 2.1: Switch Branch to v7.2.0 and Rebuild
-
-```bash
-cd /Users/tam0013/Documents/git/wvu_knapsack
-
-# First, down current services
-docker compose down --volumes
-
-# Check out 7.2.0 branch
-git checkout feature/hyku-v7.2.0-upgrade
-
-# Verify Gemfile changes
-grep -A 2 "hyrax" hyrax-webapp/Gemfile
-grep -A 2 "valkyrie" hyrax-webapp/Gemfile
-
-# Start fresh with 7.2.0 gems
-sh up.sc.local.sh 2>&1 | tee /tmp/sc-startup-720.log &
-sleep 30
-docker compose ps
-```
-
-#### Phase 2.2: Run EXACT SAME Queries as Phase 1 on v7.2.0
-
-**Do NOT modify the queries — run identical tests to get a controlled comparison.**
-
-```bash
-# 2.2.1: List Solr collections (compare with /tmp/solr-coll-list-713.txt)
-curl -s "http://localhost:8983/solr/admin/cores?wt=json" | python3 -c "import sys, json; [print(c) for c in json.load(sys.stdin)['status'].keys()]" > /tmp/solr-coll-list-720.txt
-cat /tmp/solr-coll-list-720.txt
-
-# 2.2.2: Document counts per collection (compare with /tmp/solr-doc-counts-713.txt)
-for coll in $(cat /tmp/solr-coll-list-720.txt); do
-  count=$(curl -s "http://localhost:8983/solr/$coll/select?q=*:*&rows=0&wt=json" | python3 -c "import sys, json; print(json.load(sys.stdin)['response']['numFound'])")
-  echo "$coll: $count docs"
-done > /tmp/solr-doc-counts-720.txt
-cat /tmp/solr-doc-counts-720.txt
-
-# 2.2.3: Rails SolrEndpoint for tenant (compare with Phase 1)
-docker compose exec web bin/rails runner "
-  acct = Account.first
-  puts 'Account: ' + acct.name
-  puts 'Solr Endpoint URL: ' + acct.solr_endpoint.url
-  puts 'Solr Endpoint ID: ' + acct.solr_endpoint.id
-" > /tmp/solr-endpoint-details-720.txt 2>&1
-cat /tmp/solr-endpoint-details-720.txt
-
-# 2.2.4: Search hydra-production collection (same as Phase 1.3)
-curl -s "http://localhost:8983/solr/hydra-production/select?q=*:*&rows=10&wt=json" | python3 -c "import sys, json; d=json.load(sys.stdin); print('Found:', d['response']['numFound'])" > /tmp/search-hydra-720.txt
-cat /tmp/search-hydra-720.txt
-
-# 2.2.5: Web UI search (same as Phase 1.4)
-curl -s "http://localhost:3000/catalog?q=test&per_page=5" > /tmp/search-ui-response-720.html 2>&1
-grep -i "found\|result\|document\|no_results" /tmp/search-ui-response-720.html | head -10 > /tmp/search-ui-summary-720.txt
-cat /tmp/search-ui-summary-720.txt
-
-# 2.2.6: Search ANY collection that has docs (to find where documents actually live)
-for coll in $(awk '{print $1}' /tmp/solr-doc-counts-720.txt | grep -v ':'); do
-  count=$(grep "$coll" /tmp/solr-doc-counts-720.txt | awk -F': ' '{print $2}')
-  if [ "$count" != "0" ]; then
-    result=$(curl -s "http://localhost:8983/solr/$coll/select?q=*:*&rows=10&wt=json" | python3 -c "import sys, json; d=json.load(sys.stdin); print('Found:', d['response']['numFound'])")
-    echo "Collection $coll ($count docs): $result"
+cat > "$SCRATCH/wait_stack.sh" <<'SCRIPT_EOF'
+#!/usr/bin/env bash
+# Waits up to 10 minutes for Solr and the Rails app to answer.
+SOLR="${SOLR:-http://localhost:8983/solr}"
+for i in $(seq 1 60); do
+  if curl -sf "$SOLR/admin/info/system?wt=json" >/dev/null \
+     && curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/ | grep -q '^[23]'; then
+    echo "stack up after ~$((i*10))s"; exit 0
   fi
-done > /tmp/search-other-colls-720.txt
-cat /tmp/search-other-colls-720.txt
+  sleep 10
+done
+echo "TIMEOUT: stack did not come up"; exit 1
+SCRIPT_EOF
+
+cat > "$SCRATCH/capture.sh" <<'SCRIPT_EOF'
+#!/usr/bin/env bash
+# Usage (from wvu_knapsack root): bash capture.sh <label>   label = 713 | 720
+# READ-ONLY: queries and log reads only.
+set -u
+LABEL="$1"
+SCRATCH="${SCRATCH:-$HOME/hyku-720-testing}"
+SOLR="${SOLR:-http://localhost:8983/solr}"
+CATALOG="${CATALOG:-http://localhost:3000/catalog?q=&search_field=all_fields&per_page=5}"
+OUT="$SCRATCH/$LABEL"; mkdir -p "$OUT"
+
+git rev-parse --abbrev-ref HEAD       > "$OUT/parent-ref.txt"
+git submodule status hyrax-webapp     > "$OUT/submodule-status.txt"
+
+# 1. Collection names (SolrCloud first, standalone fallback)
+python3 - "$SOLR" > "$OUT/collections.txt" <<'PY'
+import sys, json, urllib.request
+base = sys.argv[1]
+def get(u):
+    with urllib.request.urlopen(u, timeout=20) as r:
+        return json.load(r)
+try:
+    names = get(base + "/admin/collections?action=LIST&wt=json")["collections"]
+except Exception:
+    names = list(get(base + "/admin/cores?action=STATUS&wt=json")["status"].keys())
+print("\n".join(sorted(names)))
+PY
+
+# 2. Doc count per collection (tab-separated: name<TAB>count)
+python3 - "$SOLR" "$OUT/collections.txt" > "$OUT/counts.tsv" <<'PY'
+import sys, json, urllib.request
+base, path = sys.argv[1], sys.argv[2]
+for name in [l.strip() for l in open(path) if l.strip()]:
+    try:
+        with urllib.request.urlopen(f"{base}/{name}/select?q=*:*&rows=0&wt=json", timeout=20) as r:
+            n = json.load(r)["response"]["numFound"]
+    except Exception as e:
+        n = "ERROR:" + type(e).__name__
+    print(f"{name}\t{n}")
+PY
+
+# 3. What the app itself resolves for the account, and what its index/search paths see
+docker compose exec -T web bin/rails runner '
+def probe(label); puts "#{label}=#{yield}"; rescue => e; puts "#{label}=ERR #{e.class}: #{e.message}"; end
+pick = ->(h) { h.to_h.select { |k, _| %w[url core collection].include?(k.to_s) }.inspect }
+acct = Account.first
+ep = acct&.solr_endpoint
+probe("single_tenant")                 { Hyku.single_tenant? }
+probe("account")                       { acct.name }
+probe("switch")                        { acct.switch!; "ok" }
+probe("endpoint_id")                   { ep.id }
+probe("endpoint_url")                  { ep.url }
+probe("endpoint_collection")           { ep.collection }
+probe("endpoint_connection_options")   { pick.call(ep.connection_options) }
+probe("blacklight_connection_config")  { pick.call(Blacklight.connection_config) }
+probe("valkyrie_solr_index_url")       { Valkyrie::IndexingAdapter.adapters[:solr_index].connection.options[:url] }
+probe("index_adapter_class")           { Hyrax.index_adapter.class.name }
+probe("hyrax_solrservice_numFound")    { Hyrax::SolrService.get("*:*", rows: 0)["response"]["numFound"] }
+probe("catalog_search_path_numFound")  { CatalogController.blacklight_config.repository.connection.get("select", params: { q: "*:*", rows: 0 })["response"]["numFound"] }
+probe("metadata_store_record_count")   { Hyrax.query_service.find_all.count }
+' > "$OUT/endpoint.txt" 2>&1
+
+# 4. Web UI search
+curl -s -o "$OUT/catalog.html" -w "http_status=%{http_code}\n" "$CATALOG" > "$OUT/catalog-status.txt"
+grep -o -i 'No results found[^<]*\|of <strong>[0-9,]*</strong>' "$OUT/catalog.html" | head -5 > "$OUT/catalog-summary.txt"
+
+# 5. Solr lines from the web log (after the search above)
+docker compose logs --no-color --tail 300 web 2>&1 | grep -i 'solr\|select?' | tail -40 > "$OUT/web-solr-log.txt"
+
+echo "capture $LABEL complete:"; ls -l "$OUT"
+SCRIPT_EOF
+
+cat > "$SCRATCH/compare.sh" <<'SCRIPT_EOF'
+#!/usr/bin/env bash
+SCRATCH="${SCRATCH:-$HOME/hyku-720-testing}"
+for f in submodule-status.txt collections.txt counts.tsv endpoint.txt catalog-summary.txt; do
+  echo "=== $f (713 vs 720) ==="
+  diff -u "$SCRATCH/713/$f" "$SCRATCH/720/$f" || true
+done
+for v in 713 720; do
+  echo; echo "=== $v: collections WITH documents ==="
+  awk -F'\t' '$2 ~ /^[0-9]+$/ && $2 > 0' "$SCRATCH/$v/counts.tsv"
+  echo "=== $v: collection the app resolves / searches ==="
+  grep -E '^(single_tenant|endpoint_|blacklight_|valkyrie_|hyrax_solrservice|catalog_search_path|metadata_store)' "$SCRATCH/$v/endpoint.txt"
+done
+SCRIPT_EOF
+ls -l "$SCRATCH"
 ```
 
-#### Phase 2.3: Generate Comparison Summary
+Then read how Stack Car is started and record the answers in the report (read-only):
 
 ```bash
-echo "=== COLLECTION LIST DIFF (713 vs 720) ==="
-diff -u /tmp/solr-coll-list-713.txt /tmp/solr-coll-list-720.txt || echo "(no diff)"
-
-echo ""
-echo "=== DOC COUNTS DIFF (713 vs 720) ==="
-diff -u /tmp/solr-doc-counts-713.txt /tmp/solr-doc-counts-720.txt || echo "(no diff)"
-
-echo ""
-echo "=== SolrEndpoint DIFF (713 vs 720) ==="
-diff -u /tmp/solr-endpoint-details-713.txt /tmp/solr-endpoint-details-720.txt || echo "(no diff)"
-
-echo ""
-echo "=== SEARCH COMPARISON ==="
-echo "v7.1.3: $(cat /tmp/search-hydra-713.txt 2>/dev/null)"
-echo "v7.2.0: $(cat /tmp/search-hydra-720.txt 2>/dev/null)"
-
-echo ""
-echo "=== WEB UI COMPARISON ==="
-echo "v7.1.3:"; cat /tmp/search-ui-summary-713.txt
-echo "v7.2.0:"; cat /tmp/search-ui-summary-720.txt
+cat up.sc.local.sh
+grep -rn -i 'SOLR_COLLECTION\|SINGLE_TENANT\|HYKU_MULTITENANT' up.sc.local.sh docker-compose*.yml .env* 2>/dev/null | tee "$SCRATCH/stack-env-grep.txt"
+docker compose ps --services
 ```
 
-### Step 4 — Root Cause Investigation (Phase 3)
-
-#### Phase 3.0: Verify primary files exist (quick existence check)
+### Step 2 — Phase 1: Static code analysis (no Docker needed)
 
 ```bash
+export SCRATCH="$HOME/hyku-720-testing"; . "$SCRATCH/refs.env"
 cd /Users/tam0013/Documents/git/wvu_knapsack
-ls -l hyrax-webapp/app/models/solr_endpoint.rb \
-      hyrax-webapp/app/models/account.rb \
-      hyrax-webapp/app/jobs/create_solr_collection_job.rb
-```
+FILES="app/models/solr_endpoint.rb app/models/account.rb app/jobs/create_solr_collection_job.rb"
 
-If any file is missing, stop and report the exact path that failed.
+# Change between the two submodule SHAs (diff runs INSIDE the submodule)
+git -C hyrax-webapp diff "$BASE_SHA" "$TARGET_SHA" --stat -- $FILES > "$SCRATCH/code-diff-stat.txt"
+git -C hyrax-webapp diff "$BASE_SHA" "$TARGET_SHA" -- $FILES        > "$SCRATCH/code-diff.txt"
+cat "$SCRATCH/code-diff-stat.txt"
 
-#### Phase 3.1: Code Diff Analysis
-
-```bash
-cd /Users/tam0013/Documents/git/wvu_knapsack
-
-# List all Solr/Valkyrie related changes in this branch
-git diff main..feature/hyku-v7.2.0-upgrade --name-only | grep -i "solr\|valkyrie\|index\|collection" > /tmp/solr-changed-files-720.txt
-cat /tmp/solr-changed-files-720.txt
-
-# Diff the SolrEndpoint model (key file — this is most likely where collection name is set)
-git diff main -- hyrax-webapp/app/models/solr_endpoint.rb > /tmp/diff-solr-endpoint-720.txt 2>/dev/null || echo "solr_endpoint.rb not changed in repo"
-
-# Diff the Account model (where SolrEndpoint belongs_to relationship lives)
-git diff main -- hyrax-webapp/app/models/account.rb > /tmp/diff-account-720.txt 2>/dev/null || echo "account.rb not changed in repo"
-
-# Diff create_solr_collection_job (key indexing logic)
-git diff main -- hyrax-webapp/app/jobs/create_solr_collection_job.rb > /tmp/diff-create-collection-job-720.txt 2>/dev/null || echo "create_solr_collection_job.rb not changed in repo"
-```
-
-#### Phase 3.2: Runtime Valkyrie Adapter Inspection
-
-```bash
-docker compose exec web bin/rails runner "
-  puts '=== Valkyrie Indexing Adapter ==='
-  puts Hyrax.index_adapter.class.name
-  puts Hyrax.config.query_index_with_solr_document_class.name
-  
-  # Show SolrEndpoint resolution for default tenant
-  acct = Account.first
-  endpoint = acct.solr_endpoint
-  puts '=== SolrEndpoint Resolution ==='
-  puts 'URL: ' + endpoint.url
-  puts 'ID: ' + endpoint.id
-  
-  # Show Blacklight connection config (search path)
-  puts '=== Blacklight Connection Config ==='
-  puts JSON.pretty_generate(Blacklight.connection_config)
-" > /tmp/valkyrie-blacklight-720.txt 2>&1
-
-cat /tmp/valkyrie-blacklight-720.txt
-```
-
-#### Phase 3.3: Capture Solr Query Logs During Search
-
-```bash
-# Enable debug logging by triggering a search and watching Rails logs
-docker compose logs -f web 2>&1 | grep -i "solr\|q=\|select" | tee /tmp/realtime-solr-queries-720.log &
-
-# Trigger a real search via curl
-curl -s "http://localhost:3000/catalog?q=test&per_page=5" > /dev/null 2>&1
-sleep 5
-
-# Check what queries were logged during the search
-docker compose logs web 2>&1 | grep "q=" | tail -20 > /tmp/search-queries-720.txt
-cat /tmp/search-queries-720.txt
-```
-
-#### Phase 3.4: Collect Solr Document Samples (Evidence)
-
-```bash
-for coll in $(awk '{print $1}' /tmp/solr-doc-counts-720.txt | grep -v ':'); do
-  count=$(grep "$coll" /tmp/solr-doc-counts-720.txt | awk -F': ' '{print $2}')
-  if [ "$count" != "0" ]; then
-    curl -s "http://localhost:8983/solr/$coll/select?q=*:*&rows=1&wt=json" > /tmp/sample-doc-$coll-720.json
-    echo "Sample from $coll ($count docs): saved to /tmp/sample-doc-$coll-720.json"
-  fi
+# Every place the collection/core name or tenancy mode is decided, at BOTH SHAs
+for sha in "$BASE_SHA" "$TARGET_SHA"; do
+  git -C hyrax-webapp grep -n -e 'SOLR_COLLECTION' -e 'single_tenant' -e "'core'" -e '\.collection' "$sha" -- app config lib \
+    > "$SCRATCH/grep-collection-$sha.txt"
 done
 
-# Identify where documents ARE vs WHERE search queries them FROM
-echo "=== COLLECTION MISMATCH ANALYSIS ==="
-echo "Documents are in collections:"
-awk '{print $1}' /tmp/solr-doc-counts-720.txt | grep -v ': ' | while read coll; do
-  count=$(grep "$coll" /tmp/solr-doc-counts-720.txt | awk -F': ' '{print $2}')
-  if [ "$count" != "0" ]; then echo "  - $coll ($count docs)"; fi
+# Knapsack-level overrides in the parent repo (for each ref)
+for ref in "$BASE_REF" "$TARGET_REF"; do
+  git grep -n -i 'solr' "$ref" -- app config lib > "$SCRATCH/grep-knapsack-solr-$(echo $ref | tr '/' '_').txt"
 done
 
-echo ""
-echo "Search queries from SolrEndpoint URL:"
-grep 'URL:' /tmp/solr-endpoint-details-720.txt 2>/dev/null || echo "N/A"
-
-echo ""
-echo "If the collection with documents ≠ the SolrEndpoint URL, MISMATCH CONFIRMED"
+# Record the hyrax revision actually locked at each SHA
+for sha in "$BASE_SHA" "$TARGET_SHA"; do
+  echo "== $sha"; git -C hyrax-webapp show "$sha:Gemfile.lock" | grep -n -A3 'samvera/hyrax'
+done > "$SCRATCH/hyrax-lock-revisions.txt"
+cat "$SCRATCH/hyrax-lock-revisions.txt"
 ```
 
-### Step 5 — Revert to v7.1.3 (Phase 5)
+Read the three primary files at each SHA (`git -C hyrax-webapp show <sha>:<file>`) and answer in the report, citing file and line:
+1. Which code decides the Solr collection/core name for the account's SolrEndpoint in single-tenant mode, and where does `SOLR_COLLECTION` enter?
+2. Which collection does the **indexing** path (Valkyrie solr_index adapter, via `switch!`/`core`) write to?
+3. Which collection does the **search** path (Blacklight / `CatalogController`) read from?
+4. Which tenancy mode does Stack Car run in (from `stack-env-grep.txt` and the runner output later)?
+5. Did any of this change between `BASE_SHA` and `TARGET_SHA`?
+
+If a primary file does not exist at a SHA, STOP and report the exact path.
+
+### Step 3 — Phase 2: Baseline (7.1.3)
 
 ```bash
+export SCRATCH="$HOME/hyku-720-testing"; . "$SCRATCH/refs.env"
 cd /Users/tam0013/Documents/git/wvu_knapsack
 
-# Revert safely after testing is complete
-git checkout main
 docker compose down --volumes
-sh up.sc.local.sh 2>&1 | tee /tmp/sc-revert-713.log &
-sleep 30
-docker compose ps
+git checkout "$BASE_REF" && git submodule update --init --recursive
+git submodule status hyrax-webapp | tee "$SCRATCH/baseline-submodule-status.txt"
+# The SHA printed above MUST equal BASE_SHA — if not, STOP.
 
-echo "Reverted to v7.1.3 baseline successfully"
+# Start Stack Car. If up.sc.local.sh does not rebuild images, run `docker compose build` first and note that in the report.
+sh up.sc.local.sh > "$SCRATCH/startup-713.log" 2>&1 &
+bash "$SCRATCH/wait_stack.sh"
+docker compose ps
 ```
 
-### Step 6 — Generate Comparison Report (Phase 4)
+**Seed test data.** Use the project's DOCUMENTED seed/import method (look in `wvu_knapsack` README, `status.md`, and the testing-strategy handoff). Run the same command, with the same input, on both versions, and write the exact command into `$SCRATCH/seed-command.txt`. If no documented method exists, STOP and ask the human — do not invent one. The number of seeded records must be identical on both versions.
 
 ```bash
-cat > /tmp/testing-report-final.txt << 'ENDREPORT'
-=== HYKU 7.2.0 SEARCH BUG LOCAL TESTING REPORT ===
-Date: 2026-11-05
-Environment: Stack Car (local Docker Compose)
-Branch tested: feature/hyku-v7.2.0-upgrade
-
---- PHASE 1: v7.1.3 BASELINE ---
-Collections: $(cat /tmp/solr-coll-list-713.txt | tr '\n' ', ')
-Doc counts: $(cat /tmp/solr-doc-counts-713.txt)
-SolrEndpoint URL: $(grep 'URL:' /tmp/solr-endpoint-details-713.txt 2>/dev/null || echo 'N/A')
-Search results (API): $(cat /tmp/search-hydra-713.txt 2>/dev/null || echo 'N/A')
-Web UI results: $(cat /tmp/search-ui-summary-713.txt 2>/dev/null || echo 'N/A')
-
---- PHASE 2: v7.2.0 BROKEN STATE ---
-Collections: $(cat /tmp/solr-coll-list-720.txt | tr '\n' ', ')
-Doc counts: $(cat /tmp/solr-doc-counts-720.txt)
-SolrEndpoint URL: $(grep 'URL:' /tmp/solr-endpoint-details-720.txt 2>/dev/null || echo 'N/A')
-Search results (API): $(cat /tmp/search-hydra-720.txt 2>/dev/null || echo 'N/A')
-Web UI results: $(cat /tmp/search-ui-summary-720.txt 2>/dev/null || echo 'N/A')
-
---- PHASE 3: ROOT CAUSE ---
-Changed files (Solr/Valkyrie): $(cat /tmp/solr-changed-files-720.txt | tr '\n' ', ')
-Adapter config: $(cat /tmp/valkyrie-blacklight-720.txt 2>/dev/null || echo 'N/A')
-Search queries during execution: $(cat /tmp/search-queries-720.txt 2>/dev/null || echo 'N/A')
-
---- COLLECTION MISMATCH ANALYSIS ---
-Documents are in: $(awk '{print $1}' /tmp/solr-doc-counts-720.txt | grep -v ': ' | while read c; do count=$(grep "$c" /tmp/solr-doc-counts-720.txt | awk -F': ' '{print $2}'); [ "$count" != "0" ] && echo "$c ($count docs)"; done | tr '\n' ', ')
-Search queries: $(grep 'URL:' /tmp/solr-endpoint-details-720.txt 2>/dev/null || echo 'N/A')
-MISMATCH: $(if grep -q 'hydra-production' /tmp/solr-endpoint-details-720.txt 2>/dev/null && ! grep -q 'hydra-production.*0 docs' /tmp/solr-doc-counts-720.txt 2>/dev/null; then echo "YES — documents are NOT in the searched collection"; else echo "No mismatch detected or needs verification"; fi)
-
---- CONCLUSION ---
-$(if [ "$(cat /tmp/search-hydra-720.txt 2>/dev/null | grep -o '[0-9]\+$' | tail -1)" = "0" ]; then
-  echo "SEARCH BUG CONFIRMED: v7.2.0 returns empty results at API level"
-else
-  echo "Search behavior requires further investigation"
-fi)
-
---- FILES REFERENCED ---
-/tmp/solr-coll-list-713.txt | /tmp/solr-coll-list-720.txt
-/tmp/solr-doc-counts-713.txt | /tmp/solr-doc-counts-720.txt
-/tmp/solr-endpoint-details-713.txt | /tmp/solr-endpoint-details-720.txt
-/tmp/search-hydra-713.txt | /tmp/search-hydra-720.txt
-/tmp/valkyrie-blacklight-720.txt
-/tmp/diff-solr-endpoint-720.txt
-/tmp/diff-account-720.txt
-/tmp/diff-create-collection-job-720.txt
-ENDREPORT
-
-cp /tmp/testing-report-final.txt /Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/handoffs/2026-11-05-HYKU-7.2.0-SEARCH-BUG-LOCAL-TESTING-RESULTS.md
+export SCRATCH="$HOME/hyku-720-testing"; . "$SCRATCH/refs.env"
+cd /Users/tam0013/Documents/git/wvu_knapsack
+# (run the documented seed command here, and record it in $SCRATCH/seed-command.txt)
+bash "$SCRATCH/capture.sh" 713
+cat "$SCRATCH/713/counts.tsv" "$SCRATCH/713/endpoint.txt" "$SCRATCH/713/catalog-summary.txt"
 ```
+
+If every collection has 0 documents after seeding, STOP (seeding failed — not a finding).
+
+### Step 4 — Phase 3: v7.2.0
+
+```bash
+export SCRATCH="$HOME/hyku-720-testing"; . "$SCRATCH/refs.env"
+cd /Users/tam0013/Documents/git/wvu_knapsack
+
+docker compose down --volumes
+git checkout "$TARGET_REF" && git submodule update --init --recursive
+git submodule status hyrax-webapp | tee "$SCRATCH/target-submodule-status.txt"
+# The SHA printed above MUST equal TARGET_SHA and MUST differ from BASE_SHA — if not, STOP.
+
+sh up.sc.local.sh > "$SCRATCH/startup-720.log" 2>&1 &
+bash "$SCRATCH/wait_stack.sh"
+docker compose ps
+```
+
+Seed using the exact command in `$SCRATCH/seed-command.txt`, then:
+
+```bash
+export SCRATCH="$HOME/hyku-720-testing"; . "$SCRATCH/refs.env"
+cd /Users/tam0013/Documents/git/wvu_knapsack
+bash "$SCRATCH/capture.sh" 720
+cat "$SCRATCH/720/counts.tsv" "$SCRATCH/720/endpoint.txt" "$SCRATCH/720/catalog-summary.txt"
+```
+
+### Step 5 — Phase 4: Comparison and root cause
+
+```bash
+export SCRATCH="$HOME/hyku-720-testing"; . "$SCRATCH/refs.env"
+bash "$SCRATCH/compare.sh" | tee "$SCRATCH/comparison.txt"
+```
+
+Then, for EACH version, state in the report (quoting file contents, not summaries):
+- Collection(s) holding documents (`counts.tsv`).
+- Collection/core the app resolves (`endpoint_collection`, `endpoint_connection_options`, `blacklight_connection_config`, `valkyrie_solr_index_url`).
+- What the app's own search path sees (`catalog_search_path_numFound`, `hyrax_solrservice_numFound`) versus the records in the metadata store (`metadata_store_record_count`).
+- Whether the web UI search found records (`catalog-summary.txt`).
+
+Conclusion rules:
+- **Mismatch confirmed** only if documents exist in collection A and the search path's numFound/collection points at B, with the captured lines quoted.
+- Name the file and line (from Step 2 evidence) that decides each side.
+- If the evidence shows the collections agree (e.g. an empty index because indexing never ran, or a UI/permissions problem), say "mismatch NOT confirmed" and state what the evidence does show. Do not force the hypothesis.
+- If any `probe` returned `ERR`, report it verbatim; do not guess its value.
+
+### Step 6 — Phase 5: Revert to the starting state
+
+```bash
+export SCRATCH="$HOME/hyku-720-testing"; . "$SCRATCH/refs.env"
+cd /Users/tam0013/Documents/git/wvu_knapsack
+
+docker compose down --volumes
+git checkout "$(cat "$SCRATCH/start-ref.txt")" && git submodule update --init --recursive
+git submodule status hyrax-webapp | diff - "$SCRATCH/start-submodule-status.txt" && echo "restored to start state"
+git status --porcelain
+```
+
+Restart Stack Car only if it was running when this task started.
+
+### Step 7 — Report, evidence copy and cleanup
+
+```bash
+export SCRATCH="$HOME/hyku-720-testing"; . "$SCRATCH/refs.env"
+REPORT=/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/handoffs/2026-11-05-HYKU-7.2.0-SEARCH-BUG-LOCAL-TESTING-RESULTS.md
+{
+  echo "# Hyku 7.2.0 search bug — local testing results"
+  echo "Date: $(date +%F)   Refs: $BASE_REF ($BASE_SHA) vs $TARGET_REF ($TARGET_SHA)"
+  echo; echo "## Seed command"; cat "$SCRATCH/seed-command.txt"
+  echo; echo "## Stack environment"; cat "$SCRATCH/stack-env-grep.txt"
+  echo; echo "## Code diff stat (submodule)"; cat "$SCRATCH/code-diff-stat.txt"
+  echo; echo "## Hyrax locked revisions"; cat "$SCRATCH/hyrax-lock-revisions.txt"
+  echo; echo "## Comparison (713 vs 720)"; cat "$SCRATCH/comparison.txt"
+  for v in 713 720; do
+    echo; echo "## Runtime resolution at $v"; cat "$SCRATCH/$v/endpoint.txt"
+    echo; echo "## Counts at $v"; cat "$SCRATCH/$v/counts.tsv"
+  done
+  echo; echo "## Findings (agent-written: answers to Step 2 questions 1-5 and Step 5 conclusions, with file:line)"
+  echo "FILL IN"
+} > "$REPORT"
+```
+
+Replace the `FILL IN` line with the written findings. Then verify and clean up (only after the report exists and is non-empty):
+
+```bash
+test -s "$REPORT" && ! grep -q '^FILL IN' "$REPORT" && rm -rf "$SCRATCH" && echo "scratch removed"
+```
+
+Do NOT `git add` or commit the report until the Review Gate below is satisfied.
 
 ---
 
@@ -611,7 +591,7 @@ You MAY NOT commit, push, or mark any task step as "complete" until BOTH conditi
 1. **Reviewer has issued a GO disposition** — GO/REVISE/STOP per REVIEW_AGENT_GUIDE.md
 2. **Human authorization** — explicit human message authorizing commit AND separate authorization for push
 
-**Before requesting review:** Paste your complete evidence in chat (all /tmp outputs + comparison report) and state: *"All implementation and verification complete. Requesting reviewer assessment."*
+**Before requesting review:** Paste your complete evidence in chat (the report plus the key captured files) and state: *"All implementation and verification complete. Requesting reviewer assessment."*
 
 ---
 
@@ -623,36 +603,35 @@ Save this as an MD file before starting any work:
 ## STATUS SYNTHESIS REPORT
 
 **Task**: Local Testing of Hyku 7.2.0 Search Bug — Stack Car Investigation
-**Status**: draft → active (after Step 0) → completed
-**Date**: 2026-11-05
+**Status**: backlog → active (after Step 0) → completed
+**Date**: YYYY-MM-DD
 
 ### What I'm About to Do
-Run a 5-phase testing procedure on local Stack Car to verify the Solr collection mismatch bug between Hyku v7.1.3 and v7.2.0. Phase 0: environment setup; Phase 1: v7.1.3 baseline (records exist, search works); Phase 2: v7.2.0 broken state (same tests show difference); Phase 3: root cause investigation (code diffs + runtime inspection); Phase 4-5: report generation and revert.
+Investigate (read-only) why Hyku 7.2.0 search returns no results, by (1) reading the collection-resolution code at the 7.1.3 and 7.2.0 submodule SHAs, then (2) running identical seeded captures on both versions in Stack Car, then (3) comparing which collection holds documents against which collection the app's search path reads. No code is changed.
 
 ### Files I'll Reference
 | File | Purpose | Status |
 |---|---|---|
-| /Users/tam0013/Documents/git/wvu_knapsack/hyrax-webapp/Gemfile | Verify gem versions | pending |
-| /tmp/solr-coll-list-*.txt | Solr collection names per version | not started |
-| /tmp/solr-doc-counts-*.txt | Document counts per collection | not started |
-| /tmp/solr-endpoint-details-*.txt | Rails SolrEndpoint config per version | not started |
-| /tmp/valkyrie-blacklight-720.txt | Runtime Valkyrie + Blacklight config | not started |
-| All diff files under /tmp/* | Code changes between 7.1.3 and 7.2.0 | not started |
+| hyrax-webapp/app/models/solr_endpoint.rb | Collection/core resolution and switch! | pending |
+| hyrax-webapp/app/models/account.rb | Account to SolrEndpoint relationship | pending |
+| hyrax-webapp/app/jobs/create_solr_collection_job.rb | Collection creation / single-tenant endpoint | pending |
+| $HOME/hyku-720-testing/ (scratch) | Captured evidence and helper scripts | not started |
 
 ### Prerequisites Completed
-- ✅ Task file moved to active/ with git mv (find output pasted in chat)
-- ✅ YAML status updated from draft → active
-- ✅ Read README.md EXECUTOR section
-- ✅ Read project guide and status.md
-- ✅ Read this task file and understand all gotchas
+- [ ] Task file moved to active/ with git mv (find output pasted in chat)
+- [ ] YAML status updated to active
+- [ ] Read README.md EXECUTOR section, project guide, status.md, testing-strategy handoff
+- [ ] Working tree clean; start ref and submodule SHA recorded
+- [ ] BASE_SHA verified as a 7.1.x Hyku and differs from TARGET_SHA
 
 ### Expected Outcomes
-Exact identification of which file/line causes SolrEndpoint to resolve the wrong collection name. Evidence proving: (1) documents exist in some collection, (2) search queries a different collection, (3) the code path that sets the collection name differs between versions.
+For each version: the collection holding documents, the collection the search path queries, and the file/line deciding each — or evidence that no mismatch exists.
 
 ### Critical Gotchas I Will Avoid
-- ❌ Fixing the bug during testing — instead ✅ Only run read queries and collect data
-- ❌ Skipping docker compose down --volumes between version switches — instead ✅ Clean state always
-- ❌ Assuming /tmp persists across container operations — instead ✅ Copy critical outputs before any restart
+- Assuming git checkout switches the hyrax-webapp submodule (it does not; run submodule update)
+- Comparing a seeded run to an unseeded run (seed identically after every down --volumes)
+- Assuming main is 7.1.3 without checking the pinned SHA
+- Writing outside $HOME/hyku-720-testing; editing any application file
 ```
 
 ---
@@ -662,41 +641,42 @@ Exact identification of which file/line causes SolrEndpoint to resolve the wrong
 *Planner self-validation — not sent to agents. For draft author only.*
 
 - [x] YAML frontmatter complete (status: draft, resume, priority, type, system_domain, mvp_alignment, local_worker_safe)
-- [x] DRAFT STATUS NOTE filled (says what was verified, what wasn't)
-- [x] DRAFT REVIEW CHECKLIST filled (marks items reviewed by planner vs. deferred to review agent)
-- [x] Agent Dispatch Interface complete and accurate (no bracketed placeholders except <agent-tasks>)
-- [x] Full task body present (all 6 phases, all commands, all success criteria)
-- [x] No placeholder text or [FILL IN HERE] markers
+- [x] DRAFT STATUS NOTE and DRAFT REVIEW CHECKLIST present (review items left unchecked for the reviewer/human)
+- [x] Agent Dispatch Interface matches TASK_TEMPLATE.md block; only `<agent-tasks>` placeholder remains
+- [x] Full task body present; no `[FILL IN HERE]` markers (the report's single `FILL IN` line is an intentional agent action in Step 7)
 - [x] File is in tasks/drafts/ with status: draft
-- [x] Acceptance Criteria are clear and measurable
-- [x] Task scope is well-bounded (investigate Solr collection mismatch via controlled testing, not fix it)
-- [x] Procedures are specific enough for implementation (phase-by-phase with concrete commands)
-- [x] All file paths verified to exist locally
-- [x] Architecture Gotchas are specific and actionable (4 gotchas identified)
-- [x] Review Gate section included per TASK_TEMPLATE.md requirements
-- [x] Synthesis Report Template included
+- [x] Scope is investigation-only; hypothesis separated from documented facts
+- [x] Primary file paths checked against `samvera/hyku@279fe062` (submodule pin) during independent review; NOT executed locally
+- [ ] Commands run end-to-end on Stack Car (to be confirmed by first dispatch under supervision)
+- [x] Review Gate and Synthesis Report Template included
 
 ---
 
 ## Acceptance Criteria
 
-1. ✅ v7.1.3 baseline confirmed: at least one Solr collection has documents (doc count > 0) and the identical search queries return results (numFound > 0 or UI contains document data)
-2. ✅ v7.2.0 bug confirmed: the exact same tests on the feature/hyku-v7.2.0-upgrade branch show empty results or different collection behavior
-3. ✅ Collection mismatch proven: concrete evidence that documents reside in collection A while SolrEndpoint / Blacklight queries collection B
-4. ✅ Root cause identified: specific file(s) and code path inside hyrax-webapp that cause the collection-name mismatch (or explicit statement that the mismatch is not code-level after inspection)
-5. ✅ Comparison report generated at `handoffs/2026-11-05-HYKU-7.2.0-SEARCH-BUG-LOCAL-TESTING-RESULTS.md`
-6. ✅ Stack Car reverted to v7.1.3 baseline after testing complete
+- [ ] 1. `BASE_SHA` and `TARGET_SHA` recorded, differ, and the baseline's `git describe` shows a 7.1.x Hyku
+- [ ] 2. Step 2 questions 1-5 answered with file and line citations from both SHAs
+- [ ] 3. The exact seed command is recorded and the same seeded record count is shown at both versions
+- [ ] 4. `capture.sh` completed for 713 and 720 with all output files present (collections, counts, endpoint, catalog, log)
+- [ ] 5. For BOTH versions the report states, quoting captured files: the collection(s) holding documents, the collection/core the app resolves, and the app search path's numFound
+- [ ] 6. Mismatch status stated explicitly as CONFIRMED or NOT CONFIRMED with the deciding file(s)/line(s) named — or a stated reason none can be named
+- [ ] 7. Report saved at `handoffs/2026-11-05-HYKU-7.2.0-SEARCH-BUG-LOCAL-TESTING-RESULTS.md`, with no `FILL IN` text left
+- [ ] 8. Parent repo and submodule restored to the recorded starting ref/SHA (diff against `start-submodule-status.txt` clean), working tree clean, scratch folder removed
+- [ ] 9. No application, submodule, config or `.env` file was modified
 
 ---
 
 ## Stop Conditions — escalate to user immediately if:
 
-- Stack Car cannot be started or containers fail to become healthy after two clean attempts
-- No documents exist in any Solr collection on the v7.1.3 baseline (different problem)
-- The collection mismatch is not reproducible after two full clean runs (down --volumes + rebuild)
-- Primary files listed for inspection do not exist at the expected paths
+- The working tree is dirty at the start (do not stash or discard)
+- `BASE_SHA` equals `TARGET_SHA`, or the baseline SHA is not a 7.1.x Hyku
+- After `git submodule update`, the submodule SHA does not equal the expected SHA
+- Stack Car cannot be started or does not become healthy after two clean attempts
+- No documented seed method exists, or seeding leaves every collection at 0 documents
+- The mismatch is not reproducible after two full clean runs (down --volumes, checkout, submodule update, seed)
+- A primary file listed for inspection does not exist at the recorded SHA
 - An architectural decision is required about which collection name is canonical
-- Investigation reveals the root cause lies outside the three primary files and requires expanding scope
+- The root cause lies outside the three primary files and would expand scope
 - Any step would require writing or modifying application code (this task is investigation only)
 
 ---
