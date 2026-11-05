@@ -173,7 +173,7 @@ Before this task goes to review:
    git push origin main
    ```
 
-2. **Prepare a review prompt** for the web agent (Claude/Grok/ChatGPT). This prompt should:
+2. **Prepare a review prompt** for M365 Copilot (primary reviewer for WVU/Samvera projects; Claude/Grok/ChatGPT also acceptable). This prompt should:
    - Ask the web agent to review the draft task file
    - Point to the GitHub path: `projects/wvulibraries_knapsack/tasks/drafts/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md`
    - Ask for assessment: scope clarity, procedure feasibility, dependencies, acceptance criteria
@@ -220,10 +220,19 @@ When you're done:
 **Report (to human):**
 1. "Draft task pushed to GitHub at: `projects/wvulibraries_knapsack/tasks/drafts/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md`"
 2. List what it covers: "Phases 0-4 testing + root cause investigation + comparative report generation"
-3. Recommend reviewer: "[Suggest: Claude or Grok — Hyku/Valkyrie architecture expertise helpful]"
+3. Recommend reviewer: "M365 Copilot preferred (WVU work account, Samvera/Hyku architecture expertise); Claude, Grok, or ChatGPT also acceptable"
 4. Provide the review prompt you prepared (see CRITICAL section above)
 
-**Then:** Stop and wait for web agent feedback. When corrections come back, you'll update the draft and re-push for another review cycle.
+**Templates to include with M365 handoff:**
+
+When human hands this review prompt to M365 Copilot, also provide (copy-paste these into the chat):
+1. TASK_TEMPLATE.md (from agent-tasks repo root) — so M365 can verify template compliance
+2. DRAFT STATUS NOTE section from the task file — what was verified
+3. Agent Dispatch Interface section — what implementation agent needs to do first
+
+This gives M365 full context for assessing scope, clarity, and feasibility.
+
+**Then:** Stop and wait for web agent feedback (from M365 or whichever agent reviews). When corrections come back, you'll update the draft and re-push for another review cycle.
 
 ---
 
