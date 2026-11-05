@@ -1,0 +1,196 @@
+# QWEN CORRECTION PROMPT — Convert Testing Plan to Draft Task File Format
+
+## What Happened
+
+You created excellent research content: `projects/wvulibraries_knapsack/handoffs/2026-11-05-HYKU-7.2.0-SEARCH-BUG-LOCAL-TESTING-PLAN.md`
+
+The content is thorough and precise (5 phases, copy-paste commands, clear criteria). But it's in the wrong format and location:
+- ❌ Stored in `handoffs/` (for reports/session summaries)
+- ❌ Plain markdown (no YAML frontmatter)
+- ❌ No DRAFT STATUS NOTE section
+- ❌ No DRAFT REVIEW CHECKLIST section
+- ❌ No Agent Dispatch Interface block
+
+**Action needed:** Convert the testing plan into a TASK_TEMPLATE.md-formatted draft task file.
+
+---
+
+## Your Task: Format Conversion (NOT Re-research)
+
+**Do NOT redo research.** You have the plan already. Move its content into the correct structure.
+
+### Step 1: Read the Format Template
+
+Open: `TASK_TEMPLATE.md` (in agent-tasks repo root)
+
+Look for:
+- YAML frontmatter section (lines ~50-57) — this is what goes at the TOP
+- "DRAFT STATUS NOTE" section (line ~65) — for drafts
+- "DRAFT REVIEW CHECKLIST" section (line ~75) — for drafts  
+- "Agent Dispatch Interface" section (line ~90+) — the startup contract
+- "Full Task Specification" sections after that
+
+### Step 2: Create New File in Correct Location
+
+Create: `projects/wvulibraries_knapsack/tasks/drafts/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md`
+
+(Note: `tasks/drafts/` NOT `handoffs/`)
+
+### Step 3: Fill YAML Frontmatter
+
+Copy this structure and fill in the values:
+
+```yaml
+---
+status: draft
+resume: false
+priority: HIGH
+type: bug-fix
+system_domain: hyku
+mvp_alignment: hyku-7.2.0-upgrade-blocker
+local_worker_safe: true
+---
+```
+
+**Explanation of fields:**
+- `status: draft` — must be "draft" (not "backlog" or "active")
+- `resume: false` — is this a continuation? No, it's new.
+- `priority: HIGH` — yes, it's a critical upgrade blocker
+- `type: bug-fix` — yes, investigating a Solr collection mismatch bug
+- `system_domain: hyku` — which project system
+- `mvp_alignment: hyku-7.2.0-upgrade-blocker` — what's its business importance
+- `local_worker_safe: true` — yes, Stack Car is safe for testing
+
+### Step 4: Fill DRAFT STATUS NOTE Section
+
+Add this AFTER the YAML frontmatter, before anything else:
+
+```markdown
+## 🟡 DRAFT STATUS NOTE
+
+- [x] Verified testing approach with project status.md and previous investigation
+- [x] Identified 5-phase testing structure from root-cause research
+- [x] Procedures are specific and copy-paste ready
+- [ ] Tested locally (will be executed by implementation agent, not planning)
+- [x] Solr collection mismatch hypothesis validated against symptom evidence
+```
+
+(Put X in brackets for things you verified; leave empty for things implementation agent will do.)
+
+### Step 5: Fill DRAFT REVIEW CHECKLIST Section
+
+Add this AFTER DRAFT STATUS NOTE:
+
+```markdown
+## DRAFT REVIEW CHECKLIST
+
+- [x] Task scope is clear and bounded (investigate Solr collection mismatch via 5-phase test)
+- [x] Acceptance criteria are realistic (identify exact code change causing collection mismatch)
+- [x] Procedures are specific enough for implementation (phase-by-phase with concrete commands)
+- [x] Procedures reference correct file paths and collection names
+- [ ] Procedures verified executable (implementation agent will validate and execute)
+- [x] Task is self-contained (does not depend on other open tasks)
+```
+
+### Step 6: Add Task Description
+
+Add a description section that includes:
+- What the bug is (Solr collection mismatch — search returns empty despite records in index)
+- Why local testing matters (safe, can isolate code changes)
+- What success looks like (identify exact code line causing collection selection change)
+
+### Step 7: Move Testing Phases into Task Body
+
+Your existing 5 phases (Phase 0-4) become subsections under a "Testing Procedure" or "Phases" section. Keep all the detail:
+- Phase 0: Prerequisites & safety
+- Phase 1: v7.1.3 baseline
+- Phase 2: v7.2.0 broken state
+- Phase 3: Root cause investigation
+- Phase 4-5: Comparative report
+
+Don't abbreviate or simplify. Keep every command, every output path, every success criterion.
+
+### Step 8: Add Agent Dispatch Interface
+
+Add this BEFORE the full task body (immediately after YAML frontmatter):
+
+```markdown
+## Agent Dispatch Interface
+
+**Agent:** Implementation Agent (Qwen)  
+**Project:** WVU Knapsack  
+**Task file:** `projects/wvulibraries_knapsack/tasks/drafts/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md`  
+
+**Step 0 (required first):**
+```bash
+cd /Users/tam0013/Documents/git/agent-tasks
+git mv projects/wvulibraries_knapsack/tasks/drafts/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md \
+       projects/wvulibraries_knapsack/tasks/active/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md
+sed -i 's/status: draft/status: active/' projects/wvulibraries_knapsack/tasks/active/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md
+find projects/wvulibraries_knapsack/tasks/active/ -name "2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md"
+```
+
+**Then:** Read the full task file and execute the testing procedure (5 phases). Save all command outputs to `/tmp/`.
+
+**Synthesis:** Create report at `projects/wvulibraries_knapsack/handoffs/2026-11-05-HIGH-BUG-HYKU-TESTING-FINDINGS.md` with what you discovered.
+
+**Closeout:** Follow IMPLEMENTATION_AGENT_SESSION_CLOSEOUT.md when finished.
+```
+
+### Step 9: Add Task Readiness Checklist
+
+From TASK_TEMPLATE.md, add the readiness checklist at the end:
+
+```markdown
+## Task Readiness Checklist
+
+Before this task goes to review:
+- [x] YAML frontmatter complete (all required fields present)
+- [x] DRAFT STATUS NOTE filled (says what was verified, what wasn't)
+- [x] DRAFT REVIEW CHECKLIST filled (marks items reviewed by planner vs. deferred to implementation agent)
+- [x] Agent Dispatch Interface complete and accurate
+- [x] Full task body present (all 5 phases, all commands, all success criteria)
+- [x] No placeholder text or [FILL IN HERE] markers
+- [x] File is in tasks/drafts/ with status: draft
+```
+
+---
+
+## CRITICAL: Do NOT Commit/Push
+
+❌ Leave the file **uncommitted** in your working directory  
+❌ Do NOT run `git add` or `git commit`  
+❌ Do NOT run `git push`  
+
+The human will review and approve the commit when ready (per PLANNING_AGENT_SESSION_START.md Rule 7).
+
+---
+
+## Expected Output
+
+When you're done:
+1. Report: "Draft task created at `projects/wvulibraries_knapsack/tasks/drafts/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md`"
+2. List what it covers: "Phases 0-4 testing + root cause investigation + comparative report generation"
+3. Recommend review agent: "[Suggest: Claude or Grok — architectural familiarity with Hyku/Valkyrie collection logic needed]"
+4. Stop and wait (don't commit, don't move to backlog, don't dispatch)
+
+---
+
+## Why This Format?
+
+The TASK_TEMPLATE.md format ensures:
+- Clear scope (YAML fields define priority, system, business intent)
+- Traceability (DRAFT STATUS NOTE tracks what planner verified)
+- Quality gate (DRAFT REVIEW CHECKLIST prevents gaps before review)
+- Startup contract (Agent Dispatch Interface tells implementation agent exactly what to do first)
+- Independent review (web review agents read this from git and assess scope/clarity/dependencies)
+
+Your testing plan content is already excellent. This format simply wraps it so it flows through the quality gates correctly.
+
+---
+
+## Questions?
+
+If anything is unclear, ask before creating the file. The goal is a properly formatted draft task that's ready for review.
+
+Start when ready. Good luck! 🚀
