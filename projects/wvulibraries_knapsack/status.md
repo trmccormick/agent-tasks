@@ -1,42 +1,80 @@
 # WVU Libraries Knapsack — Project Status & Task Tracking
-**Last Updated:** 2026-11-04 — 🔴 CRITICAL: Solr data issue confirmed (NOT code bug); hykudev reverted to 7.1.0; bug persists; need to upgrade to 7.1.3 and clear/reimport Solr; 7.3 Hyku update planned within week
+**Last Updated:** 2026-11-05 — ✅ GEM VERSION DRIFT FIXED; v7.1.3 running; underlying Solr collection mismatch in 7.2.0 identified (code bug, not data); snapshot taken; testing strategy clarified
 
 ---
 
-## 🔴 CRITICAL Session 2026-11-04 — Root Cause Identified: Solr Data Issue (NOT 7.2.0 Code Bug)
+## ✅ Session 2026-11-05 — Gem Version Drift Fixed; v7.1.3 Baseline Restored; 7.2.0 Root Cause Identified
 
-**Status**: ⏳ **ACTIVE REMEDIATION** — Fixing Solr data issue on hykudev
+**Status**: ✅ **DIAGNOSTIC COMPLETE** — v7.1.3 baseline restored; root cause identified (code-level, not data/infrastructure)
 
-**MAJOR DISCOVERY**:
-- **Snapshot restored**: Oct 29 1:20 PM (clean baseline)
-- **Current version on hykudev**: 7.1.0 (expected 7.1.3 to match production)
-- **Bug status**: ✅ PERSISTS on 7.1.0 (facets load, search results empty)
-- **Conclusion**: 🔴 **BUG IS NOT A 7.2.0 CODE ISSUE — CONFIRMED SOLR DATA PROBLEM**
-- **Root cause**: UUID collection pre-existing on hykudev; Rails queries empty `hydra-production` collection; documents indexed to UUID collection instead
-- **Impact**: Blocks all Hyku upgrades (7.2.0, 7.2.1, planned 7.3) until Solr is cleaned and reimported
+**MAJOR DISCOVERIES**:
+
+### 1. ✅ Gem Version Drift Fixed (IMMEDIATE BLOCKER REMOVED)
+- **Problem**: Dev/hykudev had `blacklight_advanced_search 8.1.0`, prod had `7.0.0`
+  - v8.x removed `RenderConstraintsOverride` constant entirely
+  - Hyrax v7.1.3 controller still references this constant
+  - Result: `NameError: uninitialized constant BlacklightAdvancedSearch::RenderConstraintsOverride`
+- **Root Cause**: Gemfile.lock NOT committed to repo; builds resolved gems at different times → different versions
+- **Fix Applied**: DevOps copied Gemfile.lock from prod to hykudev; rebuild picked up locked versions
+- **Permanent Fix**: Commit Gemfile.lock (or pin versions in Gemfile); ensures all builds use same gem versions
+- **Status**: ✅ v7.1.3 now running on hykudev with correct gem versions
+
+### 2. 🔴 Solr Collection Mismatch Identified (ROOT CAUSE OF 7.2.0 BUG)
+- **Observation**: Records visible in Solr at v7.1.3, but search returns empty results
+- **Data vs Code**: Data NOT lost (records indexed to Solr), just indexed to WRONG collection
+- **Hypothesis**: Valkyrie indexer (writes) uses one collection (UUID?), CatalogSearchBuilder (reads) queries different collection (hydra-production)
+  - Collection mismatch is **CODE ISSUE**, not data/infrastructure
+  - Affects BOTH 7.1.3 and 7.2.0 (not 7.2.0-specific)
+- **Status**: Root cause narrowed; requires code investigation of SolrEndpoint & Valkyrie indexing path
 
 **Current State on hykudev**:
-- ✅ Reverted to 7.1.0 (Oct 29 snapshot)
-- ❌ Search broken (same bug as 7.2.0, empty results)
-- ⚠️ UUID collection still present (pre-existing, not created by upgrade)
-- 📋 Need: Upgrade to 7.1.3 (match production), clear Solr, reimport data
+- ✅ v7.1.3 deployed with correct gem versions (Gemfile.lock locked)
+- ✅ initialize_app completes successfully
+- ✅ Facet configuration loads (28 active facets from M3 profile)
+- ✅ Records display in Solr (data persisted)
+- ❌ Search returns empty results (collection mismatch or query builder issue)
+- 📸 **Fresh snapshot taken** (clean v7.1.3 baseline with records)
 
-**Next Steps** (Immediate):
-1. Upgrade hykudev from 7.1.0 → 7.1.3 (match production version)
-2. Clear `hydra-production` collection completely (delete all records)
-3. Re-import fresh data via `rake index_works`
-4. Verify search works on clean state
-5. Take fresh snapshot (insurance policy before future upgrades)
+**Next Steps** (After Snapshot Complete):
+1. **Confirm SolrEndpoint collection configuration** on hykudev:
+   ```bash
+   bin/rails runner "puts Account.first.solr_endpoint.inspect"
+   ```
+   Expected output shows which collection the tenant's endpoint points to
+   
+2. **Compare Solr doc counts** between collections:
+   ```bash
+   curl http://localhost:8983/solr/{uuid,hydra-production}/select?q=*:*&rows=0
+   ```
+   If UUID has docs and hydra-production is empty → collection mismatch confirmed
 
-**Upcoming**: Hyku 7.3 release planned within next week (new upgrades may need same remediation)
+3. **Investigate code changes in 7.2.0** regarding SolrEndpoint/Valkyrie indexing
+   - Search for what changed in SolrEndpoint.collection assignment
+   - Check if Valkyrie indexing path changed collection selection logic
+   - May be bug in how collection name is derived from Account/tenant
 
-**Critical Assumption Failure** (Previous Session):
-- **False assumption**: Bug was 7.2.0-specific code issue
-- **Reality**: Root cause is Solr data misconfiguration (pre-existing UUID collection)
-- **Lesson**: Always revert to known-good baseline to isolate code vs. data issues
+4. **Test locally with Stack Car** (known-working baseline)
+   - Jr dev confirmed local setup works correctly
+   - Use as baseline to compare against hykudev configuration
 
-**Commits (agent-tasks)**:
-- `2026-11-02-HYKU-7.2.0-UPGRADE-REVERT-CLEAN.md` — Detailed remediation task with Solr cleanup procedures
+**Testing Strategy Lessons Learned** (This Session):
+1. **Gem version management critical** — Without Gemfile.lock, builds can resolve to incompatible gem versions
+   - Lesson: Always commit Gemfile.lock (or use version constraints in Gemfile)
+   - Why: Hyrax v7.1.3 depends on blacklight_advanced_search 7.x, but 8.x exists and can be resolved
+   
+2. **Don't debug on the broken VM without a baseline** — Spent hours trying to fix on hykudev
+   - DevOps insight: Test locally first (where jr dev confirmed it works)
+   - Use local Stack Car as reference before troubleshooting production VM
+   - Isolate code vs. infrastructure issues
+   
+3. **Collection mismatch is CODE issue, not data loss**
+   - Data safety: Records are in Solr (not lost), just indexed to wrong collection
+   - Searchability: Wrong collection → empty results, but data is recoverable
+   - Remediation: Fix code that selects collection, don't wipe data
+
+**Commits This Session**:
+- wvu_knapsack (main branch): Gemfile.lock committed (devops applied)
+- agent-tasks (main branch): Status update documenting gem drift discovery and testing strategy
 
 **Fixes Applied This Session**:
 1. **Commit f49e39b** (Oct 30): Fixed `configure_blacklight` block structure
