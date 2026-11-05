@@ -33,7 +33,7 @@ After review agent has returned assessment:
 - [ ] Architecture aligns with current codebase patterns (review agent verified)
 - [ ] Review agent disposition is GO (not REVISE or STOP)
 
-**Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/[SUBFOLDER]/` and changing `status: draft → status: backlog`.
+**Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/` (flat; no subfolder) and changing `status: draft → status: backlog`.
 
 ---
 
@@ -59,17 +59,17 @@ After review agent has returned assessment:
 **This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
 Agents receive this exact text as the startup contract. Every word matters.
 
-**One allowed substitution:** before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root). Fill `[project]`, `[SUBFOLDER]` and `[FILENAME]` as usual; if the project's backlog is flat (no subfolders), omit the `[SUBFOLDER]/` segment from the paths. Change nothing else.
+**One allowed substitution:** before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root). Change nothing else.
 
 ```
 You are **Implementation Agent**.
 
-Project: [project_name]
-Task: <agent-tasks>/projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md
+Project: wvulibraries_knapsack
+Task: <agent-tasks>/projects/wvulibraries_knapsack/tasks/backlog/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md \
-         projects/[project]/tasks/active/[FILENAME].md
+  git mv projects/wvulibraries_knapsack/tasks/backlog/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md \
+         projects/wvulibraries_knapsack/tasks/active/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
@@ -80,13 +80,17 @@ LIFECYCLE: backlog → active → completed
   - Tracked file: git mv (never cp or plain mv)
   - New/untracked file: mv then git add the final path
   - Never leave stale copies in the source folder
-  - Verify with: find agent-tasks/projects/[project]/tasks -name "[FILENAME].md"
+  - Verify with: find agent-tasks/projects/wvulibraries_knapsack/tasks -name "2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md"
     Only ONE result should exist. Paste this output before committing.
 
-READ FIRST (after Step 0): Task file contains all prerequisites, credentials, gotchas, and verification steps.
+READ FIRST (after Step 0), in this order:
+  1. <agent-tasks>/rules/GUARDRAILS.md
+  2. <agent-tasks>/projects/wvulibraries_knapsack/README.md
+  3. <agent-tasks>/projects/wvulibraries_knapsack/SESSION_GUIDANCE.md (if the project has one)
+  4. The task file. It holds what is specific to this task; the files above hold the standing rules.
 
 CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
-  Summaries path: <agent-tasks>/projects/[project]/summaries/
+  Summaries path: <agent-tasks>/projects/wvulibraries_knapsack/summaries/
   Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
   Chat is for questions only — never paste synthesis into chat (formatting breaks).
 
@@ -152,6 +156,8 @@ The Hyku 7.2.0 upgrade has a search bug where:
 - This is NOT 7.2.0-specific — it also affects v7.1.3 if the code path differs
 
 The root cause is a **code-level bug in how SolrEndpoint determines which collection to use**. Both indexing and search paths are misaligned on collection selection. Local testing on Stack Car (safe, disposable environment) will systematically verify, capture diagnostics, and pinpoint the exact file/line responsible for this mismatch.
+
+**Note on earlier framing**: Prior status.md / README entries described the hykudev issue primarily as a “Solr data issue (NOT code bug)” and focused remediation on data clean/reimport. Subsequent diagnosis (captured in the 2026-11-05 testing-strategy handoff) elevated the root cause to a code-level collection-resolution bug that affects both versions. This task verifies the code hypothesis with controlled local testing. Do not treat the older “data issue” framing as contradictory; it has been superseded by the more precise diagnosis.
 
 **Relevant Architecture Docs:**
 - `SESSION_CLOSEOUT.md` — closeout procedures
@@ -432,6 +438,17 @@ echo "v7.2.0:"; cat /tmp/search-ui-summary-720.txt
 
 ### Step 4 — Root Cause Investigation (Phase 3)
 
+#### Phase 3.0: Verify primary files exist (quick existence check)
+
+```bash
+cd /Users/tam0013/Documents/git/wvu_knapsack
+ls -l hyrax-webapp/app/models/solr_endpoint.rb \
+      hyrax-webapp/app/models/account.rb \
+      hyrax-webapp/app/jobs/create_solr_collection_job.rb
+```
+
+If any file is missing, stop and report the exact path that failed.
+
 #### Phase 3.1: Code Diff Analysis
 
 ```bash
@@ -663,22 +680,24 @@ Exact identification of which file/line causes SolrEndpoint to resolve the wrong
 
 ## Acceptance Criteria
 
-1. ✅ v7.1.3 baseline confirmed: at least one Solr collection has documents, search API returns results
-2. ✅ v7.2.0 bug confirmed: same test on 7.2.0 shows empty results or different behavior
-3. ✅ Collection mismatch proven: exact evidence that documents are in collection A but search queries collection B
-4. ✅ Root cause identified: specific file(s) and code path in hyrax-webapp that causes the mismatch
-5. ✅ Comparison report generated at handoffs/2026-11-05-HYKU-7.2.0-SEARCH-BUG-LOCAL-TESTING-RESULTS.md
+1. ✅ v7.1.3 baseline confirmed: at least one Solr collection has documents (doc count > 0) and the identical search queries return results (numFound > 0 or UI contains document data)
+2. ✅ v7.2.0 bug confirmed: the exact same tests on the feature/hyku-v7.2.0-upgrade branch show empty results or different collection behavior
+3. ✅ Collection mismatch proven: concrete evidence that documents reside in collection A while SolrEndpoint / Blacklight queries collection B
+4. ✅ Root cause identified: specific file(s) and code path inside hyrax-webapp that cause the collection-name mismatch (or explicit statement that the mismatch is not code-level after inspection)
+5. ✅ Comparison report generated at `handoffs/2026-11-05-HYKU-7.2.0-SEARCH-BUG-LOCAL-TESTING-RESULTS.md`
 6. ✅ Stack Car reverted to v7.1.3 baseline after testing complete
 
 ---
 
 ## Stop Conditions — escalate to user immediately if:
-- Fix causes new failures in specs you did not touch
-- Same failure persists after two attempts
-- Root cause is in a shared concern, base class, or factory used across many specs
-- A database migration is needed that wasn't anticipated
-- Any architectural decision is required
-- Fix requires changing more files than the task specifies
+
+- Stack Car cannot be started or containers fail to become healthy after two clean attempts
+- No documents exist in any Solr collection on the v7.1.3 baseline (different problem)
+- The collection mismatch is not reproducible after two full clean runs (down --volumes + rebuild)
+- Primary files listed for inspection do not exist at the expected paths
+- An architectural decision is required about which collection name is canonical
+- Investigation reveals the root cause lies outside the three primary files and requires expanding scope
+- Any step would require writing or modifying application code (this task is investigation only)
 
 ---
 
@@ -694,20 +713,20 @@ Exact identification of which file/line causes SolrEndpoint to resolve the wrong
 Run git commands on **host only** — never inside the Docker container:
 ```bash
 git add [specific files only — never git add .]
-git commit -m "[type]: [spec/file name] — [brief description of root cause and fix]"
+git commit -m "[type]: [spec/file name] — [brief description of root cause and findings]"
 git push
 ```
 
 **Task file move on completion:**
 ```bash
 # Tracked file (already committed): use git mv
-git mv projects/galaxy_game/tasks/active/[FILENAME] projects/galaxy_game/tasks/completed/[YYYY-MM]/[FILENAME]
+git mv projects/wvulibraries_knapsack/tasks/active/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md \
+       projects/wvulibraries_knapsack/tasks/completed/2026-11/2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md
 
 # New/untracked file (just created this session): move with filesystem, then add the final path
-mv projects/galaxy_game/tasks/active/[FILENAME] projects/galaxy_game/tasks/completed/[YYYY-MM]/[FILENAME]
-git add projects/galaxy_game/tasks/completed/[YYYY-MM]/[FILENAME]
+# mv ... then git add the final path
 
-git commit -m "chore: move [FILENAME] to completed/"
+git commit -m "chore: move 2026-11-05-HIGH-BUG-HYKU-7.2.0-LOCAL-TESTING-PLAN.md to completed/"
 ```
 
 ---
@@ -720,8 +739,8 @@ git commit -m "chore: move [FILENAME] to completed/"
 ---
 
 ## Dependencies
-**Blocked by**: none
-**Blocks**: hyku-v7.2.0-upgrade fix strategy development
+**Blocked by**: none  
+**Blocks**: hyku-v7.2.0-upgrade fix strategy development  
 **Related tasks**: 2026-11-05 HYKU-UPGRADE-TESTING-STRATEGY (handoff document)
 
 ---
@@ -741,9 +760,9 @@ git commit -m "chore: move [FILENAME] to completed/"
 ## Completion Report
 *Filled in by the implementing agent after completion*
 
-**Completed by**: [agent name]
-**Completion date**: YYYY-MM-DD
-**Final test result**: X examples, Y failures
+**Completed by**: [agent name]  
+**Completion date**: YYYY-MM-DD  
+**Final test result**: X examples, Y failures  
 **Evidence basis:** [direct verification / review of pasted evidence / reported by agent / human assertion] — [one-line source or note when not direct verification]
 
 ### What was changed
