@@ -694,3 +694,40 @@ This is particularly important because:
 **Priority**: MEDIUM — affects efficiency and clarity of multi-agent review workflow. Currently working as intended (user confirmed the workflow), but not documented clearly enough for future agents to follow without explicit guidance.
 
 **Status**: OPEN. Recommendation: Add explicit human-review-timing section to PLANNING_AGENT_SESSION_START.md under "Procedure for Creating Draft Tasks," explaining that human reviews only after web agent GO, and planning agent iterates with web agents until that point. Consider adding similar clarification to REVIEW_AGENT_GUIDE.md's GO disposition section.
+
+### 2026-11-05 — File creation guidelines not clearly documented (handoffs vs task files vs session prompts)
+
+**What happened**: Session guidance and workflow clarification discovered current documentation gap. Standing workflow practice:
+- **Handoff files** (.md in handoffs/) — session work output passed to next session; includes research findings, test results, investigations, recommendations
+- **status.md** — current project status, tracking what's done/active/blocked, updated per session
+- **NEEDS_REVIEW.md** — workflow uncertainties, documentation gaps, things not ready for formal task files yet (e.g., "should we create a task for this?" or "Claude tuning needed for this workflow")
+- **Simple prompts** (chat, not files) — session guidance, clarifications, adjustments; copy-paste to other sessions without file clutter
+- **Task files** (TASK_TEMPLATE.md format in tasks/drafts/) — formal work units for larger items, planning agent research output, implementation blocker investigations; reserved for work that needs multi-agent review gates
+
+**Observed issue**: Confusion about when to create files vs. keep guidance as prompts. Result: unnecessary files left in repo (clutter for future cleanup). Examples:
+- QWEN-ADJUSTMENT-2026-11-05.txt (should have been prompt-only)
+- QWEN-CORRECTION-PROMPT-2026-11-05.txt (should have been prompt-only, OR if kept, should be explicit that it's for dispatch and removed after Qwen executes)
+
+**What I already checked**:
+- HUMAN_WORKFLOW_GUIDE.md (VERIFIED: does not document file-creation guidelines)
+- PLANNING_AGENT_SESSION_START.md (VERIFIED: does not document when to use files vs. prompts)
+- IMPLEMENTATION_AGENT_SESSION_CLOSEOUT.md (VERIFIED: does not document what belongs in handoffs vs. task files)
+- README.md (VERIFIED: does not document file-organization principles)
+
+**Root cause**: Standing workflow is well-understood (user has clear mental model) but not documented for agents to follow. Leaves interpretation to individual agents, leading to inconsistency and clutter.
+
+**What needs a second opinion**:
+1. Should there be a "File Creation Guidelines" or "Repository Organization" section in one core doc (e.g., HUMAN_WORKFLOW_GUIDE.md, README.md, or new REPOSITORY_STRUCTURE.md)?
+2. Should the section include:
+   - Explicit decision tree: "Is this a task file, handoff, prompt, or status update?"
+   - When to create task files (complexity threshold? multi-agent review needed?)
+   - When session prompts suffice (one-off guidance, clarifications, adjustments)
+   - When handoffs are appropriate (multi-session work transition)
+   - Examples of each (good vs. bad examples)
+3. Should there be cleanup guidance for agents: "If you create a file for dispatch (like QWEN-CORRECTION-PROMPT-2026-11-05.txt), explicitly mark it for removal after execution or make clear its lifecycle"?
+4. For current session: Should QWEN-CORRECTION-PROMPT-2026-11-05.txt and QWEN-ADJUSTMENT-2026-11-05.txt be removed, or kept as reference/template for future similar prompts? (User decision.)
+
+**Priority**: MEDIUM — affects repo organization, prevents clutter accumulation, and clarifies expectations for agents. Can be resolved in planning session with Qwen to establish standing guidelines.
+
+**Status**: OPEN. Recommendation: Create "File Creation Guidelines" section in HUMAN_WORKFLOW_GUIDE.md or similar, with decision tree + examples. Then update agent-specific docs (PLANNING_AGENT_SESSION_START.md, IMPLEMENTATION_AGENT_SESSION_CLOSEOUT.md) to reference it.
+
