@@ -1,229 +1,220 @@
-# QWEN PLANNING SESSION PROMPT — Hyku 7.2.0 Local Testing Strategy
+# QWEN PLANNING SESSION PROMPT — Hyku 7.2.0 Local Testing Tasks
 
 ## Start Here: Read This First
 
-**File:** `/Users/tam0013/Documents/git/agent-tasks/PLANNING_AGENT_SESSION_START.md`
+**Files to read (in order):**
+1. `/Users/tam0013/Documents/git/agent-tasks/PLANNING_AGENT_SESSION_START.md` — Session rules and task workflow
+2. `/Users/tam0013/Documents/git/agent-tasks/TASK_TEMPLATE.md` — Template for creating draft tasks
 
-Read this file to understand:
-- Rules for the session (one objective, bounded recovery, stall ladder)
-- Your role as a local planning agent
-- How draft tasks are created and approved
-- What evidence shows completion
+These documents explain the planning workflow: research → create draft tasks → wait for review.
 
 ---
 
-## Your Assignment
+## YOUR ASSIGNMENT
 
 **Project:** `wvulibraries_knapsack`
 
-**Objective:** Design a comprehensive **local testing strategy** for the Hyku 7.2.0 upgrade bug
+**Objective:** Create draft task(s) for local testing of Hyku 7.2.0 upgrade bug
 
-**Success Criteria:** Deliver a detailed testing plan document that:
-- Defines clear testing phases (setup → baseline → broken → analysis)
-- Includes specific diagnostic commands (copy-paste ready)
-- Has success/failure criteria for each phase
-- Addresses risk mitigation and fallback procedures
-- Is ready for implementation in follow-up session
-- Includes timeline estimate and resource requirements
+**What You're Doing:**
+- Research what needs to be tested
+- Create draft task file(s) in `projects/wvulibraries_knapsack/tasks/drafts/`
+- Use TASK_TEMPLATE.md format
+- Leave uncommitted (human approves commit)
+- Recommend review agent
 
-**Evidence of completion:** 
-- Testing plan document committed and pushed to `/Users/tam0013/Documents/git/agent-tasks/projects/wvulibraries_knapsack/planning/HYKU-7.2.0-LOCAL-TESTING-PLAN.md`
-- Document references all required diagnostic procedures
-- Ready for handoff to implementation agent
-
----
-
-## Session Context & Priorities
-
-### Problem Summary
-- Hyku 7.2.0 breaks search (empty results despite records in Solr)
-- Root cause identified: Valkyrie indexer writes to wrong Solr collection; search queries different collection
-- Gemfile.lock already fixed (startup crash)
-- hykudev v7.1.3 baseline stable with snapshot taken
-
-### Why Local Testing First
-- Stack Car is safe (can restart freely, no production risk)
-- Jr dev confirmed local setup works at base version
-- Local testing can isolate code changes quickly
-- Production hykudev troubleshooting is expensive and risky
-
-### What You're Planning (NOT Executing)
-You design the testing strategy. An implementation agent will execute it later.
-- Research: What tests should be run?
-- Document: How should they be compared?
-- Plan: What diagnostic data matters?
-- Procedure: Exact commands for each phase
+**What You're NOT Doing:**
+- Executing tests
+- Writing test procedures yourself
+- Fixing code
+- Creating documentation/planning docs
+- Committing/pushing (wait for human)
 
 ---
 
-## Files to Read (In Order)
+## SESSION WORKFLOW (From PLANNING_AGENT_SESSION_START.md)
 
-**1. Project Context** (read first):
-- `projects/wvulibraries_knapsack/status.md` — Current project status, what's been tried
-- `projects/wvulibraries_knapsack/handoffs/2026-11-05-HYKU-UPGRADE-TESTING-STRATEGY.md` — 4 testing lessons learned
-
-**2. Session Context** (reference):
-- `projects/wvulibraries_knapsack/handoffs/2026-11-05-QWEN-SESSION-HYKU-7.2.0-ROOT-CAUSE-INVESTIGATION.md` — Current state summary, what needs testing
-
-**3. Architecture Details** (if needed during planning):
-- Conversation summary from VS Code session (contains detailed architectural findings)
-- `wvu_knapsack/` codebase (can browse branches, commit history, file structure)
-
----
-
-## Planning Priorities (In Order)
-
-### Priority 1: Define Testing Phases (HIGH)
-**What:** Create a structured approach to test v7.1.3 (working) vs v7.2.0 (broken)
-
-**Required sections:**
-- Phase 1: Environment setup — What state should Stack Car be in?
-- Phase 2: v7.1.3 baseline testing — What proves it works?
-- Phase 3: v7.2.0 broken testing — Same tests, showing difference
-- Phase 4: Comparative analysis — How to isolate the code change?
-
-**Output:** Clear, step-by-step procedures for each phase
-
-### Priority 2: Diagnostic Data Collection (HIGH)
-**What:** Define what data will be collected at each phase to understand the bug
-
-**Required sections:**
-- Which logs to capture? (Rails, Solr, Docker)
-- Which Solr queries to run? (collection list, doc counts, index structure)
-- How to check which collection Rails thinks it's using?
-- Code comparison procedures (git diff between versions)
-- How to document findings for hand-off
-
-**Output:** Diagnostic checklist with specific commands
-
-### Priority 3: Risk & Sequencing (MEDIUM)
-**What:** Address what could go wrong and how to proceed
-
-**Required sections:**
-- Potential failure points
-- Rollback/revert procedures
-- Should we take snapshots? When?
-- After local testing, what's next?
-- Timeline estimate with contingencies
-- Parallel/blocking dependencies
-
-**Output:** Risk assessment and mitigation strategy
-
----
-
-## Key Questions Your Plan Should Answer
-
-1. **Baseline:** What exactly should we test on v7.1.3 to prove it works?
-2. **Comparison:** What's the minimal test set that shows the difference between v7.1.3 and v7.2.0?
-3. **Root Cause:** What diagnostic procedures will help identify the exact code change?
-4. **Data Collection:** What must be captured to answer "why does 7.2.0 break search?"?
-5. **Safety:** How do we safely revert if something breaks locally?
-6. **Next Phase:** After planning is approved, what does implementation need to execute?
-
----
-
-## Constraints & Resources
-
-**Available:**
-- Full wvu_knapsack codebase (all branches, all commits)
-- Docker Compose files (local and production configs to compare)
-- Stack Car setup (local testing environment)
-- Production snapshot on hykudev (reference)
-
-**NOT doing:**
-- Executing the tests (that's implementation)
-- Fixing code (that's later phase)
-- Troubleshooting hykudev (that's after local testing)
-
-**Local agent status:**
-- You have repository read access
-- You can read/compare files and commits
-- You can research procedures and commands
-- You cannot execute Docker commands (planning only)
-
----
-
-## Rules From PLANNING_AGENT_SESSION_START.md (Critical)
-
-1. **One objective** — Design the local testing strategy, nothing more
-2. **Act, don't re-plan** — Research, then write the plan; don't keep saying "I will plan"
-3. **Bounded recovery** — If something doesn't work, report it and stop (don't loop endlessly)
-4. **Stall ladder** — If you notice yourself repeating, stop and report
-5. **Stages are separate** — Planning ≠ execution; you're designing, not running
-6. **Preserve unrelated work** — Don't touch other projects or branches
-7. **Commit only when human tells you** — Draft tasks go to git only on human approval
-
----
-
-## Deliverable Format
-
-Create a file at:
 ```
-projects/wvulibraries_knapsack/planning/HYKU-7.2.0-LOCAL-TESTING-PLAN.md
+Research → Create Draft Tasks → Await Human Approval → Review Agent Reads → Implementation
+                    ↑ YOU ARE HERE                                               
+         (uncommitted, waiting for human)
 ```
 
-Structure:
-```markdown
-# Hyku 7.2.0 Local Testing Strategy
+**Key Rules:**
+- Plan agents commit/push ONLY when human tells them to
+- Plan agents CANNOT move tasks to backlog/ (human-only)
+- Plan agents CANNOT dispatch to implementation (human + review agent)
+- Each stage is separate (create ≠ commit ≠ review ≠ implement)
 
-## Overview
-[Brief summary of what's being tested and why]
+---
+
+## RESEARCH PHASE
+
+Read these files to understand the project state:
+
+1. `projects/wvulibraries_knapsack/status.md` — What's the current state?
+2. `projects/wvulibraries_knapsack/handoffs/2026-11-05-HYKU-UPGRADE-TESTING-STRATEGY.md` — What testing lessons were learned?
+3. `projects/wvulibraries_knapsack/handoffs/2026-11-05-QWEN-SESSION-HYKU-7.2.0-ROOT-CAUSE-INVESTIGATION.md` — What needs to be tested?
+
+**Answer these questions:**
+- What is the bug? (Solr collection mismatch)
+- Why does local testing matter? (Safe, can isolate code changes)
+- What are the testing phases? (Setup → v7.1.3 baseline → v7.2.0 broken → comparative analysis)
+- What should each phase accomplish?
+- What are acceptance criteria per phase?
+- What are the risks?
+
+---
+
+## TASK CREATION PHASE
+
+**Create using:** `TASK_TEMPLATE.md`
+
+**Store at:** `projects/wvulibraries_knapsack/tasks/drafts/[TASKNAME].md`
+
+**One or multiple tasks?**
+- If testing is self-contained: ONE task for full local testing
+- If testing has distinct phases: MULTIPLE tasks (one per phase) with dependencies
+
+**What each task must have:**
+1. **YAML frontmatter** — All fields from TASK_TEMPLATE (status: draft, system_domain, mvp_alignment, local_worker_safe, etc.)
+2. **DRAFT STATUS NOTE** — What you verified, what you didn't (be honest)
+3. **DRAFT REVIEW CHECKLIST** — Check off items you verified (leave unchecked if not verified by you)
+4. **Full task specification** — Complete sections, not abbreviated
+5. **Agent Dispatch Interface block** — For future implementation agent (don't skip this)
+6. **Task Readiness Checklist** — From template
+
+**Example task structure:**
+```yaml
+---
+task_id: HYKU-7.2.0-LOCAL-TEST-PHASE-1
+name: "Test Hyku 7.2.0 Locally — Phase 1 Setup"
+status: draft
+system_domain: hyku
+local_worker_safe: true
+mvp_alignment: critical-upgrade-blocker
+created: 2026-11-05
+dependencies: []
+---
+
+## DRAFT STATUS NOTE
+- [x] Verified testing approach with status.md and handoff files
+- [ ] Tested procedure locally (not executed, planning only)
+- [x] Identified phase/scope from previous investigation
+
+## DRAFT REVIEW CHECKLIST
+- [x] Task scope is clear and bounded
+- [x] Procedures are specific enough for implementation
+- [ ] Procedures verified executable (will be done by implementation agent)
+- [x] Acceptance criteria are realistic
+
+## Description
+[Full description...]
 
 ## Phase 1: Environment Setup
-[Specific procedures and requirements]
+[Specific procedures...]
 
-## Phase 2: v7.1.3 Baseline Testing
-[Exact tests, expected results, diagnostic commands]
+## Acceptance Criteria
+[What success looks like...]
 
-## Phase 3: v7.2.0 Broken Testing
-[Same tests from Phase 2, showing difference]
-
-## Phase 4: Comparative Analysis
-[How to identify code changes, git diff procedures]
-
-## Diagnostic Procedures
-[Complete command reference]
-
-## Success Criteria
-[For each phase]
-
-## Risk Mitigation
-[Failure points, rollback procedures]
-
-## Timeline & Resources
-[Estimate with contingencies]
-
-## Next Phase Handoff
-[What implementation agent needs to execute]
+## Agent Dispatch Interface
+[For implementation agent to understand what to do...]
 ```
 
 ---
 
-## Session Checklist
+## AFTER YOU CREATE TASKS
 
-- [ ] Read PLANNING_AGENT_SESSION_START.md (understand rules and workflow)
-- [ ] Read project status and session context files
-- [ ] Research: What testing is needed to isolate v7.1.3 vs v7.2.0?
-- [ ] Design Phase 1 (environment setup)
-- [ ] Design Phase 2 (v7.1.3 baseline)
-- [ ] Design Phase 3 (v7.2.0 broken)
-- [ ] Design Phase 4 (comparative analysis)
-- [ ] Create diagnostic procedures document
-- [ ] Add risk/mitigation section
-- [ ] Add timeline and resource estimates
-- [ ] Write testing plan file
-- [ ] Report completion (file created, ready for review)
+**Next steps (you do NOT do these):**
+
+1. **Commit/push** — ONLY when human tells you to
+   ```bash
+   # Don't run this yet! Wait for human approval.
+   git add projects/wvulibraries_knapsack/tasks/drafts/[TASKNAME].md
+   git commit -m "draft task: [TASKNAME] [YYYY-MM-DD]"
+   git push
+   ```
+
+2. **Recommend review agent** — Suggest which web agent should assess
+   ```
+   Suggested review agent: Claude / Grok / Gemini / [other]
+   Reason: [one line on why this agent's strengths fit]
+   ```
+
+3. **Stop and wait** — You have completed the planning phase
+   - Do NOT move to backlog/
+   - Do NOT dispatch to implementation
+   - Do NOT say "ready to implement"
 
 ---
 
-## When You're Done
+## SESSION COMPLETION
 
-Report:
-1. File created at: `projects/wvulibraries_knapsack/planning/HYKU-7.2.0-LOCAL-TESTING-PLAN.md`
-2. Testing plan covers all 4 phases
-3. Diagnostic procedures documented
-4. Risk mitigation addressed
-5. Timeline estimate provided
-6. Ready for implementation session
+**When you're done:**
+1. Report: "Draft tasks created at [paths]"
+2. List what each task covers
+3. Recommend review agent(s)
+4. Wait for human instruction
 
-Do NOT commit/push — wait for human approval per PLANNING_AGENT_SESSION_START.md Rule 7.
+**Do NOT say:**
+- "Ready for implementation"
+- "Here's the handoff"
+- "Ready to commit/push"
+- "Task is complete" (it's only complete after review → approval → implementation)
+
+---
+
+## CRITICAL RULES
+
+✅ **Research thoroughly** — Understand the problem before creating tasks
+
+✅ **Use TASK_TEMPLATE.md** — All fields, all sections, nothing skipped
+
+✅ **Be honest in DRAFT STATUS NOTE** — Say what you verified and what you didn't
+
+✅ **Make it executable** — Next agent will run these tasks; be specific
+
+✅ **Show your work** — Report what you created before waiting
+
+❌ **Do NOT commit/push** — Wait for human approval per GUARDRAILS Rule 12
+
+❌ **Do NOT move to backlog/** — Human-only operation
+
+❌ **Do NOT dispatch** — Human + review agent decision
+
+❌ **Do NOT execute** — That's implementation phase
+
+---
+
+## Expected Session Output
+
+**Files created (uncommitted):**
+- `projects/wvulibraries_knapsack/tasks/drafts/[TASKNAME1].md`
+- `projects/wvulibraries_knapsack/tasks/drafts/[TASKNAME2].md` (if multiple)
+
+**Report format:**
+```
+Planning session complete.
+
+Draft tasks created:
+1. [TASKNAME1] — [Brief description]
+   - Covers: [Scope]
+   - Acceptance criteria: [Success definition]
+   
+2. [TASKNAME2] — [If applicable]
+   - Covers: [Scope]
+   - Acceptance criteria: [Success definition]
+
+Suggested review agent: [Agent name]
+Reason: [Why this agent's strengths fit]
+
+Awaiting human approval to commit/push.
+```
+
+---
+
+## Remember
+
+This is a **planning session**. You are researching and creating structure (draft tasks), not executing anything. The workflow protects quality by requiring independent review before implementation begins.
+
+Good luck! 🚀
