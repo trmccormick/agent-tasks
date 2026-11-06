@@ -84,6 +84,20 @@ Short, active list of items that need a second opinion or a human decision. Prim
 - **Detail:** `tasks/drafts/NEEDS_REVIEW.md` is an October 23 first-attempt review artifact, not a current draft task. The active review tracker is this project-level `NEEDS_REVIEW.md`. The first-attempt archive already has its own `NEEDS_REVIEW.md`, so the historical drafts copy must not be moved over or overwrite it.
 - **Next action:** Claude compares the drafts copy with the archived review material, identifies an appropriate historical archive location/name if it is not already preserved, and proposes the exact move/removal. Keep the active drafts folder limited to current draft tasks and its README. Do not delete or overwrite anything until the archival destination and duplicate status are confirmed.
 
+### 15. Player entry state, wiki data rule, and parallel wiki/UI work (for the admin dashboard and first-hour screens)
+- **State:** OPEN — owner: Tracy and ChatGPT (UI and gameplay intent); Claude web keeps the wiki wording
+- **Working arrangement (REPORTED, Tracy, 2026-11-05):** the wiki and the UI are being worked on at the same time, and the admin UI dashboard starts today. UI notes land in this file. UI sessions write only under `ui/` in the wiki and in this project folder; wiki problems found while building go here for the wiki sessions to fix.
+- **Wiki rule that applies to every screen** (VERIFIED, read of galaxyGame `main` at `3cafb88`, `docs/wiki/ui/README.md`, "UI Data Sourcing Rule"): numbers shown in the runtime UI come from live code (`app/` models and services) or the `operational_data` JSON. Wiki placeholder tables and anything tagged `[PROPOSED / PLACEHOLDER]` are not data sources. Where no source exists, show an empty state and log the gap here. Do not copy the wiki number.
+- **What players meet at entry** (REPORTED, Tracy, 2026-11-04; now in the wiki as `player/first_hour_and_entry_state.md`, commit `262cc9bb`):
+  - Players arrive once AWS technology is online. The first players pick an active location, not the unknown old Eden stations.
+  - A player starts at a foothold or station run by the AI Manager through NPC corporations, with basic equipment that depends on landing on Luna, Mars or a station. The starts are not exclusive; a station player can portal to a surface settlement.
+  - A player on a base has a dashboard to manage assets (robotic harvesters, deployed ships), track things, and manage market listings.
+  - Data lag applies between systems, so screens that show remote data should show its age.
+  - Still OPEN in the wiki: what equipment each start gives, which locations count as active, how a player chooses a start, and what the first-hour dashboard shows.
+- **Not a screen to design:** `infrastructure/surface_habitat_options.md` records a thought exercise (a house in a pressurized dome). Tracy said it is not a planned structure or a player option.
+- **Draft status:** the pages added on 2026-11-04 (`logistics/ai_manager_economic_loops.md`, `infrastructure/power_options.md`, `technical/portals_and_aws.md`, `infrastructure/terraforming_options.md`, `player/settlement_progression_and_footholds.md`, `player/eden_disconnect_and_emergent_history.md`) are unverified drafts from a brainstorm. Only points marked ESTABLISHED INTENT were stated by Tracy. Do not build a screen on a DIRECTION or OPEN item without marking it as such.
+- **Next action:** ChatGPT: when you document the admin dashboard or a first-hour screen, list which of the items above it depends on and mark any that rest on DIRECTION or OPEN.
+
 ---
 
 ## RESOLVED
