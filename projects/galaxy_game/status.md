@@ -1033,3 +1033,15 @@ This section preserves session records, known issues, and completed work from pr
 - **Committed:** `f0f6920`, `e5d09b0`, `00d3899`, `98dc382`, `6f6a34a`, `2039411` (6 commits: task creation + 1 NO-GO review cycle corrections + 1 Grok GO verification + final placement in backlog/current/). VERIFIED by `git log --oneline -6` and `git push origin main` showing all commits on origin/main.
 - **Not committed:** none (all commits pushed).
 - **Stop condition:** none (planning session complete; task ready for implementation agent dispatch). See handoff for full details: `handoffs/claude-copilot/2026-10-26-PLANNING-PORTAL-WIKI-CONSOLIDATION-SESSION.md`
+
+
+---
+
+## Session Log — 2026-11-05 (TriffTools architecture pattern extraction)
+
+**Changed:** Added three review-only task drafts under `projects/galaxy_game/tasks/drafts/` based on a read-only review of `NarcisussX/Triff.Tools-Source`:
+- `2026-11-05-MEDIUM-ARCHITECTURE-CALCULATION-VERIFICATION-BASELINES.md` — assess calculation authorities, deterministic regression fixtures, parity/baseline review, and existing test coverage.
+- `2026-11-05-MEDIUM-ARCHITECTURE-SIMULATION-PROCESSING-BOUNDARIES-REVIEW.md` — map simulation time, background execution, AI Manager responsibilities, and authoritative state ownership.
+- `2026-11-05-MEDIUM-ARCHITECTURE-PLAYER-PLANS-UI-STATE-SIMULATION-STATE-REVIEW.md` — distinguish reusable player plans, remembered UI state, and authoritative simulation state; explicitly check the existing SystemState persistence task to avoid duplication.
+
+**Status:** All three remain `status: draft`; none is approved for backlog or implementation dispatch. No GalaxyGame application code, tests, schema, runtime configuration, or UI behavior was changed. The TriffTools repository was used only as a source of architectural patterns.
