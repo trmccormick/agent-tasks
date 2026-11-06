@@ -401,6 +401,8 @@ These are proposals for Claude to evaluate, not approved edits. Grok advises aga
 
 **Status**: OPEN
 
+**Addendum 2026-11-06 (web review session)**: RESOLVED for the ambiguity this entry raised. The open point was at which lifecycle stage the template's placeholders are filled. `TASK_TEMPLATE.md` now says `[project_name]`, `[project]`, `[SUBFOLDER]` and `[FILENAME]` are filled in the file when the task is drafted, and that the only substitution made at dispatch is `<agent-tasks>` (`bbce866`, VERIFIED by read-back from origin). That supports this entry's own reading that a draft's prepared dispatch block is expected, and the mandatory DRAFT STATUS NOTE already says the task must not be dispatched while it is in `drafts/` (per this entry's own check of the template, not re-read today). No stub-block requirement was added, and the lifecycle and approval authority are unchanged. The Status line above is left as written; this addendum is the current status.
+
 ---
 
 ### 2026-10-31 — End-to-end task creation and approval workflow: sign-in refactor
@@ -473,6 +475,8 @@ Recommend only small clarifications to existing guidance if actual ambiguity rem
 **Priority**: LOW — affects review quality; no authorization boundary issue.
 
 **Status**: OPEN. For Claude's later planning review. No workflow-document changes are authorized by this entry.
+
+**Addendum 2026-11-06 (web review session)**: RESOLVED. Answers to the five questions, with the commits that carry them (VERIFIED by read-back from origin). Questions 1 and 3: unresolved placeholders are now checked by a command, `grep -nE '\[(project_name|project|SUBFOLDER|FILENAME|FILL IN)\]' <task file>`, pasted as raw output, with exactly one expected hit and any other hit a FAIL; `TASK_TEMPLATE.md` now says the four placeholders are filled in the file at drafting and only `<agent-tasks>` is substituted at dispatch (`ddadc92`, `bbce866`). Question 2: the reviewer compares every required section against the current `TASK_TEMPLATE.md`, which must be attached to the review request with the commit it came from (`ddadc92`), and a PASS without quoted evidence counts as not checked. Question 4: Phase A now catches the failure this entry describes (unresolved placeholders, missing sections) before GO, in the same pass as the content review; no separate dispatch-readiness gate was added. Question 5: no new checklist was added; the existing Phase A items were tightened. The Status line above is left as written; this addendum is the current status.
 
 ---
 
@@ -603,6 +607,8 @@ The attempted command was not verified as having executed successfully on the ho
 
 **Status**: OPEN. Request Claude's assessment before changing shared workflow documentation. The pattern is proposed for evaluation, not yet a mandatory process. Human review and approval remain required.
 
+**Addendum 2026-11-06 (web review session)**: PARTLY ADDRESSED; still OPEN. Recorded in `REVIEW_AGENT_GUIDE.md` (`ddadc92`, VERIFIED by read-back from origin): review requests carry the task file, `TASK_TEMPLATE.md` and the guide as attachments with the commit they came from, and the reviewer states that commit (question 3, exact commit); after REVISE the reviewer re-checks only the listed items, so resolved findings are not reopened without a listed item (questions 3 and 4); each review is one pass with one complete list, which is the consolidation question 4 asks for; and a second failed re-check stops the task and Tracy decides, possibly on the direct lane. Not decided: whether alternating Grok and Claude reviews is the recommended pattern (questions 1, 2 and 5), whether findings carry blocker, major, minor and cosmetic labels, and whether reviewers must be read-only. The "PASS — no changes required" this entry uses corresponds to GO in the guide's vocabulary (INFERRED).
+
 ### 2026-11-04 — Cross-project design-intent authority and documentation-sprawl prevention
 
 **What happened**: During GalaxyGame wiki and UI workflow work, Tracy reiterated that documentation sprawl must not recur. The same design intent should not be copied across project READMEs, task files, handoffs, planning notes, and multiple reference documents. Each project should have a clearly identified canonical home for its established design intent and development direction. That home might be a wiki, a project-root document, a README, an architecture/design document set, or another existing project structure; the workflow should not prescribe one format or location. Implementation tasks should reference that source rather than restating or independently redefining it.
@@ -695,6 +701,8 @@ This is particularly important because:
 **Priority**: MEDIUM — affects efficiency and clarity of multi-agent review workflow. Currently working as intended (user confirmed the workflow), but not documented clearly enough for future agents to follow without explicit guidance.
 
 **Status**: OPEN. Recommendation: Add explicit human-review-timing section to PLANNING_AGENT_SESSION_START.md under "Procedure for Creating Draft Tasks," explaining that human reviews only after web agent GO, and planning agent iterates with web agents until that point. Consider adding similar clarification to REVIEW_AGENT_GUIDE.md's GO disposition section.
+
+**Addendum 2026-11-06 (web review session)**: Still OPEN, with one change. The review loop in step (4) now has a cap, recorded in `REVIEW_AGENT_GUIDE.md` (`ddadc92`, VERIFIED by read-back from origin): after REVISE the reviewer re-checks only the listed items, and a second failed re-check stops the task for Tracy to decide, possibly on the direct lane. That is a human checkpoint before any GO, so the wording asked for in question 1 ("the human does not see intermediate versions") needs the exception "unless the re-check cap is reached". Questions 1, 3 and 4 are untouched; question 1 belongs with open item P2 (the `PLANNING_AGENT_SESSION_START.md` Task Creation Workflow). Question 2: the guide's GO outcome does not yet say the human reviews next; that is not in `ddadc92`.
 
 ### 2026-11-05 — File creation guidelines not clearly documented (handoffs vs task files vs session prompts)
 
@@ -898,6 +906,8 @@ This is particularly important because:
 **What needs a second opinion**: (1) Should the Agent Dispatch Interface (TASK_TEMPLATE.md dispatch block) or REVIEW_AGENT_GUIDE.md explicitly mandate that every review request includes all governing artifacts as attachments rather than URLs? (2) Does this apply universally for consistency, or only to reviewers who may lack direct URL access?
 **Priority**: MEDIUM — affects review-gate validity across agents with different tool capabilities
 **Status**: OPEN. No governance decision at capture time. Awaiting later Claude workflow-review pass to determine whether this becomes: (a) required review package, (b) recommended review package, or (c) non-issue after future workflow adjustments.
+
+**Addendum 2026-11-06 (web review session)**: RESOLVED. Decision by Tracy, option (a): the review package is required for every reviewer (REPORTED, 2026-11-06). Basis: a Copilot review the day before could review but had no GitHub access, while Claude, Grok and ChatGPT can review against GitHub (REPORTED); a web agent that needs data from the project machine asks for it, and Qwen gathers it and pastes raw output into the package. Recorded in `REVIEW_AGENT_GUIDE.md` (`ddadc92`, VERIFIED by read-back from origin): a section "Review Package (Required Before Review)" and item 6 of the dispatch-prompt block. Question 1: the guide and its dispatch block carry it, and `TASK_TEMPLATE.md` is unchanged, since its dispatch block is the implementation startup contract. Question 2: it applies to every reviewer, whatever its tool access. Open follow-ups: the guide says the dispatch fragment should also be added to any handoff template that ships review prompts, and whether `PLANNING_AGENT_SESSION_START.md` or others carry item 6 has not been checked; line 7 of the guide still says GitHub Copilot is not used for review work (Tracy's call). The Status line above is left as written; this addendum is the current status.
 
 ---
 
