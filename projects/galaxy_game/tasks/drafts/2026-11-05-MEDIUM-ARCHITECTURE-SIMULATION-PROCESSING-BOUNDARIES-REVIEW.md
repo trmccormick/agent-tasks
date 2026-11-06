@@ -8,13 +8,15 @@ mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT
 local_worker_safe: true
 ---
 
-## Draft status
-
-This is a review-only draft. It is not approved for backlog or implementation dispatch.
-
 ## Agent Dispatch Interface
 
 **Status**: DRAFT — NOT READY FOR DISPATCH. Human review and approval are required first.
+
+This draft does not authorize implementation. The human must review and approve the task, move it through the prescribed lifecycle, and complete dispatch details before any agent begins work.
+
+## Draft status
+
+This is a review-only draft. It is not approved for backlog or implementation dispatch.
 
 No job, worker, scheduler, service, or simulation behavior changes are authorized by this draft.
 
