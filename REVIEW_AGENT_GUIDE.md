@@ -20,11 +20,20 @@ Planning, research, implementation, and review are authorized session activities
 
 **Your role**: Assess whether the draft task is ready to move from `tasks/drafts/` to `tasks/backlog/`. You provide a GO/REVISE/STOP disposition that informs human approval decision.
 
-**Assessment checklist** — verify each before issuing disposition. **Phase A (template) runs first; Phase B (content) only if Phase A passes.**
+### Review Package (Required Before Review)
 
-### Phase A — Template Conformance (Mandatory Gate)
+Every review request carries the governing artifacts as attachments or pasted text, not as URLs alone: the task file under review, `TASK_TEMPLATE.md` and this guide. This applies to every reviewer, whatever its tool access, because consistent review depends on what the request contains, not on the reviewer's tools.
 
-Read TASK_TEMPLATE.md and compare every required section against the draft task file. **Template FAIL ⇒ disposition cannot be GO; issue REVISE with a punch-list of missing sections.**
+- The request names the commit the copies came from, and the reviewer states that commit in its disposition.
+- If any of the three is missing, the reviewer asks for it. It does not review from memory or from a linked copy it cannot confirm.
+- A reviewer that can read GitHub may use it to cross-check files the task references, but the attached package is what the review is judged against.
+- Data that exists only on the project machine (command output, uncommitted files, container state) is gathered by Qwen at the human's request and pasted into the package as raw output. The reviewer asks for it and does not guess.
+
+**Assessment checklist** — check every item below in one pass, template and content together, and list every failure in one complete list. Do not stop at the first failing item.
+
+### Phase A — Template Conformance (Mandatory for GO)
+
+Read TASK_TEMPLATE.md and compare every required section against the draft task file. **A template FAIL means the disposition cannot be GO. Record it, continue into Phase B in the same pass, and issue REVISE with one punch-list covering both phases.**
 
 - **YAML frontmatter**: Includes `resume`, `system_domain`, `mvp_alignment`, `local_worker_safe` (and correct `status: draft`); when `status: draft`:
   - DRAFT STATUS NOTE section present
@@ -34,11 +43,11 @@ Read TASK_TEMPLATE.md and compare every required section against the draft task 
   - Lifecycle rules (backlog → active → completed) documented
   - Summaries path specified
   - Synthesis contract included
-  - No bracketed placeholders remain in the block (search for `[project_name]`, `[project]`, `[SUBFOLDER]`, `[FILENAME]`); only `<agent-tasks>` may remain until dispatch
+  - No bracketed placeholders remain in the block. Run `grep -nE '\[(project_name|project|SUBFOLDER|FILENAME|FILL IN)\]' <task file>` and paste the raw output. Expected: exactly one line, the "One allowed substitution" sentence at the head of the block. Any other line is a FAIL (a leftover `[FILL IN]` means the fill pass was skipped). Only `<agent-tasks>` may remain until dispatch.
   - READ FIRST lists `rules/GUARDRAILS.md`, the project's `README.md` and `SESSION_GUIDANCE.md` (if the project has one), then the task file. A task drafted before 2026-11-05 that still has the earlier one-line READ FIRST passes this item; a new draft must use the current block
 - **Task Readiness Checklist** section present
 
-### Phase B — Content Assessment (only if Phase A passes)
+### Phase B — Content Assessment (always assessed, in the same pass as Phase A)
 
 - **Acceptance Criteria**: Are they clear, measurable, and specific? ✅ Go / ⚠️ Needs clarification
 - **Task Scope**: Is it well-bounded? Does it overlap with active/backlog tasks? ✅ Focused / ⚠️ Too broad
@@ -54,11 +63,12 @@ Read TASK_TEMPLATE.md and compare every required section against the draft task 
 **Task**: [name from filename]  
 **Date**: YYYY-MM-DD  
 **Assessed by**: [Review Agent]
+**Package commit**: [commit the attached copies came from]
 
 ### Phase A — Template Conformance
 - Template Conformance: [PASS | FAIL: list missing sections]
 
-### Phase B — Content Assessment (only if Phase A passed)
+### Phase B — Content Assessment
 - Acceptance Criteria: [PASS | NEEDS CLARIFICATION]
 - Scope: [FOCUSED | TOO BROAD | OVERLAPPING]
 - Dependencies: [CLEAR | MISSING | BROKEN]
@@ -69,7 +79,7 @@ Read TASK_TEMPLATE.md and compare every required section against the draft task 
 ### Disposition
 **GO** | **REVISE** | **STOP**
 
-> **Rule**: Template Conformance must be PASS for GO disposition. If FAIL, issue REVISE with a punch-list of missing sections and do not proceed to content assessment.
+> **Rule**: Template Conformance must be PASS for GO disposition. If it fails, still complete Phase B in the same pass and issue REVISE with one punch-list covering both phases. Each PASS quotes its evidence (the text or the raw command output that was checked); a PASS with no evidence counts as not checked.
 
 ### Notes
 [Any findings, required changes, or context for human decision]
@@ -77,7 +87,7 @@ Read TASK_TEMPLATE.md and compare every required section against the draft task 
 
 **Outcomes:**
 - `GO`: Task is ready for human approval to move to backlog/ and proceed to implementation dispatch
-- `REVISE`: Task needs changes before re-review (planning agent updates in-place in drafts/)
+- `REVISE`: the planning agent fixes every item on the list in place in `drafts/`, and the reviewer re-checks only the listed items. If the re-check fails any listed item, issue REVISE again for the remaining items. A second failed re-check stops the task: Tracy decides, and may take it to the direct lane instead of a third round.
 - `STOP`: Task has critical issues; recommend human guidance before proceeding
 
 ---
@@ -88,6 +98,7 @@ Copy the block below into every draft-review handoff prompt (human, planning age
 
 ```
 5. Template compliance (mandatory): Read TASK_TEMPLATE.md and compare every required section against the draft. Verify: all YAML fields (resume, system_domain, mvp_alignment, local_worker_safe), DRAFT STATUS NOTE, DRAFT REVIEW CHECKLIST, full Agent Dispatch Interface block (not abbreviated), Task Readiness Checklist. Flag any missing sections as REVISE requirements — do not GO if template is non-compliant.
+6. Review package (mandatory): The task file, TASK_TEMPLATE.md and REVIEW_AGENT_GUIDE.md are attached or pasted below, with the commit they came from. If any is missing, ask for it. Do not review from memory or from a link.
 ```
 
 **Where to use**: Include this in every draft-review dispatch prompt sent to a web review agent. Place it alongside your content/architecture review instructions so both are assessed together. If you already have a standard handoff template that ships review prompts (e.g., in PLANNING_AGENT_SESSION_START.md or any handoff template), add the fragment there as well and cross-link from this section.
