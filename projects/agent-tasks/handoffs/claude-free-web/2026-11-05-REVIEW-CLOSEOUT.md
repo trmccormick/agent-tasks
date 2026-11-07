@@ -62,5 +62,5 @@ Plan edits status: E1b, E1, E2, E3 applied. **E4 withdrawn**: `DIRECT_SESSION_TE
 
 ## Environment notes
 
-- Clones are session-local: `/home/claude/trmccormick/agent-tasks` (shallow; fetch only) and `/home/claude/trmccormick/galaxy-game-ui` (public, read-only, shallow). Tracy's clone is `/Users/tracymccormick/Documents/git/agent-tasks`; she works from more than one machine, so pull before any local check.
+- Clones are session-local: `/home/claude/trmccormick/agent-tasks` (shallow; fetch only) and `/home/claude/trmccormick/galaxy-game-ui` (public, read-only, shallow). Tracy's clone is `/Users/tracymccormick/Documents/git/agent-tasks`; he works from more than one machine, so pull before any local check.
 - This file belongs at `projects/agent-tasks/handoffs/claude-free-web/2026-11-05-REVIEW-CLOSEOUT.md`; Tracy commits it.
