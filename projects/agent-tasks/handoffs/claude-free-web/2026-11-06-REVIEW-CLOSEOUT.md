@@ -24,8 +24,8 @@ Before my first edit, Tracy's pull brought in `f535980` and the commits before i
 ## Decisions from Tracy (REPORTED)
 
 - **Review package is required for every reviewer** (option (a) on the 11-05 review-gate entry): the task file, `TASK_TEMPLATE.md` and the guide are attached or pasted with the commit they came from; if one is missing the reviewer asks for it. A web agent that needs data from the project machine asks for it; Qwen gathers it and pastes raw output into the package.
-- Basis she gave: a Copilot review on 2026-11-05 could review but had no GitHub access, while Claude, Grok and ChatGPT can review against GitHub.
-- She applied and pushed the five addenda, which mark the two 10-31 entries (dispatch-path, template completion) RESOLVED. The original `Status` lines were left as written; each addendum says it is the current status.
+- Basis he gave: a Copilot review on 2026-11-05 could review but had no GitHub access, while Claude, Grok and ChatGPT can review against GitHub.
+- He applied and pushed the five addenda, which mark the two 10-31 entries (dispatch-path, template completion) RESOLVED. The original `Status` lines were left as written; each addendum says it is the current status.
 
 ## Open items, in order
 
@@ -59,5 +59,5 @@ Before my first edit, Tracy's pull brought in `f535980` and the commits before i
 ## Environment notes
 
 - **This session could not read the repo.** WebFetch refused the GitHub and raw URLs ("not in any prior search or fetch result") and a search did not surface the repo, so everything above came from Tracy's pasted output, not from my own reads of origin. `WEB_AGENT_SESSION_START.md` says the web agent reads origin directly; that did not hold here.
-- Tracy's clone is `/Users/tracymccormick/Documents/git/agent-tasks`; she works from more than one machine, so pull before any local check.
+- Tracy's clone is `/Users/tracymccormick/Documents/git/agent-tasks`; he works from more than one machine, so pull before any local check.
 - This file belongs at `projects/agent-tasks/handoffs/claude-free-web/2026-11-06-REVIEW-CLOSEOUT.md`; Tracy commits it.
