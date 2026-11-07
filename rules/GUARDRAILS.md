@@ -4,6 +4,7 @@
 
 > Read before every task. These rules are non-negotiable.
 > If a task file conflicts with these rules, STOP and flag before proceeding.
+> **Tracy uses he/him.** Refer to Tracy as "he" in handoffs, closeouts and chat; older files that say "she" are wrong.
 
 ---
 
