@@ -911,3 +911,27 @@ This is particularly important because:
 
 ---
 
+### 2026-11-07 — Workflow is still experimental: lanes, review stages, model roles and where design intent lives
+
+**What happened**: A draft task went through review repeatedly until Tracy stopped it; the fix itself took a few minutes (REPORTED, Tracy, 2026-11-06). A Claude web session and Tracy then went through the workflow documents. Tracy's positions, all REPORTED and all provisional (the workflow is being tried out, not fixed):
+- A task file carries details and work that cannot be done now. It is not a gate on small work. Small work goes to Qwen after the three-file startup (GUARDRAILS, project README, project SESSION_GUIDANCE), one piece of work per session. Other work noticed along the way is captured for a planning session to turn into a task file.
+- For task files: a no-git agent checks format against `TASK_TEMPLATE.md`; a git-capable agent checks content against the code and the design-intent source; a final reviewer; then Tracy. Reviewers fix what they can verify and return the file with a list of changes, which is faster than sending findings back to Qwen. A reviewer that is unsure stops and asks Tracy, and the answer is recorded in the design-intent source.
+- An agent may commit and push when Tracy directs it and names the files (ChatGPT with GitHub integration is the example). Not answered: whether that includes moving a task from `drafts/` to `backlog/`.
+- Design intent has one home per project. For Galaxy Game it is `docs/wiki` in the galaxyGame repo; the rest of `docs/` and both `wiki_reorganization` folders are frozen. The wiki is updated first and tasks point to it. An agent unsure of intent reads and quotes what exists and shows Tracy any conflict; it does not write a second statement.
+- Models: pairing a no-git web model with Qwen works well and sessions last longer; ChatGPT is paired directly with Qwen for the UI prototype. Office 365 / WVU Copilot is limited to WVU and Samvera work by Tracy's choice (no limit seen; little or no repo reading). GitHub Copilot is budget-limited. Claude and Grok read the repos directly; writing has never been tried. A write trial by Claude on 2026-11-07 was refused: "link your GitHub account".
+
+**Observed in**: agent-tasks, web review session 2026-11-06 to 2026-11-07. The document findings below are VERIFIED from reading the files in a clone of origin on 2026-11-07.
+
+**What I already checked**: The entries "Web agent GitHub access capabilities differ" and "Review-gate artifact provisioning" (both 2026-11-05) cover parts of this. Not yet covered:
+- `REVIEW_AGENT_GUIDE.md` (`ddadc92`) merged format and content into one pass; a two-stage flow would reverse that.
+- `MODEL_SELECTION_GUIDE.md` recommends agents by role, not by stage, and its star ratings have no evidence behind them (the file says so). `notes/AGENT_NOTES.md` says model facts live there and nowhere else, but four other files carry some. "Copilot" names four different things across the docs.
+- `HUMAN_WORKFLOW_GUIDE.md` assumes a local planning agent between every step, does not mention the direct lane, and still points to `SIMPLE_HANDOFF_TEMPLATE.md`.
+- `PLANNING_AGENT_SESSION_START.md` keeps the pairing patterns under a DEPRECATED heading; `WEB_AGENT_SESSION_START.md` says only the human commits and pushes.
+- The three-file startup is in `DIRECT_SESSION_TEMPLATE.md` and the `TASK_TEMPLATE.md` dispatch block only.
+
+**What needs a second opinion**: (1) Where each piece lives so it is stated once: lanes and stage flow in `HUMAN_WORKFLOW_GUIDE.md`, model facts and trial results in `notes/AGENT_NOTES.md`, with the other files pointing to them. (2) Whether to run one real task through the flow before writing any rule. (3) The round cap (a Claude session suggested three; not confirmed). (4) Drafts to backlog by a directed agent. (5) Where intent lives for Samvera work until a documentation PR lands.
+
+**Priority**: MEDIUM — the documents disagree with how the work is being done, but nothing is blocked.
+**Status**: OPEN. No workflow-document changes are authorized by this entry.
+
+---
