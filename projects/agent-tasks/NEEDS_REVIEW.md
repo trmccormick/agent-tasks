@@ -935,3 +935,24 @@ This is particularly important because:
 **Status**: OPEN. No workflow-document changes are authorized by this entry.
 
 ---
+
+### 2026-11-09 — Wiki and project documentation maintenance as a general development practice
+
+**What happened**: During Galaxy Game UI development, we identified the need to keep the GalaxyGame wiki updated as implementation and design decisions evolve. This raised a broader workflow question: should documentation maintenance alongside development be an expected practice across all projects, or should it remain a project-specific instruction?
+
+**Observed in**: `galaxy-game-ui` development, 2026-11-09. Related workflow discussion: `2026-11-07 — Workflow is still experimental: lanes, review stages, model roles and where design intent lives`.
+
+**What I already checked**: The existing 2026-11-07 entry addresses the location and authority of design intent, including the GalaxyGame wiki-first approach. It does not explicitly resolve whether documentation maintenance should be a general `agent-tasks` workflow practice. No general workflow decision is being assumed here.
+
+**What needs a second opinion (Claude review)**:
+1. Should keeping relevant project documentation current as development proceeds be a general development workflow expectation across projects?
+2. Should the general guidance establish a principle while each project's `SESSION_GUIDANCE.md` identifies its documentation sources, authority, and applicable practices?
+3. How should projects without an established wiki or formal documentation system be handled?
+4. How can this avoid unnecessary documentation overhead, duplicate records, and updates that merely repeat implementation details?
+5. How should documentation updates fit into different types of work, including small changes, larger implementation tasks, research, and projects where documentation is maintained separately?
+
+Please consider whether this belongs in general workflow guidance, project-specific guidance, or a combination of both. Recommend the smallest coherent approach and identify any existing guidance that would need adjustment.
+
+**Priority**: MEDIUM — potentially affects development practices across all projects, but no immediate implementation work is blocked.
+
+**Status**: OPEN. For Claude's cross-project workflow review. No general rule or project-specific requirement is approved by this entry.
