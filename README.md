@@ -690,7 +690,8 @@ instance may run as a persistent coordinator across sessions to reduce
 how much raw output needs relaying to Claude/Tracy.
 
 Responsibilities:
-- Maintain status.md as the full historical log (unchanged from before)
+- Maintain status.md as a current-state snapshot; older entries are archived per
+  PLANNING_AGENT_CLOSEOUT.md
 - Maintain NEEDS_REVIEW.md as a short, active list of items needing a
   second opinion — see that file's own escalation-trigger list
 - Do NOT mark a task complete without independently re-verifying the fix
