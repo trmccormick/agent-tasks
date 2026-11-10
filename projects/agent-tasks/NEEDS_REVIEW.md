@@ -956,3 +956,30 @@ Please consider whether this belongs in general workflow guidance, project-speci
 **Priority**: MEDIUM — potentially affects development practices across all projects, but no immediate implementation work is blocked.
 
 **Status**: OPEN. For Claude's cross-project workflow review. No general rule or project-specific requirement is approved by this entry.
+
+---
+
+### 2026-11-10 — ChatGPT Free Web workflow, GitHub write capability, and current-state documentation
+
+**What happened**: While working across `galaxy-game-ui`, `galaxyGame`, and `agent-tasks`, Tracy clarified that ChatGPT Free Web should not be required to end a conversation at daily closeout. Useful context can persist across turns/sessions; the durable record should be a dated handoff per project touched, while project `status.md` should remain a concise snapshot of the current state. Older status history should not accumulate indefinitely in the current-state file. Tracy also noted that ChatGPT in this role can read and write repository files directly through its connected GitHub integration, unlike agents that can only read GitHub or must return files for a human/local agent to apply.
+
+**Observed in**: `agent-tasks` workflow discussion, 2026-11-10; direct GitHub edits to `agent-tasks` were used in this role in the preceding session (handoffs and `SESSION_CLOSEOUT.md` update).
+
+**What I already checked**:
+- **VERIFIED**: `SESSION_CLOSEOUT.md` now requires a separate per-project handoff under `projects/<project>/handoffs/chatgpt-free-web/` for ChatGPT Free Web sessions touching multiple projects. The rule describes closeout, but does not explicitly distinguish recording the day's work from terminating the conversation.
+- **VERIFIED**: `rules/GUARDRAILS.md` Rule 0 describes only VS Code tools (`run_in_terminal`, file/search tools, etc.) and says no other tools are available. That is not an accurate universal description for ChatGPT Free Web, which has connected GitHub read/write actions in this role. Other agents may still have the restricted tool set, so a global replacement would be unsafe.
+- **VERIFIED**: GUARDRAILS Rule 26 (referenced elsewhere in the repository) requires explicit human approval before commits/pushes. Direct GitHub write capability must not be mistaken for blanket authority to commit, push, merge, or change protected workflow state.
+- **VERIFIED**: GUARDRAILS' persistent coordination guidance describes `status.md` as a full historical log. Tracy's intended meaning is different: project `status.md` is the current-state snapshot; dated handoffs and/or a designated archive/history location preserve historical detail. This conflict needs reconciliation rather than another parallel convention.
+- **VERIFIED**: The existing `NEEDS_REVIEW.md` entry dated 2026-11-07 already asks Claude to tune the broader experimental workflow (lanes, review stages, model roles, and intent authority). This entry adds concrete ChatGPT Free Web capability and status/handoff lifecycle evidence to that review; it does not approve a new workflow or authorize edits to guidance.
+
+**What needs a second opinion (Claude review)**:
+1. **Agent-specific capability guidance**: What is the smallest maintainable way to describe agents' actual capabilities, especially ChatGPT Free Web's ability to inspect and directly update GitHub repository files? Should this be a root-level `CHATGPT_FREE_WEB.md`, a shared capability matrix, or a small addition to existing agent notes? Avoid duplicating model facts already assigned to `notes/AGENT_NOTES.md`.
+2. **Guardrails scope**: How should Rule 0 and related tool/authority rules distinguish agent-specific tool availability from shared operational guardrails? Preserve the restrictions that apply to local/Qwen agents; do not imply ChatGPT has a local shell, project filesystem, Docker, or test execution merely because it can edit GitHub files.
+3. **GitHub write authority**: Document that ChatGPT can read and write supported repository files directly through GitHub integration, subject to the same explicit human authorization boundaries for commits, pushes, merges, branch changes, and task-lifecycle gates. Clarify which operations are authorized by a specific instruction naming files/actions and which still require confirmation.
+4. **Daily handoff vs. session termination**: A daily handoff is a durable record of the day's work, not a command or requirement to close the ChatGPT conversation. Keep one dated handoff per project touched under `projects/<project>/handoffs/chatgpt-free-web/`; do not create a cross-project catch-all in only one project. Determine whether an existing handoff should be updated during a continuing workstream or a new dated file created for each workday, without creating needless duplicates.
+5. **Current-state `status.md`**: Define it as a concise, maintained current snapshot, not an append-only historical journal. Replace stale state when it changes. Put historical detail in dated handoffs or an explicitly designated archive/history mechanism. Reconcile the contradictory instructions that currently tell agents to maintain a full historical log.
+6. **Minimal changes and ownership**: Review `SESSION_CLOSEOUT.md`, `GUARDRAILS.md`, `status.md` conventions, `notes/AGENT_NOTES.md`, and the 2026-11-07 workflow entry together. Recommend the smallest coherent set of changes and identify the right owner/location for each rule. Do not create a new root file or change guardrails solely on the basis of this observation; first recommend the design for Tracy's approval.
+
+**Priority**: MEDIUM — affects how ChatGPT Free Web coordinates with local and web agents, how repository changes are authorized, and whether project status remains useful rather than bloated.
+
+**Status**: OPEN. Added for Claude's workflow-tuning review. This entry records observations and questions only; no new workflow policy or guardrail changes are authorized by it.
