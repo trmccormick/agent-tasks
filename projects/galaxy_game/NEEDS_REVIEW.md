@@ -189,3 +189,31 @@ Near-identical names, different directories — unclear if these represent the s
 - Wiki page updated to record this owner-confirmed distinction. Offline progression remains OPEN; do not assume either behavior. The page remains DIRECTION for the broader loop pending Claude review.
 
 **Status**: OPEN — awaiting Claude review.
+
+
+### 2026-11-10 — Venus HLT atmospheric intake, onboard CO₂ processing, exhaust, and Luna return mass balance
+**What needs review**: The Venus HLT loop should use the current planet atmosphere composition for bulk intake, process captured CO₂ onboard, vent the resulting CO, account for craft exhaust returned to the source atmosphere, and calculate the actual constituent mass that survives storage/transit boiloff and can be delivered to Luna. Most of the building blocks appear to exist; inspect and consolidate before adding new services or duplicating behavior.
+
+**What I already checked** (static GitHub source inspection only; no runtime tests executed):
+- `TerraSim::AtmosphericTransferService#perform_raw_transfer` extracts all source atmosphere gases proportionally using each gas record's `percentage`, applies a default 98% transport efficiency, removes gas from the source atmosphere, and adds delivered gas to the target body's atmosphere. Venus currently has no extraction percentage cap in this path.
+- `TerraSim::AtmosphericTransferService#perform_processed_transfer` already processes CO₂ into CO + O₂ using the 16/44 and 28/44 mass ratios and a configurable processing efficiency. It currently also extracts N₂ under a hard-coded CO₂/N₂ ratio and 0.5% per-gas cap, sends O₂/N₂ to the target body's atmosphere, and adds CO back to the source atmosphere. This is a planetary transfer mode, not yet shown to be the HLT's onboard cargo-processing path.
+- `AIManager::AtmosphericExtractionService#execute_extraction` hardcodes `:raw` mode and defaults its target to Luna. As currently wired, raw transfer writes to Luna's planetary atmosphere; it does not clearly create craft-owned cargo.
+- `Resource::AtmosphericHarvester#harvest_gases` and `Craft::Harvester#harvest_atmosphere` already support gas-specific extraction from a planetary atmosphere and call the harvester's `store_material`. This may be reusable for a proportional bulk-intake operation; verify the actual inventory/storage implementation before extending it.
+- `Craft::Harvester#apply_exhaust_to_atmosphere!` already adds propellant-specific combustion products to the source body's atmosphere (e.g. CH₄/O₂ produces CO₂ and H₂O). Its current propellant consumption is estimated as 10% of `extraction_rate`, not clearly derived from actual fuel use.
+- `AIManager::SkimmerCyclerHandshakeService#process_cargo_harvester` expects a `raw_cargo` hash and uses a proportional deduction as a proxy for fuel refill. Meanwhile, `AtmosphericExtractionService#dock_and_transfer_to_cycler` reads gases from `skimmer.atmosphere`. Determine which representation is authoritative and eliminate duplicate/incompatible cargo paths.
+- `Crafts::HasProcessing#process_resources` is generic raw-material/regolith processing; it does not implement HLT CO₂ splitting.
+- Initial code search for boiloff/boil-off found design references and proposed rates, but no clear runtime cargo-loss implementation. Trace cryogenic tank units, craft `process_tick`, transit advancement, and any existing loss services before declaring the model absent.
+
+**What needs a second opinion** (Claude):
+1. Trace the complete live call chain from Venus atmosphere intake through craft storage, CO₂ processing/CO venting, propellant exhaust emissions, cycler handoff/transit, boiloff, and Luna inventory delivery. Identify dead, duplicated, mock, or disconnected paths.
+2. Confirm that raw bulk intake uses the source body's current actual gas composition (all represented constituents, proportionally by current mass) and records extracted constituent masses as craft cargo. Do not add a fixed Venus mixture, target-gas-only intake, or speculative altitude/composition model unless supported by existing world state and owner direction.
+3. Reconcile the existing raw and processed modes. HLT onboard CO₂ processing should consume captured CO₂, retain the resulting O₂ as LOX for mission use, and vent CO. Do not route the products into Luna's planetary atmosphere as a substitute for craft cargo or base inventory. Keep this distinct from Luna's Sabatier methane-production pathway.
+4. Reconcile craft exhaust with actual propellant consumption and add its products back to the Venus/source atmosphere. Reuse the existing exhaust composition method rather than implementing a second exhaust model.
+5. Determine whether boiloff already runs through cryogenic storage units, craft ticks, or transit processing. If it does, reuse it; if it does not, identify the smallest missing calculation using the applicable tank configuration and elapsed transit time. Do not invent a universal boiloff percentage.
+6. Produce a constituent-by-constituent mass balance for a representative mission: captured mixture, CO₂ consumed, CO vented, LOX retained, other cargo retained, propellant consumed, boiloff/transfer losses, and mass actually delivered to Luna. Check for double counting and ensure tank capacity constraints are applied.
+7. Recommend the smallest safe consolidation/fix and targeted tests. Do not implement in this review. Distinguish existing and working behavior from code that merely exists, is disconnected, or is unvalidated.
+
+**Owner direction**: Keep the behavior straightforward. The craft captures the planet's current atmospheric mixture, processes CO₂ and dumps CO, and its propellant exhaust adds gases back to the source atmosphere. The practical calculation is how much of the captured mixture and retained products can actually return to Luna after processing, fuel use, and boiloff. A raw bulk-extraction helper may still be needed, but first determine whether the existing gas-specific extraction and proportional raw-transfer paths can be reused or consolidated.
+
+**Priority**: HIGH — affects the Venus-to-Luna gas supply and Luna habitation/industrial planning.  
+**Status**: OPEN — awaiting Claude review. No code changes or tests performed in this documentation pass.
