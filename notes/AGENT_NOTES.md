@@ -13,8 +13,8 @@ Model- and tool-specific facts live here and nowhere else. The universal docs (s
 | Agent | Where and how | Notes |
 |---|---|---|
 | Local Qwen | Copilot's local-model feature, served by Ollama on the Ryzen 7 and the M4 MacBook | qwen3.6 in use (27B and 35B sizes exist for qwen3.6 only); qwen3.8 in testing. The 2014 and 2018 laptops run no models; they connect to those two machines. |
-| Claude (web) | Chat session; can read the public repos when attached | Planning and review. See the 2026-10-09 entry on where work goes. |
-| ChatGPT (web) | Chat session | Galaxy image-asset prompt and image-bible work with Qwen; comments on task design. Image-generation capacity is limited. |
+| Claude (web) | Chat session; reads the public repos by calling `add_repo` and cloning (plain GitHub URLs and `gh` are blocked in the session). Cannot write to the repo unless GitHub is linked to the account | Planning and review. No shell on the project machine, Docker or tests. See the 2026-10-09 entry on where work goes. |
+| ChatGPT (web) | Chat session with a connected GitHub integration: can read and write repo files directly. No local shell, project filesystem, Docker or test execution | Galaxy image-asset prompt and image-bible work with Qwen; comments on task design; edits repo files when Tracy names the files and action (Rule 26). Image-generation capacity is limited. |
 | Grok (web only) | Chat session; Copilot access was removed | Preferred for Galaxy AI Manager design work, but usable like any web agent. |
 | Gemini | Not re-confirmed | Earlier: document analysis, design passes, adversarial task review. |
 | Perplexity | Not re-confirmed | Earlier: research handoffs. |
