@@ -156,3 +156,24 @@ Near-identical names, different directories — unclear if these represent the s
 **Decision recorded (Tracy, 2026-11-06)**: leave this as a note; no update to the Eden JSON or the generator at this point. The wiki should describe the belt/survey model (placed anchor asteroids explicit; belt, Kuiper and Oort populations defined by parameters and spawned on survey; "unknown until surveyed" allowed) and tag unverified numbers PROPOSED / PLACEHOLDER.
 **Priority**: LOW (data and generator tuning is not the current focus).
 **Status**: OPEN
+
+### 2026-11-09 — Game clock and simulation advancement: consistency and scheduling review
+**What happened**: During the game-time/communications design discussion, a focused static review of the current `galaxyGame` clock and loop found that clock advancement and subsystem processing are not consistently coordinated. A new wiki page, `docs/wiki/engineering/game_time_and_simulation_loop.md`, records the proposed intended flow as DIRECTION (not yet owner-confirmed implementation detail).
+
+**What I already checked** (static source inspection only; no runtime tests executed in this documentation pass; code snapshot `fbf7b72`):
+- `galaxy_game/app/models/game_state.rb`: `update_time!` accumulates fractional days and resets `last_updated_at`; speed values 1–5 currently map to 300/120/60/30/10 real seconds per game day. `toggle_running!` resets the timestamp only when starting; `set_speed` in the controller does not checkpoint at the old speed.
+- `galaxy_game/app/jobs/game_simulation_job.rb`: elapsed time is truncated to whole days with `.to_i`; the job returns before scheduling its next run when less than one full day has accumulated, and also returns while paused. The startup initializer schedules one initial run after 10 seconds; subsequent scheduling depends on the job reaching its final scheduling statement.
+- `galaxy_game/app/services/game_service.rb`: `Game#advance_by_days` processes settlements, manufacturing jobs, and free deployed craft, then persists time. The current job passes it whole-day intervals.
+- `galaxy_game/app/controllers/game_controller.rb`: `index`, `get_time`, and `state` call `update_time!` while running. Those read/request paths can advance the clock and reset the timestamp without running the corresponding subsystem processing.
+- `galaxy_game/app/services/game_simulation.rb`: a separate `GameSimulation` pathway exists and processes celestial bodies, while the current background job calls `Game`. Its callers and intended status have not been fully traced.
+
+**What needs a second opinion** (Claude):
+1. Confirm the actual runtime scheduling behavior and whether another scheduler/worker mechanism exists beyond the initializer and self-scheduling job. In particular, determine whether the current job can become permanently unscheduled after a sub-day return or pause, and how it is restarted after resume.
+2. Trace every caller of `GameState#update_time!`, `Game#advance_by_days`, and `GameSimulation#advance_by_days`; identify which pathway is authoritative and whether any other services/jobs advance or persist the same clock.
+3. Assess clock/processing race conditions and lost/duplicated elapsed intervals, including controller polling, speed changes, pause/resume, manual time jumps, worker overlap, and job failure/restart.
+4. Review the proposed intended flow in the wiki: one authoritative game-time source and advancement path; fractional elapsed time retained; request/UI reads are read-only; pause/resume and speed changes checkpoint correctly; background advancement continues while running; simulation subsystems process consistent intervals; all ETAs (including communications) use game time.
+5. Recommend the smallest safe correction sequence and targeted tests. Do not implement or prescribe a broad refactor in this review. Do not choose final speed multipliers or player-facing timing balance; those require gameplay tuning and Tracy's decision.
+
+**Relationship to existing review**: The older 2026-08-30 `Live Game-Loop Reality Check` entry/task covers broader questions about craft transit, assets, PSR mining, and gas storage. This entry is deliberately narrower and focuses on clock correctness and advancement scheduling. Claude should determine whether the older task is still active and how to avoid duplicating its scope; do not silently close or replace it.
+
+**Status**: OPEN — awaiting Claude review.
