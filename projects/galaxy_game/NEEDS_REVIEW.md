@@ -176,4 +176,13 @@ Near-identical names, different directories — unclear if these represent the s
 
 **Relationship to existing review**: The older 2026-08-30 `Live Game-Loop Reality Check` entry/task covers broader questions about craft transit, assets, PSR mining, and gas storage. This entry is deliberately narrower and focuses on clock correctness and advancement scheduling. Claude should determine whether the older task is still active and how to avoid duplicating its scope; do not silently close or replace it.
 
+
+**Addendum — historical documentation and intent extraction (2026-11-09)**:
+- Read `docs/agent/tasks/TASK_OVERVIEW.md`, `docs/developer/ui_enhancements.md`, `docs/developer/UI_IMPLEMENTATION.md`, and `docs/developer/TERRAFORMING_SIMULATION.md` in addition to the current wiki and code.
+- Durable historical direction: continuous, speed-controlled simulation while running (not turn-based), player run/pause controls, five speed levels in the later UI enhancement notes, explicit time jumps, and long-horizon gradual terraforming. The old docs also identify player agency, attention/notifications, and concurrent AI activity as real-time design considerations.
+- Historical UI docs contain earlier client-side animation-frame timing and 1x/10x/100x/1000x examples. Treat these as obsolete prototype examples, not current balance or architecture requirements. Separate rendering/polling cadence from authoritative game-time advancement.
+- `TASK_OVERVIEW.md` marks the time-speed discussion PLANNING COMPLETE but references `time_speed_mechanics_discussion.md` and `realtime_vs_turnbased_differences.md`; those source files were not present at the paths checked in the current tree. The contents/conclusions therefore remain unverified.
+- Wiki page now records this extracted intent and explicitly distinguishes a simulation that advances while running from an always-on world that advances while offline. Offline progression remains OPEN; do not assume either behavior.
+- Migration log now records the legacy sources harvested. The page remains DIRECTION pending owner confirmation and Claude review.
+
 **Status**: OPEN — awaiting Claude review.
