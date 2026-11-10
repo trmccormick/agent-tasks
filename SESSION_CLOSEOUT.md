@@ -24,6 +24,8 @@ Every research, implementation, web, and review agent session MUST create a hand
 - `<date>`: Session date (YYYY-MM-DD)
 - `<type>`: Session type (RESEARCH, IMPLEMENTATION, REVIEW, WEB) or specific domain (e.g., FACET-FIX, DIAGNOSTICS)
 
+**One handoff per project touched.** If a session works across multiple projects, create a separate handoff in each project's directory; do not put a cross-project catch-all handoff in only one project. Each file should cover only that project's work and point to related handoffs where useful. For ChatGPT Free Web sessions, use the agent folder name `chatgpt-free-web`, giving the path `projects/<project>/handoffs/chatgpt-free-web/<date>-<type>-CLOSEOUT.md`. This is a standing closeout requirement, including when the session spans projects or is interrupted at the end of the day.
+
 **Handoff file MUST document:**
 1. **Task:** The task file path you worked on
 2. **What was done:** Changes made, code written, tests run, findings discovered
