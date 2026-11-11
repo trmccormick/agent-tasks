@@ -2,7 +2,7 @@
 
 Short, active list of items that need a second opinion or a human decision. Primary interface for review and planning agents: read this first, then `status.md`.
 
-**Last updated:** 2026-11-03 (entries 1, 2, 5, 8 closed; entries 11-13 added; entry 6 and 7 refreshed. Drafted by a Claude web session as text, saved by Tracy)
+**Last updated:** 2026-11-11 (entry 16 added; editing rules added. Earlier: entries 1, 2, 5, 8 closed; entries 11-13 added; entry 6 and 7 refreshed. Drafted by a Claude web session as text, saved by Tracy)
 **Evidence labels:** VERIFIED = a command or a read of GitHub `main` shows it. REPORTED = stated by a person or agent, not re-checked.
 
 ## How this file works
@@ -15,6 +15,11 @@ Short, active list of items that need a second opinion or a human decision. Prim
   - find two docs that disagree about the same system, or
   - catch themselves repeating an identical action three or more times.
 - Agents paste raw command output in entries, not summaries of it.
+- **Editing rules (added 2026-11-11, after a heading was overwritten and two entries were merged in another project's file):**
+  - Add a new entry at the end of the OPEN section, with the next number in sequence. Never replace, rename, renumber, reorder or merge an existing entry's `###` heading.
+  - To update an entry, change only its own State line, or add an `**Addendum YYYY-MM-DD**` bullet under it. Never paste lines from one entry under another.
+  - Each entry keeps its own heading and its own State line.
+  - Before committing, run `git diff` on this file. The diff may show only: lines added at the end of OPEN, an Addendum, a changed State line, or an entry moved to RESOLVED. If any other line changed, stop and report it instead of committing.
 
 ---
 
@@ -99,7 +104,7 @@ Short, active list of items that need a second opinion or a human decision. Prim
 - **Draft status:** the pages added on 2026-11-04 (`logistics/ai_manager_economic_loops.md`, `infrastructure/power_options.md`, `technical/portals_and_aws.md`, `infrastructure/terraforming_options.md`, `player/settlement_progression_and_footholds.md`, `player/eden_disconnect_and_emergent_history.md`) are unverified drafts from a brainstorm. Only points marked ESTABLISHED INTENT were stated by Tracy. Do not build a screen on a DIRECTION or OPEN item without marking it as such.
 - **Next action:** ChatGPT: when you document a screen (Admin console or player dashboard), list which of the items above it depends on and mark any that rest on DIRECTION or OPEN.
 
-### 2026-11-11 — Proposed Rails 8 main-app upgrade, separate UI client, and staged integration
+### 16. Proposed Rails 8 main-app upgrade, separate UI client, and staged integration (2026-11-11)
 - **State:** OPEN — proposal for Tracy's review; no implementation authorized by this entry.
 - **Context:** The proposal is to upgrade the existing main `galaxyGame` application from Rails 7.x to Rails 8, while keeping it separate from this Rails 8.x UI prototype. Initially, both remain independent applications in separate repositories, with separate databases. The main app is the proposed authoritative game backend/API provider; this repository is the proposed new UI client. This is a proposal, not an adopted architecture or a claim that the upgrade/API exists.
 - **Proposed work / questions to resolve:**
