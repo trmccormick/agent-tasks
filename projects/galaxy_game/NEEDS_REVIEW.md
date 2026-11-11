@@ -5,6 +5,13 @@ Qwen: add an entry here instead of just noting something in status.md when
 an escalation trigger below fires. Remove/archive entries once resolved —
 this file should stay small. Full history stays in status.md.
 
+**Editing rules (added 2026-11-11, after a heading was overwritten and two entries were merged):**
+- Add a new entry at the end of "Current entries", after the last entry. Never replace, rename, reorder or merge an existing entry's `###` heading.
+- To update an entry, change only its own `**Status**` line, or add an `**Addendum YYYY-MM-DD**` paragraph under it. Never paste lines from one entry under another.
+- Every entry keeps its own `### DATE — title` heading and its own Status line.
+- When an entry is RESOLVED, move the whole entry unchanged to `archive/NEEDS_REVIEW_RESOLVED_YYYY-MM.md` in the same commit, and remove it here. Do not delete entries.
+- Before committing, run `git diff` on this file. The diff may show only: lines added at the end, an Addendum, a changed Status line, or whole entries removed because they were archived. If any other line changed, stop and report it instead of committing.
+
 ---
 
 ## Escalation triggers — add an entry here when:
