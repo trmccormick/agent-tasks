@@ -99,6 +99,23 @@ Short, active list of items that need a second opinion or a human decision. Prim
 - **Draft status:** the pages added on 2026-11-04 (`logistics/ai_manager_economic_loops.md`, `infrastructure/power_options.md`, `technical/portals_and_aws.md`, `infrastructure/terraforming_options.md`, `player/settlement_progression_and_footholds.md`, `player/eden_disconnect_and_emergent_history.md`) are unverified drafts from a brainstorm. Only points marked ESTABLISHED INTENT were stated by Tracy. Do not build a screen on a DIRECTION or OPEN item without marking it as such.
 - **Next action:** ChatGPT: when you document a screen (Admin console or player dashboard), list which of the items above it depends on and mark any that rest on DIRECTION or OPEN.
 
+### 2026-11-11 — Proposed Rails 8 UI client / Rails 7 API integration and coordinated local startup
+- **State:** OPEN — proposal for Tracy's review; no implementation authorized by this entry.
+- **Context:** This repository is the separate Rails 8.x UI prototype. The existing main GalaxyGame application remains Rails 7.x and is the proposed API provider/authoritative game backend. The UI repo should continue developing the new presentation; it does not need to repair or visually modernize every old main-app view.
+- **Proposed work / questions to resolve:**
+  1. **Continue building the actual UI here.** Preserve and improve useful prototype components and screens. Bring forward useful workflows from the main app (Planetary/Orbital, Surface, Map Studio, Monitor, resources, infrastructure, and other specialized views) as appropriate, but design each workspace for its purpose rather than forcing one dashboard layout.
+  2. **Separate mock and live data paths.** Keep clearly labeled mock fixtures for screens whose API is not ready. Establish a client/service adapter boundary so screens can switch to live API responses without embedding fetch logic or game rules throughout the views. Do not treat mock fixture shapes as approved API contracts.
+  3. **Consume the main app API, if adopted.** Configure the main Rails 7 API base URL and credentials through environment variables. Define request/error/loading/empty-state handling and identify data age or stale-cache state where relevant. Do not connect directly to the main application's PostgreSQL tables, private JSON tree, or filesystem.
+  4. **Coordinate two Rails processes.** During integrated development, the Rails 8 UI and Rails 7 API would run as separate applications/processes. Evaluate one developer command (possibly a shared Docker Compose setup) to start both and any required services. Confirm actual repository/container names, ports, health checks, startup ordering, and environment-variable conventions before editing either setup.
+  5. **Decide PostgreSQL need and ownership.** The UI may not need its own database if it only renders API data and transient state. If it needs persistent UI-owned records, use a separate logical database/schema owned by this Rails 8 app. A single PostgreSQL server/container hosting two separate databases is an option; sharing the main game's database tables is not.
+  6. **Choose the browser-to-API request path.** Decide whether browser JavaScript calls the API directly or whether Rails 8 proxies requests. Then specify CORS, session/token handling, CSRF implications, and local credentials to match that choice; do not configure these speculatively.
+  7. **Review UI-repository cleanup separately.** Identify obsolete prototype experiments, duplicated components, abandoned mock paths, and inconsistent layout conventions only after checking whether current screens still depend on them. Preserve useful work; cleanup should not become a rewrite.
+  8. **Integration validation.** Verify at least one complete UI workflow against the live Rails 7 API, including loading, empty/error states, authorization behavior, and a testable contract. Keep the Rails 8 app independently runnable with mock data for UI work.
+- **Dependency / coordination:** The corresponding main-app review entry is in `projects/galaxy_game/NEEDS_REVIEW.md`. API contracts and the local startup arrangement require agreement across both repositories before implementation.
+- **Next action:** Continue UI work using mock data where necessary; separately inspect both repositories' actual startup and database configurations before recommending a shared one-command development setup.
+- **Status:** OPEN — proposal only; no Rails, API client, database, or orchestration changes made.
+
+
 ---
 
 ## RESOLVED
