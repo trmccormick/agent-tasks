@@ -70,6 +70,7 @@ Short, active list of items that need a second opinion or a human decision. Prim
 - **State:** OPEN — owner: Tracy confirms; planning agent does the bookkeeping
 - **Evidence:** app repo `review/qwen-ui-prototype` has "Update sign-in page for Galaxy Game" (`2e10b1d`) and "updated tailwind.css" (`209d37a`) (VERIFIED titles). The task file is still `tasks/backlog/2026-10-30-MEDIUM-REFACTOR-SIGNIN-VIEW-GALAXY-GAME-STYLE.md` with `status: backlog` (VERIFIED 2026-11-03). No screenshot of `/session/new` (signed out) or of a failed sign-in has been reviewed by the web agent; the task's acceptance criteria ask for both.
 - **Next action:** Tracy looks at both pages. If fine, the planning agent `git mv`s the task to `tasks/completed/` with a one-line completion note citing `2e10b1d`; if not, list the fixes first.
+- **Addendum 2026-11-11:** the `review/qwen-ui-prototype` branch no longer exists on the app repo remote. `2e10b1d` and `209d37a` are ancestors of `origin/main` (`229b97e`), so they are on `main` (VERIFIED). The task file's status and the signed-out and failed sign-in screenshots were not re-checked.
 
 ### 12. T3b and T3c drafts are stale; where did the dashboard data come from?
 - **State:** OPEN — owner: Tracy decides
@@ -83,11 +84,6 @@ Short, active list of items that need a second opinion or a human decision. Prim
 - **Two header styles:** the landing page uses the T3a-2 header (gold brand, no logo); the dashboard uses a logo, a cyan brand and a sidebar.
 - **Dashboard details:** the stat card says 8 settlements but the table lists 3; the bottom Navigation card repeats the sidebar; the "Sign out" button looks clipped at the right edge (may be the screenshot crop).
 
-
-### 14. Misplaced historical review file in active drafts folder
-- **State:** OPEN — owner: Claude (housekeeping); Tracy approves any destructive cleanup
-- **Detail:** `tasks/drafts/NEEDS_REVIEW.md` is an October 23 first-attempt review artifact, not a current draft task. The active review tracker is this project-level `NEEDS_REVIEW.md`. The first-attempt archive already has its own `NEEDS_REVIEW.md`, so the historical drafts copy must not be moved over or overwrite it.
-- **Next action:** Claude compares the drafts copy with the archived review material, identifies an appropriate historical archive location/name if it is not already preserved, and proposes the exact move/removal. Keep the active drafts folder limited to current draft tasks and its README. Do not delete or overwrite anything until the archival destination and duplicate status are confirmed.
 
 ### 15. Player entry state, wiki data rule, and parallel wiki/UI work
 - **State:** OPEN — owner: Tracy and ChatGPT (UI and gameplay intent); Claude web keeps the wiki wording
@@ -130,3 +126,4 @@ Short, active list of items that need a second opinion or a human decision. Prim
 - **2. Two lessons for T3a-2** — closed: T3a-2 was implemented as `c01b23d` (one file changed, VERIFIED) and approved by Tracy 2026-10-30; both lessons are in its task file.
 - **5. Possible uncommitted `status.md` edits** — closed: Tracy's `git status --short` on 2026-11-03 showed no such edits. Housekeeping left: delete the scratch folder with `rm -r ~/scratch/qwen-reports`.
 - **8. Commit authorship** — closed: commits now carry an `Agent: <name>` line (`c01b23d`, `ccd9ca7`, `e223b62`, `5cdc4ea`, `48a7e0b`, VERIFIED).
+- **14. Misplaced historical review file in drafts/** — closed: it was a distinct 151-line first-attempt reuse analysis, not a duplicate of the archived `NEEDS_REVIEW.md`. Moved by agent-tasks `f92aa87` (VERIFIED, read back from origin) to `projects/galaxy-game-ui-first-attempt/summaries/2026-10-23-FIRST-ATTEMPT-REVIEW-AND-REUSE-ANALYSIS.md` as a 100% rename. `tasks/drafts/` now holds only draft tasks and its README.
