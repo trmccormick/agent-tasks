@@ -72,17 +72,23 @@ this file should stay small. Full history stays in status.md.
 **What needs a second opinion**: This needs a properly scoped task before anyone can pick it up — not yet filed. Flag it as needing Tracy's design input before task creation (touches unit-model and acquisition-routing architecture, not just a local fix).
 **Status**: OPEN — needs Tracy's design input before task creation
 
+**Addendum 2026-11-11**: ON HOLD — galaxy_game backend work is paused while the project works on galaxy-game-ui and the main and UI wikis (REPORTED, Tracy, 2026-11-11). This entry is not awaiting review, and no task should be created from it until backend work resumes. The Status line above is unchanged; this addendum is the current status.
+
 ### 2026-09-06 — Potential regex mismatch in mission_profile_analyzer.rb
 **What happened**: During the CNT fabricator naming collision investigation, it was noted that `mission_profile_analyzer.rb` uses a regex `/cnt_fabricator/i` against the `name` field of blueprints. However, no existing blueprint's `name` field contains this substring (they use more descriptive names like "Carbon Nanotube Fabricator Mk1"). This means `has_cnt_fabricator` may always evaluate to `false`.
 **What I already checked**: Verified blueprint `name` fields via `grep` and confirmed the regex in `mission_profile_analyzer.rb`.
 **What needs a second opinion**: Should the regex be updated to match the new naming convention, or should the blueprints be updated to include the technical identifier in their names?
 **Status**: OPEN
 
+**Addendum 2026-11-11**: ON HOLD — galaxy_game backend work is paused while the project works on galaxy-game-ui and the main and UI wikis (REPORTED, Tracy, 2026-11-11). This entry is not awaiting review, and no task should be created from it until backend work resumes. The Status line above is unchanged; this addendum is the current status.
+
 ### 2026-08-05 — Magnetosphere: 41 bodies defaulting to 0.5 strength (known gap)
 **What happened**: After the baseline+modifiers magnetosphere fix, 41 celestial bodies in sol-complete.json still have no explicit `magnetosphere_strength` value and default to 0.5. This is not urgent but will affect atmospheric loss calculations downstream once Task 2 runs. Bodies that need explicit values include moons without intrinsic fields (should be 0.0), gas/ice giants' moons orbiting protected parents, and dwarf planets/protoplanets.
 **What I already checked**: Verified against sol-complete.json — bodies with explicit magnetosphere_strength: Mercury (0.0001), Venus (0.3), Earth (1.0), Mars (0.0), Jupiter (1.0), Saturn (0.9), Ganymede (0.15), Titan (0.0). All other 41 bodies lack this field entirely.
 **What needs a second opinion**: Should these defaults be set explicitly in JSON, or is the default of 0.5 acceptable for now? If explicit values are needed, which bodies get which values based on their type/parent relationship?
 **Status**: OPEN — known gap, low urgency, will surface when Task 2 runs
+
+**Addendum 2026-11-11**: ON HOLD — galaxy_game backend work is paused while the project works on galaxy-game-ui and the main and UI wikis (REPORTED, Tracy, 2026-11-11). This entry is not awaiting review, and no task should be created from it until backend work resumes. The Status line above is unchanged; this addendum is the current status.
 
 ### 2026-08-30 — IN FLIGHT: Live Game-Loop Reality Check (dispatched)
 **Task**: `2026-08-29-HIGH-ARCHITECTURE-LIVE-GAME-LOOP-REALITY-CHECK.md`
@@ -93,6 +99,8 @@ this file should stay small. Full history stays in status.md.
 **Blocks**: Event log / admin UI game-status view; ice-mining/PSR mine fixes; Venus skimmer mechanics work (all deliberately held pending this task's findings)
 **Expected output**: Findings doc in `projects/galaxy_game/summaries/` with file:line evidence for all 6 questions; NO code changes
 **Review gate**: Claude to review findings before any follow-on work is scoped
+
+**Addendum 2026-11-11**: No longer in flight. `2026-08-29-HIGH-ARCHITECTURE-LIVE-GAME-LOOP-REALITY-CHECK.md` is in `tasks/completed/2026-08/` with `status: completed` (VERIFIED 2026-11-11), and its findings are in `summaries/` (`2026-08-30-FINDINGS-...`, `2026-08-30-SYNTHESIS-...`, `2026-08-31-FOLLOWUP-...`, `2026-09-02-...`). The Status line above was not updated at the time. Backend work is also on hold (REPORTED, Tracy, 2026-11-11); nothing further is scoped from this entry. Tracy decides whether to archive it.
 
 ### 2026-10-26 — PAUSED, low priority: portal wiki draft needs small fixes; stray files in the same commit
 **What happened**: Tracy committed the portal design draft and related research to `trmccormick/galaxygame` as `65b0fc6` ("commit current portal draft work."): `docs/wiki_reorganization/transportation/portals/portal-technology-wiki-draft.md` (273 lines), `gemini-research-portals.md`, `grok-chatgpt-review-request.md`, `prompt-chatgtp-review.md`, `prompt-grok-review.md` (all at the repo root) and `galaxy_game/app/data/operational/natural_wormhole_anchor_mk1h_data.json`. Claude (web review agent) reviewed the draft on 2026-10-26 and gave REVISE, small. Tracy (2026-10-26, REPORTED): not the current focus; paused and recorded here as low priority. The draft stays as a design note; the wiki reorganization is being consolidated by a separate ChatGPT plan, so this work must not overlap it.
@@ -145,6 +153,7 @@ this file should stay small. Full history stays in status.md.
 
 **Status**: OPEN — awaiting Claude review.
 
+**Addendum 2026-11-11**: ON HOLD — galaxy_game backend work is paused while the project works on galaxy-game-ui and the main and UI wikis (REPORTED, Tracy, 2026-11-11). This entry is not awaiting review, and no task should be created from it until backend work resumes. The older Live Game-Loop Reality Check task is completed (see the 2026-08-30 entry's addendum). The Status line above is unchanged; this addendum is the current status.
 
 ### 2026-11-10 — Venus HLT atmospheric intake, onboard CO₂ processing, exhaust, and Luna return mass balance
 **What needs review**: The Venus HLT loop should use the current planet atmosphere composition for bulk intake, process captured CO₂ onboard, vent the resulting CO, account for craft exhaust returned to the source atmosphere, and calculate the actual constituent mass that survives storage/transit boiloff and can be delivered to Luna. Most of the building blocks appear to exist; inspect and consolidate before adding new services or duplicating behavior.
@@ -174,6 +183,7 @@ this file should stay small. Full history stays in status.md.
 **Priority**: HIGH — affects the Venus-to-Luna gas supply and Luna habitation/industrial planning.  
 **Status**: OPEN — awaiting Claude review. No code changes or tests performed in this documentation pass.
 
+**Addendum 2026-11-11**: ON HOLD — galaxy_game backend work is paused while the project works on galaxy-game-ui and the main and UI wikis (REPORTED, Tracy, 2026-11-11). This entry is not awaiting review, and no task should be created from it until backend work resumes. The Status line above is unchanged; this addendum is the current status.
 
 ### 2026-11-11 — Proposed Rails 8 main-app upgrade, API boundary, and staged UI replacement
 **State:** OPEN — proposal for Tracy's review; no implementation authorized by this entry.
