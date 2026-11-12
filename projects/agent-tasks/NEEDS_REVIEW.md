@@ -993,3 +993,12 @@ Please consider whether this belongs in general workflow guidance, project-speci
 **What needs a second opinion**: (1) Should DIRECT_SESSION_TEMPLATE.md or galaxy_game SESSION_GUIDANCE.md add a short “Qwen / local coding agent” note: one deliverable, stop after review, commit as separate micro-prompt? (2) Should planning agents default to splitting wiki/doc work into single-page direct sessions rather than multi-page tasks? (3) Any conflict with formal task lifecycle for larger wiki rebuilds?
 **Priority**: MEDIUM — improves dispatch quality for Qwen and other local agents; avoids repeated stall patterns
 **Status**: OPEN
+
+---
+
+
+**Addendum (2026-11-11, Tracy; recorded by Claude)**: Workflow needs tuning in three places, found while preparing an outward-link cleanup prompt for a fresh Qwen session.
+1. **Fresh-session prompts must include STEP 0 and be self-contained.** A prompt that says "repeat this task for each page" or assumes earlier context is not a direct-work prompt. One page per fresh session, with the startup reading order spelled out (this entry first for wiki work, then GUARDRAILS, project README, SESSION_GUIDANCE).
+2. **One prompt at a time.** A planning agent sends one prompt, reviews the executor's reply, then writes the next. Follow-up prompts (commit, push, next page) are not written in advance because the reply decides them. Commit and push stay separate prompts and need explicit human approval, as DIRECT_SESSION_TEMPLATE.md already says.
+3. **Planning agents should read this file before drafting executor prompts.** Recent entries here may carry workflow lessons the planner has not seen.
+Adds to the open questions above; no template or guardrail change is authorized by this addendum.
