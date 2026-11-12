@@ -983,3 +983,13 @@ Please consider whether this belongs in general workflow guidance, project-speci
 **Priority**: MEDIUM — affects how ChatGPT Free Web coordinates with local and web agents, how repository changes are authorized, and whether project status remains useful rather than bloated.
 
 **Status**: OPEN. Added for Claude's workflow-tuning review. This entry records observations and questions only; no new workflow policy or guardrail changes are authorized by it.
+
+---
+
+### 2026-11-11 — Small focused direct-session prompts work well for Qwen (wiki work)
+**What happened**: On galaxyGame wiki work (EM terminology fix, Sol system reference page), Qwen completed cleanly when given one narrow objective, explicit harvest-only rules, “show work then stop,” and commit/push as a separate minimal follow-up. Larger multi-deliverable prompts previously risked stall or confusion. Fresh sessions still need full STEP 0 (GUARDRAILS → project README → SESSION_GUIDANCE); continuations must not re-run startup.
+**Observed in**: galaxy_game wiki sessions (Grok planning + Qwen execution), 2026-11-11
+**What I already checked**: DIRECT_SESSION_TEMPLATE.md; GUARDRAILS Rule 13b (direct vs formal task); galaxy_game SESSION_GUIDANCE.md startup order
+**What needs a second opinion**: (1) Should DIRECT_SESSION_TEMPLATE.md or galaxy_game SESSION_GUIDANCE.md add a short “Qwen / local coding agent” note: one deliverable, stop after review, commit as separate micro-prompt? (2) Should planning agents default to splitting wiki/doc work into single-page direct sessions rather than multi-page tasks? (3) Any conflict with formal task lifecycle for larger wiki rebuilds?
+**Priority**: MEDIUM — improves dispatch quality for Qwen and other local agents; avoids repeated stall patterns
+**Status**: OPEN
