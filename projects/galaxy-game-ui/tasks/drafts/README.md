@@ -1,54 +1,68 @@
-# Galaxy Game UI — Draft Tasks
+# GalaxyGame UI — Draft Task Queue
 
-**Updated:** 2026-11-04
+**Updated:** 2026-11-13
 
-This folder contains proposed, not-yet-authorized work for the Galaxy Game UI prototype. Tracy reviews each task before dispatch. Qwen should receive **one small task at a time**.
+This folder contains proposed work for the separate `galaxy-game-ui` visual prototype. These tasks are drafts for Tracy's review; creating them does not authorize dispatch. Qwen should receive **one task at a time**, in the order Tracy chooses.
 
-For project and domain context, use the existing [Galaxy Game project README](../../../galaxy_game/README.md), the current [Galaxy Game UI project guidance](../../README.md), and the main game's current wiki in `galaxyGame/docs/wiki/`. This drafts README is only a work proposal; it should not repeat the project description.
+## Current scope
 
-## Design references
+The immediate work is to consolidate and port existing UI into the Rails 8.1 prototype, clean up presentation/CSS as needed, and add placeholders where a view does not yet exist.
 
-The earlier research into other applications remains relevant to prototype presentation and workflows:
+- The main GalaxyGame backend is paused and is not part of this work.
+- The prototype does not need a running simulation, production API, or live backend integration.
+- Reuse existing views, JavaScript, renderers, assets, and useful data wherever practical.
+- Imported JSON and clearly identified mock JSON may use the same presentation code.
+- Record data needs and gaps as observations for future API discovery; do not define API contracts.
+- The main GalaxyGame wiki owns game design intent. This UI wiki records prototype-specific presentation and integration guidance.
+- The old backlog is reference material only. Do not revive unrelated tasks or expand scope to fix old backend issues.
 
-- **EVE Dashboard:** primary reference for dashboard layout, navigation, panels, information hierarchy, and waypoint JavaScript.
-- **EVE Tycoon:** reference for organizing market and industry workflows.
-- **EVEpraisal:** reference for bulk valuation input and results presentation.
-- **Other researched apps:** use selectively when a specific interaction or information-architecture pattern solves a prototype need.
+## Current page/workspace drafts
 
-These are presentation references only. Galaxy Game's own wiki, code, and JSON determine Galaxy Game terminology, rules, and data. Do not import another game's branding or gameplay logic.
-
-## First-attempt recovery
-
-Before recreating a feature, inspect the current prototype, Git history, and the read-only local backup:
-
-`/Users/tam0013/Documents/git/galaxy-game-ui/galaxy-game-ui-first-attempt`
-
-The backup must not be modified. In particular, audit the EVE Dashboard waypoint JavaScript and any adapted copy already present in the first attempt. Copy only a verified, useful piece into the current prototype, with its source recorded. Do not wholesale-import the old CSS foundation.
-
-## Proposed task sequence
-
-| Order | Draft task | Scope |
+| Suggested order | Draft task | Purpose |
 |---:|---|---|
-| 1 | `2026-11-04-HIGH-AUDIT-WAYPOINT-JS-RECOVERY.md` | Read-only audit of waypoint code in the current branch, first-attempt Git history, and local backup |
-| 2 | `2026-11-04-MEDIUM-FINALIZE-SIGNIN-BRANDING.md` | Finish and verify Galaxy Game branding on the sign-in screen; preserve authentication behavior |
-| 3 | `2026-11-04-MEDIUM-REPLACE-LANDING-LOGO.md` | Align the landing page logo with the approved Galaxy Game asset |
-| 4 | `2026-11-04-MEDIUM-PORT-WAYPOINT-NAVIGATION.md` | Conditional port of existing waypoint code, only after the audit and Tracy's approval |
+| 1 | `2026-11-13-PORT-PLAYER-PLANETARY-VIEW.md` | Port the existing Planetary view and renderer |
+| 2 | `2026-11-13-PORT-PLAYER-SURFACE-VIEW.md` | Port the existing Surface view, renderers, and assets |
+| 3 | `2026-11-13-PORT-PLAYER-SPACE-WORKSPACE.md` | Consolidate GalaxyGame Space work and useful EVE Dashboard modules |
+| 4 | `2026-11-13-CREATE-PLAYER-SETTLEMENT-PLACEHOLDER.md` | Add the new Settlement context without inventing finalized mechanics |
+| 5 | `2026-11-13-CONSOLIDATE-ADMIN-DASHBOARD-OVERVIEW.md` | Clean up the Admin entry point and workspace navigation |
+| 6 | `2026-11-13-CONSOLIDATE-AI-MANAGER-WORKSPACE.md` | Consolidate useful AI Manager screens into an inspectable Admin workspace |
 
-Dispatch one task at a time. Task 4 remains blocked until task 1 is reviewed. Confirm the correct logo asset/variant before task 3 changes it.
+This is a practical starting order, not a rigid schedule. Tracy may choose a different task based on the current prototype state and evening availability. Do not dispatch several tasks in parallel.
 
-## Later feature work
+## Authoritative design and prototype references
 
-After the initial tasks, review the current prototype and research to identify individual, small tasks for dashboard layout, navigation/wayfinding, market workflows, bulk valuation, and industry/manufacturing presentation. Do not bundle several screens or features into a single dashboard task. Check existing code and source material before drafting new work.
+- Main-game Player view intent: `galaxyGame/docs/wiki/ui/02_player_view_architecture.md`
+- Main-game Admin/AI Manager intent: `galaxyGame/docs/wiki/ui/03_admin_and_ai_manager.md`
+- UI prototype direction: `galaxy-game-ui/docs/wiki/README.md`
+- UI JavaScript reuse/porting: `galaxy-game-ui/docs/wiki/javascript-reuse-and-porting-plan.md`
+- UI data approach: `galaxy-game-ui/docs/wiki/data-integration-and-migration.md`
+- Current AI Manager screen direction: `galaxy-game-ui/docs/wiki/future_work.md`
+- Prototype-specific session/environment guidance: `projects/galaxy-game-ui/SESSION_GUIDANCE.md`
 
-## Draft task requirements
+The Player interface has exactly four contexts: **Planetary, Surface, Space, and Settlement**. Admin is a separate interface; AI Manager is a workspace within Admin, not a fifth Player context.
 
-Each task must:
+## How to use these drafts
 
-- Cover one small feature or one bounded read-only audit.
-- State whether it is read-only or may modify the current prototype.
-- Identify exact paths and relevant source commits/files.
-- Preserve existing working behavior unless a change is explicitly in scope.
-- Include clear acceptance criteria and out-of-scope items.
-- Avoid modifying the first-attempt backup.
-- Avoid committing, pushing, or dispatching without Tracy's explicit authorization.
+1. Review the next proposed task and adjust it if the current wiki or prototype has changed.
+2. Dispatch only the approved task to Qwen.
+3. Review the result before dispatching the next task.
+4. Keep tasks focused on one page or bounded workspace.
+5. Update the wiki only when a genuine design decision or clarification is needed; do not duplicate wiki material in task files.
 
+## Older draft tasks
+
+Older tasks in this folder were written for earlier prototype directions and are not automatically part of this queue. In particular, the November 4 waypoint/navigation task and earlier dashboard foundation tasks should be reviewed against the current wiki and prototype before anyone dispatches them. Do not delete or revive them as part of this reset without Tracy's direction.
+
+## Task quality
+
+Each current task should state:
+- one page or bounded workspace to port/consolidate;
+- the authoritative wiki references;
+- existing source code/assets to inspect and reuse;
+- the representative/mock-data boundary;
+- what is explicitly out of scope;
+- observable acceptance criteria and basic verification.
+
+Keep task files short enough to execute. Do not add duplicate startup procedures, elaborate synthesis gates, or process checklists already covered by the shared guidance. Do not create extra reports or follow-on tasks unless the work genuinely requires them.
+
+No task is dispatched or approved merely because it appears in this folder.
