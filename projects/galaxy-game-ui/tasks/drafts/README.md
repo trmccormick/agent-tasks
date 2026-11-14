@@ -2,16 +2,16 @@
 
 **Updated:** 2026-11-13
 
-This folder contains proposed work for the separate `galaxy-game-ui` visual prototype. These tasks are drafts for Tracy's review; creating them does not authorize dispatch. Qwen should receive **one task at a time**, in the order Tracy chooses.
+This folder contains proposed work for the separate galaxy-game-ui visual prototype. These tasks are drafts for Tracy's review; creating them does not authorize dispatch. Tracy selects the agent and dispatches one task at a time.
 
 ## Current scope
 
 The immediate work is to consolidate and port existing UI into the Rails 8.1 prototype, clean up presentation/CSS as needed, and add placeholders where a view does not yet exist.
 
 - The main GalaxyGame backend is paused and is not part of this work.
-- The prototype does not need a running simulation, production API, or live backend integration.
+- The prototype is a visual/design prototype; it does not need a running simulation, production API, or live backend integration.
 - Reuse existing views, JavaScript, renderers, assets, and useful data wherever practical.
-- Imported JSON and clearly identified mock JSON may use the same presentation code.
+- Imported JSON and clearly identified mock JSON may use the same presentation code. Follow the current UI data wiki and inspect the live prototype before choosing a data location or adding infrastructure.
 - Record data needs and gaps as observations for future API discovery; do not define API contracts.
 - The main GalaxyGame wiki owns game design intent. This UI wiki records prototype-specific presentation and integration guidance.
 - The old backlog is reference material only. Do not revive unrelated tasks or expand scope to fix old backend issues.
@@ -20,49 +20,56 @@ The immediate work is to consolidate and port existing UI into the Rails 8.1 pro
 
 | Suggested order | Draft task | Purpose |
 |---:|---|---|
-| 1 | `2026-11-13-PORT-PLAYER-PLANETARY-VIEW.md` | Port the existing Planetary view and renderer |
-| 2 | `2026-11-13-PORT-PLAYER-SURFACE-VIEW.md` | Port the existing Surface view, renderers, and assets |
-| 3 | `2026-11-13-PORT-PLAYER-SPACE-WORKSPACE.md` | Consolidate GalaxyGame Space work and useful EVE Dashboard modules |
-| 4 | `2026-11-13-CREATE-PLAYER-SETTLEMENT-PLACEHOLDER.md` | Add the new Settlement context without inventing finalized mechanics |
-| 5 | `2026-11-13-CONSOLIDATE-ADMIN-DASHBOARD-OVERVIEW.md` | Clean up the Admin entry point and workspace navigation |
-| 6 | `2026-11-13-CONSOLIDATE-AI-MANAGER-WORKSPACE.md` | Consolidate useful AI Manager screens into an inspectable Admin workspace |
+| 1 | 2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-PLANETARY-VIEW.md | Port the existing Planetary view and renderer; first slice is Earth |
+| 2 | 2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-SURFACE-VIEW.md | Port the Surface page and reusable presentation code; asset exploration is paused |
+| 3 | 2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-SPACE-WORKSPACE.md | Create a bounded Sol Space view, using only the relevant fleet-map interaction pattern |
+| 4 | 2026-11-13-MEDIUM-FEATURE-CREATE-PLAYER-SETTLEMENT-PLACEHOLDER.md | Add Settlement without inventing finalized mechanics |
+| 5 | 2026-11-13-MEDIUM-FEATURE-CREATE-ADMIN-SHELL-AND-OVERVIEW.md | Create a distinct Admin shell and overview entry point |
+| 6 | 2026-11-13-MEDIUM-FEATURE-CREATE-AI-MANAGER-INSPECTION-WORKSPACE.md | Create a focused mission/decision inspection workspace within Admin |
 
-This is a practical starting order, not a rigid schedule. Tracy may choose a different task based on the current prototype state and evening availability. Do not dispatch several tasks in parallel.
+This is a practical starting order, not a rigid schedule. Tracy may choose a different task based on the current prototype state and availability. Do not dispatch several tasks in parallel.
+
+## Surface imagery and tileset status
+
+Terrain/biome/tileset asset exploration is paused and is not part of the current Surface port.
+
+- Trident was an early experiment, not an approved or default tileset.
+- Earlier exploration of FreeCiv and other existing free tilesets was abandoned.
+- Generated samples and individual image files from earlier experiments are exploratory material, not an approved or complete asset set.
+- Do not source, generate, convert, stage or commit new terrain/biome imagery as part of these tasks.
+- A later, separate exploration will determine proper image sources and visual direction.
+
+The Surface task may reuse existing assets only if already available and working without expanding scope. Missing or broken imagery should be reported, not repaired.
 
 ## Authoritative design and prototype references
 
-- Main-game Player view intent: `galaxyGame/docs/wiki/ui/02_player_view_architecture.md`
-- Main-game Admin/AI Manager intent: `galaxyGame/docs/wiki/ui/03_admin_and_ai_manager.md`
-- UI prototype direction: `galaxy-game-ui/docs/wiki/README.md`
-- UI JavaScript reuse/porting: `galaxy-game-ui/docs/wiki/javascript-reuse-and-porting-plan.md`
-- UI data approach: `galaxy-game-ui/docs/wiki/data-integration-and-migration.md`
-- Current AI Manager screen direction: `galaxy-game-ui/docs/wiki/future_work.md`
-- Prototype-specific session/environment guidance: `projects/galaxy-game-ui/SESSION_GUIDANCE.md`
+- Main-game Player view intent: galaxyGame/docs/wiki/ui/02_player_view_architecture.md
+- Main-game Admin/AI Manager intent: galaxyGame/docs/wiki/ui/03_admin_and_ai_manager.md
+- UI prototype direction: galaxy-game-ui/docs/wiki/README.md
+- UI JavaScript reuse/porting: galaxy-game-ui/docs/wiki/javascript-reuse-and-porting-plan.md
+- UI data approach: galaxy-game-ui/docs/wiki/data-integration-and-migration.md
+- Current AI Manager screen direction: galaxy-game-ui/docs/wiki/future_work.md
+- Prototype-specific session/environment guidance: projects/galaxy-game-ui/SESSION_GUIDANCE.md
 
-The Player interface has exactly four contexts: **Planetary, Surface, Space, and Settlement**. Admin is a separate interface; AI Manager is a workspace within Admin, not a fifth Player context.
+The Player interface has four contexts: Planetary, Surface, Space and Settlement. Admin is a separate interface; AI Manager is a workspace within Admin, not a fifth Player context.
 
 ## How to use these drafts
 
-1. Review the next proposed task and adjust it if the current wiki or prototype has changed.
-2. Dispatch only the approved task to Qwen.
-3. Review the result before dispatching the next task.
-4. Keep tasks focused on one page or bounded workspace.
-5. Update the wiki only when a genuine design decision or clarification is needed; do not duplicate wiki material in task files.
+1. Review the next proposed task against the current wiki and prototype.
+2. Obtain an independent review and Tracy's approval before moving a draft to backlog.
+3. Dispatch only the approved task selected by Tracy.
+4. Review the result before dispatching the next task.
+5. Keep tasks focused on one page or bounded workspace.
+6. Update the wiki only when a genuine design decision or clarification is needed; do not duplicate wiki material in task files.
 
 ## Older draft tasks
 
-Older tasks in this folder were written for earlier prototype directions and are not automatically part of this queue. In particular, the November 4 waypoint/navigation task and earlier dashboard foundation tasks should be reviewed against the current wiki and prototype before anyone dispatches them. Do not delete or revive them as part of this reset without Tracy's direction.
+Older tasks are not automatically part of this queue. Review them only if they become relevant to a current work area. Do not delete or revive them as part of this reset without Tracy's direction.
 
 ## Task quality
 
-Each current task should state:
-- one page or bounded workspace to port/consolidate;
-- the authoritative wiki references;
-- existing source code/assets to inspect and reuse;
-- the representative/mock-data boundary;
-- what is explicitly out of scope;
-- observable acceptance criteria and basic verification.
+Each task should state one bounded objective, authoritative wiki references, source code/assets to inspect and reuse, the mock-data boundary, exclusions, observable acceptance criteria and basic verification.
 
-Keep task files short enough to execute. Do not add duplicate startup procedures, elaborate synthesis gates, or process checklists already covered by the shared guidance. Do not create extra reports or follow-on tasks unless the work genuinely requires them.
+Keep task files focused. Do not add new data frameworks, duplicate design specifications, or extra reports/follow-on tasks unless genuinely required. Shared startup, synthesis, review and lifecycle requirements remain governed by the task template and rules/GUARDRAILS.md.
 
-No task is dispatched or approved merely because it appears in this folder.
+No task is approved or dispatched merely because it appears in this folder.
