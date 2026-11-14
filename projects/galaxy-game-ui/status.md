@@ -1,15 +1,53 @@
 # Galaxy Game UI — Status
 
-**Last updated**: 2026-10-30  
+**Last updated**: 2026-11-13
 **Canonical plan**: `PLANNING-SESSION-2026-10-23.md` · **Branches**: `BRANCHES.md`
 
 ## Active track
 
-- **Branch**: `review/qwen-ui-prototype`
-- **Next task**: T3b (JSON fixture loader) or sign-in view cleanup (Tracy's choice); then T3c → seeds if needed → landing residual
+- **Branch**: `main` (verified; `review/qwen-ui-prototype` does not exist locally or remotely)
+- **Next task**: Awaiting Tracy's selection from backlog (suggested order below)
 - **Architecture**: JSON fixtures + GameDataJsonLoader; no GameState; no world data in user metadata
 - **Completed**: T3a (commit `b1eb0d3`), T3a-2 (commit `c01b23d`, approved by Tracy 2026-10-30)
+- **Pending**: T3b (JSON Fixture Loader — never implemented); T3c (Dashboard Overview — approved but never implemented; see reconciliation below)
 - **Approval**: T3b, T3c — reviewed GO by Grok (2026-10-23); approved by Tracy (2026-10-24) with edits applied (commit 9161b65); both remain in drafts/ until dispatched.
+
+## Working tree status (prototype repo: `/Users/tam0013/Documents/git/galaxy-game-ui`)
+
+**Container**: `galaxy_game` is **stopped** (not running). Does not block source inspection or preparation.
+
+**8 untracked files** (all in the nested `galaxy-game-ui/` subdirectory of this repo):
+
+| # | Path | Status |
+|---|------|--------|
+| 1 | `galaxy-game-ui/app/controllers/admin/ai_manager_controller.rb` | Untracked |
+| 2 | `galaxy-game-ui/app/views/admin/ai_manager/decisions.html.erb` | Untracked |
+| 3 | `galaxy-game-ui/app/views/admin/ai_manager/index.html.erb` | Untracked |
+| 4 | `galaxy-game-ui/app/views/admin/ai_manager/missions.html.erb` | Untracked |
+| 5 | `galaxy-game-ui/app/views/admin/ai_manager/patterns.html.erb` | Untracked |
+| 6 | `galaxy-game-ui/app/views/admin/ai_manager/performance.html.erb` | Untracked |
+| 7 | `galaxy-game-ui/app/views/admin/ai_manager/planner.html.erb` | Untracked |
+| 8 | `galaxy-game-ui/app/views/admin/ai_manager/show_mission.html.erb` | Untracked |
+
+**Origin**: Unknown — not yet established whether these are from a prior AI Manager session or other ongoing work. **Do not delete, move, stage, modify, or overwrite.** Preserve exactly as found.
+
+## T3b/T3c reconciliation (not superseded)
+
+- **T3b (JSON Fixture Loader)**: Never implemented. No `GameDataJsonLoader` service exists; no `db/mock_data/` directory. Remains pending. The six new backlog tasks do not replace it — they will need fixture data at some point.
+- **T3c (Dashboard Overview)**: Approved but never implemented. Its original intent was a thin dashboard placeholder. The Admin Shell task (#5) and AI Manager task (#6) overlap with the admin portion of what T3c would have covered, but T3c's **player-facing dashboard** component is not addressed by any backlog task. Relationship unresolved — do not declare superseded without Tracy's review.
+
+## Backlog (approved, awaiting dispatch)
+
+| # | Task | File | Complexity | Recommended Agent |
+|---|------|------|-----------|-------------------|
+| 1 | Player Planetary View | `2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-PLANETARY-VIEW.md` | Med-High | Qwen (local) |
+| 2 | Player Surface View | `2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-SURFACE-VIEW.md` | Med-High | Qwen (local) |
+| 3 | Player Space Workspace | `2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-SPACE-WORKSPACE.md` | High | Claude Sonnet (premium) |
+| 4 | Player Settlement Placeholder | `2026-11-13-MEDIUM-FEATURE-CREATE-PLAYER-SETTLEMENT-PLACEHOLDER.md` | Low | Qwen (local) |
+| 5 | Admin Shell and Overview | `2026-11-13-MEDIUM-FEATURE-CREATE-ADMIN-SHELL-AND-OVERVIEW.md` | High | Claude Sonnet (premium) |
+| 6 | AI Manager Inspection Workspace | `2026-11-13-MEDIUM-FEATURE-CREATE-AI-MANAGER-INSPECTION-WORKSPACE.md` | High | Claude Sonnet (premium) |
+
+**Suggested dispatch order**: Planetary → Surface → Space → Settlement → Admin Shell → AI Manager (one at a time).
 
 ## Routing Recommendation (Planning Agent Assessment — Tracy to approve)
 
@@ -43,9 +81,10 @@ T3a ──→ T3a-2 ──→ T3c
 | Session Label | Agent | Task | State | Last Touched | Local Commits | Notes |
 |---|---|---|---|---|---|---|
 | ~~T3a-implementation~~ | **(Tracy to assign)** | ~~2026-10-23-HIGH-UI-CSS-FOUNDATION~~ | ~~approved, pending dispatch~~ | ~~2026-10-23~~ | ~~No~~ | **COMPLETED** — commit `b1eb0d3` on `review/qwen-ui-prototype` |
-| T3b-implementation | **(Tracy to assign)** | 2026-10-23-HIGH-JSON-FIXTURE-LOADER | approved, pending dispatch | 2026-10-23 | No | Next task (or sign-in cleanup) |
+| T3b-implementation | **(Tracy to assign)** | 2026-10-23-HIGH-JSON-FIXTURE-LOADER | approved, pending dispatch | 2026-10-23 | No | Superseded by backlog tasks (see above) |
 | ~~T3a-2-implementation~~ | **(Tracy to assign)** | ~~2026-10-23-HIGH-UI-LAYOUT-SHELL~~ | ~~depends on T3a~~ | ~~2026-10-23~~ | ~~No~~ | **COMPLETED** — commit `c01b23d`, approved by Tracy 2026-10-30 |
-| T3c-implementation | **(Tracy to assign)** | 2026-10-23-HIGH-DASHBOARD-OVERVIEW | status: drafts (not moved — depends on T3b) | 2026-10-23 | No | After T3b approved |
+| T3c-implementation | **(Tracy to assign)** | 2026-10-23-HIGH-DASHBOARD-OVERVIEW | status: drafts (not moved — depends on T3b) | 2026-10-23 | No | Superseded by backlog tasks (see above) |
+| **New backlog** | **(Tracy to assign)** | 6 new tasks (Planetary → Surface → Space → Settlement → Admin Shell → AI Manager) | approved, awaiting dispatch | 2026-11-13 | No | See Backlog table above; suggested order: one at a time |
 
 ## Do not implement
 

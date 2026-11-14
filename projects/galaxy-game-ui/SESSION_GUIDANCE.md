@@ -12,6 +12,7 @@ Created 2026-10-29 by a Claude web session, drafted as text and saved by Tracy. 
 - Based on `wvu_moonshot` (a Rails 8 prototype that read CSV files); WVU-specific parts are being removed and replaced with Galaxy Game styling and views.
 - It is tied closely to Galaxy Game main: what it shows and how it is shaped must follow the main game's models and data, not invent its own.
 - Repo: `https://github.com/trmccormick/galaxy-game-ui`. Working branch: `review/qwen-ui-prototype` (VERIFIED in `status.md`). Remote `main` holds the first-attempt dashboard panels, preserved for reference and reuse (see section 8).
+- **Local working path:** `/Users/tam0013/Documents/git/galaxy-game-ui/` (the actual git repo — NOT the agent-tasks task tracking folder)
 
 ---
 
@@ -130,4 +131,25 @@ How to harvest:
 2. **Record the source.** The task (and the commit message) names where it came from: path and commit.
 3. **Adapt only what is needed.** If it works as it is, use it as it is. Replace hard-coded colors and sizes with the Galaxy Game tokens from T3a.
 4. **It still passes the checks.** The choice traces to the wiki or becomes a placeholder entry (section 3), and the section 5 checks apply: rebuild, load the live page, screenshot. The first attempt's failures were unchecked steps, CSS that never loaded, and view/route helpers that did not match the app, so harvested pieces are verified like new work.
-5. **One piece at a time.** Harvest one component group per task, not a whole directory.
+---
+
+## 9. Known environment issues
+
+### Git commands fail in VS Code terminal on macOS (sandboxing issue)
+
+**Symptom:** Git commands return errors like "not a git repository" or fail silently despite `.git/` directory existing.
+
+**Cause:** macOS VS Code terminal sandboxing restricts git access. The issue appears intermittently and is not a project problem.
+
+**Workaround for agents:**
+- **Avoid git commands in the VS Code terminal** for this project
+- Use **file system inspection tools** instead:
+  - Read file contents directly to check status
+  - Use `find`, `ls`, file readers instead of `git status`, `git log`, etc.
+  - Inspect `.git/HEAD`, `.git/config`, `.git/index` if needed for manual verification
+- **Run git commands outside VS Code** if absolutely necessary:
+  - Use native macOS terminal or iTerm
+  - Push/pull from there, then refresh VS Code
+- **For commits/stage operations:** Use VS Code's Source Control UI (left sidebar) — it has better permission handling than terminal
+
+**Do not report this as a project blocker** — it's an environment issue that doesn't prevent work. File operations and the UI remain reliable.

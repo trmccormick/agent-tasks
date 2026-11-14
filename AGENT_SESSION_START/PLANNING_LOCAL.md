@@ -27,6 +27,8 @@ Agents are described along **two independent dimensions**:
 3. **Stall ladder.** If you catch yourself repeating a check twice: stop and report. The human sends a redirect.
 4. **Preserve unrelated work.** Work on `main`. Never reset, stash, or commit changes that aren't yours.
 5. **Draft tasks only when told.** Do NOT move tasks from `drafts/` to `backlog/` (human-only). Do NOT dispatch to implementation agents (human + review agent decision).
+6. **macOS git terminal workaround.** Git commands may fail in VS Code terminal due to macOS sandboxing (`fatal: not a git repository`). **Workaround**: Use file system tools (read/write files) instead of git commands, or ask the human to run git commands directly. This is a terminal sandboxing issue, not a repo corruption.
+6. **macOS git terminal issue.** If git commands fail in VS Code terminal (sandboxing), use file system tools instead or report to human. Not a project blocker — check PROJECT-specific SESSION_GUIDANCE.md for workarounds.
 
 ---
 
@@ -40,22 +42,26 @@ Agents are described along **two independent dimensions**:
 
 | Location | Contains |
 |----------|----------|
-| Project repo (where you start) | Source code, tests, docs |
+| Project repo (where you start) | Source code, tests, docs **← YOU WORK HERE** |
 | `agent-tasks` repo (separate) | Task files, status.md, handoffs, SESSION_GUIDANCE.md, GUARDRAILS.md |
+
+**CRITICAL:** When you start a planning session, your VS Code workspace should be open to the **actual git repo** (e.g., `/path/to/galaxy-game-ui/`), NOT to the agent-tasks folder.
 
 **Project folder names in agent-tasks MUST match the git repo name:**
 - Example: Git repo `wvu_knapsack` → agent-tasks folder `wvu_knapsack`
 - Example: Git repo `galaxy_game` → agent-tasks folder `galaxy_game`
 
 **You must have both repos locally** to run a planning session:
-- Your working directory: `/path/to/wvu_knapsack` (the git repo)
-- Task tracking directory: `/path/to/agent-tasks/projects/wvu_knapsack/` (same name)
+- Your working directory: `/path/to/wvu_knapsack` (the git repo) **← WORK HERE**
+- Task tracking directory: `/path/to/agent-tasks/projects/wvu_knapsack/` (for reference only)
 
 ### Step 0a — Detect and confirm project name
 
 You are already in a VS Code workspace. **Identify the current project folder name** (the git repo name).
 
 Example: If you see files like `Gemfile`, `config.ru`, `Rakefile` — you're likely in `galaxy-game-ui`.
+
+**IMPORTANT:** If you see you're in `/agent-tasks/projects/<project>/` stop immediately. You are in the WRONG location. You should be in the actual git repo (e.g., `/galaxy-game-ui/`, `/wvu_knapsack/`), not in the agent-tasks task tracking folder. Ask the human for the correct local path to the git repo.
 
 **Confirm the project:** State the project name and verify that `<agent-tasks>/projects/<project>/` exists with SESSION_GUIDANCE.md inside.
 

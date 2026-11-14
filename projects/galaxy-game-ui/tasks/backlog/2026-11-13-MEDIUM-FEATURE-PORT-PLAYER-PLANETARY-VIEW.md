@@ -32,32 +32,60 @@ You are **Implementation Agent**.
 Project: GalaxyGame UI prototype
 Task: <agent-tasks>/projects/galaxy-game-ui/tasks/backlog/2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-PLANETARY-VIEW.md
 
-STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+IMPORTANT — Repository structure (read before any commands):
+  There is ONE Git repository for the prototype. The Rails application is nested inside it.
+  Prototype Git root:    /Users/tam0013/Documents/git/galaxy-game-ui
+  Rails app root:        /Users/tam0013/Documents/git/galaxy-game-ui/galaxy-game-ui
+  Docker Compose files:  at the prototype Git root (docker-compose.yml, docker-compose.dev.yml)
+  The nested galaxy-game-ui/ directory is NOT a separate Git repository.
+
+STEP 0 — Verify agent-tasks repository and move task file:
+  cd /Users/tam0013/Documents/git/agent-tasks
+  git branch --show-current   (must return main)
+  If not on main, STOP and report to Tracy.
   git mv projects/galaxy-game-ui/tasks/backlog/2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-PLANETARY-VIEW.md \
          projects/galaxy-game-ui/tasks/active/2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-PLANETARY-VIEW.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
-  Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
-If the task YAML has `resume: true`, read the Progress / Resume block first, continue from "Next step", and set `resume: false` when you move the file to `active/`. Do not restart the task.
+STEP 1 — Verify exactly one copy exists:
+  find /Users/tam0013/Documents/git/agent-tasks/projects/galaxy-game-ui/tasks -name "2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-PLANETARY-VIEW.md"
+  Only ONE result should exist. Paste this output before proceeding.
 
-LIFECYCLE: backlog → active → completed
-  - Tracked file: git mv (never cp or plain mv)
-  - New/untracked file: mv then git add the final path
-  - Never leave stale copies in the source folder
-  - Verify with: find agent-tasks/projects/galaxy-game-ui/tasks -name "2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-PLANETARY-VIEW.md"
-    Only ONE result should exist. Paste this output before committing.
+STEP 2 — Verify the prototype repository state:
+  cd /Users/tam0013/Documents/git/galaxy-game-ui
+  git branch --show-current   (must return main)
+  git status                  (confirm working tree; do NOT modify any files)
+  Do NOT treat the nested galaxy-game-ui/ as a separate Git repository.
 
-READ FIRST (after Step 0), in this order:
-  1. <agent-tasks>/rules/GUARDRAILS.md
-  2. <agent-tasks>/projects/galaxy-game-ui/README.md
-  3. <agent-tasks>/projects/galaxy-game-ui/SESSION_GUIDANCE.md
-  4. The task file. It holds what is specific to this task; the files above hold the standing rules.
+STEP 3 — Check existing untracked files and preserve them:
+  The following eight untracked AI Manager files exist in the prototype.
+  Do NOT modify, delete, move, stage, commit, or include them in this task.
+  Their repository-relative paths begin with galaxy-game-ui/:
+    - galaxy-game-ui/app/controllers/admin/ai_manager_controller.rb
+    - galaxy-game-ui/app/views/admin/ai_manager/decisions.html.erb
+    - galaxy-game-ui/app/views/admin/ai_manager/index.html.erb
+    - galaxy-game-ui/app/views/admin/ai_manager/missions.html.erb
+    - galaxy-game-ui/app/views/admin/ai_manager/patterns.html.erb
+    - galaxy-game-ui/app/views/admin/ai_manager/performance.html.erb
+    - galaxy-game-ui/app/views/admin/ai_manager/planner.html.erb
+    - galaxy-game-ui/app/views/admin/ai_manager/show_mission.html.erb
 
-CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
-  Summaries path: <agent-tasks>/projects/galaxy-game-ui/summaries/
+STEP 4 — Read, in this order:
+  1. /Users/tam0013/Documents/git/agent-tasks/rules/GUARDRAILS.md
+  2. /Users/tam0013/Documents/git/agent-tasks/projects/galaxy-game-ui/README.md
+  3. /Users/tam0013/Documents/git/agent-tasks/projects/galaxy-game-ui/SESSION_GUIDANCE.md
+  4. The task file at the path above
+  5. galaxyGame/docs/wiki/ui/02_player_view_architecture.md
+  6. galaxyGame/docs/wiki/ui/04_current_ui_state_and_known_issues.md
+
+STEP 5 — Save a concise synthesis/implementation plan as MD to:
+  /Users/tam0013/Documents/git/agent-tasks/projects/galaxy-game-ui/summaries/
   Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
-  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+  Include: goal, files referenced, prerequisites, expected outcomes, gotchas to avoid.
+
+STEP 6 — Implement within the approved task scope. When runtime verification is needed,
+  start the galaxy_game container (confirm compose config at prototype Git root first).
 
 Closeout: follow SESSION_CLOSEOUT.md only.
 ```
