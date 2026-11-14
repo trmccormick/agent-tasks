@@ -116,7 +116,7 @@ Not required.
 
 **GOTCHA 1:** This is a concrete first slice, not an open-ended audit of EVE Dashboard modules.
 
-**GOTCHA 2:** Use fleet_map.js as the only initial EVE candidate. If its source is unavailable or needs substantial rewriting, stop and report; do not invent a substitute.
+**GOTCHA 2:** Use fleet_map.js as the only initial EVE candidate. If it is unavailable or adapting it would require substantial rewriting, skip the EVE interaction pattern and continue with a minimal Sol view using only the GalaxyGame renderer baseline. Report the unavailable source or reason for skipping it; do not invent a substitute.
 
 **GOTCHA 3:** Do not use chain.js, wealth.js, market.js, assets.js or structures.js.
 
@@ -196,7 +196,7 @@ Inspect the current prototype branch, routes, layouts, assets and referenced sou
 ### Step 2 — Implement the bounded first slice
 
 1. Inspect the prototype and locate the actual GalaxyGame Space/system presentation baseline. Read app/javascript/system_renderer.js; do not assume the similarly named asset-pipeline file is equivalent.
-2. Verify whether the EVE Dashboard checkout and fleet_map.js are accessible. If not, stop and report the missing path; do not use machine-specific absolute paths or fabricate source.
+2. Check whether the EVE Dashboard checkout and fleet_map.js are accessible and whether the relevant interaction code can be adapted without substantial rewriting. If the file is unavailable or would require substantial rewriting, skip the EVE adaptation, continue with the minimal Sol view using only the GalaxyGame renderer baseline, and report the missing path or reason for skipping it. Do not use machine-specific absolute paths or fabricate source.
 3. Create one Sol-focused Space page showing sample bodies, stations and ships. Reuse the GalaxyGame renderer if it fits without substantial rewriting.
 4. If fleet_map.js is available, adapt only its pan/zoom, marker-selection and selected-object-panel interaction pattern. Keep GalaxyGame's in-system representation and terminology.
 5. Use available imported data or clearly labeled mock values. Do not create a new data framework.
@@ -214,7 +214,7 @@ Save required evidence/synthesis artifacts in the task-management repository's p
 
 - [ ] Space is reachable in the Player context.
 - [ ] A Sol view displays representative celestial bodies, stations and ships using GalaxyGame terminology.
-- [ ] Pan/zoom and selection work if fleet_map.js is available; otherwise stop with a precise blocker report.
+- [ ] If fleet_map.js is available and can be adapted without substantial rewriting, its bounded pan/zoom and selection pattern is used. If it is unavailable or unsuitable, deliver the minimal Sol view using the GalaxyGame renderer baseline alone and report the fallback.
 - [ ] The implementation distinguishes an in-system view from inter-system wormhole connections.
 - [ ] No EVE gameplay rules, backend or live route calculations are introduced.
 - [ ] Record source revisions/provenance and check the page in the running prototype with visual evidence.
@@ -225,7 +225,7 @@ Inter-system wormhole map, chain/pathfinding features, EVE chain/wealth/market/a
 
 ## Stop Conditions — escalate to Tracy immediately if
 
-- A required source checkout, file or asset is unavailable and no explicitly permitted fallback exists.
+- A required GalaxyGame source checkout, file or asset is unavailable and no explicitly permitted fallback exists. The EVE Dashboard checkout or fleet_map.js being unavailable is not, by itself, a blocker; use the documented GalaxyGame-only fallback.
 - Completing the task requires backend/API work, simulation behavior, a new data framework or an unapproved game mechanic.
 - The wiki, code or source data materially conflict about intended behavior.
 - The work requires sourcing/generating/committing new visual assets beyond the stated scope.
