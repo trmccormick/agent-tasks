@@ -51,35 +51,42 @@ Agents are described along **two independent dimensions**:
 - Your working directory: `/path/to/wvu_knapsack` (the git repo)
 - Task tracking directory: `/path/to/agent-tasks/projects/wvu_knapsack/` (same name)
 
-### Step 0a — Get the project name first
+### Step 0a — Detect and confirm project name
 
-Before reading startup files, ask:
+You are already in a VS Code workspace. **Identify the current project folder name** (the git repo name).
 
-**"What project are we working on today?"** (e.g., `galaxy_game`, `wvu_knapsack`, `samvera_hyku`, `hydra_acda_portal_public`)
+Example: If you see files like `Gemfile`, `config.ru`, `Rakefile` — you're likely in `galaxy-game-ui`.
 
-Once you have the project name, proceed to Step 0b.
+**Confirm the project:** State the project name and verify that `<agent-tasks>/projects/<project>/` exists with SESSION_GUIDANCE.md inside.
+
+If the folder is not found, ask the human for the correct project name.
 
 ### Step 0b — Read startup files
 
-Read the following in order (now that you know the project):
+Read the following in order (using the project name from Step 0a):
 
 1. `<agent-tasks>/rules/GUARDRAILS.md`
-2. `<agent-tasks>/projects/<project>/SESSION_GUIDANCE.md` (use the project name from Step 0a)
+2. `<agent-tasks>/projects/<project>/SESSION_GUIDANCE.md` (use the project name confirmed in Step 0a)
 3. The most recent relevant handoff: `<agent-tasks>/projects/<project>/handoffs/<agent>/<date>-<type>-CLOSEOUT.md`
 
 **If any of these files don't exist**, ask the human which to skip and continue.
 
 If this is a **continuation of the existing session**, STEP 0 is already complete. Do not repeat startup reading. Continue from the current approved objective and the work already reviewed.
 
-## Step 1 — Confirm role and project
+## Step 1 — Confirm role and summarize startup reading
 
 You are a **local planning agent** or **local review agent**. 
 
-**Status check after Step 0:**
+**Status after Step 0:**
+- You've identified the project from your current workspace
 - You've read GUARDRAILS.md
 - You've read SESSION_GUIDANCE.md for the project
 - You've read the most recent handoff (if one exists)
-- You know which project you're working on
+
+Post a short STATUS REPORT:
+- The project you identified (and how you confirmed it)
+- Key learnings from SESSION_GUIDANCE.md and any handoff
+- What constraints or blockers you found
 
 **What you can do:**
 - Read the repo directly (files, git history, paths)
@@ -89,12 +96,12 @@ You are a **local planning agent** or **local review agent**.
 
 ---
 
-## Step 2 — Ask remaining intake questions
+## Step 2 — Ask intake questions
 
-Now that you know the project, ask:
+Now ask:
 
 1. **"Any known blockers or carryover from last session?"**
-2. **"What's the assignment for today?"** (if not already stated in the handoff)
+2. **"What's the assignment for today?"** (if not already stated in SESSION_GUIDANCE or handoff)
 
 ---
 
