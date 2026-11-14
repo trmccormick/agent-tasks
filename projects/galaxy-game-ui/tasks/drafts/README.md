@@ -39,7 +39,7 @@ Terrain/biome/tileset asset exploration is paused and is not part of the current
 - Do not source, generate, convert, stage or commit new terrain/biome imagery as part of these tasks.
 - A later, separate exploration will determine proper image sources and visual direction.
 
-The Surface task may reuse existing assets only if already available and working without expanding scope. Missing or broken imagery should be reported, not repaired.
+The Surface task should port and adapt the existing tile-based rendering setup as the initial prototype approach where practical, using existing assets and bounded compatibility fixes. This is provisional UI work, not a final terrain/rendering architecture decision. The pause applies to new asset sourcing/generation, replacement-tileset exploration and broad pipeline repair; missing or broken dependencies should be reported rather than triggering that larger work.
 
 ## Authoritative design and prototype references
 
