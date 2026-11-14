@@ -87,13 +87,13 @@ IMPORTANT: Do not modify or abbreviate the text above. The only dispatch-time su
 
 ## Prerequisites — READ FIRST
 
-1. <agent-tasks>/rules/GUARDRAILS.md
-2. <agent-tasks>/projects/galaxy-game-ui/README.md
-3. <agent-tasks>/projects/galaxy-game-ui/SESSION_GUIDANCE.md
+1. agent-tasks/rules/GUARDRAILS.md
+2. agent-tasks/projects/galaxy-game-ui/README.md
+3. agent-tasks/projects/galaxy-game-ui/SESSION_GUIDANCE.md
 4. The current prototype wiki references below.
 5. This task in full.
 
-The prototype is Rails 8.1 and is separate from the Rails 7 main GalaxyGame application. Work only in <galaxy-game-ui>. Main-game and EVE source repositories are read-only references.
+The prototype is Rails 8.1 and is separate from the Rails 7 main GalaxyGame application. Work only in galaxy-game-ui. Main-game and EVE source repositories are read-only references.
 
 ## Context
 
@@ -101,11 +101,11 @@ Port the existing Planetary view into the separate Rails 8.1 prototype, reusing 
 
 ## Relevant Architecture Docs — read before starting
 
-- <galaxyGame>/docs/wiki/ui/02_player_view_architecture.md
-- <galaxyGame>/docs/wiki/ui/04_current_ui_state_and_known_issues.md
-- <galaxy-game-ui>/docs/wiki/README.md
-- <galaxy-game-ui>/docs/wiki/javascript-reuse-and-porting-plan.md
-- <galaxy-game-ui>/docs/wiki/data-integration-and-migration.md
+- galaxyGame/docs/wiki/ui/02_player_view_architecture.md
+- galaxyGame/docs/wiki/ui/04_current_ui_state_and_known_issues.md
+- galaxy-game-ui/docs/wiki/README.md
+- galaxy-game-ui/docs/wiki/javascript-reuse-and-porting-plan.md
+- galaxy-game-ui/docs/wiki/data-integration-and-migration.md
 
 ## Critical Information for This Task
 
@@ -127,8 +127,26 @@ Not applicable. This is a standalone visual prototype task.
 
 ## Required Status Synthesis Report
 
-Before implementation, save a concise synthesis report as an MD file in <agent-tasks>/projects/galaxy-game-ui/summaries/. Include the goal, source files/targets, constraints, stop conditions, acceptance checks and verification plan. Do not paste the report into chat. Do not begin implementation until startup reading and synthesis are complete.
+Before implementation, save an MD file in the task-management repository at projects/galaxy-game-ui/summaries/. Use the filename pattern YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md. Do not paste the report into chat.
 
+The report must contain:
+
+### What I'm About to Do
+State the bounded goal, first slice and success criteria.
+
+### Files I'll Reference
+List the source files, prototype targets and purpose of each.
+
+### Prerequisites Completed
+Confirm startup guidance, task review and source-path checks are complete.
+
+### Expected Outcomes
+List observable acceptance outcomes and the verification method.
+
+### Critical Gotchas I Will Avoid
+List the task-specific exclusions and stop conditions.
+
+Do not begin implementation until startup reading and the synthesis report are complete.
 ## Review Gate — Stop Before Committing
 
 Complete implementation and local verification, then stop and request independent review. Do not commit or push, or mark the task complete, without reviewer GO and Tracy's explicit authorization. Commit and push authorizations are separate.
@@ -143,19 +161,24 @@ The main app has a useful Planetary presentation, but it is an Admin page and it
 
 | File / area | Purpose |
 |---|---|
-| <galaxy-game-ui>/app/views/ and current routes | Add/adapt this page using existing conventions; inspect exact target paths first. |
-| <galaxy-game-ui>/app/assets/ | Only minimum view-specific styles/scripts/assets required. |
-| <galaxy-game-ui>/config/routes.rb | Only if a new destination is required; preserve existing route conventions. |
+| galaxy-game-ui/app/views/ and current routes | Add/adapt this page using existing conventions; inspect exact target paths first. |
+| galaxy-game-ui/app/assets/ | Only minimum view-specific styles/scripts/assets required. |
+| galaxy-game-ui/config/routes.rb | Only if a new destination is required; preserve existing route conventions. |
 
 ### Reference Files — read only
 
 | File | Purpose |
 |---|---|
-| <galaxyGame>/galaxy_game/app/views/admin/celestial_bodies/planetary.html.erb | Source page and embedded monitor-data payload. |
-| <galaxyGame>/galaxy_game/app/javascript/admin/monitor.js | Renderer; inspect initialization and polling. |
-| <galaxy-game-ui>/ current routes, views, layouts and assets | Inspect and reuse the current prototype. |
+| galaxyGame/galaxy_game/app/views/admin/celestial_bodies/planetary.html.erb | Source page and embedded monitor-data payload. |
+| galaxyGame/galaxy_game/app/javascript/admin/monitor.js | Renderer; inspect initialization and polling. |
+| galaxy-game-ui/ current routes, views, layouts and assets | Inspect and reuse the current prototype. |
 
 Do not edit the main GalaxyGame or EVE Dashboard repositories.
+
+### Migration (if needed)
+
+- No database migration is authorized or expected for this visual-prototype task.
+- If implementation appears to require a migration, stop and ask Tracy before proceeding.
 
 ## Implementation Steps
 
