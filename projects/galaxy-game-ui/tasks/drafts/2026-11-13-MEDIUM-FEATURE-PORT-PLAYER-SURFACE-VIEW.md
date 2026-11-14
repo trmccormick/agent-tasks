@@ -97,7 +97,7 @@ The prototype is Rails 8.1 and is separate from the Rails 7 main GalaxyGame appl
 
 ## Context
 
-Port the existing Surface page and reusable presentation code into the prototype, while explicitly deferring terrain/biome/tileset asset exploration and pipeline repair.
+Port and adapt the existing Surface page and reusable presentation code into the prototype. Use the existing tile-based rendering setup as the initial implementation where it works; this is a provisional UI-prototype foundation, not a final decision about the game's terrain, spatial-data or rendering architecture. Defer new terrain/biome/tileset asset exploration and pipeline repair.
 
 ## Relevant Architecture Docs — read before starting
 
@@ -120,9 +120,9 @@ Not required.
 
 **GOTCHA 3:** Some generated image samples and individual image files exist from earlier experiments. They are exploratory, not an approved or complete asset set.
 
-**GOTCHA 4:** Terrain/biome imagery and tileset exploration are paused. Do not generate, source, convert, stage or commit new images; do not establish a permanent asset directory/convention.
+**GOTCHA 4:** New terrain/biome imagery and tileset exploration are paused. Do not generate, source, convert, stage or commit new images; do not establish a permanent asset directory/convention. This pause does not prohibit porting and adapting the existing tile-based renderer and already-available assets for the initial prototype.
 
-**GOTCHA 5:** Do not repair 0/12 tileset, blank-map or terrain pipeline issues. Report what works and what is missing.
+**GOTCHA 5:** Do not turn this task into a repair of the 0/12 tileset, blank-map or terrain pipeline issues. First establish which parts of the existing tile-based setup work in the prototype; make only bounded compatibility fixes needed to demonstrate the initial UI. Report missing/broken dependencies rather than rebuilding the asset or terrain pipeline.
 
 **GOTCHA 6:** Surface initialization is registered for DOMContentLoaded and Turbo navigation in the source. Verify it does not double-initialize.
 
@@ -157,7 +157,7 @@ Complete implementation and local verification, then stop and request independen
 
 ## Problem Statement
 
-The main app has an early Surface page and rendering pipeline, but terrain/biome/tileset imagery is incomplete and experimental. The prototype should preserve useful page and renderer work without turning this task into asset selection, tileset development or geospatial repair.
+The main app has an early Surface page and tile-based rendering pipeline. The prototype should port and adapt that existing work as the initial Surface UI, including the tile-based presentation where it can be made to work with bounded changes. This is an initial visual/design setup for evaluating the page, rendering and interactions—not the final game implementation or a commitment to the final terrain-data, tile-resolution, asset or rendering architecture. Terrain/biome/tileset asset exploration and broad pipeline repair remain out of scope.
 
 ## Files Involved
 
@@ -199,12 +199,12 @@ Inspect the current prototype branch, routes, layouts, assets and referenced sou
 ### Step 2 — Implement the bounded first slice
 
 1. Inspect the prototype and main-app Surface view. Confirm which JavaScript files and tileset loader the view actually uses before copying.
-2. Port the Surface page structure and reusable view/controller code that works without asset-pipeline repair. Keep the first pass to Earth.
+2. Port the Surface page structure and reusable view/controller code, including the existing tile-based rendering path where practical. Keep the first pass to Earth. Adapt the current implementation to the prototype rather than redesigning it.
 3. Use the embedded surface-data payload shape or a clearly labeled mock with the same shape. Do not add a new reader or fixture framework.
-4. Adapt only minimum paths and initialization. Use existing assets only if already available and working; do not make new imagery a prerequisite.
-5. If terrain cannot render because experimental assets are absent/broken, preserve the usable Surface layout/canvas and report the exact missing dependency. Do not substitute a new map implementation.
+4. Adapt the paths, initialization and asset references needed to run the existing tile-based setup in the prototype. Reuse existing assets that are already present; do not make new imagery a prerequisite.
+5. Make bounded compatibility fixes to get the initial tile-based presentation working where feasible. If a specific experimental asset or dependency prevents this, preserve the working parts of the Surface UI and report the exact blocker. Do not replace the renderer or launch a new map implementation as part of this task.
 6. Add the Surface destination to existing Player navigation and make focused layout adjustments.
-7. Record renderer dependencies, usable existing assets and remaining asset/data gaps for later separate exploration.
+7. Record what was successfully ported, what was adapted, renderer dependencies, usable existing assets and remaining asset/data gaps. Clearly identify the tile-based setup as provisional prototype implementation, leaving final architecture and future asset/data choices open.
 
 ### Step 3 — Verify
 
@@ -218,15 +218,17 @@ Save required evidence/synthesis artifacts in the task-management repository's p
 
 - [ ] Surface is reachable in the Player context and its page initializes.
 - [ ] Earth Surface reuses existing renderer/presentation code where compatible.
-- [ ] No Trident default, replacement tileset, new image sourcing/generation or terrain pipeline repair is introduced.
-- [ ] Unavailable imagery is reported with its exact dependency; a complete or healthy tileset is not required.
+- [ ] The existing tile-based rendering setup is ported/adapted as the initial prototype approach where feasible; any bounded compatibility changes are documented.
+- [ ] No Trident default, replacement tileset, new image sourcing/generation or broad terrain pipeline repair is introduced.
+- [ ] Any unavailable imagery or broken dependency is reported with its exact path/reason; the prototype does not require a complete or final asset set.
+- [ ] Documentation and implementation make clear that this is provisional prototype setup, not a final terrain/rendering architecture decision.
 - [ ] Navigating away and back does not double-initialize.
 - [ ] No main-app API/backend or live simulation is required.
 - [ ] Check the running prototype and include screenshot/evidence, changed paths and limitations.
 
 ## Out of Scope
 
-Tileset selection/development, FreeCiv or other tileset research, terrain/biome image generation or sourcing, geospatial dataset repair, pipeline debugging beyond identifying a blocker, new map implementation, backend/API integration and unrelated cleanup.
+Choosing or developing a replacement/final tileset, FreeCiv or other tileset research, terrain/biome image generation or sourcing, geospatial dataset repair, broad pipeline debugging, replacing the existing renderer with a new map implementation, finalizing terrain/rendering architecture, backend/API integration and unrelated cleanup.
 
 ## Stop Conditions — escalate to Tracy immediately if
 
