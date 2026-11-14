@@ -2,6 +2,8 @@
 
 **For local planning agents running via Ollama.** Context is limited — this file is lean by design. Read it once, then act.
 
+**CRITICAL:** If this is a fresh session, you MUST complete Step 0 (session startup reading) before proceeding to Step 1. Do not skip startup reading.
+
 ---
 
 ## Agent Terminology (Quick Reference)
@@ -30,6 +32,8 @@ Agents are described along **two independent dimensions**:
 
 ## Step 0 — Session startup (fresh session only)
 
+**MANDATORY FOR FRESH SESSIONS.** Do not skip this step.
+
 ### Two separate repositories
 
 **You start in the project folder** (e.g., `wvu_knapsack`, `galaxy_game`), but **all task tracking and planning guidance live in the separate `agent-tasks` repo**.
@@ -47,17 +51,35 @@ Agents are described along **two independent dimensions**:
 - Your working directory: `/path/to/wvu_knapsack` (the git repo)
 - Task tracking directory: `/path/to/agent-tasks/projects/wvu_knapsack/` (same name)
 
-If this is a **fresh session**, read the following in order:
+### Step 0a — Get the project name first
+
+Before reading startup files, ask:
+
+**"What project are we working on today?"** (e.g., `galaxy_game`, `wvu_knapsack`, `samvera_hyku`, `hydra_acda_portal_public`)
+
+Once you have the project name, proceed to Step 0b.
+
+### Step 0b — Read startup files
+
+Read the following in order (now that you know the project):
 
 1. `<agent-tasks>/rules/GUARDRAILS.md`
-2. `<agent-tasks>/projects/<project>/SESSION_GUIDANCE.md` (use the git repo name as the project folder name)
+2. `<agent-tasks>/projects/<project>/SESSION_GUIDANCE.md` (use the project name from Step 0a)
 3. The most recent relevant handoff: `<agent-tasks>/projects/<project>/handoffs/<agent>/<date>-<type>-CLOSEOUT.md`
+
+**If any of these files don't exist**, ask the human which to skip and continue.
 
 If this is a **continuation of the existing session**, STEP 0 is already complete. Do not repeat startup reading. Continue from the current approved objective and the work already reviewed.
 
 ## Step 1 — Confirm role and project
 
-You are a **local planning agent** or **local review agent**. The human will tell you the project (e.g., `galaxy_game`, `samvera_hyku`) and the assignment.
+You are a **local planning agent** or **local review agent**. 
+
+**Status check after Step 0:**
+- You've read GUARDRAILS.md
+- You've read SESSION_GUIDANCE.md for the project
+- You've read the most recent handoff (if one exists)
+- You know which project you're working on
 
 **What you can do:**
 - Read the repo directly (files, git history, paths)
@@ -67,19 +89,20 @@ You are a **local planning agent** or **local review agent**. The human will tel
 
 ---
 
-## Step 2 — Ask intake questions
+## Step 2 — Ask remaining intake questions
 
-Before doing anything, ask the human:
+Now that you know the project, ask:
 
-1. **"What projects are active today?"** (Determines routing: WVU/Samvera → WVU Copilot reviewer; Personal → free web agents)
-2. **"Any known blockers or carryover from last session?"**
+1. **"Any known blockers or carryover from last session?"**
+2. **"What's the assignment for today?"** (if not already stated in the handoff)
 
 ---
 
 ## Step 3 — Confirm understanding
 
 Post a short STATUS REPORT:
-- The project and assignment you understood
+- The project you're working on (from Step 0a)
+- What you understood from SESSION_GUIDANCE.md and any handoff
 - What you will do first
 - Wait for confirmation before starting work
 
