@@ -37,11 +37,11 @@ This task is a draft awaiting independent review and Tracy's approval. It is not
 You are **Implementation Agent**.
 
 Project: GalaxyGame UI prototype
-Task: <agent-tasks>/projects/galaxy-game-ui/tasks/backlog/2026-11-13-MEDIUM-FEATURE-CREATE-PLAYER-SETTLEMENT-PLACEHOLDER.md.md
+Task: <agent-tasks>/projects/galaxy-game-ui/tasks/backlog/2026-11-13-MEDIUM-FEATURE-CREATE-PLAYER-SETTLEMENT-PLACEHOLDER.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy-game-ui/tasks/backlog/2026-11-13-MEDIUM-FEATURE-CREATE-PLAYER-SETTLEMENT-PLACEHOLDER.md.md \
-         projects/galaxy-game-ui/tasks/active/2026-11-13-MEDIUM-FEATURE-CREATE-PLAYER-SETTLEMENT-PLACEHOLDER.md.md
+  git mv projects/galaxy-game-ui/tasks/backlog/2026-11-13-MEDIUM-FEATURE-CREATE-PLAYER-SETTLEMENT-PLACEHOLDER.md \
+         projects/galaxy-game-ui/tasks/active/2026-11-13-MEDIUM-FEATURE-CREATE-PLAYER-SETTLEMENT-PLACEHOLDER.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
