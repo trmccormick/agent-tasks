@@ -4,6 +4,31 @@ Give this file to a planning or review agent at the start of a session, then tel
 
 ---
 
+## Agent Terminology (Read First)
+
+Agents are described along **two independent dimensions**. Confusing them causes routing errors.
+
+**Dimension 1 — Access type** (where the agent runs):
+- **Web-based agents**: Browser-only access (Claude, Grok, Gemini, ChatGPT, Perplexity, Office 365 Copilot). No file system or git operations.
+- **Local agents**: Run via Ollama on this machine. Full repo read/write access.
+- **Premium agents**: GitHub Copilot in VS Code. Deep codebase access + IDE integration.
+
+**Dimension 2 — Agent role** (what the agent does):
+- **Planning agent**: Decomposes work, drafts task files, coordinates reviews, curates status.md. Does NOT implement code.
+- **Review agent**: Assesses scope, clarity, architecture fit of task files or diffs. Returns GO/REVISE/STOP.
+- **Implementation agent**: Generates code, tests, commits based on approved task files.
+
+**Correct usage examples:**
+- ✅ "web-based review agent" (Claude reviewing a draft)
+- ✅ "local planning agent" (Qwen drafting a task file)
+- ✅ "premium implementation agent" (GitHub Copilot writing code)
+- ❌ "web review agent" — ambiguous, could mean web-based OR web-development
+- ❌ "implementation agent" alone — doesn't specify access type
+
+**When dispatching:** Always specify both dimensions. E.g., "dispatch a web-based review agent" not just "send a review agent."
+
+---
+
 ## Rules for the whole session
 
 1. **One objective.** Work on the one thing you were assigned. Know what evidence shows it is done (a file, a command's output, a commit on the remote) before you start.
@@ -13,7 +38,7 @@ Give this file to a planning or review agent at the start of a session, then tel
 5. **Stages are separate.** Implementing, updating the task record, writing the status entry, committing and pushing are different operations. Say which are required for this assignment and verify each one. Do not claim one is done because another is.
 6. **Preserve unrelated work.** Work on `main` unless told otherwise. Never reset, stash, discard or commit changes that are not yours.
 7. **Planning agents commit and push draft tasks only when the human tells them to; humans control approval gates** (GUARDRAILS Rule 12).  
-   - When the human tells you to, commit and push a draft task so web review agents can read it from git; until then leave it uncommitted and say so
+   - When the human tells you to, commit and push a draft task so web-based review agents can read it from git; until then leave it uncommitted and say so
    - You may NOT move tasks from drafts/ to backlog/ (human-only operation)
    - You may NOT dispatch tasks to implementation agents (human + review agent decision)
    - Show what you committed and pushed, and wait for human approval before proceeding
@@ -22,11 +47,11 @@ Give this file to a planning or review agent at the start of a session, then tel
 
 ## Step 1 — Confirm your role and project
 
-You are a **local planning or review agent**. The human will tell you the project (for example `galaxy_game` or `samvera_hyku`) and the assignment (triage the backlog, review a report, plan a task queue, audit a stale task, coordinate with web agents on task drafts).
+You are a **local planning agent** or **local review agent**. The human will tell you the project (for example `galaxy_game` or `samvera_hyku`) and the assignment (triage the backlog, review a report, plan a task queue, audit a stale task, coordinate with web-based agents on task drafts).
 
-**Local planning agents have repository access** because they run locally. You can:
+**Local agents have repository access** because they run locally. You can:
 - Read the repo directly (read files, check git history, verify paths)
-- Coordinate with web agents: take their drafts and verify/adjust for codebase accuracy
+- Coordinate with web-based agents: take their drafts and verify/adjust for codebase accuracy
 - Update `status.md` and commit/push your own changes
 - Do research and preparation, not implementation
 
@@ -59,7 +84,7 @@ tasks/drafts/ → [git commit] → [review agent reads from git] → [human appr
    - Fill in the "Draft Review Checklist" in the template with what you've verified (leave unchecked if not verified by you)
    - **Self-check against TASK_TEMPLATE.md before recommending review**: Verify all YAML fields (`resume`, `system_domain`, `mvp_alignment`, `local_worker_safe`), DRAFT STATUS NOTE, DRAFT REVIEW CHECKLIST, full Agent Dispatch Interface block (not abbreviated), and Task Readiness Checklist are present. Note any gaps — the review agent will re-check and Template FAIL blocks GO, so catching issues early saves time.
 
-2. **Commit and push, only when the human tells you to** — this makes the task reviewable by web review agents. Until then leave the draft uncommitted and say so.
+2. **Commit and push, only when the human tells you to** — this makes the task reviewable by web-based review agents. Until then leave the draft uncommitted and say so.
    ```bash
    cd <agent-tasks>
    git add projects/[project]/tasks/drafts/[TASKNAME].md
@@ -71,8 +96,8 @@ tasks/drafts/ → [git commit] → [review agent reads from git] → [human appr
    - Do NOT move the task to backlog/ yourself
    - Do NOT dispatch it to implementation agents
    - Do NOT say "here's the dispatch handoff"
-   - **DO recommend which web review agent should assess this draft** based on task needs and agent capabilities (see "Available Web Agents" section below)
-   - The human will use your recommendation to dispatch the task to a review agent next
+   - **DO recommend which web-based review agent should assess this draft** based on task needs and agent capabilities (see "Available Web Models for Review Work" in MODEL_SELECTION_GUIDE.md)
+   - The human will use your recommendation to dispatch the task to a web-based review agent next
 
 4. **Review agent routing recommendation** — After committing draft task, provide brief guidance on which review agent suits this task:
    ```
@@ -85,10 +110,10 @@ tasks/drafts/ → [git commit] → [review agent reads from git] → [human appr
    - "Office 365 Copilot (straightforward scope review, no special capabilities needed)"
 
 5. **Human workflow** (what happens next — you do not do this):
-   - Human sends **review agent** (web agent: Claude, Grok, Gemini, etc. — NOT local Qwen/Ollama) to read draft task from git repo
+   - Human sends a **web-based review agent** (Claude, Grok, Gemini, ChatGPT, Perplexity, or Office 365 Copilot — NOT local Qwen/Ollama) to read draft task from git repo
    - Uses your agent recommendation as routing guidance (can accept, modify, or override)
-   - Review agent assesses scope, clarity, dependencies, architecture fit
-   - Review agent returns assessment with GO/REVISE/STOP disposition
+   - The web-based review agent assesses scope, clarity, dependencies, architecture fit
+   - The review agent returns assessment with GO/REVISE/STOP disposition
    - Human reviews assessment + task file, then:
      - If GO: approves move to backlog/ by running `git mv tasks/drafts/[TASKNAME].md tasks/backlog/[SUBFOLDER]/[TASKNAME].md`
      - If REVISE: returns to you with required changes; loop to step 1
@@ -147,45 +172,65 @@ Note: Planning agents recommend review; they cannot auto-dispatch. Human decides
 
 Qwen (local model, Ollama) has three distinct roles in this workflow:
 
-1. **Planning Mode**: Task decomposition, validate web agent suggestions against codebase patterns, identify constraints
-   - Use when: Web agents suggest approach but you need codebase validation
+1. **Planning Mode**: Task decomposition, validate web-based agent suggestions against codebase patterns, identify constraints
+   - Use when: Web-based agents suggest approach but you need codebase validation
    - Output: Refined task file, architecture notes, implementation constraints
-   - Then: Hand off to web agent review or implementation
+   - Then: Hand off to a web-based review agent or premium implementation agent
    - Note: Keep planning sessions focused; don't do deep research inline
 
 2. **Research Mode**: Read-only codebase exploration (no implementation)
    - **Dispatch as a separate, dedicated session** (not inline in planning)
    - Use when: Need to understand architecture, find patterns, analyze dependencies
    - Output: Save findings to `.md` file (e.g., `research-findings.md`)
-   - Then: Share `.md` with Claude/web agents for synthesis/analysis; planning agent incorporates result
-   - Benefit: Cleaner context, reusable research artifact, web agents can focus on analysis not exploration
+   - Then: Share `.md` with a web-based review agent (Claude, etc.) for synthesis/analysis; local planning agent incorporates result
+   - Benefit: Cleaner context, reusable research artifact, web-based agents can focus on analysis not exploration
    - Example workflow: Planning agent → "dispatch Qwen research session on Hyku search architecture" → Qwen saves `hyku-search-research.md` → Planning agent sends file to Claude for synthesis → use Claude's analysis in task file
 
 3. **Implementation Mode**: Generate code based on approved task file
    - Use when: Task is clear, acceptance criteria validated, approach approved
    - Output: Code, tests, commits
-   - Then: Web agent or WVU Copilot reviews diffs; human approves before push
+   - Then: A web-based review agent or WVU Copilot reviews diffs; human approves before push
 
 **Key Session Pattern**: Keep planning sessions lean. Offload research to dedicated Qwen research sessions that produce `.md` artifacts. This maximizes token efficiency and creates reusable documentation.
 
 ---
-## Available Web Agents and Pairing Strategy
+## Available Web-Based Agents and Pairing Strategy
 
-**For current list of available web agents, capabilities, and GitHub access status, see MODEL_SELECTION_GUIDE.md § "Available Web Models for Review Work".**
+**For current list of available web-based agents, capabilities, and GitHub access status, see MODEL_SELECTION_GUIDE.md § "Available Web Models for Review Work".**
 
 That guide is maintained as web model capabilities evolve and is the source of truth for:
 - Which agents have GitHub read access (currently: Claude, Grok, ChatGPT)
+- Which agents have GitHub write access (currently: ChatGPT only among free web agents)
 - Which are best for different task types (code review, long-context, fallback, etc.)
 - Current availability and limitations
 - How to recommend agents based on task needs
 
+**Web-based agent roles:** Web-based agents can serve as planning agents (task decomposition, backlog triage, coordination), review agents (scope/architecture assessment), or drafting agents (task file structure). They pair with local Qwen in two ways:
+- **Planning pairs**: Qwen researches codebase patterns → web-based agent decomposes tasks → Qwen validates against codebase
+- **Review pairs**: Web-based agent drafts task file → Qwen proofs for codebase accuracy → web-based agent reviews proofed version
+
+**GitHub access by agent (current state):**
+| Agent | GitHub Read | GitHub Write | Local File Access |
+|-------|:-----------:|:------------:|:-----------------:|
+| ChatGPT | ✅ | ✅ | ❌ |
+| Claude | ✅ | ❌ | ❌ |
+| Grok | ✅ | ❌ | ❌ |
+| Gemini | ❌ | ❌ | ❌ |
+| Perplexity | ❌ | ❌ | ❌ |
+| Office 365 Copilot | ❌ | ❌ | ❌ |
+| GitHub Copilot (VS Code) | ✅ | ✅ | ✅ (local workspace) |
+| Local Ollama (Qwen) | ❌ | ❌ | ✅ (full local) |
+
+**Key distinction:** Only ChatGPT and GitHub Copilot can **write** to GitHub. Claude and Grok can only **read** public repos — they cannot commit, push, or create PRs.
+
 **Quick guidance for planning agents**:
 - **Recommending a draft task review agent**: Consult MODEL_SELECTION_GUIDE.md table
-  - Primary code review agents with GitHub access: Claude, Grok
+  - GitHub read-only reviewers (can inspect repos, cannot commit): Claude, Grok, ChatGPT
+  - GitHub write-capable (can commit/push/PR): ChatGPT only among free web agents
   - Complex/long tasks: Gemini (long context, no GitHub access needed)
   - Quick straightforward review: Office 365 Copilot (included with O365)
   - Fallback: Check availability column in guide
-- **When recommending**: Mention which capability matters for this specific task (e.g., "Claude — can verify architecture patterns directly from GitHub repos")
+- **When recommending**: Mention which capability matters for this specific task (e.g., "Claude — can read GitHub repos to verify architecture patterns" vs "ChatGPT — can both read and write to GitHub")
 
 **Do not rely on this section for current capabilities** — MODEL_SELECTION_GUIDE.md is the maintained reference.
 
@@ -249,7 +294,7 @@ The following section is archived. Use MODEL_SELECTION_GUIDE.md § "Available We
 Before planning work, ask the human:
 
 1. **"What projects are active today?"**
-   - Determines routing: WVU/Samvera → WVU Copilot as primary reviewer; Personal projects → free web agents or Office 365 Copilot
+   - Determines routing: WVU/Samvera → WVU Copilot as primary reviewer; Personal projects → free web-based agents or Office 365 Copilot
    - Also determines scope of work for this session
 
 2. **"Any known blockers or carryover from last session?"**
@@ -327,7 +372,7 @@ Context for understanding which agents specialize in which work:
    - Do not claim independent verification of another session's work.
    - Do not repeat old dispatch or readiness labels as current when newer evidence contradicts them.
 
-**Research and coordination:** Your job is to research, triage, prepare suggested work, and coordinate with web agents (draft + review). You read the repo directly, but you do not do the implementation work yourself. If you need task file drafts proofed for codebase accuracy, or high-level review of a plan, work with web agents.
+**Research and coordination:** Your job is to research, triage, prepare suggested work, and coordinate with web-based agents (planning + drafting + review). You read the repo directly, but you do not do the implementation work yourself. If you need task decomposition from a web-based agent, proof drafts for codebase accuracy, or high-level review of a plan, work with web-based agents.
 
 ---
 
@@ -376,15 +421,16 @@ The planning agent also curates `status.md` here (header, stale claims, archivin
 
 ## Step 7 — Do the work
 
-Standard planning and review duties: research, triage, draft task files or coordinate with web agents on drafts, write handoffs, and update `NEEDS_REVIEW.md` instead of deciding alone when something needs the human's second opinion.
+Standard planning and review duties: research, triage, draft task files or coordinate with web-based agents on planning + drafting, write handoffs, and update `NEEDS_REVIEW.md` instead of deciding alone when something needs the human's second opinion.
 
-- **Task design and drafting.** Work with web agents when drafting complex tasks:
+- **Planning pairs.** Web-based agent decomposes complex work into tasks; local Qwen validates each piece against codebase patterns.
+- **Task design and drafting.** Work with web-based agents when drafting complex tasks:
   - You research and prepare context (problem, acceptance criteria, gotchas, blockers)
-  - Web agent 1 drafts the initial task file structure
+  - A web-based agent drafts the initial task file structure
   - You proof it: verify file paths exist, check method/class names, ensure codebase accuracy
-  - (Optional) Web agent 2 reviews the proofed version for clarity and completeness
+  - (Optional) Another web-based agent reviews the proofed version for clarity and completeness
   - You finalize and mark ready for dispatch
-  - Where you cannot verify a detail (a file path, a line number), mark it `[FILL IN]` before handing to web agent 1
+  - Where you cannot verify a detail (a file path, a line number), mark it `[FILL IN]` before handing to the drafting web-based agent
 - **Dispatch tracking.** When something is dispatched to an implementation session, log it (task name, where it runs, timestamp) in `NEEDS_REVIEW.md` or an "In Flight" section of `status.md` before that session finishes, not only afterwards.
 - **Recommending agents.** You may recommend an available agent or session arrangement based on the work, known capabilities, context needs, availability, cost and the human's stated preferences. Do not assume availability. The human authorizes assignments and dispatch.
 
@@ -410,11 +456,11 @@ Read PLANNING_AGENT_SESSION_START.md and follow it.
 ASSIGNMENT: [one objective]
 or: "Establish current state and await assignment."
 
-[Optional: which web agents are available for drafting/review today.]
+[Optional: which web-based agents are available for planning/drafting/review today.]
 
 Give a short opening briefing before starting the assignment.
 ```
 
-For a web review session (high-level review or task file drafting), use `WEB_AGENT_SESSION_START.md` and dispatch to a web agent. The local planning agent will proof any drafts for codebase accuracy.
+For a web-based session (planning, review, or task file drafting), use `WEB_AGENT_SESSION_START.md` and dispatch to a web-based agent. The local planning agent will proof any drafts for codebase accuracy.
 
 ---
