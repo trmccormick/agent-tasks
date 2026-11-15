@@ -307,8 +307,17 @@ After completing the dispatch Step 0 move and YAML status update, but before inv
 **Status**: [backlog → active → completed]
 **Date**: YYYY-MM-DD
 
+### Stage 1 — Initial understanding and Step 0
+[Record exact Step 0 Git commands/results, source/destination verification, YAML status, task objective, boundaries, unknowns, and planned evidence.]
+
+### Stage 2 — Investigation findings (complete before implementation)
+[Record verified source paths, investigation/reproduction evidence, root cause or unresolved status, proposed correction, exact edit paths, and test plan. Obtain human approval of the proposed approach before implementation.]
+
+### Stage 3 — Implementation and verification
+[After implementation, append actual changes, exact test commands/results, runtime evidence, acceptance disposition, documentation updates, and remaining issues.]
+
 ### What I'm About to Do
-[2-3 sentences: the goal, the verification method, the success criteria]
+[2-3 sentences: the goal, verification method, and success criteria]
 
 ### Files I'll Reference
 | File | Purpose | Status |
@@ -316,7 +325,7 @@ After completing the dispatch Step 0 move and YAML status update, but before inv
 | `path/to/file` | [description] | [not started / pending / done] |
 
 ### Prerequisites Completed
-- ✅ Step 0: Task file moved to active/ with git mv (find output pasted in chat)
+- ✅ Step 0: Task file moved to active/ with git mv (find output recorded in this report)
 - ✅ Step 0: YAML status updated from backlog → active
 - ✅ Read README.md EXECUTOR section
 - ✅ Read project guide
@@ -362,7 +371,7 @@ Confirming a command in an agent's own approval prompt counts as authorization o
 
 1. **Complete all implementation and verification steps** listed below this section
 2. **Create evidence artifacts** (test output, synthesis reports)
-3. **STOP** — paste your evidence in chat and state: *"All implementation and verification complete. Requesting reviewer assessment."*
+3. **STOP** — save all evidence in the synthesis/evidence report. In chat, provide only the report path and a concise update stating: *"Implementation and verification are complete. Requesting reviewer assessment."* Do not paste the report or raw command output into chat.
 4. **Wait for reviewer disposition** (GO / REVISE / STOP)
 5. If **REVISE**: address the listed issues, re-test, return to step 3
 6. If **STOP**: do not proceed; await human guidance
