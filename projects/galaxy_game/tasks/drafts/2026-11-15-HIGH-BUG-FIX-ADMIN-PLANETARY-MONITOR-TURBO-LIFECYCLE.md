@@ -27,7 +27,7 @@ See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedu
 - [ ] Architecture aligns with current codebase patterns (review agent verified)
 - [ ] Review agent disposition is GO (not REVISE or STOP)
 
-**Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/[SUBFOLDER]/` and changing `status: draft → status: backlog`.
+**Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/current/` and changing `status: draft → status: backlog`.
 
 ---
 
@@ -52,10 +52,10 @@ See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedu
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/[SUBFOLDER]/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/[SUBFOLDER]/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md \
+  git mv projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md \
          projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
