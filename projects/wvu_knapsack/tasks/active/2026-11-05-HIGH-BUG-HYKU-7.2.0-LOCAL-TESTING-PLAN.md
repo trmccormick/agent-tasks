@@ -280,7 +280,7 @@ git mv projects/wvulibraries_knapsack/tasks/backlog/2026-11-05-HIGH-BUG-HYKU-7.2
 ### Step 1 — Phase 0: Safety setup, refs and helper scripts
 
 ```bash
-export SCRATCH="$HOME/hyku-720-testing"
+export SCRATCH="$HOME/scratch/hyku-720-testing"
 mkdir -p "$SCRATCH"
 cd /Users/tam0013/Documents/git/wvu_knapsack
 
@@ -296,7 +296,7 @@ cat "$SCRATCH/start-ref.txt" "$SCRATCH/start-submodule-status.txt"
 
 # Define the two refs under test and record the submodule SHA each one pins
 cat > "$SCRATCH/refs.env" <<'EOF'
-export SCRATCH="$HOME/hyku-720-testing"
+export SCRATCH="$HOME/scratch/hyku-720-testing"
 export SOLR="http://localhost:8983/solr"
 export BASE_REF="origin/main"   # GitHub main; the local main branch may lag or have diverged
 export TARGET_REF="feature/hyku-v7.2.0-upgrade"
