@@ -104,7 +104,7 @@ The original Rails 7 GalaxyGame application previously loaded and displayed plan
 **Relevant Wiki References** — read for product and UI context; these pages do not specify the JavaScript/Turbo lifecycle fix, which must be established from current code and runtime evidence:
 - `docs/wiki/ui/03_admin_and_ai_manager.md` — establishes the Admin Dashboard's purpose, responsibilities, and monitoring/workspace context.
 - `docs/wiki/ui/04_current_ui_state_and_known_issues.md` — records dated UI observations and the principle of preserving useful functionality while diagnosing defects.
-- `docs/wiki/ui/05_admin_celestial_body_view.md` — records the monitor's purpose, initial data handoff, endpoints, polling behavior, current Turbo lifecycle implementation, existing test coverage, and the unresolved regression context. Its dated code snapshot is background for investigation, not a prescribed fix.
+- `docs/wiki/ui/05_admin_celestial_body_view.md` — records the intended Celestial Body View, distinguishes it from the legacy Monitor entry page and Planetary route, and documents current data flow, endpoints, polling behavior, Turbo lifecycle, test coverage, and unresolved regression context. Its dated code snapshot is background for investigation, not a prescribed fix.
 
 Recent browser screenshots supplied by the user show inconsistent states:
 - Some visits display a completely black/blank planetary canvas.
@@ -139,11 +139,11 @@ This patch is a candidate change, not an established fix. Verify whether it is p
 
 **Design/porting boundary:** The intended workspace is named **Admin Celestial Body View** because it must support planets, moons, asteroids, and other celestial bodies. In the current Rails 7 app, the catalog's **Monitor** route is only a navigation/status hub; the richer map-and-sphere-data page is currently labeled **Planetary View**. Those are legacy route/UI labels, not the future product name. The separate Rails 8 UI prototype should move toward the approved Celestial Body View design rather than copy legacy layout and naming unchanged. This task fixes only the existing Rails 7 lifecycle regression; it does not redesign or port the view.
 
-**Exact description**: Blank planetary canvases and stale cross-body sidebar data occur when navigating among Admin Celestial Body View pages (legacy Planetary route) in the original Rails 7 application via Turbo navigation.
+**Exact description**: Blank terrain canvases and stale cross-body sidebar data occur when navigating the legacy Planetary route for the Admin Celestial Body View in the original Rails 7 application via Turbo navigation.
 
-**Current behavior**: Navigating between Admin Celestial Body View pages (legacy Planetary route) (Earth, Mars, Venus, Titan) via Turbo produces inconsistent results — blank canvases, terrain rendered after reload, or sidebar showing values from a previously visited body.
+**Current behavior**: Navigating between the legacy Planetary pages for Earth, Mars, Venus, and Titan via Turbo produces inconsistent results — blank canvases, terrain rendered only after reload, or sidebar values from a previously visited body.
 
-**Expected behavior**: Each Admin Celestial Body View page (legacy Planetary route) should render its own terrain correctly on both hard loads and Turbo visits, with sidebar data matching the current body.
+**Expected behavior**: Each Celestial Body View page should render the selected body's terrain correctly on both hard loads and Turbo visits, with sidebar data matching the current body.
 
 ---
 
@@ -189,13 +189,13 @@ This patch is a candidate change, not an established fix. Verify whether it is p
 |---|---|---|
 | `app/javascript/admin/monitor.js` | Admin Celestial Body View JS module | Initialization, Turbo event handling, polling lifecycle |
 | `app/views/admin/celestial_bodies/planetary.html.erb` | Admin Celestial Body View page (legacy Planetary route) template | DOM structure, data attributes, Turbo links |
-| `app/controllers/admin/celestial_bodies_controller.rb` | Controller serving planetary pages | `terrain_data` response, body identity |
+| `app/controllers/admin/celestial_bodies_controller.rb` | Controller serving legacy Celestial Body View / Planetary route | `terrain_data` response, body identity |
 
 ### Reference Files — read but do not edit
 | File | Why You Need It |
 |---|---|
 | `app/javascript/application.js` | Module loading and Turbo integration |
-| `config/routes.rb` | Admin Planetary route definitions |
+| `config/routes.rb` | Legacy Monitor and Planetary route definitions for celestial bodies |
 | `spec/features/admin/planetary_monitor_spec.rb` | Existing focused coverage for monitor behavior |
 
 ### Migration (if needed)
@@ -399,4 +399,4 @@ Not applicable while this task remains a draft.
 
 ## Handoff Summary
 
-HANDOFF SUMMARY: Draft created for original Rails 7 Admin Planetary Turbo lifecycle regression | Qwen patch treated as candidate pending verification | Human review required before backlog approval or dispatch.
+HANDOFF SUMMARY: Draft created for original Rails 7 Admin Celestial Body View (legacy Planetary route) Turbo lifecycle regression | Qwen patch treated as candidate pending verification | Human review required before backlog approval or dispatch.
