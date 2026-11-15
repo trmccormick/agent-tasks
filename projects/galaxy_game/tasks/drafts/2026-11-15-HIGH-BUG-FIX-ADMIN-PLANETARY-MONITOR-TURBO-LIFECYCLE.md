@@ -85,7 +85,7 @@ If the task YAML has `resume: true`, read the Progress / Resume block first, con
 
 LIFECYCLE: backlog → active → completed
   - Tracked file: git mv (never cp or plain mv)
-  - New/untracked file: mv then git add the final path
+  - New/untracked file: git add the source path first, then git mv the source to the destination (never use plain mv or cp)
   - Never leave stale copies in the source folder
   - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md"
     Only ONE result should exist. Record this output in the synthesis/evidence report.
@@ -310,7 +310,7 @@ Save this report before beginning investigation or implementation. The report is
 
 1. **Complete all implementation and verification steps** listed below this section
 2. **Create evidence artifacts** (test output, synthesis reports)
-3. **STOP** — paste your evidence in chat and state: *"All implementation and verification complete. Requesting reviewer assessment."*
+3. **STOP** — save all evidence in the synthesis/evidence report, then provide the report path and a concise chat update stating: *"Implementation and verification are complete. Requesting reviewer assessment."* Do not paste the report or command output into chat.
 4. **Wait for reviewer disposition** (GO / REVISE / STOP)
 5. If **REVISE**: address the listed issues, re-test, return to step 3
 6. If **STOP**: do not proceed; await human guidance
@@ -347,13 +347,13 @@ All agents: follow these steps exactly in order.
 
 ### Priority 2 — Fix
 
-6. Determine whether the supplied Qwen patch is correct. Retain, revise, or reject it based on the verified root cause. Prefer a minimal lifecycle correction over disabling Turbo globally unless evidence shows that is the appropriate existing application pattern.
-7. Implement the smallest justified fix in the original Rails 7 app only.
+7. Determine whether the supplied Qwen patch is correct. Retain, revise, or reject it based on the verified root cause. Prefer a minimal lifecycle correction over disabling Turbo globally unless evidence shows that is the appropriate existing application pattern.
+8. Implement the smallest justified fix in the original Rails 7 app only.
 
 ### Priority 3 — Verification
 
-8. Add or adjust focused regression coverage for the lifecycle behavior where the current test setup can meaningfully exercise it. Do not add broad or brittle tests that merely assert implementation details.
-9. Verify the fix through the same navigation paths that reproduced the problem. Confirm that the current body's canvas and sidebar remain associated with the current body and that old polling cannot overwrite the new page.
+9. Add or adjust focused regression coverage for the lifecycle behavior where the current test setup can meaningfully exercise it. Do not add broad or brittle tests that merely assert implementation details.
+10. Verify the fix through the same navigation paths that reproduced the problem. Confirm that the current body's canvas and sidebar remain associated with the current body and that old polling cannot overwrite the new page.
 
 ---
 
