@@ -350,6 +350,8 @@ Do not use generic `[other files]`, unverified paths, or completed checkmarks fo
 1. **Reviewer has issued a GO disposition** — a reviewer has assessed your work and disposed it as one of: `GO`, `REVISE`, or `STOP`. See REVIEW_AGENT_GUIDE.md for reviewer authority definitions.
 2. **Human authorization** — Requires an explicit human message that authorizes commit (for example, 'commit it') and an explicit human message that authorizes push (for example, 'push it'). Authorization to commit does not imply authorization to push, and authorization to push does not imply authorization to commit.
 
+**Approval-prompt safeguard:** An agent's approval prompt is not an independent source of authority. It counts only after reviewer GO is recorded and the human explicitly authorizes that particular operation.
+
 ### What This Means In Practice
 
 | You CAN do | You CANNOT do |
@@ -485,6 +487,39 @@ Maintain one three-stage synthesis report: (1) initial understanding and Step 0 
 - **Application paths/runtime:** Reported from supplied context; not independently verified.
 - **Task overlap inventory:** Not checked.
 - **Owning session / window label:** Planning — Admin Celestial Body View regression.
+
+---
+
+## Commit Instructions
+
+Run Git on the host from the correct repository root, never inside Docker. Never use `git add .`; stage only specifically authorized files.
+
+Before each operation, both conditions are required:
+1. Reviewer GO on the implementation evidence.
+2. Explicit human authorization naming the operation about to be performed.
+
+Record both in the evidence report. An agent approval prompt is not authority before reviewer GO. Commit, push, and task completion are separate actions; authorization for one does not authorize another.
+
+### Commit
+Only after reviewer GO and explicit human commit authorization:
+```bash
+git status --short
+git add <each specifically authorized application/test/wiki/task/report path>
+git diff --cached --check
+git diff --cached --stat
+git diff --cached
+git commit -m "fix: restore Admin Celestial Body View Turbo lifecycle"
+```
+Run on host. Do not stage unrelated user changes.
+
+### Push
+Only after a separate, later human message explicitly authorizes push:
+```bash
+git push
+```
+
+### Active → completed task-file lifecycle
+Implementation completion or reviewer GO alone does not complete the task. After separate human completion authorization, verify the current completed-folder convention, move the tracked task with `git mv`, update YAML to `status: completed`, verify source absence and exactly one copy, and record outputs. Never use plain `mv` or `cp`. If unexpectedly untracked, stop and ask.
 
 ---
 
