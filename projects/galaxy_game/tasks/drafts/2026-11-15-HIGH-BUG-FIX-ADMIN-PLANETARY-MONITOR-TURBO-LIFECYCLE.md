@@ -54,13 +54,32 @@ You are **Implementation Agent**.
 Project: galaxy_game
 Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
 
-STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md \
-         projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
-  Then open the moved file and change: status: backlog → status: active
-  Record the output of both commands in the synthesis report after the move.
+STEP 0 — STAGE IF NECESSARY, THEN MOVE THE TASK WITH GIT MV (no exceptions):
+  Source:
+    projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+  Destination:
+    projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+
+  1. Inspect the task file's Git state before moving it:
+       git status --short -- <source-path>
+       git ls-files --error-unmatch <source-path>
+     Do not assume that a file in backlog is already committed or tracked.
+  2. If the source file is not yet tracked by Git (for example, it is newly created or untracked), stage it first:
+       git add <source-path>
+     This ensures the file is in Git's index before the move.
+  3. Move the task using Git in every case:
+       git mv <source-path> <destination-path>
+     Do not use plain mv or cp as the task-file move operation. If the file was already tracked, run git mv directly; if it was not tracked, git add it first and then run git mv.
+  4. Verify the move:
+       git status --short
+       git ls-files --error-unmatch <destination-path>
+       test ! -e <source-path> && test -f <destination-path>
+     Confirm that the source no longer exists, the destination exists, and Git tracks the destination. Preserve any pre-existing task changes; do not discard or overwrite them.
+  5. Open the destination file and change its YAML status from `backlog` to `active`. Verify the updated status.
+  6. Record the Git-state inspection, any staging command, the `git mv`, and verification outputs in the synthesis report. Create the synthesis report only after Steps 1–5 are complete, and before beginning investigation or implementation.
+
   In chat, provide only a concise status update and the report path; do not paste the report or command output.
-  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+  Do NOT start investigation or implementation until the move, status update, and synthesis report are complete.
 
 If the task YAML has `resume: true`, read the Progress / Resume block first, continue from "Next step", and set `resume: false` when you move the file to `active/`. Do not restart the task.
 
@@ -225,7 +244,7 @@ This patch is a candidate change, not an established fix. Verify whether it is p
 
 ## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
 
-Before navigating to any URLs, running any commands, or modifying any files, you MUST create a **synthesis report** as an MD file under `projects/galaxy_game/summaries/`. This report demonstrates you understand the task before executing.
+After completing Step 0 (including checking/staging the task file as needed, moving it with `git mv`, verifying the destination, and updating the YAML status), but before beginning investigation or implementation, you MUST create a **synthesis report** as an MD file under `projects/galaxy_game/summaries/`. Record the Step 0 Git-state, staging (if needed), move, and verification command outputs in that report. This report demonstrates you understand the task before executing the investigation.
 
 **Synthesis Report Template** (save as MD file to `projects/galaxy_game/summaries/YYYY-MM-DD-bug-fix-admin-planetary-monitor-turbo-lifecycle.md`):
 ```markdown
@@ -245,7 +264,9 @@ Before navigating to any URLs, running any commands, or modifying any files, you
 | [other files] | [description] | [pending / done] |
 
 ### Prerequisites Completed
-- ✅ Step 0: Task file moved to active/ with git mv (command output recorded in this report)
+- ✅ Step 0: Inspected whether the task file was tracked/committed; staged the source with `git add` first if it was untracked
+- ✅ Step 0: Moved the task file to active/ using `git mv` (command output recorded in this report)
+- ✅ Step 0: Verified source removal, destination existence, and Git tracking
 - ✅ Step 0: YAML status updated from backlog → active
 - ✅ Read README.md EXECUTOR section
 - ✅ Read project guide
@@ -300,8 +321,8 @@ Save this report before beginning investigation or implementation. The report is
 
 ## Implementation Steps
 
-> ⚠️ **BEFORE YOU START**: Complete Step 0 first. Then save the STATUS SYNTHESIS REPORT to the summaries folder and provide its path in chat.
-> Do not proceed to Step 1 until both are complete. The synthesis report does not require separate chat approval.
+> ⚠️ **BEFORE YOU START**: Complete Step 0 first: inspect Git state, stage the source with `git add` if it is untracked, move it using `git mv`, verify the move, and update the YAML status. Then save the STATUS SYNTHESIS REPORT to the summaries folder, including the Step 0 command outputs.
+> Do not proceed to Priority 1 until both are complete. The synthesis report does not require separate chat approval.
 
 All agents: follow these steps exactly in order.
 
