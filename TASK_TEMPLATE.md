@@ -76,52 +76,6 @@ mvp_alignment: AI_MANAGER_LUNA_SETTLEMENT | ISRU_PRODUCTION | SPEC_HEALTH | OTHE
 local_worker_safe: true | false
 ---
 
-## 🟡 DRAFT STATUS NOTE (for tasks in tasks/drafts/)
-
-**This section applies ONLY if status: draft above.**
-
-This task is in draft status and awaiting review approval. It has NOT yet been approved for backlog.
-
-**Current State**: In `tasks/drafts/` committed to git  
-**Next Step**: Review agent assessment → Human approval → Move to `tasks/backlog/` by human  
-**Do NOT dispatch to implementation agents** until this task is in `tasks/backlog/` with `status: backlog`
-
-See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedure.
-
-## � DRAFT REVIEW CHECKLIST (Human — before approving move from drafts/ to backlog/)
-
-**APPLIES ONLY IF status: draft above. Use this checklist BEFORE moving task to tasks/backlog/.**
-
-After review agent has returned assessment:
-
-- [ ] Acceptance Criteria are clear and measurable (no ambiguity)
-- [ ] Task scope is well-bounded (not too broad, not overlapping with active tasks)
-- [ ] Dependencies listed and verified against status.md (all prerequisites exist)
-- [ ] No contradictions in the task specification
-- [ ] Architecture aligns with current codebase patterns (review agent verified)
-- [ ] Review agent disposition is GO (not REVISE or STOP)
-
-**Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/[SUBFOLDER]/` and changing `status: draft → status: backlog`.
-
----
-
-## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching to implementation)
-
-**APPLIES ONLY IF status: backlog. STOP. Do not send this task to an agent until ALL boxes are checked.**
-
-- [ ] Agent Dispatch Interface section below is complete and accurate (no placeholders)
-- [ ] All Step 0-N instructions are clear and actionable (not vague)
-- [ ] Synthesis report template is provided (copy/paste ready, not as example)
-- [ ] No placeholder text remains in Implementation Steps
-- [ ] All file paths are verified to exist
-- [ ] Architecture Gotchas are specific (not generic)
-- [ ] Acceptance Criteria are measurable
-- [ ] Dependencies and Blocked/Blocks relationships are clear
-
-**Task is NOT READY until all checkboxes are completed.**
-
----
-
 ## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
 
 **This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
@@ -191,7 +145,55 @@ This is the startup contract — every element is required.
 Everything else (details, gotchas, acceptance criteria, implementation steps) is in the sections below.
 The dispatch interface above is ONLY the bootstrap instructions.
 
+
 ---
+
+## 🟡 DRAFT STATUS NOTE (for tasks in tasks/drafts/)
+
+**This section applies ONLY if status: draft above.**
+
+This task is in draft status and awaiting review approval. It has NOT yet been approved for backlog.
+
+**Current State**: In `tasks/drafts/` committed to git  
+**Next Step**: Review agent assessment → Human approval → Move to `tasks/backlog/` by human  
+**Do NOT dispatch to implementation agents** until this task is in `tasks/backlog/` with `status: backlog`
+
+See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedure.
+
+## � DRAFT REVIEW CHECKLIST (Human — before approving move from drafts/ to backlog/)
+
+**APPLIES ONLY IF status: draft above. Use this checklist BEFORE moving task to tasks/backlog/.**
+
+After review agent has returned assessment:
+
+- [ ] Acceptance Criteria are clear and measurable (no ambiguity)
+- [ ] Task scope is well-bounded (not too broad, not overlapping with active tasks)
+- [ ] Dependencies listed and verified against status.md (all prerequisites exist)
+- [ ] No contradictions in the task specification
+- [ ] Architecture aligns with current codebase patterns (review agent verified)
+- [ ] Review agent disposition is GO (not REVISE or STOP)
+
+**Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/[SUBFOLDER]/` and changing `status: draft → status: backlog`.
+
+---
+
+## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching to implementation)
+
+**APPLIES ONLY IF status: backlog. STOP. Do not send this task to an agent until ALL boxes are checked.**
+
+- [ ] Agent Dispatch Interface section above is complete and accurate (no placeholders)
+- [ ] All Step 0-N instructions are clear and actionable (not vague)
+- [ ] Synthesis report template is provided (copy/paste ready, not as example)
+- [ ] No placeholder text remains in Implementation Steps
+- [ ] All file paths are verified to exist
+- [ ] Architecture Gotchas are specific (not generic)
+- [ ] Acceptance Criteria are measurable
+- [ ] Dependencies and Blocked/Blocks relationships are clear
+
+**Task is NOT READY until all checkboxes are completed.**
+
+---
+
 
 # TASK: [Short descriptive title]
 **Status**: BACKLOG | ACTIVE | BLOCKED | COMPLETED
