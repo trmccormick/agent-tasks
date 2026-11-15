@@ -12,7 +12,7 @@ local_worker_safe: true
 
 **Authority:** Use only after human approval, movement to backlog, YAML `status: backlog`, and completion of the backlog-only readiness checklist. This does not authorize dispatch while this file is in drafts.
 
-**Reconciliation:** For an untracked task file, run `git add <source>` first, then `git mv <source> <destination>`. Never use plain `mv` or `cp` for task lifecycle moves. This resolves the generic template's contradictory untracked-file example and preserves Git history. Save synthesis in summaries before investigation; chat contains only its path and concise status, not report text or raw command output.
+**Reconciliation:** This dispatch section is placed immediately after YAML to follow the template's explicit validation requirement (the template's illustrative example shows a conflicting order). For an untracked task file, run `git add <source>` first, then `git mv <source> <destination>`. Never use plain `mv` or `cp` for task lifecycle moves. This resolves the generic template's contradictory untracked-file example and preserves Git history. Save synthesis in summaries before investigation; chat contains only its path and concise status, not report text or raw command output.
 
 ```text
 You are **Implementation Agent**.
@@ -240,6 +240,16 @@ Any other application, test, data, terrain, or documentation path requires expli
 
 ---
 
+## Critical Information for This Task
+
+### Credentials and access applicability
+
+No new credentials, accounts, or external service access are expected for this local Rails 7 lifecycle investigation. Use only the existing authorized local application and browser environment. Do not create users or credentials. If the local application/runtime is unavailable or requires access not already provided, stop and ask the human; do not invent access details.
+
+### Repository and path convention
+
+`app/`, `config/`, `spec/`, and `docs/` paths refer to the original Rails 7 application repository. `projects/galaxy_game/` and `rules/` paths refer to the separate `agent-tasks` repository. Verify paths in their respective repository roots before use.
+
 ## Architecture Gotchas (Critical to understand BEFORE starting)
 
 ⚠️ **GOTCHA 1**: Do not assume the Qwen patch is correct without verifying it against current working tree and browser behavior.
@@ -295,6 +305,12 @@ Append changed files, exact commands/test outputs, browser evidence, acceptance 
 | Source absence | [command/output] | [result] |
 | Single-copy search | [command/output] | [result] |
 | YAML status | [command/output] | [result] |
+### Prerequisites completed
+- [ ] Read `rules/GUARDRAILS.md` (EXECUTOR Role section).
+- [ ] Read `projects/galaxy_game/README.md`.
+- [ ] Read `projects/galaxy_game/SESSION_GUIDANCE.md`, if present.
+- [ ] Read this active task file after Step 0.
+- [ ] Confirm the repository-root convention and task-specific gotchas.
 ### Initial understanding and unknowns
 [Separate supplied screenshot/diff evidence from hypotheses and unverified facts.]
 ### Planned evidence
@@ -519,7 +535,7 @@ git push
 ```
 
 ### Active → completed task-file lifecycle
-Implementation completion or reviewer GO alone does not complete the task. After separate human completion authorization, verify the current completed-folder convention, move the tracked task with `git mv`, update YAML to `status: completed`, verify source absence and exactly one copy, and record outputs. Never use plain `mv` or `cp`. If unexpectedly untracked, stop and ask.
+Implementation completion or reviewer GO alone does not complete the task. After separate human completion authorization, use `projects/galaxy_game/tasks/completed/YYYY-MM/` as the destination, move the tracked task with `git mv`, update YAML to `status: completed`, verify source absence and exactly one copy, and record outputs. Never use plain `mv` or `cp`. If unexpectedly untracked, stop and ask.
 
 ---
 
