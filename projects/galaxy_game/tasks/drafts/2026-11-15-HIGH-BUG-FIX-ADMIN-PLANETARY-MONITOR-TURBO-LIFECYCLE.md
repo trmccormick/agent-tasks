@@ -101,6 +101,10 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 
 The original Rails 7 GalaxyGame application previously loaded and displayed planetary maps for Earth, Mars, Venus, and Titan. The user reports that these pages no longer behave reliably. The current issue must be investigated and corrected in the original application before related monitor functionality is ported to the separate Rails 8 UI prototype.
 
+**Relevant Wiki References** — read for product and UI context; these pages do not specify the JavaScript/Turbo lifecycle fix, which must be established from current code and runtime evidence:
+- `docs/wiki/ui/03_admin_and_ai_manager.md` — establishes the Admin Dashboard's purpose, responsibilities, and monitoring/workspace context.
+- `docs/wiki/ui/04_current_ui_state_and_known_issues.md` — records the existing Planetary and Monitor capabilities, dated UI observations, and the principle of preserving useful functionality while diagnosing defects.
+
 Recent browser screenshots supplied by the user show inconsistent states:
 - Some visits display a completely black/blank planetary canvas.
 - Other visits display terrain after a reload or subsequent visit.
