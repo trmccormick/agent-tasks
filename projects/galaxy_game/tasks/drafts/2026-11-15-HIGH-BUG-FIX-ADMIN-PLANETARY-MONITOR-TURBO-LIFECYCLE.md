@@ -64,6 +64,8 @@ CLOSEOUT: Follow SESSION_CLOSEOUT.md and this task's Commit Instructions. Review
 
 ## 🟡 DRAFT STATUS NOTE (for tasks in tasks/drafts/)
 
+**APPLIES ONLY IF status: draft above.**
+
 This task is in draft status and awaiting review approval. It has NOT yet been approved for backlog.
 
 **Current State**: In `tasks/drafts/` committed to git  
@@ -133,7 +135,7 @@ Recent browser screenshots supplied by the user show inconsistent states:
 
 Claude's screenshot review proposed a strong but unverified hypothesis: a prior page's `AdminMonitor` JavaScript state and periodic `sphere_data` polling may survive a Turbo visit, while initialization/rendering for the newly visited body is skipped or delayed. The sidebar showing the previous body's values is evidence consistent with stale page state, but the browser console/network behavior and actual runtime code still need direct verification.
 
-A small Qwen patch was produced after Claude's initial investigation. The supplied patch file is `qwen-monitor-diff.txt`. It changes `galaxy_game/app/javascript/admin/monitor.js` by removing a one-time `turbo:load` listener around the delayed render and scheduling `scheduleRender` directly after `init()`:
+A small Qwen patch was produced after Claude's initial investigation. The supplied diff is reproduced below; `qwen-monitor-diff.txt` is the reported standalone filename, whose presence in the implementation checkout is not established by this task. The diff is supplied evidence, not proof of current working-tree or served-code state. It changes the reported `galaxy_game/app/javascript/admin/monitor.js` path by removing a one-time `turbo:load` listener around delayed rendering and scheduling `scheduleRender` directly after `init()`. Verify the actual repository-relative path before use:
 
 ```diff
 -    // For Turbo: wait for page:render then page:after-render for full DOM stability
@@ -405,7 +407,7 @@ All agents: follow these steps exactly in order.
    - The purpose and lifetime of any module-level `initialized` guard or retained state.
    - How initialization behaves on a hard page load versus Turbo visits and repeated visits.
    - Whether event listeners, intervals, timers, canvas references, cached DOM nodes, or prior body data survive page replacement.
-   - How the five-second `sphere_data` polling cycle is started, stopped, and bound to the current celestial body.
+   - How the reported periodic `sphere_data` polling is started, stopped, and bound to the current celestial body; verify the actual interval in current source rather than assuming the previously reported five-second cadence.
 3. Inspect which Turbo lifecycle events are actually used in this application (e.g., `turbo:before-cache`, `turbo:before-render`, `turbo:load`) and whether any handlers for these events exist in `monitor.js` or related modules. Do not assume all events are currently used or that adding handlers for all of them is necessary — only inspect what is present and assess its correctness.
 4. Trace how the current page's body identity and `terrain_data` are supplied to the monitor and how the sidebar is updated. Explicitly verify whether an in-flight asynchronous `sphere_data` polling response from the previous body can arrive after navigation and update the new page. Checking interval cleanup alone is insufficient — trace the full request/response lifecycle including any pending Promises or XHR/fetch calls.
 5. Reproduce and compare, where the local environment permits:
