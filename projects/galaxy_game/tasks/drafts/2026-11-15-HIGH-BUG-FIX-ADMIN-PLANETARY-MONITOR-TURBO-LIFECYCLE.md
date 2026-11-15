@@ -8,25 +8,94 @@ mvp_alignment: OTHER
 local_worker_safe: true
 ---
 
-## Agent Dispatch Interface
+## 🟡 DRAFT STATUS NOTE (for tasks in tasks/drafts/)
 
-**Status**: DRAFT — NOT READY FOR DISPATCH. Human review and approval are required first.
+This task is in draft status and awaiting review approval. It has NOT yet been approved for backlog.
 
-This draft does not authorize implementation. The human must review and approve the task, move it through the prescribed lifecycle, and complete dispatch details before any agent begins work.
+**Current State**: In `tasks/drafts/` committed to git  
+**Next Step**: Review agent assessment → Human approval → Move to `tasks/backlog/` by human  
+**Do NOT dispatch to implementation agents** until this task is in `tasks/backlog/` with `status: backlog`
 
-## Draft status
+See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedure.
 
-This is a review-only draft for the original Rails 7 GalaxyGame application. It is not approved for backlog or implementation dispatch.
+## 🟡 DRAFT REVIEW CHECKLIST (Human — before approving move from drafts/ to backlog/)
 
-The separate Rails 8 `galaxy-game-ui` prototype is paused. Do not work in that repository as part of this task.
+- [ ] Acceptance Criteria are clear and measurable (no ambiguity)
+- [ ] Task scope is well-bounded (not too broad, not overlapping with active tasks)
+- [ ] Dependencies listed and verified against status.md (all prerequisites exist)
+- [ ] No contradictions in the task specification
+- [ ] Architecture aligns with current codebase patterns (review agent verified)
+- [ ] Review agent disposition is GO (not REVISE or STOP)
 
-## TASK: Restore reliable Admin Planetary monitor rendering across Turbo navigation
+**Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/[SUBFOLDER]/` and changing `status: draft → status: backlog`.
+
+---
+
+## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching to implementation)
+
+- [ ] Agent Dispatch Interface section below is complete and accurate (no placeholders)
+- [ ] All Step 0-N instructions are clear and actionable (not vague)
+- [ ] Synthesis report template is provided (copy/paste ready, not as example)
+- [ ] No placeholder text remains in Implementation Steps
+- [ ] All file paths are verified to exist
+- [ ] Architecture Gotchas are specific (not generic)
+- [ ] Acceptance Criteria are measurable
+- [ ] Dependencies and Blocked/Blocks relationships are clear
+
+**Task is NOT READY until all checkboxes are completed.**
+
+---
+
+## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
+
+```
+You are **Implementation Agent**.
+
+Project: galaxy_game
+Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/[SUBFOLDER]/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+
+STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
+  git mv projects/galaxy_game/tasks/backlog/[SUBFOLDER]/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md \
+         projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+  Then open the moved file and change: status: backlog → status: active
+  Paste the output of both commands in chat before proceeding.
+  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+
+If the task YAML has `resume: true`, read the Progress / Resume block first, continue from "Next step", and set `resume: false` when you move the file to `active/`. Do not restart the task.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked file: git mv (never cp or plain mv)
+  - New/untracked file: mv then git add the final path
+  - Never leave stale copies in the source folder
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md"
+    Only ONE result should exist. Paste this output before committing.
+
+READ FIRST (after Step 0), in this order:
+  1. <agent-tasks>/rules/GUARDRAILS.md
+  2. <agent-tasks>/projects/galaxy_game/README.md
+  3. <agent-tasks>/projects/galaxy_game/SESSION_GUIDANCE.md (if the project has one)
+  4. The task file. It holds what is specific to this task; the files above hold the standing rules.
+
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+  Summaries path: <agent-tasks>/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+
+Closeout: follow SESSION_CLOSEOUT.md only.
+```
+
+---
+
+# TASK: Restore reliable Admin Planetary monitor rendering across Turbo navigation
 
 **Status**: DRAFT  
 **Priority**: HIGH  
 **Type**: bug-fix  
 **Created**: 2026-11-15  
+**Last Updated**: 2026-11-15  
 **Author**: ChatGPT (draft for human review)
+
+---
 
 ## Context
 
@@ -59,13 +128,176 @@ A small Qwen patch was produced after Claude's initial investigation. The suppli
 
 This patch is a candidate change, not an established fix. Verify whether it is present in the current working tree, whether it is the code served to the browser, and whether it actually resolves the lifecycle issue under real Turbo navigation. Do not assume Claude's simulated results reproduce the application's actual Turbo behavior.
 
-## Purpose
+---
 
-Establish the actual cause of blank planetary canvases and stale cross-body sidebar data when navigating among Admin Planetary pages in the original Rails 7 application, then make the smallest correct fix and verify it.
+## Problem Statement
 
-The task is deliberately bounded to the Admin Planetary page lifecycle and rendering behavior. It is not a general terrain-loader rewrite or a port to the Rails 8 prototype.
+**Exact description**: Blank planetary canvases and stale cross-body sidebar data occur when navigating among Admin Planetary pages in the original Rails 7 application via Turbo navigation.
 
-## Scope
+**Current behavior**: Navigating between Admin Planetary pages (Earth, Mars, Venus, Titan) via Turbo produces inconsistent results — blank canvases, terrain rendered after reload, or sidebar showing values from a previously visited body.
+
+**Expected behavior**: Each Admin Planetary page should render its own terrain correctly on both hard loads and Turbo visits, with sidebar data matching the current body.
+
+---
+
+## Local Worker Triage Report (Optional — for backlog review only)
+*Filled in by local model (Qwen via GitHub Copilot custom agent config) during backlog review*
+
+- **Template Conformance**: PASS — all required template sections present
+- **Docker Wrapper Check**: N/A — JavaScript lifecycle defect, no Docker/RSpec involved
+- **MVP Alignment**: VALID — task addresses a regression in the original Rails 7 app before any port to Rails 8 UI prototype
+- **MVP Impact Note**: Resolving this defect ensures the Admin Planetary monitor works reliably in the production application before any migration work begins.
+- **Action Line**: READY FOR LOCAL DISPATCH
+
+---
+
+## Agent Assignment (Human-filled, not seen by agents)
+
+**Assigned To**: Qwen local via Copilot (primary)
+**Why This Agent**: Local worker has terminal/tool-use access to inspect the original app working tree and run targeted tests.
+**Local attempts before cloud**: N/A — first dispatch of this task.
+**Supervision Level**: Watched carefully — all agents on first dispatch of a task.
+
+> **Primary executor is always local Qwen via the GitHub Copilot custom agent config.**
+> Cloud/paid agents are fallback only.
+> If assigning to cloud, document which local attempts failed and why.
+
+---
+
+## Prerequisites — READ FIRST (Sequential Order)
+
+1. **Workflow**: `<agent-tasks>/rules/GUARDRAILS.md` (EXECUTOR Role section)
+2. **Project Guide**: `<agent-tasks>/projects/galaxy_game/README.md`
+3. **Session Guidance**: `<agent-tasks>/projects/galaxy_game/SESSION_GUIDANCE.md` (if the project has one)
+4. **This Task File**: Everything below
+
+> Agent MUST read in this order. Do not skip. Synthesis report goes in chat BEFORE starting work.
+
+---
+
+## Files Involved
+
+### Primary Files — you will inspect/edit these
+| File | Purpose | Key Method/Section |
+|---|---|---|
+| `app/javascript/admin/monitor.js` | Admin Planetary monitor JS module | Initialization, Turbo event handling, polling lifecycle |
+| `app/views/admin/planets/show.html.erb` (or equivalent) | Admin Planetary page template | DOM structure, data attributes, Turbo links |
+| `app/controllers/admin/planets_controller.rb` | Controller serving planetary pages | `terrain_data` response, body identity |
+
+### Reference Files — read but do not edit
+| File | Why You Need It |
+|---|---|
+| `app/javascript/application.js` | Module loading and Turbo integration |
+| `config/routes.rb` | Admin Planetary route definitions |
+| `spec/system/admin/planet_monitor_spec.rb` (if exists) | Existing focused coverage for monitor behavior |
+
+### Migration (if needed)
+- [x] No migration needed — this is a JavaScript lifecycle defect.
+
+---
+
+## Architecture Gotchas (Critical to understand BEFORE starting)
+
+⚠️ **GOTCHA 1**: Do not assume the Qwen patch is correct without verifying it against the current working tree and actual browser behavior.
+- ❌ Wrong: Apply the Qwen patch blindly because it looks like a reasonable simplification.
+- ✅ Right: Verify whether the patch is present in the working tree, test it under real Turbo navigation, and assess its effect on the full lifecycle (init → render → poll → navigate).
+- Why: The patch removes a `turbo:load` listener that may be essential for re-initialization on subsequent visits. Disabling it without evidence could worsen the defect.
+
+⚠️ **GOTCHA 2**: Do not disable Turbo globally or use `data-turbo="false"` as a shortcut.
+- ❌ Wrong: Add `data-turbo="false"` to all planetary links or disable Turbo across the application.
+- ✅ Right: Investigate whether a narrowly scoped full-load fallback is consistent with existing app patterns, and only propose it if the investigation demonstrates necessity.
+- Why: The defect is in the JavaScript lifecycle, not Turbo itself. Global Turbo disabling would break other functionality and mask the root cause.
+
+⚠️ **GOTCHA 3**: Do not modify terrain datasets or terrain-generation/normalization code unless the investigation proves one is directly responsible.
+- ❌ Wrong: Rewrite terrain loaders, GeoTIFF parsing, or normalization as part of this task.
+- ✅ Right: If a distinct Venus data/normalization defect is confirmed, document it as a separate follow-up task.
+- Why: This task is bounded to the Admin Planetary page lifecycle and rendering behavior only.
+
+---
+
+## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
+
+Before navigating to any URLs, running any commands, or modifying any files, you MUST create a **synthesis report** as an MD file under `projects/galaxy_game/summaries/`. This report demonstrates you understand the task before executing.
+
+**Synthesis Report Template** (save as MD file to `projects/galaxy_game/summaries/YYYY-MM-DD-bug-fix-admin-planetary-monitor-turbo-lifecycle.md`):
+```markdown
+## STATUS SYNTHESIS REPORT
+
+**Task**: Restore reliable Admin Planetary monitor rendering across Turbo navigation
+**Status**: [backlog → active → completed]
+**Date**: YYYY-MM-DD
+
+### What I'm About to Do
+[2-3 sentences: the goal, the verification method, the success criteria]
+
+### Files I'll Reference
+| File | Purpose | Status |
+|---|---|---|
+| `app/javascript/admin/monitor.js` | Monitor JS lifecycle | pending |
+| [other files] | [description] | [pending / done] |
+
+### Prerequisites Completed
+- ✅ Step 0: Task file moved to active/ with git mv (find output pasted in chat)
+- ✅ Step 0: YAML status updated from backlog → active
+- ✅ Read README.md EXECUTOR section
+- ✅ Read project guide
+- ✅ Read this task file
+- ✅ Understand architecture gotchas above
+
+### Expected Outcomes
+[Exact description of what "done" looks like]
+
+### Critical Gotchas I Will Avoid
+- ❌ Blindly applying the Qwen patch — instead ✅ verify against working tree and browser behavior
+- ❌ Disabling Turbo globally — instead ✅ investigate minimal lifecycle correction
+- ❌ Modifying terrain datasets — instead ✅ document as separate follow-up if needed
+
+---
+
+**SYNTHESIS COMPLETE.** Ready to proceed with [PRIORITY 1 / PRIORITY 2 / etc].
+```
+
+Save this report before beginning investigation or implementation. No additional chat-approval gate is required for the synthesis report.
+
+---
+
+## 🔴 REVIEW GATE — STOP BEFORE COMMITTING (MANDATORY)
+
+**You MAY NOT commit, push, or mark any task step as "complete" until BOTH of the following conditions are met:**
+
+1. **Reviewer has issued a GO disposition** — a reviewer has assessed your work and disposed it as one of: `GO`, `REVISE`, or `STOP`. See REVIEW_AGENT_GUIDE.md for reviewer authority definitions.
+2. **Human authorization** — Requires an explicit human message that authorizes commit (for example, 'commit it') and an explicit human message that authorizes push (for example, 'push it'). Authorization to commit does not imply authorization to push, and authorization to push does not imply authorization to commit.
+
+### What This Means In Practice
+
+| You CAN do | You CANNOT do |
+|---|---|
+| Implement changes per task instructions | Commit/push/mark-complete without both conditions above |
+| Run tests and verify your changes locally | Assume reviewer GO is sufficient to proceed to commit |
+| Create synthesis and evidence artifacts | Proceed to the next task step if review disposition is REVISE or STOP |
+| Report results and request review | Override a reviewer's REVISE or STOP disposition |
+
+### Review-Gate Workflow
+
+1. **Complete all implementation and verification steps** listed below this section
+2. **Create evidence artifacts** (test output, synthesis reports)
+3. **STOP** — paste your evidence in chat and state: *"All implementation and verification complete. Requesting reviewer assessment."*
+4. **Wait for reviewer disposition** (GO / REVISE / STOP)
+5. If **REVISE**: address the listed issues, re-test, return to step 3
+6. If **STOP**: do not proceed; await human guidance
+7. If **GO**: wait for an explicit human message that authorizes commit. Push needs a separate, later human message that authorizes push.
+8. Once **both** conditions are satisfied: proceed to Commit Instructions below
+
+---
+
+## Implementation Steps
+
+> ⚠️ **BEFORE YOU START**: Complete Step 0 first. Then complete and post your STATUS SYNTHESIS REPORT.
+> Do not proceed to Step 1 until both are done and approved.
+
+All agents: follow these steps exactly in order.
+
+### Priority 1 — Investigation
 
 1. Inspect the current original-app working tree and Git state before changing anything. Identify whether the supplied Qwen patch is present, modified, committed, or absent. Preserve unrelated local work.
 2. Trace the real lifecycle of `AdminMonitor`:
@@ -74,45 +306,27 @@ The task is deliberately bounded to the Admin Planetary page lifecycle and rende
    - How initialization behaves on a hard page load versus Turbo visits and repeated visits.
    - Whether event listeners, intervals, timers, canvas references, cached DOM nodes, or prior body data survive page replacement.
    - How the five-second `sphere_data` polling cycle is started, stopped, and bound to the current celestial body.
-3. Trace how the current page's body identity and `terrain_data` are supplied to the monitor and how the sidebar is updated. Confirm whether a prior page's response can update the newly visited page.
-4. Reproduce and compare, where the local environment permits:
+3. Inspect which Turbo lifecycle events are actually used in this application (e.g., `turbo:before-cache`, `turbo:before-render`, `turbo:load`) and whether any handlers for these events exist in `monitor.js` or related modules. Do not assume all events are currently used or that adding handlers for all of them is necessary — only inspect what is present and assess its correctness.
+4. Trace how the current page's body identity and `terrain_data` are supplied to the monitor and how the sidebar is updated. Explicitly verify whether an in-flight asynchronous `sphere_data` polling response from the previous body can arrive after navigation and update the new page. Checking interval cleanup alone is insufficient — trace the full request/response lifecycle including any pending Promises or XHR/fetch calls.
+5. Reproduce and compare, where the local environment permits:
    - Direct hard load of each relevant Admin Planetary page.
    - Turbo navigation from one body to another.
    - Repeated navigation back to a previously visited body.
    - Browser back/forward navigation.
-   Include at least Earth, Mars, Venus, and Titan; include Eden II if it is available in the current local data.
-5. Inspect browser console and network activity, plus Rails/server logs as needed. Record actual evidence for initialization, rendering, polling requests, response body identity, and canvas state. Do not rely only on screenshots or simulated lifecycle tests.
+   Include at least Earth, Mars, Venus, and Titan; include Eden II if available. If a body or navigation scenario cannot be tested because of an environment limitation, report that limitation clearly rather than treating it as a successful test.
+6. Inspect browser console and network activity, plus Rails/server logs as needed. Record actual evidence for initialization, rendering, polling requests, response body identity, and canvas state.
+
+### Priority 2 — Fix
+
 6. Determine whether the supplied Qwen patch is correct. Retain, revise, or reject it based on the verified root cause. Prefer a minimal lifecycle correction over disabling Turbo globally unless evidence shows that is the appropriate existing application pattern.
-7. Add or adjust focused regression coverage for the lifecycle behavior where the current test setup can meaningfully exercise it. Do not add broad or brittle tests that merely assert implementation details.
-8. Verify the fix through the same navigation paths that reproduced the problem. Confirm that the current body's canvas and sidebar remain associated with the current body and that old polling cannot overwrite the new page.
+7. Implement the smallest justified fix in the original Rails 7 app only.
 
-## Explicit boundaries
+### Priority 3 — Verification
 
-- Work only in the original Rails 7 application repository: `trmccormick/galaxyGame`.
-- Do not modify the separate Rails 8 `galaxy-game-ui` prototype.
-- Do not regenerate, convert, replace, or rewrite any planetary source or processed terrain datasets.
-- Do not change terrain source-file priorities, GeoTIFF/ASC parsing, elevation values, sea-level logic, or terrain normalization as part of this task unless the lifecycle investigation proves one is directly responsible for the blank/stale-page defect. If a distinct Venus data/normalization defect is confirmed, document it as a separate follow-up rather than broadening this task.
-- Do not use `data-turbo="false"` globally or disable Turbo across the application as a shortcut. A narrowly scoped full-load fallback may be proposed only if the investigation demonstrates that it is necessary and consistent with existing app behavior.
-- Do not refactor the monitor or redesign the planetary UI.
-- Do not change unrelated files or clean up pre-existing modifications.
-- Do not run the full RSpec suite. Follow the project targeted-test rules, including `unset DATABASE_URL`, one RSpec process at a time, and log-file redirection.
-- No commits or pushes without explicit human approval.
+8. Add or adjust focused regression coverage for the lifecycle behavior where the current test setup can meaningfully exercise it. Do not add broad or brittle tests that merely assert implementation details.
+9. Verify the fix through the same navigation paths that reproduced the problem. Confirm that the current body's canvas and sidebar remain associated with the current body and that old polling cannot overwrite the new page.
 
-## Required investigation evidence
-
-The synthesis report must distinguish:
-- **Verified**: directly observed in the current source/runtime or reproduced with commands.
-- **Historical**: supported by Git history, prior reports, or user-provided screenshots.
-- **Hypothesis**: plausible explanation not yet reproduced or confirmed.
-- **Unresolved**: unavailable evidence or environment limitation.
-
-At minimum, record:
-- Current Git branch and working-tree status before edits.
-- Whether the supplied Qwen diff is present and its exact current disposition.
-- Relevant source paths and the lifecycle call sequence.
-- Hard-load versus Turbo-navigation results.
-- Whether stale polling responses are observed and how they are prevented after the fix.
-- Targeted test commands and exact results, or why a test could not be run.
+---
 
 ## Acceptance criteria
 
@@ -127,17 +341,38 @@ At minimum, record:
 - [ ] A synthesis report is saved under `projects/galaxy_game/summaries/` before implementation begins, and a concise completion handoff is provided.
 - [ ] No commit or push is made without explicit human approval.
 
+---
+
+## Stop Conditions — escalate to user immediately if:
+- Fix causes new failures in specs you did not touch
+- Same failure persists after two attempts
+- Root cause is in a shared concern, base class, or factory used across many modules
+- A database migration is needed that wasn't anticipated
+- Any architectural decision is required
+- Fix requires changing more files than the task specifies
+
+---
+
+## Documentation
+- [x] No doc changes needed — this is a JavaScript lifecycle defect with no user-facing documentation to update.
+
+---
+
 ## Deliverable
 
 Before implementation, save a synthesis report in `projects/galaxy_game/summaries/` with a date-prefixed filename. It must contain the investigation evidence, lifecycle trace, root-cause determination (or explicit unresolved status), Qwen patch assessment, reproduction matrix, proposed minimal correction, and focused test plan.
 
 After implementation, update that report with the actual changes and verification results. At closeout, provide a concise handoff identifying changed files, tests run, remaining issues, and any separate follow-up task recommended for Venus's uniform-orange rendering.
 
+---
+
 ## Dependencies
 
 **Blocked by**: Human review and approval of this draft; availability of the original Rails 7 application and its local runtime for reproduction.  
 **Blocks**: Any port of the Admin Planetary monitor lifecycle behavior to the separate Rails 8 UI prototype.  
 **Related tasks**: None identified at draft creation.
+
+---
 
 ## Progress / Resume
 
@@ -147,9 +382,13 @@ After implementation, update that report with the actual changes and verificatio
 - **Local-only commits:** Not checked; implementation agent must inspect the original app's Git state before work.
 - **Owning session / window label:** Planning — Admin Planetary monitor regression.
 
+---
+
 ## Completion Report
 
 Not applicable while this task remains a draft.
+
+---
 
 ## Handoff Summary
 
