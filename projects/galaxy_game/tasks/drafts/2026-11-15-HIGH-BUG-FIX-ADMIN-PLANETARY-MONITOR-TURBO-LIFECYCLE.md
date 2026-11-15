@@ -8,6 +8,60 @@ mvp_alignment: OTHER
 local_worker_safe: true
 ---
 
+## 🔴 Agent Dispatch Interface (Required — reconciled task-specific contract)
+
+**Authority:** Use only after human approval, movement to backlog, YAML `status: backlog`, and completion of the backlog-only readiness checklist. This does not authorize dispatch while this file is in drafts.
+
+**Reconciliation:** For an untracked task file, run `git add <source>` first, then `git mv <source> <destination>`. Never use plain `mv` or `cp` for task lifecycle moves. This resolves the generic template's contradictory untracked-file example and preserves Git history. Save synthesis in summaries before investigation; chat contains only its path and concise status, not report text or raw command output.
+
+```text
+You are **Implementation Agent**.
+
+Project: galaxy_game
+Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+
+STEP 0 — VERIFY, STAGE IF NEEDED, THEN MOVE WITH GIT MV:
+  Run from the agent-tasks repository root.
+  1. Inspect:
+       git status --short -- projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+       git ls-files --error-unmatch projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+     If untracked, stage first:
+       git add projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+     Preserve pre-existing changes.
+  2. Move:
+       git mv projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+  3. Verify:
+       git status --short
+       git ls-files --error-unmatch projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+       test ! -e projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md && test -f projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+  4. Open active copy; change YAML status backlog → active and verify.
+  5. Record Git inspection, optional staging, git mv, verification, and YAML update in synthesis.
+  Do not investigate or implement until Step 0 and Stage 1 synthesis are complete.
+
+If resume: true, read Progress / Resume, continue from Next step, and set resume: false when moving to active.
+
+LIFECYCLE: backlog → active → completed
+  - Tracked source: git mv. Untracked source: git add source first, then git mv.
+  - Never use plain mv or cp for lifecycle moves. Never leave stale copies.
+  - Verify: find projects/galaxy_game/tasks -name "2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md"
+    Exactly ONE result; record it in evidence report.
+
+READ FIRST after Step 0:
+  1. <agent-tasks>/rules/GUARDRAILS.md
+  2. <agent-tasks>/projects/galaxy_game/README.md
+  3. <agent-tasks>/projects/galaxy_game/SESSION_GUIDANCE.md, if present
+  4. Active task file.
+
+SYNTHESIS: Save Markdown to <agent-tasks>/projects/galaxy_game/summaries/YYYY-MM-DD-bug-fix-admin-planetary-monitor-turbo-lifecycle.md. Update after Step 0/before investigation, after investigation/before implementation, and after implementation/verification. Chat: report path and concise status only.
+
+CLOSEOUT: Follow SESSION_CLOSEOUT.md and this task's Commit Instructions. Reviewer GO and operation-specific human authorization are mandatory; commit, push, and completion are separate authorizations.
+```
+
+**IMPORTANT:** Do not dispatch while in drafts. Replace only `<agent-tasks>` with the actual clone path. Backlog folder is `current/`; active destination is flat.
+
+---
+
+
 ## 🟡 DRAFT STATUS NOTE (for tasks in tasks/drafts/)
 
 This task is in draft status and awaiting review approval. It has NOT yet been approved for backlog.
@@ -19,6 +73,8 @@ This task is in draft status and awaiting review approval. It has NOT yet been a
 See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedure.
 
 ## 🟡 DRAFT REVIEW CHECKLIST (Human — before approving move from drafts/ to backlog/)
+
+**APPLIES ONLY IF status: draft.**
 
 - [ ] Acceptance Criteria are clear and measurable (no ambiguity)
 - [ ] Task scope is well-bounded (not too broad, not overlapping with active tasks)
@@ -33,6 +89,8 @@ See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedu
 
 ## 🔴 CRITICAL: Task Readiness Checklist (Human — before dispatching to implementation)
 
+**APPLIES ONLY IF status: backlog. This is a dispatch-readiness gate, not a draft-review gate.**
+
 - [ ] Agent Dispatch Interface section below is complete and accurate (no placeholders)
 - [ ] All Step 0-N instructions are clear and actionable (not vague)
 - [ ] Synthesis report template is provided (copy/paste ready, not as example)
@@ -43,66 +101,6 @@ See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedu
 - [ ] Dependencies and Blocked/Blocks relationships are clear
 
 **Task is NOT READY until all checkboxes are completed.**
-
----
-
-## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
-
-```
-You are **Implementation Agent**.
-
-Project: galaxy_game
-Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
-
-STEP 0 — STAGE IF NECESSARY, THEN MOVE THE TASK WITH GIT MV (no exceptions):
-  Source:
-    projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
-  Destination:
-    projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
-
-  1. Inspect the task file's Git state before moving it:
-       git status --short -- <source-path>
-       git ls-files --error-unmatch <source-path>
-     Do not assume that a file in backlog is already committed or tracked.
-  2. If the source file is not yet tracked by Git (for example, it is newly created or untracked), stage it first:
-       git add <source-path>
-     This ensures the file is in Git's index before the move.
-  3. Move the task using Git in every case:
-       git mv <source-path> <destination-path>
-     Do not use plain mv or cp as the task-file move operation. If the file was already tracked, run git mv directly; if it was not tracked, git add it first and then run git mv.
-  4. Verify the move:
-       git status --short
-       git ls-files --error-unmatch <destination-path>
-       test ! -e <source-path> && test -f <destination-path>
-     Confirm that the source no longer exists, the destination exists, and Git tracks the destination. Preserve any pre-existing task changes; do not discard or overwrite them.
-  5. Open the destination file and change its YAML status from `backlog` to `active`. Verify the updated status.
-  6. Record the Git-state inspection, any staging command, the `git mv`, and verification outputs in the synthesis report. Create the synthesis report only after Steps 1–5 are complete, and before beginning investigation or implementation.
-
-  In chat, provide only a concise status update and the report path; do not paste the report or command output.
-  Do NOT start investigation or implementation until the move, status update, and synthesis report are complete.
-
-If the task YAML has `resume: true`, read the Progress / Resume block first, continue from "Next step", and set `resume: false` when you move the file to `active/`. Do not restart the task.
-
-LIFECYCLE: backlog → active → completed
-  - Tracked file: git mv (never cp or plain mv)
-  - New/untracked file: git add the source path first, then git mv the source to the destination (never use plain mv or cp)
-  - Never leave stale copies in the source folder
-  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md"
-    Only ONE result should exist. Record this output in the synthesis/evidence report.
-
-READ FIRST (after Step 0), in this order:
-  1. <agent-tasks>/rules/GUARDRAILS.md
-  2. <agent-tasks>/projects/galaxy_game/README.md
-  3. <agent-tasks>/projects/galaxy_game/SESSION_GUIDANCE.md (if the project has one)
-  4. The task file. It holds what is specific to this task; the files above hold the standing rules.
-
-CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
-  Summaries path: <agent-tasks>/projects/galaxy_game/summaries/
-  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
-  Chat is for questions only — never paste synthesis into chat (formatting breaks).
-
-Closeout: follow SESSION_CLOSEOUT.md only.
-```
 
 ---
 
@@ -168,22 +166,23 @@ This patch is a candidate change, not an established fix. Verify whether it is p
 ---
 
 ## Local Worker Triage Report (Optional — for backlog review only)
-*Filled in by local model (Qwen via GitHub Copilot custom agent config) during backlog review*
 
-- **Template Conformance**: PASS — all required template sections present
-- **Docker Wrapper Check**: N/A — JavaScript lifecycle defect, no Docker/RSpec involved
-- **MVP Alignment**: VALID — task addresses a regression in the original Rails 7 app before any port to Rails 8 UI prototype
-- **MVP Impact Note**: Resolving this defect ensures the Admin Celestial Body View works reliably in the production application before any migration work begins.
-- **Action Line**: READY FOR LOCAL DISPATCH
+**Disposition: NEEDS MANUAL REVIEW.** Earlier triage claims are unverified and are not approval, template-conformance evidence, or dispatch authorization.
+
+- **Template Conformance**: NOT YET VERIFIED — revision in progress after Perplexity's REVISE disposition.
+- **Docker/RSpec Assessment**: PENDING — inspect actual browser-capable test setup and project rules; JavaScript-related does not imply Docker/RSpec is irrelevant.
+- **MVP Alignment**: Proposed alignment is original Rails 7 regression reliability before porting affected behavior to the separate Rails 8 prototype; human confirmation remains required.
+- **Action Line**: NEEDS MANUAL REVIEW — draft only; not backlog-approved or dispatch-ready.
 
 ---
 
 ## Agent Assignment (Human-filled, not seen by agents)
 
-**Assigned To**: Qwen local via Copilot (primary)
-**Why This Agent**: Local worker has terminal/tool-use access to inspect the original app working tree and run targeted tests.
-**Local attempts before cloud**: N/A — first dispatch of this task.
-**Supervision Level**: Watched carefully — all agents on first dispatch of a task.
+**Proposed executor (human confirmation required)**: Qwen local via Copilot (primary)
+**Why proposed**: Local worker has terminal/tool-use access to inspect the original app working tree and run targeted tests.
+**Local attempts before cloud**: N/A — no implementation attempt has been authorized or made.
+**Supervision Level**: Watched carefully — first dispatch of this task.
+**Assignment status**: Proposal only; this draft does not assign or dispatch an agent.
 
 > **Primary executor is always local Qwen via the GitHub Copilot custom agent config.**
 > Cloud/paid agents are fallback only.
@@ -204,36 +203,54 @@ This patch is a candidate change, not an established fix. Verify whether it is p
 
 ## Files Involved
 
-### Primary Files — you will inspect/edit these
-| File | Purpose | Key Method/Section |
-|---|---|---|
-| `app/javascript/admin/monitor.js` | Admin Celestial Body View JS module | Initialization, Turbo event handling, polling lifecycle |
-| `app/views/admin/celestial_bodies/planetary.html.erb` | Admin Celestial Body View page (legacy Planetary route) template | DOM structure, data attributes, Turbo links |
-| `app/controllers/admin/celestial_bodies_controller.rb` | Controller serving legacy Celestial Body View / Planetary route | `terrain_data` response, body identity |
+### Application-root convention and evidence status
 
-### Reference Files — read but do not edit
-| File | Why You Need It |
+Paths under `app/`, `config/`, `spec/`, and `docs/` are relative to the original Rails 7 GalaxyGame repository root, not `agent-tasks`. Paths under `projects/galaxy_game/` and `rules/` are relative to `agent-tasks`. All application/wiki paths are reported paths; verify existence and current contents locally before editing.
+
+### Authorized application files — inspect; edit only as specified
+
+| File | Purpose | Edit permission |
+|---|---|---|
+| `app/javascript/admin/monitor.js` | Admin Celestial Body View JS; initialization, Turbo events, polling | Editable for minimal lifecycle fix |
+| `app/views/admin/celestial_bodies/planetary.html.erb` | Legacy Planetary route template | Inspect; edit only if verified fix requires narrowly scoped lifecycle markup change |
+| `app/controllers/admin/celestial_bodies_controller.rb` | Legacy Planetary route controller | Inspect; edit only if verified cause requires narrowly scoped body-identity/data correction |
+
+### Test files — conditional edit permission
+
+| File | Purpose | Edit permission |
+|---|---|---|
+| `spec/features/admin/planetary_monitor_spec.rb` | Reported focused monitor coverage | Conditionally editable after verifying existence and suitability |
+| Any additional test file | Browser/JavaScript lifecycle regression coverage | Inspect first; human approval for exact path required before editing |
+
+### Reference files — read only
+
+| File | Why |
 |---|---|
 | `app/javascript/application.js` | Module loading and Turbo integration |
-| `config/routes.rb` | Legacy Monitor and Planetary route definitions for celestial bodies |
-| `spec/features/admin/planetary_monitor_spec.rb` | Existing focused coverage for monitor behavior |
+| `config/routes.rb` | Legacy Monitor and Planetary routes |
+| Related JS/layout/helper/test configuration | Trace lifecycle and test capabilities; record exact discovered paths |
 
-### Migration (if needed)
-- [x] No migration needed — this is a JavaScript lifecycle defect.
+### Authorized documentation update
+
+| File | Purpose | Edit permission |
+|---|---|---|
+| `docs/wiki/ui/05_admin_celestial_body_view.md` | Existing authoritative wiki page and dated implementation snapshot | Authorized for focused closeout update only if lifecycle behavior changes; verify path/current content first and preserve dated history |
+
+Any other application, test, data, terrain, or documentation path requires explicit human approval before editing.
 
 ---
 
 ## Architecture Gotchas (Critical to understand BEFORE starting)
 
-⚠️ **GOTCHA 1**: Do not assume the Qwen patch is correct without verifying it against the current working tree and actual browser behavior.
-- ❌ Wrong: Apply the Qwen patch blindly because it looks like a reasonable simplification.
-- ✅ Right: Verify whether the patch is present in the working tree, test it under real Turbo navigation, and assess its effect on the full lifecycle (init → render → poll → navigate).
-- Why: The patch removes a `turbo:load` listener that may be essential for re-initialization on subsequent visits. Disabling it without evidence could worsen the defect.
+⚠️ **GOTCHA 1**: Do not assume the Qwen patch is correct without verifying it against current working tree and browser behavior.
+- ❌ Wrong: Apply it blindly.
+- ✅ Right: Verify whether the supplied diff is present, identify code actually served to the browser, test real Turbo navigation, and assess init → render → poll → navigate.
+- Why: The diff changes delayed-render scheduling by removing a one-time `turbo:load` listener. Its relationship to initialization and later visits is unknown until traced.
 
 ⚠️ **GOTCHA 2**: Do not disable Turbo globally or use `data-turbo="false"` as a shortcut.
-- ❌ Wrong: Add `data-turbo="false"` to all planetary links or disable Turbo across the application.
-- ✅ Right: Investigate whether a narrowly scoped full-load fallback is consistent with existing app patterns, and only propose it if the investigation demonstrates necessity.
-- Why: The defect is in the JavaScript lifecycle, not Turbo itself. Global Turbo disabling would break other functionality and mask the root cause.
+- ❌ Wrong: Disable Turbo across the application or all planetary links.
+- ✅ Right: Investigate whether a narrowly scoped full-load fallback is consistent with existing patterns; any fallback changing accepted Turbo-navigation behavior requires explicit human scope approval.
+- Why: Evidence suggests a lifecycle defect; global Turbo disabling would bypass rather than establish the cause.
 
 ⚠️ **GOTCHA 3**: Do not modify terrain datasets or terrain-generation/normalization code unless the investigation proves one is directly responsible.
 - ❌ Wrong: Rewrite terrain loaders, GeoTIFF parsing, or normalization as part of this task.
@@ -242,51 +259,87 @@ This patch is a candidate change, not an established fix. Verify whether it is p
 
 ---
 
-## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
+## 🔴 REQUIRED: STATUS SYNTHESIS / EVIDENCE REPORT
 
-After completing Step 0 (including checking/staging the task file as needed, moving it with `git mv`, verifying the destination, and updating the YAML status), but before beginning investigation or implementation, you MUST create a **synthesis report** as an MD file under `projects/galaxy_game/summaries/`. Record the Step 0 Git-state, staging (if needed), move, and verification command outputs in that report. This report demonstrates you understand the task before executing the investigation.
+Create one Markdown report under `projects/galaxy_game/summaries/` named `YYYY-MM-DD-bug-fix-admin-planetary-monitor-turbo-lifecycle.md`. Maintain it through three updates; never claim future evidence early.
 
-**Synthesis Report Template** (save as MD file to `projects/galaxy_game/summaries/YYYY-MM-DD-bug-fix-admin-planetary-monitor-turbo-lifecycle.md`):
+### Stage 1 — after Step 0, before investigation
+Record exact Git-state commands/outputs; tracked status; any `git add`; `git mv`; source/destination checks; single-copy `find`; YAML status change; objective/boundaries/unknowns; files to inspect and planned evidence. Mark investigation, reproduction, root cause, proposed fix, tests, and runtime results PENDING.
+
+### Stage 2 — after investigation, before implementation
+Record verified source paths/code locations; hard-load/Turbo lifecycle; initialization guards; event handlers; retained DOM/state; polling ownership and in-flight response handling; reproduction matrix; Qwen diff and served-code status; root cause or unresolved status; minimal proposed change, rejected alternatives, exact edit paths, and focused test plan. Request human decision if cause/scope/additional files/fallback is ambiguous. Do not implement until Stage 2 is complete and the human approves the proposed approach.
+
+### Stage 3 — after implementation and verification
+Append changed files, exact commands/test outputs, browser evidence, acceptance results, wiki update, remaining limitations, and follow-ups. Distinguish direct verification, supplied evidence, and reported claims.
+
+### Copy-ready report scaffold
+
 ```markdown
-## STATUS SYNTHESIS REPORT
+# Status Synthesis and Evidence Report
+**Task:** Restore reliable Admin Celestial Body View rendering across Turbo navigation
+**Task file:** projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+**Status:** [active / awaiting review / completed]
+**Date:** YYYY-MM-DD
+**Evidence basis:** [direct verification / supplied evidence / reported by agent / human assertion]
 
-**Task**: Restore reliable Admin Celestial Body View rendering across Turbo navigation
-**Status**: [backlog → active → completed]
-**Date**: YYYY-MM-DD
-
-### What I'm About to Do
-[2-3 sentences: the goal, the verification method, the success criteria]
-
-### Files I'll Reference
-| File | Purpose | Status |
+## Stage 1 — Initial understanding and Step 0
+### Objective and boundaries
+[Original Rails 7 lifecycle reliability only; no redesign or Rails 8 port.]
+### Step 0 Git evidence
+| Check | Exact command | Result |
 |---|---|---|
-| `app/javascript/admin/monitor.js` | Monitor JS lifecycle | pending |
-| [other files] | [description] | [pending / done] |
+| Source status/tracking | [command/output] | [result] |
+| Staging, if needed | [command/output or N/A] | [result] |
+| Git move | [command/output] | [result] |
+| Destination tracking/existence | [command/output] | [result] |
+| Source absence | [command/output] | [result] |
+| Single-copy search | [command/output] | [result] |
+| YAML status | [command/output] | [result] |
+### Initial understanding and unknowns
+[Separate supplied screenshot/diff evidence from hypotheses and unverified facts.]
+### Planned evidence
+[Commands/tools selected after environment inspection; do not invent.]
 
-### Prerequisites Completed
-- ✅ Step 0: Inspected whether the task file was tracked/committed; staged the source with `git add` first if it was untracked
-- ✅ Step 0: Moved the task file to active/ using `git mv` (command output recorded in this report)
-- ✅ Step 0: Verified source removal, destination existence, and Git tracking
-- ✅ Step 0: YAML status updated from backlog → active
-- ✅ Read README.md EXECUTOR section
-- ✅ Read project guide
-- ✅ Read this task file
-- ✅ Understand architecture gotchas above
+## Stage 2 — Investigation findings (before implementation)
+### Source and lifecycle trace
+[Verified paths/lines; module load/init; guards; Turbo events; DOM refs; polling start/stop; in-flight responses.]
+### Reproduction matrix
+| Body | Hard load | Turbo arrival | Repeat visit | Back/forward | Canvas identity | Sidebar identity | Polling/late response |
+|---|---|---|---|---|---|---|---|
+| Earth | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING |
+| Mars | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING |
+| Venus | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING |
+| Titan | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING |
+| Eden II (if available) | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING |
+### Qwen diff
+[Working-tree status; served-code status; observed effect; conclusion.]
+### Root cause and proposed correction
+[Verified cause or unresolved; evidence; minimal fix; rejected alternatives; exact files; test plan.]
+### Human approval before implementation
+[Approval/scope or NOT APPROVED.]
 
-### Expected Outcomes
-[Exact description of what "done" looks like]
-
-### Critical Gotchas I Will Avoid
-- ❌ Blindly applying the Qwen patch — instead ✅ verify against working tree and browser behavior
-- ❌ Disabling Turbo globally — instead ✅ investigate minimal lifecycle correction
-- ❌ Modifying terrain datasets — instead ✅ document as separate follow-up if needed
-
----
-
-**SYNTHESIS COMPLETE.** Ready to proceed with [PRIORITY 1 / PRIORITY 2 / etc].
+## Stage 3 — Implementation and verification
+### Changed files
+| File | Change | Why authorized |
+|---|---|---|
+### Automated tests
+| Exact command | Verified environment/container | Result | Evidence |
+|---|---|---|---|
+### Browser/runtime acceptance
+[Repeat matrix with observations, repetition count, console/network evidence, delayed-response method.]
+### Documentation
+[Wiki snapshot update or reason none needed.]
+### Acceptance criteria
+[PASS / FAIL / UNVERIFIED for each, with evidence.]
+### Remaining issues/follow-ups
+[Only independently established findings.]
+### Review and authorization
+[Reviewer disposition; separate human authorization for commit, push, completion.]
+### Handoff
+[Changed files, tests, limitations, report path, next action.]
 ```
 
-Save this report before beginning investigation or implementation. The report is a required file artifact, not a chat approval gate. In chat, provide its path and a concise status update only; do not paste the report.
+Do not use generic `[other files]`, unverified paths, or completed checkmarks for work not yet performed.
 
 ---
 
@@ -315,7 +368,7 @@ Save this report before beginning investigation or implementation. The report is
 5. If **REVISE**: address the listed issues, re-test, return to step 3
 6. If **STOP**: do not proceed; await human guidance
 7. If **GO**: wait for an explicit human message that authorizes commit. Push needs a separate, later human message that authorizes push.
-8. Once **both** conditions are satisfied: proceed to Commit Instructions below
+8. Proceed to Commit Instructions only after reviewer GO and explicit human authorization for that specific operation. Commit, push, and task completion are separate actions and require separate human authorization.
 
 ---
 
@@ -352,70 +405,130 @@ All agents: follow these steps exactly in order.
 
 ### Priority 3 — Verification
 
-9. Add or adjust focused regression coverage for the lifecycle behavior where the current test setup can meaningfully exercise it. Do not add broad or brittle tests that merely assert implementation details.
-10. Verify the fix through the same navigation paths that reproduced the problem. Confirm that the current body's canvas and sidebar remain associated with the current body and that old polling cannot overwrite the new page.
+9. Inspect the existing browser/JavaScript-capable test setup and reported feature spec. Add/adjust focused coverage in the conditionally editable spec only if it meaningfully exercises behavior. If another test path is needed, obtain human approval for that exact path before editing.
+
+10. Run meaningful targeted automated tests. If RSpec is used, run inside the verified active GalaxyGame web container, with `unset DATABASE_URL` immediately before RSpec, one process at a time. Verify actual container/service and command locally; do not invent them. GalaxyGame README requires targeted tests only and prohibits blanket full-suite runs, so executor must not run full suite. Record "not run by executor per project rule"; include a dated human-run result only if supplied.
+
+11. Verify through the browser matrix; confirm current-body canvas/sidebar identity and prove a delayed prior-body polling response cannot overwrite the new page.
+
+12. If browser/runtime verification is unavailable, mark affected criteria UNVERIFIED, record the blocker and automated evidence, and stop for human decision.
 
 ---
 
 ## Acceptance criteria
 
+Mark every criterion PASS, FAIL, or UNVERIFIED in the final evidence report. UNVERIFIED is not a pass and prevents claiming full verification/completion without explicit human decision.
+
 - [ ] The root cause of the blank/stale Admin Celestial Body View page (legacy Planetary route) behavior is identified from current source and runtime evidence, not inferred solely from the screenshots.
 - [ ] The investigation establishes whether the module-level initialization guard, event timing, retained DOM/module state, polling lifecycle, or another mechanism causes the defect.
 - [ ] The supplied Qwen patch is explicitly assessed against the current working tree and actual browser behavior.
 - [ ] The smallest justified fix is implemented in the original Rails 7 app only.
-- [ ] Navigating between Earth, Mars, Venus, and Titan using both hard loads and Turbo visits no longer produces a blank canvas or previous-body sidebar/polling data.
-- [ ] Regression coverage is added or existing focused coverage is strengthened where practical.
-- [ ] Relevant targeted tests pass; any pre-existing failures or environment limitations are reported without being misrepresented.
+- [ ] Browser matrix covers Earth, Mars, Venus, Titan, and Eden II if available. For each available body test hard load, Turbo arrival, repeated return visits, and back/forward. Record at least three consecutive Turbo transitions per body and one back/forward cycle; explain unavailable paths.
+- [ ] Canvas and sidebar identify the selected body on each tested navigation; no previous-body data is displayed.
+- [ ] Polling belongs to the current body. Test delayed/in-flight previous-body response with controllable delay/interception or focused automated equivalent; show it cannot overwrite the new page.
+- [ ] Record browser console/network evidence and relevant server logs.
+- [ ] Focused regression coverage is added/strengthened, or a concrete technical limitation is documented and assessed by reviewer; "where practical" is not a blanket waiver.
+- [ ] Exact targeted test commands/results are recorded. Any RSpec uses verified Docker web container and `unset DATABASE_URL`; only one RSpec process at a time.
+- [ ] Executor does not run full suite per GalaxyGame README; record "not run by executor per project rule". Cite dated human-run result only if supplied.
+- [ ] If browser verification cannot run, affected criteria remain UNVERIFIED and task stops for human decision.
 - [ ] No terrain datasets or unrelated terrain-generation/normalization behavior are changed.
 - [ ] A synthesis report is saved under `projects/galaxy_game/summaries/` before implementation begins, and a concise completion handoff is provided.
-- [ ] No commit or push is made without explicit human approval.
+- [ ] No commit, push, or task-completion move/status change occurs without reviewer GO and separate explicit human authorization for that operation.
 
 ---
 
 ## Stop Conditions — escalate to user immediately if:
-- Fix causes new failures in specs you did not touch
-- Same failure persists after two attempts
-- Root cause is in a shared concern, base class, or factory used across many modules
-- A database migration is needed that wasn't anticipated
-- Any architectural decision is required
-- Fix requires changing more files than the task specifies
+- Fix causes new failures in specs you did not touch.
+- Same failure persists after two focused attempts.
+- Root cause is in a shared concern, base class, or factory used across many modules.
+- An unanticipated migration or architectural decision is required.
+- A required edit is outside authorized application/test/wiki paths; additional paths require human approval before editing.
+- A full-load fallback, global Turbo change, terrain-data/normalization change, or other scope expansion is required; obtain explicit human approval.
+- Browser/runtime verification is unavailable or cannot demonstrate behavior; mark criteria UNVERIFIED and return for human decision.
 
 ---
 
 ## Documentation
-- [x] The existing Admin Celestial Body View purpose, data flow, endpoints, polling behavior, current Turbo lifecycle implementation, and known regression context are recorded in `docs/wiki/ui/05_admin_celestial_body_view.md`. Do not duplicate that material in this task. If implementation changes the lifecycle behavior, update the wiki's dated code snapshot during closeout.
+
+- Existing Celestial Body View purpose, data flow, endpoints, polling, lifecycle, and regression context are reported as recorded in `docs/wiki/ui/05_admin_celestial_body_view.md`. Verify page and dated snapshot locally; do not duplicate content.
+- If implementation changes lifecycle behavior, update that existing page's dated code snapshot during closeout. This focused update is authorized in Files Involved; preserve dated history and do not rewrite unrelated sections.
+- If lifecycle behavior does not change, record why no snapshot update was needed.
+- [ ] Verify wiki path/snapshot section before editing.
+- [ ] Document lifecycle changes with date, source paths, and verified behavior.
 
 ---
 
 ## Deliverable
 
-Before implementation, save a synthesis report in `projects/galaxy_game/summaries/` with a date-prefixed filename. It must contain the investigation evidence, lifecycle trace, root-cause determination (or explicit unresolved status), Qwen patch assessment, reproduction matrix, proposed minimal correction, and focused test plan.
-
-After implementation, update that report with the actual changes and verification results. At closeout, provide a concise handoff identifying changed files, tests run, remaining issues, and any separate follow-up task recommended for Venus's uniform-orange rendering.
+Maintain one three-stage synthesis report: (1) initial understanding and Step 0 evidence before investigation; (2) investigation/lifecycle/root-cause or unresolved status/Qwen patch/matrix/proposed fix/test plan before implementation; (3) actual changes, exact tests, browser matrix, wiki update, acceptance disposition, and remaining issues after implementation. Stage 2 and human approval of the proposed approach are required before implementation. Chat contains only report path and concise status. Closeout handoff identifies changed files, tests, issues, evidence basis, and any separately recommended Venus rendering follow-up.
 
 ---
 
 ## Dependencies
 
-**Blocked by**: Human review and approval of this draft; availability of the original Rails 7 application and its local runtime for reproduction.  
-**Blocks**: Any port of the Admin Celestial Body View lifecycle behavior to the separate Rails 8 UI prototype.  
-**Related tasks**: None identified at draft creation.
+**Blocked by**:
+- Human review/approval of this draft, then separate human authorization for backlog movement and dispatch.
+- Availability of the original Rails 7 application and usable local browser/runtime.
+
+**Blocks**: Porting the affected lifecycle behavior/fix into the separate Rails 8 prototype until Rails 7 behavior is investigated and stabilized. Unrelated Rails 8 prototype work is not blocked.
+
+**Related tasks / overlap**: NOT VERIFIED. Before backlog approval, check current GalaxyGame `status.md` and active/backlog inventory; record date, paths/commands, and findings. Do not claim none until checked.
 
 ---
 
 ## Progress / Resume
 
-- **Done so far:** Reviewed Claude's screenshot-based findings and the supplied Qwen diff; inspected the GalaxyGame task template, project guidance, and current drafts location.
-- **Next step:** Human review of scope and dispatch readiness; do not dispatch while this file remains in `tasks/drafts/`.
-- **Last verified fact (with command):** The supplied `qwen-monitor-diff.txt` contains the single `monitor.js` scheduling change reproduced above. Source: user-provided attachment.
-- **Local-only commits:** Not checked; implementation agent must inspect the original app's Git state before work.
+- **Done so far:** Reviewed Perplexity's supplied REVISE report and compared it with the task, generic template, review guide, and GalaxyGame README. Revised the draft for structural, scope, evidence, testing, verification, and closeout gaps.
+- **Next step:** Verify this revision against full template/project guidance, then submit the three-file package for external re-review. Human approval remains required before backlog movement or dispatch.
+- **Last verified fact:** GitHub fetch of the prior task version returned blob SHA `7008dfe8e1f5c7f7b216f79fba25dbd9da3e516d`. Perplexity's report is supplied evidence; application code/runtime claims are not independently verified here.
+- **Original-app Git state:** Not checked.
+- **Application paths/runtime:** Reported from supplied context; not independently verified.
+- **Task overlap inventory:** Not checked.
 - **Owning session / window label:** Planning — Admin Celestial Body View regression.
 
 ---
 
 ## Completion Report
 
-Not applicable while this task remains a draft.
+*Implementation agent completes this after implementation/verification; leave pending in draft.*
+
+**Completed by**: [agent name]
+**Completion date**: YYYY-MM-DD
+**Final targeted test result**: [exact assertions/examples and failures, or N/A with reason]
+**Full-suite disposition**: [not run by executor per GalaxyGame targeted-testing-only rule / human-run result with dated evidence]
+**Browser/runtime result**: [PASS / FAIL / UNVERIFIED and matrix reference]
+**Evidence basis**: [direct verification / supplied evidence / reported by agent / human assertion] — [source and scope]
+
+### What was changed
+- [file] — [verified description]
+
+### Verification performed
+- [exact command] — [result]
+- [browser scenario/matrix] — [result]
+
+### Documentation updated
+- [wiki path and dated snapshot section, or reason no update was needed]
+
+### Acceptance criteria disposition
+- [criterion] — [PASS / FAIL / UNVERIFIED] — [evidence]
+
+### Issues discovered
+[Unexpected implementation issues.]
+
+### Follow-up tasks needed
+[New backlog items identified; do not create files.]
+
+### Remaining limitations
+[Blocked runtime, unavailable body, omitted coverage, or other limitation. Never label unverified criteria as passed.]
+
+### Review and authorization record
+- Reviewer disposition/date: [GO / REVISE / STOP; reviewer/date]
+- Human commit authorization: [exact authorization/date or pending]
+- Human push authorization: [exact authorization/date or pending]
+- Human completion authorization: [exact authorization/date or pending]
+
+### Lessons learned
+[What worked, what did not, and future-task guidance.]
 
 ---
 
