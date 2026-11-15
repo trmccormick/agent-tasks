@@ -135,32 +135,51 @@ You are **Implementation Agent**.
 Project: [project_name]
 Task: <agent-tasks>/projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md
 
-STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md \
-         projects/[project]/tasks/active/[FILENAME].md
-  Then open the moved file and change: status: backlog → status: active
-  Paste the output of both commands in chat before proceeding.
-  Do NOT read the task file content, run any commands, or start synthesis until this is done.
+STEP 0 — VERIFY, STAGE IF NEEDED, THEN MOVE WITH GIT MV:
+  Run from the agent-tasks repository root.
 
-If the task YAML has `resume: true`, read the Progress / Resume block first, continue from "Next step", and set `resume: false` when you move the file to `active/`. Do not restart the task.
+  1. Inspect the source Git state:
+       git status --short -- projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md
+       git ls-files --error-unmatch projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md
+     If the source is not tracked, stage the source first:
+       git add projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md
+     Preserve all pre-existing changes; do not discard or overwrite them.
+
+  2. Move the task:
+       git mv projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md \
+              projects/[project]/tasks/active/[FILENAME].md
+
+  3. Verify the move:
+       git status --short
+       git ls-files --error-unmatch projects/[project]/tasks/active/[FILENAME].md
+       test ! -e projects/[project]/tasks/backlog/[SUBFOLDER]/[FILENAME].md && test -f projects/[project]/tasks/active/[FILENAME].md
+     Confirm the source is absent, destination exists, and Git tracks the destination.
+
+  4. Open the active task file and change YAML status from backlog to active. Verify the updated status.
+
+  5. Record Git-state inspection, any staging command, git mv, verification outputs, and YAML status change in the synthesis report. Do not begin investigation or implementation until Step 0 and the initial synthesis report are complete.
+
+If the task YAML has `resume: true`, read the Progress / Resume block first, continue from "Next step", and set `resume: false` when moving the file to `active/`. Do not restart the task.
 
 LIFECYCLE: backlog → active → completed
-  - Tracked file: git mv (never cp or plain mv)
-  - New/untracked file: mv then git add the final path
-  - Never leave stale copies in the source folder
+  - Tracked file: git mv.
+  - New/untracked file: git add the source first, then git mv the source to the destination.
+  - Never use plain mv or cp for task lifecycle moves.
+  - Never leave stale copies in the source folder.
   - Verify with: find agent-tasks/projects/[project]/tasks -name "[FILENAME].md"
-    Only ONE result should exist. Paste this output before committing.
+    Exactly ONE result should exist. Record this output in the synthesis/evidence report.
 
 READ FIRST (after Step 0), in this order:
   1. <agent-tasks>/rules/GUARDRAILS.md
   2. <agent-tasks>/projects/[project]/README.md
   3. <agent-tasks>/projects/[project]/SESSION_GUIDANCE.md (if the project has one)
-  4. The task file. It holds what is specific to this task; the files above hold the standing rules.
+  4. The task file. It holds what is specific to this task; the files above hold standing rules.
 
-CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting any work.
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting investigation.
   Summaries path: <agent-tasks>/projects/[project]/summaries/
   Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
-  Chat is for questions only — never paste synthesis into chat (formatting breaks).
+  Update the report after Step 0/before investigation, after investigation/before implementation, and after implementation/verification.
+  In chat, provide only the report path and concise status; do not paste the report or raw command output.
 
 Closeout: follow SESSION_CLOSEOUT.md only.
 ```
@@ -276,11 +295,11 @@ the same capability.*
 
 ---
 
-## 🔴 REQUIRED: Status Synthesis Report (Before You Start Any Work)
+## 🔴 REQUIRED: Status Synthesis Report (Before Investigation or Implementation)
 
-Before navigating to any URLs, running any commands, or modifying any files, you MUST create and post a **synthesis report** in chat. This report demonstrates you understand the task before executing.
+After completing the dispatch Step 0 move and YAML status update, but before investigation commands, browser navigation, or application-file changes, create the initial **synthesis report** as a Markdown file. Step 0 Git commands are the only commands permitted before this initial report. Update the same report after investigation and before implementation, then again after implementation and verification.
 
-**Synthesis Report Template** (save as MD file, do NOT paste in chat):
+**Synthesis Report Template** (save as MD file; do not paste the report or raw command output into chat):
 ```markdown
 ## STATUS SYNTHESIS REPORT
 
@@ -317,7 +336,7 @@ Before navigating to any URLs, running any commands, or modifying any files, you
 **SYNTHESIS COMPLETE.** Ready to proceed with [PRIORITY 1 / PRIORITY 2 / etc].
 ```
 
-**POST THIS TO CHAT BEFORE PROCEEDING.** Do not start actual work until synthesis is approved.
+In chat, provide only the report path and a concise status update. Do not start implementation until the investigation report is complete and the human has approved the proposed approach.
 
 ---
 
@@ -328,7 +347,7 @@ Before navigating to any URLs, running any commands, or modifying any files, you
 1. **Reviewer has issued a GO disposition** — a reviewer has assessed your work and disposed it as one of: `GO`, `REVISE`, or `STOP`. See REVIEW_AGENT_GUIDE.md for reviewer authority definitions.
 2. **Human authorization** — Requires an explicit human message that authorizes commit (for example, 'commit it') and an explicit human message that authorizes push (for example, 'push it'). Authorization to commit does not imply authorization to push, and authorization to push does not imply authorization to commit.
 
-Confirming a command in an agent's own approval prompt counts as authorization only after a reviewer GO is on record; before a GO, a click does not authorize commit or push.
+Confirming a command in an agent's own approval prompt counts as authorization only after a reviewer GO is on record and the human explicitly authorizes that particular operation; before a GO, a click does not authorize commit or push.
 
 ### What This Means In Practice
 
@@ -521,9 +540,9 @@ git push
 # Tracked file (already committed): use git mv
 git mv projects/galaxy_game/tasks/active/[FILENAME] projects/galaxy_game/tasks/completed/[YYYY-MM]/[FILENAME]
 
-# New/untracked file (just created this session): move with filesystem, then add the final path
-mv projects/galaxy_game/tasks/active/[FILENAME] projects/galaxy_game/tasks/completed/[YYYY-MM]/[FILENAME]
-git add projects/galaxy_game/tasks/completed/[YYYY-MM]/[FILENAME]
+# New/untracked file: stage the source first, then move with Git
+git add projects/galaxy_game/tasks/active/[FILENAME]
+git mv projects/galaxy_game/tasks/active/[FILENAME] projects/galaxy_game/tasks/completed/[YYYY-MM]/[FILENAME]
 
 git commit -m "chore: move [FILENAME] to completed/"
 ```
