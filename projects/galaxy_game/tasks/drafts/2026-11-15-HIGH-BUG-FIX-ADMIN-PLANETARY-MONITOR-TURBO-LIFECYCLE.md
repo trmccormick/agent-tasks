@@ -58,7 +58,8 @@ STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
   git mv projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md \
          projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
   Then open the moved file and change: status: backlog → status: active
-  Paste the output of both commands in chat before proceeding.
+  Record the output of both commands in the synthesis report after the move.
+  In chat, provide only a concise status update and the report path; do not paste the report or command output.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
 
 If the task YAML has `resume: true`, read the Progress / Resume block first, continue from "Next step", and set `resume: false` when you move the file to `active/`. Do not restart the task.
@@ -68,7 +69,7 @@ LIFECYCLE: backlog → active → completed
   - New/untracked file: mv then git add the final path
   - Never leave stale copies in the source folder
   - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md"
-    Only ONE result should exist. Paste this output before committing.
+    Only ONE result should exist. Record this output in the synthesis/evidence report.
 
 READ FIRST (after Step 0), in this order:
   1. <agent-tasks>/rules/GUARDRAILS.md
@@ -244,7 +245,7 @@ Before navigating to any URLs, running any commands, or modifying any files, you
 | [other files] | [description] | [pending / done] |
 
 ### Prerequisites Completed
-- ✅ Step 0: Task file moved to active/ with git mv (find output pasted in chat)
+- ✅ Step 0: Task file moved to active/ with git mv (command output recorded in this report)
 - ✅ Step 0: YAML status updated from backlog → active
 - ✅ Read README.md EXECUTOR section
 - ✅ Read project guide
@@ -264,7 +265,7 @@ Before navigating to any URLs, running any commands, or modifying any files, you
 **SYNTHESIS COMPLETE.** Ready to proceed with [PRIORITY 1 / PRIORITY 2 / etc].
 ```
 
-Save this report before beginning investigation or implementation. No additional chat-approval gate is required for the synthesis report.
+Save this report before beginning investigation or implementation. The report is a required file artifact, not a chat approval gate. In chat, provide its path and a concise status update only; do not paste the report.
 
 ---
 
@@ -299,8 +300,8 @@ Save this report before beginning investigation or implementation. No additional
 
 ## Implementation Steps
 
-> ⚠️ **BEFORE YOU START**: Complete Step 0 first. Then complete and post your STATUS SYNTHESIS REPORT.
-> Do not proceed to Step 1 until both are done and approved.
+> ⚠️ **BEFORE YOU START**: Complete Step 0 first. Then save the STATUS SYNTHESIS REPORT to the summaries folder and provide its path in chat.
+> Do not proceed to Step 1 until both are complete. The synthesis report does not require separate chat approval.
 
 All agents: follow these steps exactly in order.
 
