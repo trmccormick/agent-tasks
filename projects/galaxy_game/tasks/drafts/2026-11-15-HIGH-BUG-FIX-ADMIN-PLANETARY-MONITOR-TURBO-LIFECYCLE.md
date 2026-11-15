@@ -103,7 +103,8 @@ The original Rails 7 GalaxyGame application previously loaded and displayed plan
 
 **Relevant Wiki References** — read for product and UI context; these pages do not specify the JavaScript/Turbo lifecycle fix, which must be established from current code and runtime evidence:
 - `docs/wiki/ui/03_admin_and_ai_manager.md` — establishes the Admin Dashboard's purpose, responsibilities, and monitoring/workspace context.
-- `docs/wiki/ui/04_current_ui_state_and_known_issues.md` — records the existing Planetary and Monitor capabilities, dated UI observations, and the principle of preserving useful functionality while diagnosing defects.
+- `docs/wiki/ui/04_current_ui_state_and_known_issues.md` — records dated UI observations and the principle of preserving useful functionality while diagnosing defects.
+- `docs/wiki/ui/05_admin_planetary_monitor.md` — records the monitor's purpose, initial data handoff, endpoints, polling behavior, current Turbo lifecycle implementation, existing test coverage, and the unresolved regression context. Its dated code snapshot is background for investigation, not a prescribed fix.
 
 Recent browser screenshots supplied by the user show inconsistent states:
 - Some visits display a completely black/blank planetary canvas.
@@ -175,7 +176,7 @@ This patch is a candidate change, not an established fix. Verify whether it is p
 3. **Session Guidance**: `<agent-tasks>/projects/galaxy_game/SESSION_GUIDANCE.md` (if the project has one)
 4. **This Task File**: Everything below
 
-> Agent MUST read in this order. Do not skip. Synthesis report goes in chat BEFORE starting work.
+ > Agent MUST read in this order. Do not skip. Save the synthesis report as an MD file under `projects/galaxy_game/summaries/` before starting work; use chat for questions and concise status only.
 
 ---
 
@@ -358,7 +359,7 @@ All agents: follow these steps exactly in order.
 ---
 
 ## Documentation
-- [x] No doc changes needed — this is a JavaScript lifecycle defect with no user-facing documentation to update.
+- [x] The existing Admin Planetary monitor purpose, data flow, endpoints, polling behavior, current Turbo lifecycle implementation, and known regression context are recorded in `docs/wiki/ui/05_admin_planetary_monitor.md`. Do not duplicate that material in this task. If implementation changes the lifecycle behavior, update the wiki's dated code snapshot during closeout.
 
 ---
 
