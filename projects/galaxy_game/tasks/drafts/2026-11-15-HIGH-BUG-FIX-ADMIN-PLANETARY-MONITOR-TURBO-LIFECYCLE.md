@@ -19,26 +19,26 @@ Agents receive this exact text as the startup contract. Every word matters.
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md
+Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
 
 STEP 0 — VERIFY, STAGE IF NEEDED, THEN MOVE WITH GIT MV:
   Run from the agent-tasks repository root.
 
   1. Inspect the source Git state:
-       git status --short -- projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md
-       git ls-files --error-unmatch projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md
+       git status --short -- projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+       git ls-files --error-unmatch projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
      If the source is not tracked, stage the source first:
-       git add projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md
+       git add projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
      Preserve all pre-existing changes; do not discard or overwrite them.
 
   2. Move the task:
-       git mv projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md \
-              projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md
+       git mv projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md \
+              projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
 
   3. Verify the move:
        git status --short
-       git ls-files --error-unmatch projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md
-       test ! -e projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md && test -f projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md
+       git ls-files --error-unmatch projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+       test ! -e projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md && test -f projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
      Confirm the source is absent, destination exists, and Git tracks the destination.
 
   4. Open the active task file and change YAML status from backlog to active. Verify the updated status.
@@ -52,7 +52,7 @@ LIFECYCLE: backlog → active → completed
   - New/untracked file: git add the source first, then git mv the source to the destination.
   - Never use plain mv or cp for task lifecycle moves.
   - Never leave stale copies in the source folder.
-  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md"
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md"
     Exactly ONE result should exist. Record this output in the synthesis/evidence report.
 
 READ FIRST (after Step 0), in this order:
@@ -110,7 +110,7 @@ See PLANNING_AGENT_SESSION_START.md § "Task Creation Workflow" for full procedu
 
 **APPLIES ONLY IF status: backlog. This is a dispatch-readiness gate, not a draft-review gate.**
 
-- [ ] Agent Dispatch Interface section below is complete and accurate (no placeholders)
+- [ ] Agent Dispatch Interface section above is complete and accurate (no placeholders)
 - [ ] All Step 0-N instructions are clear and actionable (not vague)
 - [ ] Synthesis report template is provided (copy/paste ready, not as example)
 - [ ] No placeholder text remains in Implementation Steps
