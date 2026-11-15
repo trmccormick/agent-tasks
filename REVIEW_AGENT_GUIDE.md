@@ -1,6 +1,6 @@
 # Review & Planning Agent Guide
 
-**Last Updated**: 2026-10-06  
+**Last Updated**: 2026-11-15  
 **Applies To**: Any agent performing planning, research, implementation, or review sessions  
 **Purpose**: Shared responsibilities, authority, and evidence standards
 
@@ -22,14 +22,36 @@ Planning, research, implementation, and review are authorized session activities
 
 ### Review Package (Required Before Review)
 
-Every review request carries the governing artifacts as attachments or pasted text, not as URLs alone: the task file under review, `TASK_TEMPLATE.md` and this guide. This applies to every reviewer, whatever its tool access, because consistent review depends on what the request contains, not on the reviewer's tools.
+Every draft review uses a **three-file package**. The three required artifacts must be attached or pasted into the review request, not supplied as URLs alone:
 
-- The request names the commit the copies came from, and the reviewer states that commit in its disposition.
-- If any of the three is missing, the reviewer asks for it. It does not review from memory or from a linked copy it cannot confirm.
-- A reviewer that can read GitHub may use it to cross-check files the task references, but the attached package is what the review is judged against.
-- Data that exists only on the project machine (command output, uncommitted files, container state) is gathered by Qwen at the human's request and pasted into the package as raw output. The reviewer asks for it and does not guess.
+1. The complete draft task under review.
+2. `TASK_TEMPLATE.md`.
+3. This `REVIEW_AGENT_GUIDE.md`.
 
-**Assessment checklist** — check every item below in one pass, template and content together, and list every failure in one complete list. Do not stop at the first failing item.
+The request names the commit the copies came from, and the reviewer states that commit in the disposition. If any of these three artifacts is missing, ask for it. Do not review from memory or from a linked copy that cannot be confirmed.
+
+**No fourth reviewer-template upload is required.** The former external reviewer template at `docs/TASK_REVIEWER_TEMPLATE.md` contains useful prompt and report guidance, but its requirements are incorporated into this guide. Reviewers must use this guide's current procedure and GO/REVISE/STOP dispositions; do not require the separate template as an attachment or treat its older PASS-style verdicts as authoritative.
+
+#### Context to include in the review prompt (not additional uploads)
+
+The person dispatching the review should put the following concise context directly in the prompt when applicable:
+
+- **Task identification**: draft filename and path, agent-tasks repository, main application repository, and branch under review.
+- **Review objective**: one or two sentences explaining what the task proposes to do and why it was created.
+- **Established decisions**: relevant decisions from prior work that the draft must preserve. Clearly distinguish established decisions from hypotheses and questions still requiring verification.
+- **Known evidence boundary**: identify any supplied logs, diffs, screenshots, handoffs, or command output, and say whether they are supplied evidence or independently verified.
+- **Special review constraints**: task-specific scope limits, preservation requirements, environment cautions, or other gotchas that materially affect the review.
+
+Do not upload separate project README, status, or handoff files by default. A reviewer with GitHub access may inspect the relevant project README, `status.md`, handoffs, and referenced repository files to cross-check context and current paths. These are optional repository checks, not additions to the three-file upload package. If the reviewer cannot access them, it must state that limitation and avoid claiming independent verification. Information available only on the project machine (command output, uncommitted files, container state) must be supplied as raw evidence by Qwen at the human's request; the reviewer asks for it when necessary and does not guess.
+
+#### Review restrictions
+
+This is a **task-specification review only**. The reviewer must not execute the task, modify the draft or project files, dispatch an implementation agent, commit, or push. It must not invent missing facts or assume the draft is correct because it reflects previous handoffs.
+
+For each concern, explain why it matters and propose a precise correction. Separate:
+- **Mandatory corrections**: defects that must be fixed before backlog approval.
+- **Optional improvements**: useful refinements that do not block approval.
+- **Human decisions**: unresolved scope, authority, architecture, or workflow choices that the reviewer must not decide unilaterally.
 
 ### Phase A — Template Conformance (Mandatory for GO)
 
@@ -49,40 +71,79 @@ Read TASK_TEMPLATE.md and compare every required section against the draft task 
 
 ### Phase B — Content Assessment (always assessed, in the same pass as Phase A)
 
-- **Acceptance Criteria**: Are they clear, measurable, and specific? ✅ Go / ⚠️ Needs clarification
-- **Task Scope**: Is it well-bounded? Does it overlap with active/backlog tasks? ✅ Focused / ⚠️ Too broad
-- **Dependencies**: Are they listed? Do they exist in status.md or active/backlog? ✅ Clear / ❌ Broken links
-- **Architecture Alignment**: Does the approach match current codebase patterns? ✅ Yes / ⚠️ Needs verification
-- **No Contradictions**: Are there conflicting instructions or gotchas that contradict each other? ✅ Consistent / ⚠️ Found issues
-- **Files Referenced**: Are all file paths accurate (check codebase)? ✅ Verified / ❌ Broken paths
+Assess all applicable areas and cite evidence for each PASS or positive conclusion:
 
-**Disposition format:**
+- **Acceptance Criteria**: Are they clear, measurable, specific, and verifiable without ambiguity?
+- **Task Scope**: Is the task appropriately bounded? Does it overlap with active/backlog tasks or imply unapproved scope?
+- **Dependencies**: Are prerequisites and blocked/blocks relationships listed and, where possible, checked against `status.md` and active/backlog tasks?
+- **Architecture Alignment**: Does the approach match current codebase patterns? Separate verified implementation facts from assumptions that must be checked locally.
+- **No Contradictions**: Do task instructions, gotchas, acceptance criteria, file permissions, test requirements, and closeout steps agree?
+- **Files Referenced**: Are paths accurate against repository content where accessible? Clearly label paths that could not be checked.
+- **Testing Methodology**: Are the proposed tests appropriate to the behavior and risk? Are baselines, controls, repeatability, and environment constraints adequate where applicable?
+- **Gotcha Completeness**: Are critical warnings, data-preservation rules, scope boundaries, lifecycle constraints, prerequisites, and environment/version precautions explicit?
+- **Evidence Preservation**: Are required commands and evidence-capture instructions complete, reproducible, and copy/paste ready? Can the reviewer distinguish actual results from planned checks?
+- **Review Gates and Authority**: Does the task require reviewer GO plus separate human authorization for commit, push, and completion? Are the restrictions clear?
+- **Stop Conditions and Closeout**: Are escalation conditions, completion movement, documentation updates, and handoff requirements actionable and consistent?
+
+**Required report format:**
+
+Return a substantive, evidence-based report using this structure. A reviewer may add task-specific detail, but must not omit the disposition, findings, strengths, acceptance-criteria assessment, scope/workflow assessment, or mandatory/optional distinction.
+
 ```markdown
-## DRAFT TASK REVIEW
+# DRAFT TASK REVIEW
 
-**Task**: [name from filename]  
-**Date**: YYYY-MM-DD  
-**Assessed by**: [Review Agent]
-**Package commit**: [commit the attached copies came from]
+## Task Identification
+- **Task**: [filename]
+- **Task path**: [repository path]
+- **Project repository**: [repository]
+- **Branch / revision reviewed**: [branch or commit, if known]
+- **Review date**: YYYY-MM-DD
+- **Reviewer**: [agent]
+- **Package commit**: [commit the three attached artifacts came from]
+- **Review type**: Task-specification review only
 
-### Phase A — Template Conformance
-- Template Conformance: [PASS | FAIL: list missing sections]
-
-### Phase B — Content Assessment
-- Acceptance Criteria: [PASS | NEEDS CLARIFICATION]
-- Scope: [FOCUSED | TOO BROAD | OVERLAPPING]
-- Dependencies: [CLEAR | MISSING | BROKEN]
-- Architecture Alignment: [MATCHES PATTERN | NEEDS VERIFICATION]
-- No Contradictions: [YES | FOUND: describe]
-- File Paths: [VERIFIED | BROKEN: describe]
-
-### Disposition
+## 1. Disposition
 **GO** | **REVISE** | **STOP**
 
-> **Rule**: Template Conformance must be PASS for GO disposition. If it fails, still complete Phase B in the same pass and issue REVISE with one punch-list covering both phases. Each PASS quotes its evidence (the text or the raw command output that was checked); a PASS with no evidence counts as not checked.
+[Short rationale. GO means ready for human approval; it does not approve backlog movement or authorize dispatch.]
 
-### Notes
-[Any findings, required changes, or context for human decision]
+## 2. Evidence Boundary
+State what was directly inspected, what was supplied in the package or prompt, what was checked in GitHub, and what could not be verified. Do not describe supplied evidence as independent verification.
+
+## 3. Phase A — Template Conformance
+- **Result**: PASS | FAIL
+- [Assess YAML/frontmatter and draft-only sections.]
+- [Assess every required TASK_TEMPLATE.md section, exact dispatch block, placeholders, lifecycle, synthesis, readiness, review gate, commit instructions, completion report, and other applicable conventions.]
+- [Quote the relevant text or provide command output for each PASS. A PASS without evidence is not checked.]
+
+## 4. Phase B — Content Assessment
+Assess acceptance criteria, scope, dependencies, architecture, contradictions, file paths, testing, gotchas, evidence preservation, review gates, stop conditions, documentation, and closeout. For each area state PASS / NEEDS CLARIFICATION / FAIL and give evidence.
+
+## 5. Findings
+Number every finding. For each include:
+- **Severity**: Critical / Major / Minor / Informational
+- **Task section**
+- **Evidence / applicable convention**
+- **Why it matters**
+- **Specific recommended correction**
+
+## 6. Strengths
+Identify what the draft already handles correctly.
+
+## 7. Acceptance Criteria Assessment
+Assess each criterion for measurability, evidence, and completeness. Identify gaps or ambiguity.
+
+## 8. Scope and Workflow Assessment
+Assess boundaries, dependencies, investigation/implementation sequence, evidence handling, approval gates, stop conditions, and closeout authority.
+
+## 9. Recommended Changes
+Separate:
+- **Mandatory corrections before approval**
+- **Optional improvements that can be deferred**
+- **Human decisions required**, if any
+
+## 10. Final Recommendation
+State whether the task should be approved for human consideration to move to backlog, revised and re-reviewed, or held for human guidance. Do not move the task or dispatch work.
 ```
 
 **Outcomes:**
@@ -201,7 +262,7 @@ Distinguish three evidence types in all reports:
 
 ## Output
 
-Save substantive output (reports, findings, reviews, handoffs) to files. Report briefly in chat with a short outcome, artifact location/name, and any decision needed. Do not paste full artifacts into chat unless requested.
+Save substantive output (reports, findings, reviews, handoffs) to files when the agent has an authorized writable workspace. **External web reviewers without filesystem access return the complete report in their response** using the required report format above; they must not claim to have saved a file. The human or planning agent may then preserve the returned report in the appropriate summaries/review location. For agents that can save files, report briefly in chat with the outcome, artifact location/name, and any decision needed. Do not paste full artifacts into chat unless the review was performed by an external reviewer without file access or the human requests the full report.
 
 ## Escalation
 
