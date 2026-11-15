@@ -996,9 +996,20 @@ Please consider whether this belongs in general workflow guidance, project-speci
 
 ---
 
-
 **Addendum (2026-11-11, Tracy; recorded by Claude)**: Workflow needs tuning in three places, found while preparing an outward-link cleanup prompt for a fresh Qwen session.
 1. **Fresh-session prompts must include STEP 0 and be self-contained.** A prompt that says "repeat this task for each page" or assumes earlier context is not a direct-work prompt. One page per fresh session, with the startup reading order spelled out (this entry first for wiki work, then GUARDRAILS, project README, SESSION_GUIDANCE).
 2. **One prompt at a time.** A planning agent sends one prompt, reviews the executor's reply, then writes the next. Follow-up prompts (commit, push, next page) are not written in advance because the reply decides them. Commit and push stay separate prompts and need explicit human approval, as DIRECT_SESSION_TEMPLATE.md already says.
 3. **Planning agents should read this file before drafting executor prompts.** Recent entries here may carry workflow lessons the planner has not seen.
 Adds to the open questions above; no template or guardrail change is authorized by this addendum.
+
+---
+
+---
+
+### 2026-11-15 — Task changed during the review chain; Qwen planning session looped on the draft-to-backlog move
+**What happened**: A new task-preparation sequence was tried on the Admin Celestial Body View lifecycle bug (galaxy_game): ChatGPT drafted, Qwen aligned the draft to the template, then external review in this order: Perplexity (REVISE, addressed in `8c0dc9f`), Gemini, then Grok (reported as GO). It worked smoothly (REPORTED, Tracy). ChatGPT then assigned a Qwen planning session to review the final version and move it to `backlog/current/`. The move did not happen. Qwen's last output (saved by Tracy as `qwen-stalled.md`) says the file changed since its last read and that it will verify the readiness items and proceed, then repeats the same two paragraphs about 28 times ("I need to stop repeating myself...") with stray `</think>` tags and no tool call (REPORTED, agent output). It recognised the loop but could not break out. In the same window the underlying code bug was fixed directly in galaxyGame (`fe85220`, `7b7ff9f`), so the task was no longer needed for main and was never dispatched.
+**Observed in**: agent-tasks, galaxy_game task `2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md`, Qwen planning session, 2026-11-15.
+**What I already checked**: Task history on agent-tasks main: 16 commits touched the file between 10:55 and 12:57 on 2026-11-15 (VERIFIED). No copy in `tasks/backlog/current/` on origin at `6a25807` (VERIFIED). Read the excerpt above; not the full session. Qwen's claims about the file's layout match main (VERIFIED). The reviewers' reports and dispositions are not saved in the repo, so the task file could not show a recorded GO.
+**What needs a second opinion**: (1) Should an agent asked to review and move a task be given the commit hash it is reviewing, and told to stop and report (not retry) if the file on the branch differs from that version? (2) WEB_AGENT_SESSION_START says only the human moves a task to `backlog/`; here a planning agent was assigned the move. Confirm or adjust that rule. (3) Should the process record each external reviewer's disposition in the repo (a summaries/ or reviews/ file) before the move? (4) Should the process re-check that a task is still needed immediately before the move? Here the code fix landed during the review chain. (5) Is the Perplexity, Gemini, Grok order worth recommending for adoption (see the Escalation triggers entry on procedures that worked well)? (6) Should the stall-ladder guidance cover an agent that announces it will stop repeating and then keeps repeating, and say to end the session and restart with a narrower prompt instead of nudging it?
+**Priority**: LOW–MEDIUM — a loop on a moved target costs time; the process itself reportedly worked well
+**Status**: OPEN
