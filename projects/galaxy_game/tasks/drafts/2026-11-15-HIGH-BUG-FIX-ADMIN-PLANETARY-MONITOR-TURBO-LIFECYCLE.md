@@ -8,59 +8,76 @@ mvp_alignment: OTHER
 local_worker_safe: true
 ---
 
-## 🔴 Agent Dispatch Interface (Required — reconciled task-specific contract)
+## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
 
-**Authority:** Use only after human approval, movement to backlog, YAML `status: backlog`, and completion of the backlog-only readiness checklist. This does not authorize dispatch while this file is in drafts.
+**This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
+Agents receive this exact text as the startup contract. Every word matters.
 
-**Reconciliation:** This dispatch section is placed immediately after YAML to follow the template's explicit validation requirement (the template's illustrative example shows a conflicting order). For an untracked task file, run `git add <source>` first, then `git mv <source> <destination>`. Never use plain `mv` or `cp` for task lifecycle moves. This resolves the generic template's contradictory untracked-file example and preserves Git history. Save synthesis in summaries before investigation; chat contains only its path and concise status, not report text or raw command output.
+**One allowed substitution:** before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root). Fill `galaxy_game`, `galaxy_game`, `current` and `2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md` in the file when the task is drafted, so the block carries no other placeholders at dispatch; the only substitution made at dispatch is `<agent-tasks>`. If the project's backlog is flat (no subfolders), omit the `current/` segment from the paths. Change nothing else.
 
-```text
+```
 You are **Implementation Agent**.
 
 Project: galaxy_game
-Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
+Task: <agent-tasks>/projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md
 
 STEP 0 — VERIFY, STAGE IF NEEDED, THEN MOVE WITH GIT MV:
   Run from the agent-tasks repository root.
-  1. Inspect:
-       git status --short -- projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
-       git ls-files --error-unmatch projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
-     If untracked, stage first:
-       git add projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
-     Preserve pre-existing changes.
-  2. Move:
-       git mv projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
-  3. Verify:
-       git status --short
-       git ls-files --error-unmatch projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
-       test ! -e projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md && test -f projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md
-  4. Open active copy; change YAML status backlog → active and verify.
-  5. Record Git inspection, optional staging, git mv, verification, and YAML update in synthesis.
-  Do not investigate or implement until Step 0 and Stage 1 synthesis are complete.
 
-If resume: true, read Progress / Resume, continue from Next step, and set resume: false when moving to active.
+  1. Inspect the source Git state:
+       git status --short -- projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md
+       git ls-files --error-unmatch projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md
+     If the source is not tracked, stage the source first:
+       git add projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md
+     Preserve all pre-existing changes; do not discard or overwrite them.
+
+  2. Move the task:
+       git mv projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md \
+              projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md
+
+  3. Verify the move:
+       git status --short
+       git ls-files --error-unmatch projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md
+       test ! -e projects/galaxy_game/tasks/backlog/current/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md && test -f projects/galaxy_game/tasks/active/2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md
+     Confirm the source is absent, destination exists, and Git tracks the destination.
+
+  4. Open the active task file and change YAML status from backlog to active. Verify the updated status.
+
+  5. Record Git-state inspection, any staging command, git mv, verification outputs, and YAML status change in the synthesis report. Do not begin investigation or implementation until Step 0 and the initial synthesis report are complete.
+
+If the task YAML has `resume: true`, read the Progress / Resume block first, continue from "Next step", and set `resume: false` when moving the file to `active/`. Do not restart the task.
 
 LIFECYCLE: backlog → active → completed
-  - Tracked source: git mv. Untracked source: git add source first, then git mv.
-  - Never use plain mv or cp for lifecycle moves. Never leave stale copies.
-  - Verify: find projects/galaxy_game/tasks -name "2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md"
-    Exactly ONE result; record it in evidence report.
+  - Tracked file: git mv.
+  - New/untracked file: git add the source first, then git mv the source to the destination.
+  - Never use plain mv or cp for task lifecycle moves.
+  - Never leave stale copies in the source folder.
+  - Verify with: find agent-tasks/projects/galaxy_game/tasks -name "2026-11-15-HIGH-BUG-FIX-ADMIN-PLANETARY-MONITOR-TURBO-LIFECYCLE.md.md"
+    Exactly ONE result should exist. Record this output in the synthesis/evidence report.
 
-READ FIRST after Step 0:
+READ FIRST (after Step 0), in this order:
   1. <agent-tasks>/rules/GUARDRAILS.md
   2. <agent-tasks>/projects/galaxy_game/README.md
-  3. <agent-tasks>/projects/galaxy_game/SESSION_GUIDANCE.md, if present
-  4. Active task file.
+  3. <agent-tasks>/projects/galaxy_game/SESSION_GUIDANCE.md (if the project has one)
+  4. The task file. It holds what is specific to this task; the files above hold standing rules.
 
-SYNTHESIS: Save Markdown to <agent-tasks>/projects/galaxy_game/summaries/YYYY-MM-DD-bug-fix-admin-planetary-monitor-turbo-lifecycle.md. Update after Step 0/before investigation, after investigation/before implementation, and after implementation/verification. Chat: report path and concise status only.
+CRITICAL: Save synthesis report as MD file to summaries folder BEFORE starting investigation.
+  Summaries path: <agent-tasks>/projects/galaxy_game/summaries/
+  Filename pattern: YYYY-MM-DD-[TYPE]-[SHORT-DESCRIPTION].md
+  Update the report after Step 0/before investigation, after investigation/before implementation, and after implementation/verification.
+  In chat, provide only the report path and concise status; do not paste the report or raw command output.
 
-CLOSEOUT: Follow SESSION_CLOSEOUT.md and this task's Commit Instructions. Reviewer GO and operation-specific human authorization are mandatory; commit, push, and completion are separate authorizations.
+Closeout: follow SESSION_CLOSEOUT.md only.
 ```
 
-**IMPORTANT:** Do not dispatch while in drafts. Replace only `<agent-tasks>` with the actual clone path. Backlog folder is `current/`; active destination is flat.
+**IMPORTANT: Do not modify or abbreviate the text above.**
+Copy it exactly as-is when dispatching this task to an agent.
+This is the startup contract — every element is required.
+
+Everything else (details, gotchas, acceptance criteria, implementation steps) is in the sections below.
+The dispatch interface above is ONLY the bootstrap instructions.
 
 ---
-
 
 ## 🟡 DRAFT STATUS NOTE (for tasks in tasks/drafts/)
 
