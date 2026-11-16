@@ -1013,3 +1013,29 @@ Adds to the open questions above; no template or guardrail change is authorized 
 **What needs a second opinion**: (1) Should an agent asked to review and move a task be given the commit hash it is reviewing, and told to stop and report (not retry) if the file on the branch differs from that version? (2) WEB_AGENT_SESSION_START says only the human moves a task to `backlog/`; here a planning agent was assigned the move. Confirm or adjust that rule. (3) Should the process record each external reviewer's disposition in the repo (a summaries/ or reviews/ file) before the move? (4) Should the process re-check that a task is still needed immediately before the move? Here the code fix landed during the review chain. (5) Is the Perplexity, Gemini, Grok order worth recommending for adoption (see the Escalation triggers entry on procedures that worked well)? (6) Should the stall-ladder guidance cover an agent that announces it will stop repeating and then keeps repeating, and say to end the session and restart with a narrower prompt instead of nudging it?
 **Priority**: LOW–MEDIUM — a loop on a moved target costs time; the process itself reportedly worked well
 **Status**: OPEN
+
+---
+
+### 2026-11-16 — Qwen prompts must use complete absolute paths for local files
+
+**What happened**: During GalaxyGame UI prototype work, a fresh Qwen prompt referenced task and wiki documents using assumed or repository-relative paths. Qwen responded by searching for the files and reporting that several were missing, delaying the actual implementation task. Tracy clarified that Qwen is running against the local Mac workspace and should be given the complete absolute filesystem paths already established for the three separate repositories. The known local roots are:
+- UI prototype: `/Users/tam0013/Documents/git/galaxy-game-ui`
+- Main GalaxyGame Rails 7 application: `/Users/tam0013/Documents/git/galaxyGame`
+- Agent tasks and project documentation: `/Users/tam0013/Documents/git/agent-tasks`
+
+**Observed in**: `galaxy-game-ui` Qwen direct implementation session, 2026-11-16 (REPORTED, Tracy and pasted Qwen output).
+
+**What I already checked**: The existing 2026-11-11 entry, “Small focused direct-session prompts work well for Qwen (wiki work),” recommends concise, one-deliverable prompts and reading project guidance, but does not state the required path convention. The 2026-11-07 workflow entry says the workflow remains experimental and that design intent has one project-specific home. The present observation is narrower: Qwen is a local coding agent and needs paths that resolve in its actual local workspace. The three local repository roots above were supplied by Tracy in this session; individual file paths still need to be checked against the correct repository tree before being included.
+
+**What needs a second opinion (Claude workflow review)**:
+1. Should prompts to Qwen and other local coding agents always use complete absolute filesystem paths for every referenced file, rather than repository-relative paths or assumed working directories?
+2. Should each path be qualified by its repository, especially when a task spans the Rails 8 UI prototype, the Rails 7 main application, and the separate `agent-tasks` repository?
+3. When the local repository root is known but an individual file path is not, should the planning agent verify the path through the repository tree/GitHub before dispatch, or ask Tracy rather than instructing Qwen to search?
+4. Should the absolute path be accompanied by its repository-relative path for clarity, or is the absolute path alone preferable?
+5. Where should the smallest durable rule live: `DIRECT_SESSION_TEMPLATE.md`, a shared Qwen/local-agent note, or the relevant project's `SESSION_GUIDANCE.md`? Avoid duplicating the rule across multiple project documents.
+6. Make clear that GitHub repository paths are not substitutes for local absolute paths when the executor is Qwen operating on Tracy's Mac. Conversely, web reviewers should receive repository-relative paths and GitHub links they can access, not machine-specific paths they cannot resolve.
+
+**Priority**: MEDIUM — prevents avoidable file discovery, wrong-repository confusion, and repeated investigation loops in local-agent sessions.
+
+**Status**: OPEN. Added for Claude's workflow review. Tracy has emphasized that complete absolute paths are expected in Qwen prompts. The durable placement and any shared-template changes await review; no broader workflow document has been changed in this entry.
+
