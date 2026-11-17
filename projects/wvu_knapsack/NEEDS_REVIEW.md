@@ -91,3 +91,34 @@ d. The two 2026-10-27 entries above ("Facet limiting upstream resolution" and "M
 **What needs a second opinion** (Tracy's calls): (1) Resolve the two 2026-10-27 entries in (d), or keep them open? (2) Which of the three task copies in (b) is the record, and who may remove the other two (GUARDRAILS Rule 29)? (3) Keep or remove the draft in (c)? (4) Add a Solr-or-index hypothesis to the active bug task, and remove the login from it? Checks only hykudev can answer: a direct Solr query for a known record, and a reindex test on one small collection.
 **Priority**: HIGH — the upgrade path is blocked; the entry itself only records tracking
 **Status**: OPEN — owner: Tracy. Tracking review recorded 2026-10-30; nothing outside this file changed.
+
+### 2026-11-17 — Bulkrax metadata separator splits on colons AND semicolons (should be semicolons only)
+**What happened**: Sarah reported that CSV imports are splitting metadata fields (subject, keyword, people_represented) on both colons and semicolons. Values like `"Democratic National Convention  (1936 : Philadelphia, Pa.)"` get incorrectly split into separate entries because the colon after "1936" is treated as a separator. Same issue was previously encountered with ACDAP (`hydra_acdap_portal_public`) and likely present in the congress archives project.
+**What I already checked**: 
+- Bulkrax gem default: `DEFAULT_MULTI_VALUE_ELEMENT_SPLIT_ON = /\s*[:;|]\s*/.freeze` (VERIFIED, `/data/bundle/gems/bulkrax-9.3.5/lib/bulkrax.rb`)
+- Local field mappings JSON confirms 16 fields use `"split": true` (falls back to default regex) — VERIFIED in `bulkrax_settings.json`
+- Fields like `degree_discipline`, `rights_holder` already correctly override with `"split": "\\|"` (pipe only)
+- No local override of `multi_value_element_split_on` exists in the Bulkrax initializer (`hyrax-webapp/config/initializers/bulkrax.rb`) — VERIFIED
+- Wiki entry created: `/wiki/BULKRAX_SEPARATOR_ISSUE.md`
+**What needs a second opinion**: (1) Confirm which tenant(s) need this fix applied (demo, production, or both). (2) Verify congress archives project (`hydra_acdap_portal_public`) has the same fix in place. (3) Decide if all 16 affected fields should use `";"` or if some need different patterns.
+**Priority**: MEDIUM — affects data integrity on CSV imports; no code changes needed, just config
+**Status**: OPEN — owner: Tracy + Sarah. Fix is configuration-only; see wiki entry for full details and field list.
+
+---
+
+### 2026-11-17 — Two Hyku 7.2.0 upgrade validation tasks ready for Qwen dispatch
+**What happened**: Two tasks created and committed to agent-tasks for investigating Gemfile.lock persistence issue on hykudev and testing 7.2.1 upgrade with data preservation. Tasks are:
+1. `investigate_gemfile_lock_hykudev_reboots.md` — Root cause analysis of gem conflicts during 7.2.0 upgrade (why fresh bundle resolve differs from prod)
+2. `test_7.2.0_upgrade_locally_with_data_persistence.md` — Validate data persists when switching to 7.2 branch; replicable procedure for hykudev
+
+**What I already checked**:
+- Both task files exist and are committed to `projects/wvu_knapsack/tasks/drafts/`
+- Supporting documentation created: `docs/wiki/operations/gemfile_lock_hykudev_reboot_investigation.md` (pushed to main)
+- Gemfile.lock backup saved locally (checksum: 7b4ed53d782f8f0103bcd2537d0d6052)
+- Test plan document created: `TEST_PLAN_7.2.0_DATA_PERSISTENCE.md`
+- Task dependency established: Investigation task (prerequisite) → Testing task (depends on investigation findings)
+
+**What needs a second opinion**: (1) Task scope and acceptance criteria are clear, but confirm investigation task should focus on gem conflicts vs. other possible dependency issues. (2) Testing task assumes local containerized setup matches hykudev environment — verify this assumption before Qwen starts. (3) Both tasks preserve submodule as read-only per standing rule.
+
+**Priority**: HIGH — Upgrade path blocked; these tasks unblock hykudev testing on 7.2.1 before prod consideration
+**Status**: OPEN — owner: Tracy. Tasks ready for dispatch to Qwen; awaiting approval to move from drafts/ to active/.
