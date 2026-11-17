@@ -11,8 +11,10 @@ Created 2026-10-29 by a Claude web session, drafted as text and saved by Tracy. 
 - A **prototype UI** for Galaxy Game, built to develop and test UI choices outside the main game repo (the main repo's docs and code are mid-cleanup).
 - Based on `wvu_moonshot` (a Rails 8 prototype that read CSV files); WVU-specific parts are being removed and replaced with Galaxy Game styling and views.
 - It is tied closely to Galaxy Game main: what it shows and how it is shaped must follow the main game's models and data, not invent its own.
-- Repo: `https://github.com/trmccormick/galaxy-game-ui`. Working branch: `review/qwen-ui-prototype` (VERIFIED in `status.md`). Remote `main` holds the first-attempt dashboard panels, preserved for reference and reuse (see section 8).
+- Repo: `https://github.com/trmccormick/galaxy-game-ui`. Working branch: `main` (verified). Remote `main` holds the first-attempt dashboard panels, preserved for reference and reuse (see section 8).
 - **Local working path:** `/Users/tam0013/Documents/git/galaxy-game-ui/` (the actual git repo — NOT the agent-tasks task tracking folder)
+- **Rails application root:** `/Users/tam0013/Documents/git/galaxy-game-ui/galaxy-game-ui` (nested inside the Git repo; NOT a separate repository)
+- **Docker Compose files:** at the prototype Git root (`docker-compose.yml`, `docker-compose.dev.yml`)
 
 ---
 

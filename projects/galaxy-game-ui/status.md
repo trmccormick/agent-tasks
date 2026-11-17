@@ -9,7 +9,7 @@
 - **Next task**: Awaiting Tracy's selection from backlog (suggested order below)
 - **Architecture**: JSON fixtures + GameDataJsonLoader; no GameState; no world data in user metadata
 - **Completed**: T3a (commit `b1eb0d3`), T3a-2 (commit `c01b23d`, approved by Tracy 2026-10-30)
-- **Pending**: T3b (JSON Fixture Loader — never implemented); T3c (Dashboard Overview — approved but never implemented; see reconciliation below)
+- **Pending**: T3b (JSON Fixture Loader — never implemented, remains pending); T3c (Dashboard Overview — approved but never implemented; admin intent overlaps with Admin Shell/AI Manager tasks, player-dashboard intent unresolved)
 - **Approval**: T3b, T3c — reviewed GO by Grok (2026-10-23); approved by Tracy (2026-10-24) with edits applied (commit 9161b65); both remain in drafts/ until dispatched.
 
 ## Working tree status (prototype repo: `/Users/tam0013/Documents/git/galaxy-game-ui`)
@@ -33,7 +33,7 @@
 
 ## T3b/T3c reconciliation (not superseded)
 
-- **T3b (JSON Fixture Loader)**: Never implemented. No `GameDataJsonLoader` service exists; no `db/mock_data/` directory. Remains pending. The six new backlog tasks do not replace it — they will need fixture data at some point.
+- **T3b (JSON Fixture Loader)**: Never implemented. No `GameDataJsonLoader` service exists; no `db/mock_data/` directory. Remains pending — not superseded by the six new backlog tasks.
 - **T3c (Dashboard Overview)**: Approved but never implemented. Its original intent was a thin dashboard placeholder. The Admin Shell task (#5) and AI Manager task (#6) overlap with the admin portion of what T3c would have covered, but T3c's **player-facing dashboard** component is not addressed by any backlog task. Relationship unresolved — do not declare superseded without Tracy's review.
 
 ## Backlog (approved, awaiting dispatch)
