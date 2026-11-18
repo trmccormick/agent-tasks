@@ -106,19 +106,30 @@ d. The two 2026-10-27 entries above ("Facet limiting upstream resolution" and "M
 
 ---
 
-### 2026-11-17 — Two Hyku 7.2.0 upgrade validation tasks ready for Qwen dispatch
-**What happened**: Two tasks created and committed to agent-tasks for investigating Gemfile.lock persistence issue on hykudev and testing 7.2.1 upgrade with data preservation. Tasks are:
-1. `investigate_gemfile_lock_hykudev_reboots.md` — Root cause analysis of gem conflicts during 7.2.0 upgrade (why fresh bundle resolve differs from prod)
-2. `test_7.2.0_upgrade_locally_with_data_persistence.md` — Validate data persists when switching to 7.2 branch; replicable procedure for hykudev
+### 2026-11-17 — Two Hyku 7.2.0 upgrade validation tasks under review
+**What happened**: Two tasks created and committed to agent-tasks for investigating Gemfile.lock persistence issue on hykudev and testing 7.2.1 upgrade with data preservation. Independent web review (Claude) completed; DISPOSITION: REVISE (both tasks).
+
+Tasks:
+1. `investigate_gemfile_lock_hykudev_reboots.md` — Root cause analysis of gem conflicts during 7.2.0 upgrade
+2. `test_7.2.0_upgrade_locally_with_data_persistence.md` — Validate data persists when switching to 7.2 branch
+
+**Review outcome (2026-11-17, Claude)**: 
+- **CRITICAL (F1)**: Task 2 uses `docker compose down --volumes` which destroys data volumes — contradicts purpose
+- **HIGH (F3)**: Both tasks modify read-only submodule working tree (hyrax-webapp/Gemfile.lock)
+- **HIGH (F4)**: Task 1 methodology conflates build errors with runtime crashes; needs boot logs and bisect
+- **HIGH (F5)**: Task 2 console commands (`Item.count`, `Hyrax::Indexer`) unverified for multi-tenant Hyku
+- **TEMPLATE FAIL**: Neither task has YAML frontmatter, DRAFT STATUS NOTE, DRAFT REVIEW CHECKLIST, or Dispatch Interface
+- **SCOPE CREEP (F7)**: Task 2 includes hykudev replication and "plan prod timeline" — beyond "data safety only" scope
 
 **What I already checked**:
-- Both task files exist and are committed to `projects/wvu_knapsack/tasks/drafts/`
-- Supporting documentation created: `docs/wiki/operations/gemfile_lock_hykudev_reboot_investigation.md` (pushed to main)
-- Gemfile.lock backup saved locally (checksum: 7b4ed53d782f8f0103bcd2537d0d6052)
-- Test plan document created: `TEST_PLAN_7.2.0_DATA_PERSISTENCE.md`
-- Task dependency established: Investigation task (prerequisite) → Testing task (depends on investigation findings)
+- Review package: commit `ca16a3c` (pushed to GitHub)
+- Review report saved: `projects/wvu_knapsack/summaries/2026-11-17-REVIEW-HYKU-7.2.0-UPGRADE-VALIDATION-TASKS.md`
+- Both task files and supporting wiki exist
 
-**What needs a second opinion**: (1) Task scope and acceptance criteria are clear, but confirm investigation task should focus on gem conflicts vs. other possible dependency issues. (2) Testing task assumes local containerized setup matches hykudev environment — verify this assumption before Qwen starts. (3) Both tasks preserve submodule as read-only per standing rule.
+**What needs to happen next**: 
+1. Fix all mandatory items (F1, F3, F4, F5, template compliance, scope creep removal)
+2. Re-revise before moving to active/
+3. See review report for complete punch-list
 
-**Priority**: HIGH — Upgrade path blocked; these tasks unblock hykudev testing on 7.2.1 before prod consideration
-**Status**: OPEN — owner: Tracy. Tasks ready for dispatch to Qwen; awaiting approval to move from drafts/ to active/.
+**Priority**: HIGH — Upgrade path still blocked pending revisions
+**Status**: OPEN — owner: Tracy. Tasks require revision and re-review before Qwen dispatch. Review report at: `summaries/2026-11-17-REVIEW-HYKU-7.2.0-UPGRADE-VALIDATION-TASKS.md`
