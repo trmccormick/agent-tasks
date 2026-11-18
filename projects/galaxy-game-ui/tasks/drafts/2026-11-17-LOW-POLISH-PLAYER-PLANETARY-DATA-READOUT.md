@@ -31,7 +31,7 @@ Do not edit JavaScript, controllers, routes, shared layout, data sources, or oth
 
 ## JavaScript-generated readout content
 
-The existing JavaScript rewrites portions of the panel at load, including composition rows and their inline styles. Do not edit or depend on ERB text content for formatting that JavaScript replaces. Apply typography, spacing, alignment, and overflow rules through stable CSS classes/selectors that apply to the generated markup as well as the initial markup. Do not edit JavaScript or add brittle selectors tied to generated text values.
+The existing JavaScript rewrites portions of the panel at load, including composition rows and their inline styles. Do not edit or depend on ERB text content for formatting that JavaScript replaces. Apply typography, spacing, alignment, and overflow rules through stable CSS classes/selectors that apply to the generated markup as well as the initial markup. Scope the selectors beneath `#dataPanel` (or `.planetary-data-panel`) so the intended readout rules reliably override utility classes such as `mb-1` carried by JavaScript-generated rows. Do not edit JavaScript or add brittle selectors tied to generated text values.
 
 ## Out of scope
 
@@ -46,15 +46,15 @@ The existing JavaScript rewrites portions of the panel at load, including compos
 3. Make only the allowed readout changes.
 4. Run static checks available in the repository, including ERB/markup sanity checks if the view is edited. Do not claim browser verification.
 5. Inspect the existing `populateDataPanel` (or equivalent) path in `galaxy-game-ui/app/javascript/player/planetary.js` solely to confirm which selectors/classes are present on JavaScript-generated readout rows. Verify the CSS selectors cover both initial and generated rows; do not edit JavaScript under any circumstances.
-6. Write the task report to `~/scratch/player-planetary-data-readout-report.md` using shell redirection. Include exact diff summary, selectors/components affected, the actual computed typography/row-padding/section-gap values used, checks run/results, and anything not verified. Keep this report for Tracy's review; remove only temporary files created during the task.
+6. Write the task report to `~/scratch/player-planetary-data-readout-report.md` using shell redirection. Include exact diff summary, selectors/components affected, the declared CSS typography/row-padding/section-gap values set, checks run/results, and anything not verified. Do not report browser-computed values; browser verification is reserved for Tracy. Keep this report for Tracy's review; remove only temporary files created during the task.
 7. Stop for Tracy to inspect the page in a browser, including a narrow viewport, and review the result. Do not commit or push without Tracy's explicit approval (GUARDRAILS Rule 26).
 
 ## Acceptance criteria
 
 - [ ] Data-row labels and values use the specified compact typography while remaining legible.
-- [ ] Row padding is approximately 4px and section gaps approximately 10px, with the actual computed values and any justified deviations reported.
+- [ ] Row padding is approximately 4px and section gaps approximately 10px; the report lists the declared CSS values set and any justified deviations (not browser-computed values).
 - [ ] Label/value pairs remain aligned without overlap; long values wrap or truncate within the value area.
-- [ ] CSS formatting applies to both initial and JavaScript-generated readout rows.
+- [ ] CSS formatting scoped to the data panel applies to both initial and JavaScript-generated readout rows and takes precedence over conflicting utility classes on those rows.
 - [ ] `#bio-diversity-bar` and `#bio-habitability-bar` render their intended percentage widths using valid CSS percentage values.
 - [ ] Workspace structure, map behavior, and data values are unchanged.
 - [ ] Only the allowed files are changed; static verification and report file are provided.
