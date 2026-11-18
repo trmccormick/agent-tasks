@@ -1060,3 +1060,10 @@ This section preserves session records, known issues, and completed work from pr
 - **Committed:** galaxyGame origin/main at 29c90da (merge of b3ec794 + 9db198f). Related commits: 021aa822 (pushed in 67dfa40) and b3ec794. (Verified via git log / GitHub commits page.)
 - **Not committed:** none for this session in agent-tasks.
 - **Stop condition:** Wiki documentation work complete for these two single-purpose doc commits. No task file was used. Next actions (optional, for planning/human): (1) draft NEEDS_REVIEW.md entry for TEU/PVE blueprint vs operational-data mismatches (size/mass/power, PVE modelling, §5.3 order, inert_regolith_waste term, Mk I vs Mk1 naming); (2) remaining wiki linter items (markets_eap_and_peg.md links, missing banners, README folder-link decision). Status.md header itself is still dated 2026-10-26 and needs a separate planning-agent refresh.
+
+---
+## 📝 Session Log — 2026-11-17/18 (galaxyGame wiki — TEU/PVE wording, placement wording, Venus duplicate)
+- **Changed:** none in agent-tasks except this entry. galaxyGame wiki: `docs/wiki/technical/isru_fabrication_chain.md` (wording only) and `docs/wiki/infrastructure/modular_orbital_panel_swarms.md` (placement section rewritten to state the need with the mechanism OPEN; duplicated Venus-preferred bullet removed). Reviewed `a5688c7` (other stream): the power-beaming-undecided line accepted, its placement block corrected.
+- **Committed:** galaxyGame `25a4e137` (pushed), `dc132a36` (merged as `2cc0ec26`, pushed), `f1ce781b` (pushed). Each verified on origin/main with `git fetch` and `git show origin/main:<file> | grep -c` checks.
+- **Not committed:** this entry, until Tracy commits it. Not changed: the "Industrial framing" paragraph overlap with "Core process" in `docs/wiki/infrastructure/terraforming_options.md` (owner confirmation pending).
+- **Stop condition:** session limit on 2026-11-17 night; resumed 2026-11-18; the wiki work above is finished. Next: owner answer on the terraforming wording; status.md header still stale (2026-10-26); the NEEDS_REVIEW TEU/PVE entry stays OPEN (backend on hold); wiki linter errors.
