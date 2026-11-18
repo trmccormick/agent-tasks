@@ -1053,3 +1053,10 @@ This section preserves session records, known issues, and completed work from pr
 - **Committed:** galaxyGame `fde4e0ce` and `f382b4ab` (local, not pushed); galaxy-game-ui `9647955` (pushed); agent-tasks none by this session.
 - **Not committed:** the handoff file and this entry, until Tracy commits them.
 - **Stop condition:** usage limit, work unfinished. Next: Tracy pushes the galaxyGame commits; the next web session reconciles the galaxy-game-ui `docs/initial-ui-wiki` branch with `main` and reviews two NEEDS_REVIEW entries (documentation-practice rule; game clock and simulation loop).
+
+---
+## 📝 Session Log — 2026-11-16/17 (galaxyGame wiki — ISRU + modular orbital panel swarms)
+- **Changed:** none in agent-tasks (wiki changes landed in galaxyGame repo only).
+- **Committed:** galaxyGame origin/main at 29c90da (merge of b3ec794 + 9db198f). Related commits: 021aa822 (pushed in 67dfa40) and b3ec794. (Verified via git log / GitHub commits page.)
+- **Not committed:** none for this session in agent-tasks.
+- **Stop condition:** Wiki documentation work complete for these two single-purpose doc commits. No task file was used. Next actions (optional, for planning/human): (1) draft NEEDS_REVIEW.md entry for TEU/PVE blueprint vs operational-data mismatches (size/mass/power, PVE modelling, §5.3 order, inert_regolith_waste term, Mk I vs Mk1 naming); (2) remaining wiki linter items (markets_eap_and_peg.md links, missing banners, README folder-link decision). Status.md header itself is still dated 2026-10-26 and needs a separate planning-agent refresh.
