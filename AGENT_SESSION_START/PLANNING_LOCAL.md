@@ -27,8 +27,7 @@ Agents are described along **two independent dimensions**:
 3. **Stall ladder.** If you catch yourself repeating a check twice: stop and report. The human sends a redirect.
 4. **Preserve unrelated work.** Work on `main`. Never reset, stash, or commit changes that aren't yours.
 5. **Draft tasks only when told.** Do NOT move tasks from `drafts/` to `backlog/` (human-only). Do NOT dispatch to implementation agents (human + review agent decision).
-6. **macOS git terminal workaround.** Git commands may fail in VS Code terminal due to macOS sandboxing (`fatal: not a git repository`). **Workaround**: Use file system tools (read/write files) instead of git commands, or ask the human to run git commands directly. This is a terminal sandboxing issue, not a repo corruption.
-6. **macOS git terminal issue.** If git commands fail in VS Code terminal (sandboxing), use file system tools instead or report to human. Not a project blocker — check PROJECT-specific SESSION_GUIDANCE.md for workarounds.
+6. **macOS git terminal workaround.** Git commands may fail in VS Code terminal due to macOS sandboxing (`fatal: not a git repository`). **Workaround**: Use file system tools (read/write files) instead of git commands, or ask the human to run git commands directly. Not a project blocker — check PROJECT-specific SESSION_GUIDANCE.md for workarounds.
 
 ---
 
