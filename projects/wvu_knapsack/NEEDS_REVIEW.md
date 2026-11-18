@@ -107,7 +107,7 @@ d. The two 2026-10-27 entries above ("Facet limiting upstream resolution" and "M
 ---
 
 ### 2026-11-17 — Two Hyku 7.2.0 upgrade validation tasks under review
-**What happened**: Two tasks created and committed to agent-tasks for investigating Gemfile.lock persistence issue on hykudev and testing 7.2.1 upgrade with data preservation. Independent web review (Claude) completed; DISPOSITION: REVISE (both tasks).
+**What happened**: Two tasks created and committed to agent-tasks for investigating Gemfile.lock persistence issue on hykudev and testing 7.2.1 upgrade with data preservation. Web review (Claude, a single review rather than an independent second opinion) completed; DISPOSITION: REVISE (both tasks).
 
 Tasks:
 1. `investigate_gemfile_lock_hykudev_reboots.md` — Root cause analysis of gem conflicts during 7.2.0 upgrade

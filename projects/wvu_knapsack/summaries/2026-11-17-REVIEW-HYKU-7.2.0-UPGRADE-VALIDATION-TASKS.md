@@ -6,7 +6,7 @@
 - Project repository: wvulibraries/wvu_knapsack
 - Package commit: `ca16a3c` (not independently checked)
 - Review date: 2026-11-17
-- Reviewer: Claude
+- Reviewer: Claude (web session), saved by Haiku
 
 ## 1. Disposition
 
@@ -18,6 +18,7 @@ Task 2 contains a command that contradicts the "Postgres volume persists" decisi
 
 - **Read directly (VERIFIED):** both draft task files, `REVIEW_AGENT_WORKFLOW.md`, `REVIEW_REPORT_TEMPLATE.md`, and the review prompt.
 - **Not inspected:** `TASK_TEMPLATE.md`, `REVIEW_AGENT_GUIDE.md`, the wiki entries, commit `ca16a3c`, the knapsack repo, and the local Gemfile.lock backup (checksum is REPORTED only).
+- Phase A is provisional until re-checked against TASK_TEMPLATE.md; the missing Agent Dispatch Interface block was confirmed by grep (0 matches in both drafts).
 - **Consequence:** Phase A is judged against the mandatory-section list in the prompt, not the template itself.
 - **Hyku behavior:** statements about Hyku/Rails behavior below come from general knowledge and should be checked against the repo.
 
@@ -163,4 +164,4 @@ Add exact pass/fail criteria for partial outcomes, since the document defines th
 
 ## 10. Final Recommendation
 
-Do not move either task to `active/`. Revise both and re-review. F1 is a data-destroying command in a task whose purpose is data safety, so it is the first fix. Human authorization is still required before any dispatch.
+Do not move either task to `backlog/`; revise and re-review. F1 is a data-destroying command in a task whose purpose is data safety, so it is the first fix. Human authorization is still required before any dispatch.
