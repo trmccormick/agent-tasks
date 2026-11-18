@@ -157,6 +157,8 @@ State whether the task should be approved for human consideration to move to bac
 
 Copy the block below into every draft-review handoff prompt (human, planning agent, or automated dispatch). It ensures template compliance is always reviewed.
 
+Use `templates/DRAFT_REVIEW_PROMPT_TEMPLATE.md` as the full dispatch prompt. It includes the block below plus the access block for each agent type (repo-read, repo-read/write, upload-only). Send one draft task per review.
+
 ```
 5. Template compliance (mandatory): Read TASK_TEMPLATE.md and compare every required section against the draft. Verify: all YAML fields (resume, system_domain, mvp_alignment, local_worker_safe), DRAFT STATUS NOTE, DRAFT REVIEW CHECKLIST, full Agent Dispatch Interface block (not abbreviated), Task Readiness Checklist. Flag any missing sections as REVISE requirements — do not GO if template is non-compliant.
 6. Review package (mandatory): The task file, TASK_TEMPLATE.md and REVIEW_AGENT_GUIDE.md are attached or pasted below, with the commit they came from. If any is missing, ask for it. Do not review from memory or from a link.
