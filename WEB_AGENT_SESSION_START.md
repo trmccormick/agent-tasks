@@ -132,7 +132,7 @@ Approval does not change: the human approves, commits and pushes.
 
 ## End of session
 
-- Is every `NEEDS_REVIEW.md` entry either RESOLVED with reasoning, or OPEN with a specific next action?
+- Is every `NEEDS_REVIEW.md` entry either OPEN with a specific next action, or moved to the archive file named in its header with its reasoning kept in the entry? Resolved entries do not stay in `NEEDS_REVIEW.md`.
 - Did anything come up that should become a task file? If so, have you drafted it (not created it) for hand-off?
 - Were new tasks left undispatched as intended, with no dispatch instructions slipped in?
 - Is there anything you noticed that is not in `NEEDS_REVIEW.md` but should be?
