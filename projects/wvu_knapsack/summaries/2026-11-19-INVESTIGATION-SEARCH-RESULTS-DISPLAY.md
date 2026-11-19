@@ -157,9 +157,22 @@ The application cannot even boot on hykudev due to the `field_config.limit.zero?
 - This strongly suggests root cause is **Solr indexing**
 - Either data not indexed, or indexed with wrong schema version
 - Aligns with Oct 2026 findings of collection mismatch
-- **Recommendation**: After diagnostics, run `rake solr:index` if data issues confirmed
+- **Recommended Fix**: Reindex after 7.2.0 upgrade
 
----
+**User Observation**: "Code works locally, fails on VM"
+- Screenshots show search results on Stack Car ✅
+- Same code/data on hykudev shows no results ❌
+- Eliminates code bugs entirely
+- Points directly to **data state or indexing issue**
+
+**Investigation Strategy**: 
+- **FAST PATH (10 min)**: Try reindex first
+  1. Quick collection check (UUID vs hydra-production)
+  2. Run `rake solr:index`
+  3. Test search results
+  4. If works → Done! Add to upgrade procedure
+  5. If fails → Run full diagnostics
+- **FALLBACK PATH (25 min)**: Full diagnostic suite (if reindex doesn't work)
 
 ## Acceptance Criteria Tracking
 
