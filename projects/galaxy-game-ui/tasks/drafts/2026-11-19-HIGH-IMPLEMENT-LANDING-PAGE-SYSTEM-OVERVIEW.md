@@ -27,7 +27,7 @@ Complete the existing public landing page and its small Rails-side JSON reader a
 - Inspect the current landing page, routes/controller, and the existing `json-data/star_systems/` and `json-data/generated_star_systems/` files.
 - Reuse the existing page structure and styling; make only the changes needed to match the landing-page wiki.
 - Add the smallest Rails-side reader/controller integration needed to supply the five system entries from JSON. Keep file access and source-record resolution in Rails; the browser must not read source JSON files directly.
-- Use the existing Sol fixtures as documented in the wiki. Do not copy, merge, regenerate, or rewrite the JSON data.
+- Use `sol-complete.json` for the fuller Sol landing-page collection; retain `sol.json` as a smaller, valid UI test fixture containing the major worlds. Do not copy, merge, regenerate, or rewrite either JSON file.
 - Keep unrelated landing-page metrics or activity illustrative and clearly non-live.
 - Verify the page and data behavior with focused tests/checks.
 
