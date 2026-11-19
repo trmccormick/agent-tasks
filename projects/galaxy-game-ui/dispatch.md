@@ -24,19 +24,18 @@ Tracy directs the review and retains approval of task changes and dispatch.
 
 ## Agreed review and dispatch sequence
 
-The current sequence is:
+The first coordinated implementation slice is:
 
-1. **JSON lookup/provider:** `tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md`
-2. **Landing page:** `tasks/hold_for_review/2026-10-23-CRITICAL-LANDING-PAGE-FOR-PUBLIC-ACCESS.md` (legacy task; revise/reconcile against the already-built landing page, current data, and logo-export issue before it can be considered ready).
-3. **Player Planetary data integration:** `tasks/drafts/2026-11-19-MEDIUM-FEATURE-USE-LOADED-DATA-PLAYER-PLANETARY-VIEW.md`
+1. **Landing page + system JSON reader:** `tasks/drafts/2026-11-19-HIGH-IMPLEMENT-LANDING-PAGE-SYSTEM-OVERVIEW.md`
+2. **Player Planetary data integration:** `tasks/drafts/2026-11-19-MEDIUM-FEATURE-USE-LOADED-DATA-PLAYER-PLANETARY-VIEW.md`
 
-The first task copies the actual minimal Sol JSON sample, resolves Sol/Earth, and exposes the focused controller payload. It does not port every lookup service, build an API, or supply terrain/live simulation data. The provider boundary must remain replaceable by a future API provider without changing frontend code. See the [Planetary data source and frontend boundary](https://github.com/trmccormick/galaxyGame/blob/main/docs/wiki/ui/02_player_view_architecture.md).
+The landing page and its supporting Rails-side JSON reader are one task, not separate sequential tasks. The prototype wiki holds the detailed Sol fixture semantics, system-data boundaries, page layout and network-context decisions. The task file is intentionally thin and points back to those wiki pages.
 
-The landing page is deliberately second, before Player Planetary integration. Its existing hold-for-review task is old and must be reconciled rather than dispatched as written: the page has already been built, and the task must reflect current implementation, actual system data, clearly labeled/non-live metrics, and the logo-export correction. The exact landing-page task revision remains a review item.
+The previous Earth-only lookup task has been marked superseded and merged into the combined landing-page task. The legacy 2026-10-23 landing-page task remains in `hold_for_review/` as historical reference; it is not a separate implementation step and must not be dispatched as written.
 
-Player Planetary is third and consumes the focused Earth payload produced by the first task. It must not start before that dependency is complete.
+Player Planetary remains a later, separate view task. Reassess its data dependency after the landing-page reader is implemented and the landing page has been reviewed. Do not assume the landing-page payload is automatically the correct Planetary payload.
 
-These three tasks are sequential; do not dispatch them in parallel. Their ordering is a planning decision, not authorization to dispatch any task.
+This sequence is a planning record, not authorization to dispatch. Dispatch only the single task Tracy explicitly approves.
 
 ## Subsequent view-by-view review
 
@@ -68,9 +67,10 @@ Maintain this section as Tracy reviews and decides each task. Only record a disp
 
 | Order | Task / view | Review disposition | Dependency / dispatch condition |
 |---|---|---|---|
-| 1 | `tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md` — Sol JSON lookup/provider | **Revised; awaiting explicit dispatch approval** | First; resolve Sol and Earth and expose the focused controller payload |
-| 2 | `tasks/hold_for_review/2026-10-23-CRITICAL-LANDING-PAGE-FOR-PUBLIC-ACCESS.md` — landing page | **Needs reconciliation/revision** | Second; update the legacy task to match the already-built page, actual system data, non-live metrics, and logo-export correction |
-| 3 | `tasks/drafts/2026-11-19-MEDIUM-FEATURE-USE-LOADED-DATA-PLAYER-PLANETARY-VIEW.md` — Planetary data integration | **Revised; blocked** | Third; starts only after task 1 is complete and landing-page work is addressed |
+| 1 | `tasks/drafts/2026-11-19-HIGH-IMPLEMENT-LANDING-PAGE-SYSTEM-OVERVIEW.md` — landing page + JSON reader | **New combined draft; awaiting review** | First; implement the existing landing page using the copied five-system JSON data |
+| 2 | `tasks/drafts/2026-11-19-MEDIUM-FEATURE-USE-LOADED-DATA-PLAYER-PLANETARY-VIEW.md` — Planetary data integration | **Revised; dependency to reassess** | Review after the landing page is implemented and reviewed |
+| Superseded | `tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md` — Earth-only lookup | **Merged into order 1** | Do not dispatch independently |
+| Hold | `tasks/hold_for_review/2026-10-23-CRITICAL-LANDING-PAGE-FOR-PUBLIC-ACCESS.md` — legacy landing task | **Retained as historical reference** | Do not dispatch as written |
 | Later | `tasks/drafts/2026-11-19-MEDIUM-FEATURE-ADAPT-CRAFT-OPERATIONS-INTERACTIONS.md` — craft operations interactions | **New draft; not approved** | Review after the initial sequence; choose a concrete Player or Admin workflow before dispatch |
 
 For every reviewed file, record its exact path and one agreed outcome:
