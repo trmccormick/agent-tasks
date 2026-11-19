@@ -115,7 +115,9 @@ Not required.
 
 **GOTCHA 4:** An in-system solar-system view is distinct from an inter-system wormhole-connection map. Do not substitute one for the other.
 
-**GOTCHA 5:** Do not import EVE terminology, branding, account data, game rules, backend behavior, route/shortest-path features or fleet gameplay assumptions.
+**GOTCHA 5:** Do not import EVE terminology, branding, account data, game rules, backend behavior, route/shortest-path features or fleet gameplay assumptions. GalaxyGame craft are autonomous assets commanded remotely; do not introduce pilot/character identities or imply direct piloting.
+
+**GOTCHA 6:** `fleet_builder.js` is not part of this first Space-map slice. Its selection/grouping/order interactions are a separate future adaptation. If that work is later authorized, use craft/ship names rather than characters or pilots, and do not assume every craft belongs to a fleet.
 
 ### Multi-Domain / Multi-Tenant Routing
 Not applicable. This is a standalone visual prototype task.
@@ -190,8 +192,8 @@ Inspect the current prototype branch, routes, layouts, assets and referenced sou
 
 1. Inspect the prototype and locate the actual GalaxyGame Space/system presentation baseline. Read app/javascript/system_renderer.js; do not assume the similarly named asset-pipeline file is equivalent.
 2. Check whether the EVE Dashboard checkout and fleet_map.js are accessible and whether the relevant interaction code can be adapted without substantial rewriting. If the file is unavailable or would require substantial rewriting, skip the EVE adaptation, continue with the minimal Sol view using only the GalaxyGame renderer baseline, and report the missing path or reason for skipping it. Do not use machine-specific absolute paths or fabricate source.
-3. Create one Sol-focused Space page showing sample bodies, stations and ships. Reuse the GalaxyGame renderer if it fits without substantial rewriting.
-4. If fleet_map.js is available, adapt only its pan/zoom, marker-selection and selected-object-panel interaction pattern. Keep GalaxyGame's in-system representation and terminology.
+3. Create one Sol-focused Space page showing sample bodies, stations and ships. Identify craft by their GalaxyGame ship/craft names; do not invent pilot or character records. The map may show craft as selectable autonomous assets, but this slice does not add craft tasking or fleet/group management. Reuse the GalaxyGame renderer if it fits without substantial rewriting.
+4. If fleet_map.js is available, adapt only its pan/zoom, marker-selection and selected-object-panel interaction pattern. Keep GalaxyGame's in-system representation and terminology. Do not pull in `fleet_builder.js` or EVE character/fleet data structures.
 5. Use available imported data or clearly labeled mock values. Do not create a new data framework.
 6. Integrate the page into existing Player navigation/shell. Record source provenance, dependencies and EVE-specific terms removed.
 
@@ -206,10 +208,11 @@ Save required evidence/synthesis artifacts in the task-management repository's p
 ## Acceptance Criteria
 
 - [ ] Space is reachable in the Player context.
-- [ ] A Sol view displays representative celestial bodies, stations and ships using GalaxyGame terminology.
+- [ ] A Sol view displays representative celestial bodies, stations and ships using GalaxyGame terminology; craft are identified by craft/ship names, not pilots or characters.
 - [ ] If fleet_map.js is available and can be adapted without substantial rewriting, its bounded pan/zoom and selection pattern is used. If it is unavailable or unsuitable, deliver the minimal Sol view using the GalaxyGame renderer baseline alone and report the fallback.
 - [ ] The implementation distinguishes an in-system view from inter-system wormhole connections.
 - [ ] No EVE gameplay rules, backend or live route calculations are introduced.
+- [ ] The view does not imply player characters/pilots or direct piloting; craft remain autonomous assets. Craft tasking and optional operational-group management remain outside this first map slice.
 - [ ] Record source revisions/provenance and check the page in the running prototype with visual evidence.
 
 ## Out of Scope
