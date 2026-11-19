@@ -94,6 +94,15 @@ Pick the delivery method from the kind of change, say in one line which you chos
 | A small edit to one file | The exact command or the exact text to paste. One at a time, then the human checks `git diff --stat`. |
 | Edits that span several files, or need the repo read, a test run or a command on the project machine first | A prompt for an implementation agent. Review its pasted diff before anything is committed. |
 
+### Temporary files on the human's machine
+
+Temporary files go in one place: the `scratch` folder in the human's home folder (for example `/Users/<user>/scratch`). It is not part of any git repo, and the human keeps it clear.
+
+- A file that belongs in the repo is delivered once, and your reply names its final repo path. The human saves it there directly; do not stage it in `scratch`.
+- Every other temporary file, including saved diffs, goes in `scratch` and nowhere else. Do not use the Desktop, `Downloads`, `agent-out` or any new folder.
+- Implementation-agent prompts name the full `scratch` path for any file they create, and end with a step that removes exactly that path.
+- At the end of the session, list every file you caused to be created in `scratch`, by full path, marked "safe to delete". The human deletes only those. Leave everything else in `scratch` alone.
+
 ### When a task file is not needed
 
 Before drafting a task, check: does it change one file, with no change to behavior, routes, data or infrastructure, and is it easy to revert? If yes, do not draft a task. Use the table above (a whole file, or the exact text to paste), and let the human or the project's usual agent apply it. Who writes it follows the project's session guidance (for Galaxy Game, `projects/galaxy_game/SESSION_GUIDANCE.md`, section 9).
@@ -128,3 +137,4 @@ Approval does not change: the human approves, commits and pushes.
 - Were new tasks left undispatched as intended, with no dispatch instructions slipped in?
 - Is there anything you noticed that is not in `NEEDS_REVIEW.md` but should be?
 - If you could not write to the repo, draft the `status.md` entry as text in the format `SESSION_CLOSEOUT.md` section 1b requires, and hand it to the human or a local session to save. Do not claim it was saved.
+- Did you list every temporary file you caused to be created in `scratch` (full paths, marked "safe to delete")? See "Temporary files on the human's machine" above.
