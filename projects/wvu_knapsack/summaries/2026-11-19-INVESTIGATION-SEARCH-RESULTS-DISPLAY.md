@@ -153,6 +153,12 @@ The application cannot even boot on hykudev due to the `field_config.limit.zero?
 
 *Pending boot fix and investigation completion*
 
+**LaRita Robinson (notch8) Insight**: "Might it require reindex?"
+- This strongly suggests root cause is **Solr indexing**
+- Either data not indexed, or indexed with wrong schema version
+- Aligns with Oct 2026 findings of collection mismatch
+- **Recommendation**: After diagnostics, run `rake solr:index` if data issues confirmed
+
 ---
 
 ## Acceptance Criteria Tracking
