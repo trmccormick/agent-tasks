@@ -3,64 +3,55 @@ status: draft
 resume: false
 priority: MEDIUM
 type: feature
-system_domain: OTHER
+system_domain: PLAYER / PLANETARY VIEW
 mvp_alignment: OTHER
 local_worker_safe: true
+last_updated: 2026-11-19
 ---
 
-# Player Planetary view — review and define follow-up
-
-**Draft state:** Placeholder only. This file records an existing prototype page; it is not an implementation authorization or a dispatch-ready task.
-
-## Existing page
-
-- **Prototype repository:** `trmccormick/galaxy-game-ui`
-- **View:** `galaxy-game-ui/app/views/player/planetary.html.erb`
-- **Current purpose (from the existing view):** Player planetary observation workspace with map canvas, layer controls and planetary data panel.
+# Player Planetary view — consume loaded body data
 
 ## Objective
 
-Review this page against the current GalaxyGame UI goals, the authoritative GalaxyGame wiki where relevant, and the current prototype implementation. Determine whether it should be retained, revised, simplified, split, or left as a placeholder.
+After the Sol JSON lookup task is complete, update the existing Player Planetary view to render Earth from the controller-provided `@planetary_data` payload instead of hardcoded mock planetary values.
 
-## Scope to define during review
+## Read and reference
 
-- Confirm the page's intended audience and role in the overall UI.
-- Compare the existing page with current design intent and adjacent navigation/workspaces.
-- Identify what is already complete and must not be recreated.
-- Record specific remaining UI work, if any.
-- Identify unresolved design questions rather than inventing answers.
-- Determine whether a separate implementation task is warranted.
+- [Player View Architecture — Planetary data source and frontend boundary](https://github.com/trmccormick/galaxyGame/blob/main/docs/wiki/ui/02_player_view_architecture.md)
+- Existing prototype controller, view, and renderer:
+  - `galaxy-game-ui/app/controllers/player_controller.rb`
+  - `galaxy-game-ui/app/views/player/planetary.html.erb`
+  - `galaxy-game-ui/app/javascript/player/planetary.js`
 
-## Constraints
+## Scope
 
-- This is a Rails 8.1 UI prototype, separate from the Rails 7 main GalaxyGame application.
-- Do not add backend, API, model, migration, persistence, or simulation work.
-- Do not duplicate existing GalaxyGame data definitions or lookup behavior.
-- Reuse existing prototype work; do not rebuild a page simply because this placeholder exists.
-- Do not assume current mock values or displayed controls represent approved game behavior.
-- No implementation, commit, or dispatch is authorized by this placeholder.
+- Replace hardcoded/mock Earth definition values in the controller, ERB, and JavaScript with values supplied through `@planetary_data`.
+- Pass the controller payload safely to the existing JavaScript renderer and have the UI render the selected body's available data.
+- Preserve the reviewed Planetary workspace and existing renderer/layer behavior except where data binding requires a focused change.
+- Show unavailable fields as unavailable; do not substitute invented values.
 
-## Review references
+## Boundaries
 
-- Prototype page: `galaxy-game-ui/app/views/player/planetary.html.erb`
-- Project guidance: `projects/galaxy-game-ui/README.md` and `SESSION_GUIDANCE.md`
-- Relevant prototype wiki and main GalaxyGame wiki pages: to be identified during review based on this page's purpose.
+- **Blocked until** `2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md` is completed and its controller payload is available.
+- The frontend must not read local JSON, know the provider implementation, or call a provider-specific path. It consumes the controller's stable payload only.
+- `sol.json` supplies system/body definition data, not terrain maps or live simulation state. Keep terrain sourcing separate and do not fabricate terrain or dynamic environmental values from static body definitions.
+- No production API implementation, new general backend, models, migrations, persistence, or simulation logic.
+- Do not expand this task into a broad visual redesign or unrelated Planetary renderer repairs.
 
-## Acceptance criteria for this draft review
+## Acceptance criteria
 
-- [ ] Current page state and existing behavior are accurately summarized.
-- [ ] Goals and audience are confirmed against authoritative design intent.
-- [ ] Completed work is excluded from any follow-up scope.
-- [ ] Remaining work or reason for no further task is recorded.
-- [ ] Tracy reviews and directs the next step.
+- [ ] The Planetary page renders Earth using the actual body data supplied by the Rails controller.
+- [ ] Hardcoded/mock Earth definition values are removed from the controller, view, and JavaScript data path.
+- [ ] JavaScript receives data from the view/controller payload and has no knowledge of JSON file locations or the local provider.
+- [ ] Missing source fields are not fabricated or presented as authoritative values.
+- [ ] Terrain remains sourced independently of `sol.json`; no terrain or simulation-state behavior is falsely attributed to the system JSON.
+- [ ] Focused tests and relevant Rails checks pass; the rendered page is reviewed against the wiki.
 
 ## Dependencies
 
-**Blocked by:** Human review and direction.  
-**Blocks:** None established.
+**Blocked by:** `2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md` (must be completed first)  
+**Blocks:** further Planetary View visual/interaction review, if any remains after this data integration.
 
-## Progress / Resume
+## Dispatch note
 
-- **Done so far:** Placeholder created from the existing prototype view inventory.
-- **Next step:** Review this page with Tracy; do not dispatch.
-- **Status:** Draft placeholder; not ready for implementation.
+This task is second in the agreed order. Do not start it in parallel with the lookup/provider task.

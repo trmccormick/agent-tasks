@@ -9,51 +9,47 @@ local_worker_safe: true
 last_updated: 2026-11-19
 ---
 
-# Port the main game's JSON lookup services
+# Load Sol JSON and resolve planetary data
 
 ## Objective
 
-Provide the Rails 8.1 UI prototype with the existing GalaxyGame JSON lookup capability, adapted from the Rails 7 main application. This is the first enabling task in the reviewed dispatch order.
+Give the Rails 8.1 prototype a replaceable local data provider that loads the main game's minimal Sol test system and resolves Earth for the Player Planetary view.
 
 ## Read and reference
 
-- Project rules: `projects/galaxy-game-ui/SESSION_GUIDANCE.md`
-- Main GalaxyGame wiki: start at `docs/wiki/README.md`; use the relevant current architecture/data pages as the design authority.
-- Main application reference implementation: `app/services/lookup/` and its shared path/configuration dependencies.
-- Prototype repository: inspect the current Rails 8.1 app before deciding what to add or reuse.
-
-The task is an execution brief, not a substitute for the wiki or source code. Confirm exact wiki page links and source files during implementation planning; do not copy their contents into this file.
+- [Player View Architecture — Planetary data source and frontend boundary](https://github.com/trmccormick/galaxyGame/blob/main/docs/wiki/ui/02_player_view_architecture.md)
+- Main-app lookup reference: `galaxy_game/app/services/lookup/star_system_lookup_service.rb`, its base/dependencies, and `GalaxyGame::Paths`.
+- Prototype integration point: `galaxy-game-ui/app/controllers/player_controller.rb`.
 
 ## Scope
 
-- Inspect the main application's lookup services and dependencies, then adapt the required JSON lookup behavior for the prototype.
-- Preserve relevant path resolution, source precedence, normalization, lookup semantics, and caching behavior where they apply.
-- Reuse the existing game JSON definitions; do not create parallel hand-authored copies of static game data.
-- Identify the smallest prototype-facing interface needed by the existing UI views.
+- Copy the main application's minimal `sol.json` test system into the prototype's matching app data location: `galaxy-game-ui/app/data/star_systems/sol.json`. Confirm the main-app source through `GalaxyGame::Paths::STAR_SYSTEMS_PATH`; use `sol.json`, not `sol-complete.json`.
+- Adapt only the lookup and path behavior needed to load Sol and resolve an individual body such as Earth. Reuse the main-app implementation where appropriate; do not port every lookup service.
+- Establish a source-independent provider boundary and make the resolved body data available to the existing Rails controller as a consistent `@planetary_data` payload.
+- Keep the provider replaceable by a future main-app API implementation without changing the frontend contract.
 
 ## Boundaries
 
-- Keep this to JSON data lookup/loading in the Rails 8.1 prototype.
-- Do not add unrelated models, migrations, persistence, general-purpose APIs/controllers, or simulation logic.
-- Do not blindly copy Rails 7 code; verify compatibility and adapt only where necessary.
-- Do not expand into individual view redesigns. Those remain separate reviewed tasks.
-- Where wiki, source code, and prototype assumptions conflict, record the conflict and ask Tracy rather than inventing behavior.
+- No hand-authored replacement Earth/system fixture and no generic mock-data framework.
+- No frontend layout/renderer redesign in this task; the Planetary View task consumes the controller payload.
+- No API endpoint, unrelated models, migrations, persistence, simulation logic, or broad backend expansion.
+- Do not treat `sol.json` as a terrain-map or live simulation-state source. Do not invent missing values.
 
 ## Acceptance criteria
 
-- [ ] The implementation is based on the actual main-app lookup services and their required dependencies.
-- [ ] The prototype can resolve and load the required existing game JSON definitions through a clear, tested interface.
-- [ ] Relevant source/path precedence and lookup behavior are preserved or any intentional differences are documented and approved.
-- [ ] No duplicate static game definitions or unrelated backend infrastructure are introduced.
-- [ ] Focused tests cover successful lookup, missing/invalid input or data, and relevant path/source behavior.
-- [ ] The prototype's existing test suite and relevant Rails checks pass.
-- [ ] Any wiki gaps or unresolved design conflicts are reported for Tracy's decision.
+- [ ] The minimal source `sol.json` is copied unchanged to the prototype's corresponding `app/data/star_systems/sol.json` path and is tracked by Git.
+- [ ] The prototype can load Sol and resolve Earth from the actual nested system/body data.
+- [ ] The existing Rails controller can obtain Earth through the provider and expose it as `@planetary_data`.
+- [ ] Provider/controller tests cover successful Sol/Earth resolution and missing or malformed source data.
+- [ ] The frontend-facing payload does not expose file paths or depend on the local JSON provider.
+- [ ] No parallel static planetary definitions, invented data, terrain data, or unrelated backend infrastructure are added.
+- [ ] Relevant Rails checks and focused tests pass.
 
 ## Dependencies
 
 **Blocked by:** none  
-**Blocks:** reviewed UI tasks that need shared game JSON lookup data.
+**Blocks:** `2026-11-19-MEDIUM-FEATURE-REVIEW-PLAYER-PLANETARY-VIEW.md`
 
 ## Dispatch note
 
-This task is first in the proposed order, but remains a draft until Tracy approves the final scope and explicitly dispatches it.
+This is the next task in the agreed order. It remains a draft until Tracy explicitly approves dispatch.

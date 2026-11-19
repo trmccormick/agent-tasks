@@ -26,19 +26,17 @@ Tracy directs the review and retains approval of task changes and dispatch.
 
 The first task to review and prepare for dispatch is:
 
-`tasks/drafts/2026-10-23-HIGH-JSON-FIXTURE-LOADER-SYSTEMS.md`
+`tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md`
 
-An earlier version exists in `tasks/hold_for_review/`; the copy in `drafts/` is the working copy to revise. The old fixture-loader specification is not accepted as the current design.
+The old fixture-loader specification has been retired. The current task is narrowly scoped to the minimal Sol test JSON and the Planetary data path.
 
-The intended work is a narrowly scoped Rails 8.1 prototype adaptation of the main GalaxyGame application's existing JSON lookup services. The working draft is `tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md`. The main application's lookup implementation and the authoritative wiki are the references; the task should remain a thin execution brief rather than duplicating either source.
+The agreed first slice is specific: copy the main application's minimal `sol.json` test system into the prototype's corresponding `app/data/star_systems/sol.json` location, adapt lookup sufficiently to resolve Sol and Earth, and make that data available through the existing Rails controller as `@planetary_data`. The provider boundary must be replaceable by a future API provider without changing frontend code. See the [Planetary data source and frontend boundary](https://github.com/trmccormick/galaxyGame/blob/main/docs/wiki/ui/02_player_view_architecture.md) section in the authoritative wiki.
 
-The goal is to consume existing game JSON definitions, not create parallel hand-authored static fixtures. Keep the work bounded to JSON lookup/loading; it does not authorize unrelated backend expansion, new game-domain models, migrations, general APIs/controllers, persistence, or simulation logic.
-
-This task must be reviewed and rewritten before dispatch. Its position as first priority does not itself authorize implementation.
+This task does not port every lookup service, build an API, or supply terrain/live simulation data. Its position as first priority does not itself authorize implementation.
 
 ## Subsequent view-by-view review
 
-After the data lookup task is prepared and dispatched/completed to the extent Tracy directs, continue reviewing the remaining prototype view tasks individually. Do not assume the old folder order is the final dispatch order.
+**The Sol JSON lookup/provider task must be completed before Planetary View work resumes.** The Planetary task consumes its `@planetary_data` controller payload. Do not dispatch the two tasks in parallel. After that dependency is satisfied, continue reviewing other prototype view tasks individually. Do not assume the old folder order is the final dispatch order.
 
 For each view task, establish:
 - the intended audience and purpose of that view;
@@ -66,8 +64,9 @@ Maintain this section as Tracy reviews and decides each task. Only record a disp
 
 | Order | Task / view | Review disposition | Dependency / dispatch condition |
 |---|---|---|---|
-| 1 | JSON data lookup/loading (existing T3b draft) | **To review and rewrite** | First priority; requires Tracy's explicit dispatch approval |
-| 2+ | Remaining individual view tasks | **Pending individual review** | Order to be decided from verified dependencies and Tracy's direction |
+| 1 | `tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md` — Sol JSON lookup/provider | **Revised; next to dispatch after Tracy's explicit approval** | First; must resolve Sol and Earth and expose `@planetary_data` |
+| 2 | `tasks/drafts/2026-11-19-MEDIUM-FEATURE-REVIEW-PLAYER-PLANETARY-VIEW.md` — Planetary data integration | **Revised; blocked** | Starts only after task 1 is completed |
+| 3+ | Remaining individual view tasks | **Pending individual review** | Order to be decided from verified dependencies and Tracy's direction |
 
 For every reviewed file, record its exact path and one agreed outcome:
 - **Revise in drafts** — update the existing task to reflect current decisions.
