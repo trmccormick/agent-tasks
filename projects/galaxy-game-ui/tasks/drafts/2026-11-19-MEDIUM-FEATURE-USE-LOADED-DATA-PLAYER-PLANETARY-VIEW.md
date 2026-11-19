@@ -51,9 +51,9 @@ After the Sol/Earth lookup is complete, render the controller-provided Earth dis
 
 ## Dependencies
 
-**Blocked by:** `2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md` (must be completed first)  
+**Blocked by:** `2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md` (must be completed first) and the landing-page task/reconciliation (`tasks/hold_for_review/2026-10-23-CRITICAL-LANDING-PAGE-FOR-PUBLIC-ACCESS.md`) in the agreed sequence.  
 **Blocks:** further Planetary View visual/interaction review, if any remains after this data integration.
 
 ## Dispatch note
 
-This task is second in the agreed order. Do not start it in parallel with the Sol/Earth lookup task.
+This task is third in the agreed order: after the Sol/Earth JSON lookup/provider task and the landing-page task/reconciliation. Do not start it in parallel with either preceding item.
