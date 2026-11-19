@@ -22,21 +22,25 @@ Tracy directs the review and retains approval of task changes and dispatch.
 5. **Build the dispatch order from dependencies.** Record the agreed order here as the review progresses. Do not infer approval from priority labels or folder placement.
 6. **Dispatch only one task at a time.** Wait for Tracy's explicit selection/approval before moving a task to `active/` or handing it to an implementation agent. No parallel dispatch unless Tracy explicitly changes this rule.
 
-## First dispatch priority: JSON data lookup/loading
+## Agreed review and dispatch sequence
 
-The first task to review and prepare for dispatch is:
+The current sequence is:
 
-`tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md`
+1. **JSON lookup/provider:** `tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md`
+2. **Landing page:** `tasks/hold_for_review/2026-10-23-CRITICAL-LANDING-PAGE-FOR-PUBLIC-ACCESS.md` (legacy task; revise/reconcile against the already-built landing page, current data, and logo-export issue before it can be considered ready).
+3. **Player Planetary data integration:** `tasks/drafts/2026-11-19-MEDIUM-FEATURE-USE-LOADED-DATA-PLAYER-PLANETARY-VIEW.md`
 
-The old fixture-loader specification has been retired. The current task is narrowly scoped to the minimal Sol test JSON and the Planetary data path.
+The first task copies the actual minimal Sol JSON sample, resolves Sol/Earth, and exposes the focused controller payload. It does not port every lookup service, build an API, or supply terrain/live simulation data. The provider boundary must remain replaceable by a future API provider without changing frontend code. See the [Planetary data source and frontend boundary](https://github.com/trmccormick/galaxyGame/blob/main/docs/wiki/ui/02_player_view_architecture.md).
 
-The agreed first slice is specific: copy the main application's minimal `sol.json` test system into the prototype's corresponding `app/data/star_systems/sol.json` location, adapt lookup sufficiently to resolve Sol and Earth, and make that data available through the existing Rails controller as `@planetary_data`. The provider boundary must be replaceable by a future API provider without changing frontend code. See the [Planetary data source and frontend boundary](https://github.com/trmccormick/galaxyGame/blob/main/docs/wiki/ui/02_player_view_architecture.md) section in the authoritative wiki.
+The landing page is deliberately second, before Player Planetary integration. Its existing hold-for-review task is old and must be reconciled rather than dispatched as written: the page has already been built, and the task must reflect current implementation, actual system data, clearly labeled/non-live metrics, and the logo-export correction. The exact landing-page task revision remains a review item.
 
-This task does not port every lookup service, build an API, or supply terrain/live simulation data. Its position as first priority does not itself authorize implementation.
+Player Planetary is third and consumes the focused Earth payload produced by the first task. It must not start before that dependency is complete.
+
+These three tasks are sequential; do not dispatch them in parallel. Their ordering is a planning decision, not authorization to dispatch any task.
 
 ## Subsequent view-by-view review
 
-**The Sol JSON lookup/provider task must be completed before Planetary View work resumes.** The Planetary task consumes its `@planetary_data` controller payload. Do not dispatch the two tasks in parallel. After that dependency is satisfied, continue reviewing other prototype view tasks individually. Do not assume the old folder order is the final dispatch order.
+After these three items, continue reviewing other prototype view tasks individually. Do not assume the old folder order is the final dispatch order.
 
 For each view task, establish:
 - the intended audience and purpose of that view;
@@ -64,9 +68,10 @@ Maintain this section as Tracy reviews and decides each task. Only record a disp
 
 | Order | Task / view | Review disposition | Dependency / dispatch condition |
 |---|---|---|---|
-| 1 | `tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md` — Sol JSON lookup/provider | **Revised; next to dispatch after Tracy's explicit approval** | First; must resolve Sol and Earth and expose `@planetary_data` |
-| 2 | `tasks/drafts/2026-11-19-MEDIUM-FEATURE-REVIEW-PLAYER-PLANETARY-VIEW.md` — Planetary data integration | **Revised; blocked** | Starts only after task 1 is completed |
-| 3+ | Remaining individual view tasks | **Pending individual review** | Order to be decided from verified dependencies and Tracy's direction |
+| 1 | `tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md` — Sol JSON lookup/provider | **Revised; awaiting explicit dispatch approval** | First; resolve Sol and Earth and expose the focused controller payload |
+| 2 | `tasks/hold_for_review/2026-10-23-CRITICAL-LANDING-PAGE-FOR-PUBLIC-ACCESS.md` — landing page | **Needs reconciliation/revision** | Second; update the legacy task to match the already-built page, actual system data, non-live metrics, and logo-export correction |
+| 3 | `tasks/drafts/2026-11-19-MEDIUM-FEATURE-USE-LOADED-DATA-PLAYER-PLANETARY-VIEW.md` — Planetary data integration | **Revised; blocked** | Third; starts only after task 1 is complete and landing-page work is addressed |
+| Later | `tasks/drafts/2026-11-19-MEDIUM-FEATURE-ADAPT-CRAFT-OPERATIONS-INTERACTIONS.md` — craft operations interactions | **New draft; not approved** | Review after the initial sequence; choose a concrete Player or Admin workflow before dispatch |
 
 For every reviewed file, record its exact path and one agreed outcome:
 - **Revise in drafts** — update the existing task to reflect current decisions.
