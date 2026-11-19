@@ -12,6 +12,9 @@ Tracy directs the review and retains approval of task changes and dispatch.
 
 ## Current approach
 
+**Keep task files thin.** The wiki holds design intent, architecture, domain behavior, and detailed requirements. Task files should point to the relevant wiki pages and source locations, then state only the specific objective, bounded execution scope, dependencies, exclusions, and measurable acceptance criteria. Do not copy wiki material into tasks or turn tasks into parallel design documents. If the right wiki reference is not known, identify it during review rather than inventing a path.
+
+
 1. **Review every task file individually.** Work through the existing task files with Tracy, one file at a time. Do not batch-approve, rewrite, promote, archive, or discard tasks without direction.
 2. **Use the actual task file as the review unit.** Read its full contents, compare it with current prototype code, current project guidance, and relevant authoritative GalaxyGame wiki decisions. Identify stale assumptions, completed work, conflicts, dependencies, and scope problems.
 3. **Reconcile before ordering.** For each file, decide with Tracy whether it should be revised, retained for later, merged into another task, or left in `hold_for_review/`. Keep one task focused on one view or one clearly bounded enabling capability.
@@ -27,11 +30,9 @@ The first task to review and prepare for dispatch is:
 
 An earlier version exists in `tasks/hold_for_review/`; the copy in `drafts/` is the working copy to revise. The old fixture-loader specification is not accepted as the current design.
 
-The intended work is a narrowly scoped Rails 8.1 prototype adaptation/port of the main GalaxyGame application's existing JSON lookup services and shared path behavior. The main application's lookup implementation is the reference. Review the actual source services and their dependencies before specifying the port. Preserve relevant path resolution, source precedence, normalization, lookup semantics, and caching behavior where applicable; adapt interfaces to the prototype rather than copying blindly.
+The intended work is a narrowly scoped Rails 8.1 prototype adaptation of the main GalaxyGame application's existing JSON lookup services. The working draft is `tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md`. The main application's lookup implementation and the authoritative wiki are the references; the task should remain a thin execution brief rather than duplicating either source.
 
-The goal is to consume the existing game JSON definitions, not create a second set of hand-authored fixture definitions or a generic mock-data framework. Mock only dynamic state that is genuinely unavailable from the static game data.
-
-This is the one explicitly approved backend-enabling exception in the current prototype plan. Keep it bounded to the data lookup/loading capability. It does not authorize unrelated backend expansion, new game-domain models, migrations, general APIs/controllers, persistence, or simulation logic.
+The goal is to consume existing game JSON definitions, not create parallel hand-authored static fixtures. Keep the work bounded to JSON lookup/loading; it does not authorize unrelated backend expansion, new game-domain models, migrations, general APIs/controllers, persistence, or simulation logic.
 
 This task must be reviewed and rewritten before dispatch. Its position as first priority does not itself authorize implementation.
 
