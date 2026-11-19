@@ -9,46 +9,47 @@ local_worker_safe: true
 last_updated: 2026-11-19
 ---
 
-# Load Sol JSON and resolve planetary data
+# Load Sol JSON and return requested planetary data
 
 ## Objective
 
-Give the Rails 8.1 prototype a replaceable local data provider that loads the main game's minimal Sol test system and resolves Earth for the Player Planetary view.
+Load the prototype's local copy of StarSim's minimal Sol JSON sample, resolve the requested body (initially Earth), and let the Rails controller return the values the Planetary UI needs to display.
 
 ## Read and reference
 
 - [Player View Architecture — Planetary data source and frontend boundary](https://github.com/trmccormick/galaxyGame/blob/main/docs/wiki/ui/02_player_view_architecture.md)
-- Main-app lookup reference: `galaxy_game/app/services/lookup/star_system_lookup_service.rb`, its base/dependencies, and `GalaxyGame::Paths`.
-- Prototype integration point: `galaxy-game-ui/app/controllers/player_controller.rb`.
+- Main-app lookup reference: `app/services/lookup/star_system_lookup_service.rb` and `GalaxyGame::Paths`.
+- Prototype integration point: `app/controllers/player_controller.rb`.
 
 ## Scope
 
-- Copy the main application's minimal `sol.json` test system into the prototype's matching app data location: `galaxy-game-ui/app/data/star_systems/sol.json`. Confirm the main-app source through `GalaxyGame::Paths::STAR_SYSTEMS_PATH`; use `sol.json`, not `sol-complete.json`.
-- Adapt only the lookup and path behavior needed to load Sol and resolve an individual body such as Earth. Reuse the main-app implementation where appropriate; do not port every lookup service.
-- Establish a source-independent provider boundary and make the resolved body data available to the existing Rails controller as a consistent `@planetary_data` payload.
-- Keep the provider replaceable by a future main-app API implementation without changing the frontend contract.
+- Copy the actual minimal `sol.json` sample used by the main application into `galaxy-game-ui/app/data/star_systems/sol.json`. Confirm the source through `GalaxyGame::Paths::STAR_SYSTEMS_PATH`; do not use `sol-complete.json` or create a replacement fixture.
+- Implement only the lookup needed to load this Sol sample and find the requested body by name/identifier (initially Earth) in its nested celestial-body collection.
+- Have the existing Rails controller request Earth and select/return the values required by the Planetary UI in a focused display payload.
+- Keep the controller-to-frontend payload independent of the local JSON source so the lookup can later be replaced by an API request without changing the UI contract.
 
 ## Boundaries
 
-- No hand-authored replacement Earth/system fixture and no generic mock-data framework.
-- No frontend layout/renderer redesign in this task; the Planetary View task consumes the controller payload.
-- No API endpoint, unrelated models, migrations, persistence, simulation logic, or broad backend expansion.
-- Do not treat `sol.json` as a terrain-map or live simulation-state source. Do not invent missing values.
+- This is a data lookup for display only. Do not run StarSim, build the Sol system, run a simulation, or load the complete Sol dataset into the UI.
+- Do not create a generic provider framework, hand-authored Earth fixture, or broad lookup-service port.
+- Do not pass the entire source JSON to the frontend; the controller returns only the values the UI needs.
+- No frontend layout/renderer redesign, production API endpoint, unrelated models, migrations, persistence, terrain loading, or simulation logic.
+- Do not invent values for fields absent from the sample. Terrain and live simulation state are separate sources.
 
 ## Acceptance criteria
 
-- [ ] The minimal source `sol.json` is copied unchanged to the prototype's corresponding `app/data/star_systems/sol.json` path and is tracked by Git.
-- [ ] The prototype can load Sol and resolve Earth from the actual nested system/body data.
-- [ ] The existing Rails controller can obtain Earth through the provider and expose it as `@planetary_data`.
-- [ ] Provider/controller tests cover successful Sol/Earth resolution and missing or malformed source data.
-- [ ] The frontend-facing payload does not expose file paths or depend on the local JSON provider.
-- [ ] No parallel static planetary definitions, invented data, terrain data, or unrelated backend infrastructure are added.
+- [ ] The actual minimal `sol.json` sample is copied unchanged to the prototype's `app/data/star_systems/sol.json` path and tracked by Git.
+- [ ] The prototype lookup can resolve the requested Earth entry from the nested Sol data; it does not need to expose or load the full system into the UI.
+- [ ] The Rails controller selects and returns the Earth values required by the Planetary UI in a focused payload.
+- [ ] Tests cover successful Earth lookup and missing or malformed source/body data.
+- [ ] The frontend receives the display payload without knowing the JSON file path, source structure, or lookup implementation.
+- [ ] The payload boundary is suitable for replacing local lookup with a future API request without changing the frontend contract.
 - [ ] Relevant Rails checks and focused tests pass.
 
 ## Dependencies
 
 **Blocked by:** none  
-**Blocks:** `2026-11-19-MEDIUM-FEATURE-REVIEW-PLAYER-PLANETARY-VIEW.md`
+**Blocks:** `2026-11-19-MEDIUM-FEATURE-USE-LOADED-DATA-PLAYER-PLANETARY-VIEW.md`
 
 ## Dispatch note
 
