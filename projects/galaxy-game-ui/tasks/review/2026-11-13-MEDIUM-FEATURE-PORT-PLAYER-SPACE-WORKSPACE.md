@@ -194,8 +194,9 @@ Inspect the current prototype branch, routes, layouts, assets and referenced sou
 2. Check whether the EVE Dashboard checkout and fleet_map.js are accessible and whether the relevant interaction code can be adapted without substantial rewriting. If the file is unavailable or would require substantial rewriting, skip the EVE adaptation, continue with the minimal Sol view using only the GalaxyGame renderer baseline, and report the missing path or reason for skipping it. Do not use machine-specific absolute paths or fabricate source.
 3. Create one Sol-focused Space page showing sample bodies, stations and ships. Identify craft by their GalaxyGame ship/craft names; do not invent pilot or character records. The map may show craft as selectable autonomous assets, but this slice does not add craft tasking or fleet/group management. Reuse the GalaxyGame renderer if it fits without substantial rewriting.
 4. If fleet_map.js is available, adapt only its pan/zoom, marker-selection and selected-object-panel interaction pattern. Keep GalaxyGame's in-system representation and terminology. Do not pull in `fleet_builder.js` or EVE character/fleet data structures.
-5. Use available imported data or clearly labeled mock values. Do not create a new data framework.
-6. Integrate the page into existing Player navigation/shell. Record source provenance, dependencies and EVE-specific terms removed.
+5. Obtain the four-system dataset and any system relationships from Rails. Rails code must resolve the actual GalaxyGame system records from the authoritative JSON sources and provide a compact, display-ready payload to the page (via controller-rendered data or a Rails endpoint). JavaScript consumes that payload only. Do not fetch or parse universe.min.json or any GalaxyGame system JSON in the browser, and do not put filesystem paths or source lookup logic in JavaScript. Clearly labeled mock values are acceptable only when delivered through the same Rails-to-frontend boundary. The EVE universe.min.json is a reference/test fixture only, never a runtime dependency.
+6. Do not invent connections, coordinates, or relationships to make the map look complete; display only actual values supplied by Rails. Keep the map JavaScript focused on rendering and transient interactions.
+7. Integrate the page into existing Player navigation/shell. Record source provenance, dependencies and EVE-specific terms removed.
 
 ### Step 3 — Verify
 
@@ -211,6 +212,8 @@ Save required evidence/synthesis artifacts in the task-management repository's p
 - [ ] A Sol view displays representative celestial bodies, stations and ships using GalaxyGame terminology; craft are identified by craft/ship names, not pilots or characters.
 - [ ] If fleet_map.js is available and can be adapted without substantial rewriting, its bounded pan/zoom and selection pattern is used. If it is unavailable or unsuitable, deliver the minimal Sol view using the GalaxyGame renderer baseline alone and report the fallback.
 - [ ] The implementation distinguishes an in-system view from inter-system wormhole connections.
+- [ ] Rails supplies the four-system data payload; browser JavaScript does not fetch or parse universe.min.json or GalaxyGame system JSON files.
+- [ ] The map renders only actual system data/relationships supplied by Rails, with no invented connections or EVE security semantics.
 - [ ] No EVE gameplay rules, backend or live route calculations are introduced.
 - [ ] The view does not imply player characters/pilots or direct piloting; craft remain autonomous assets. Craft tasking and optional operational-group management remain outside this first map slice.
 - [ ] Record source revisions/provenance and check the page in the running prototype with visual evidence.
