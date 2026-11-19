@@ -38,7 +38,7 @@ No general lookup/provider framework, production API, broad lookup-service port,
 ## Acceptance criteria
 
 - [ ] The existing public landing page renders Sol, Alpha Centauri, FR-488530, DJEW-716790 and Eden from the copied JSON records.
-- [ ] Sol can use the smaller `sol.json` fixture for the normal landing-page dataset; `sol-complete.json` remains available as the fuller-data test fixture.
+- [ ] The fuller `sol-complete.json` collection is used for the normal Sol landing-page representation; `sol.json` remains available as a smaller UI test fixture containing the major worlds.
 - [ ] Displayed system identity and any celestial-object counts are derived from the source records.
 - [ ] Rails supplies the data; browser code does not fetch or parse local source JSON.
 - [ ] The page follows the landing-page layout and visual guidance in the prototype wiki.
