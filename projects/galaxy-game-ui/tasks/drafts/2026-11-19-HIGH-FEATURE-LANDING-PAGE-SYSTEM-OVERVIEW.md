@@ -192,7 +192,7 @@ Record these source baselines without deciding the display-count rule:
 6. Verify the existing hero image renders and correct its asset reference if needed. The prototype image is already at app/assets/images/hero-banner.png and is byte-identical to the main-app source. Do not copy, replace, or modify it. The prototype landing.css currently hard-codes url('/assets/hero-banner.png'); inspect Propshaft conventions and use a compatible reference.
 7. The existing hero CSS already specifies center center / cover no-repeat. Verify responsive rendering at desktop and narrow-mobile sizes; preserve proportions and avoid obscuring important content. Do not treat this as new CSS implementation if already satisfied.
 8. Leave the existing logo unchanged. The landing page view itself has no logo; the logo is rendered through app/views/shared/_branding.html.erb at logos/GalaxyGame.png. Verify no diff to that partial or image. Unsupported illustrative metrics/counts must be omitted or labeled mock/demo, pending Tracy's decision.
-9. Do not present speculative wormhole relationships as established facts. The wiki permits either omitting the network graphic or using a clearly provisional explanatory treatment; DECISION PENDING (Tracy).
+9. Do not present speculative wormhole relationships as established facts. The wiki permits either omitting the network graphic or using a clearly provisional explanatory treatment; see [interface and workflows, network topology guidance](https://github.com/trmccormick/galaxy-game-ui/blob/main/docs/wiki/interface-and-workflows.md#L135) and [the related topology discussion](https://github.com/trmccormick/galaxy-game-ui/blob/main/docs/wiki/interface-and-workflows.md#L150). DECISION PENDING (Tracy).
 
 ## Exclusions and preservation
 
@@ -205,7 +205,7 @@ Do not modify main-app code or source JSON. The only main-repository asset inter
 - Complete the source-resolution table. Record source defects: fr-488530.json has a trailing comma after the system identifier and is truncated mid-object (33 opening braces versus 29 closing braces); djew-716790.json has malformed hydrosphere blocks around line 74; hybrid_AC-01_20260116_023525.json parses but has duplicate AC-01-b and Proxima b/c lack identifiers. Do not edit these files.
 - Verify the existing prototype hero image and Propshaft reference. Record both asset paths, matching blob 9e89572f, 2,536,258 bytes, 1536×1024, and SHA-256 30fff39437a409a0e0ce9b9bc2cdbc0c5e71b044b30a81c19793926c22f46d49. No copy operation is required.
 - Confirm the Docker volume mapping exposes the gitignored data/json-data directory to the container; it may need adjustment.
-- Inspect both minitest (test/, including the empty landing_controller_test.rb stub) and RSpec (spec/). The runner was confirmed during Stage 2 of review. If the authoritative wiki does not prescribe one, record the runner choice as DECISION PENDING (Tracy).
+- The prototype has both minitest (test/, including the empty landing_controller_test.rb stub) and RSpec (spec/). Confirm the actual runner during Stage 2 before choosing focused commands. If the authoritative wiki does not prescribe one, leave the runner choice as DECISION PENDING (Tracy).
 - Update the synthesis report with verified paths, source mapping, proposed data flow, asset approach, exact planned edit paths, and test/visual plan. **Wait for Tracy's explicit approval before editing application files.**
 - After implementation, run focused tests only. Verify the public route, source selection, missing/malformed/unexpected JSON behavior, and unchanged source files.
 - Capture desktop and narrow-mobile screenshots and record viewport dimensions. Confirm the hero loads, covers without tiling or distortion, and leaves foreground text readable.
@@ -220,7 +220,7 @@ A missing, malformed, or unexpected-shape source for one system must not crash t
 1. Fix or regenerate fr-488530.json and djew-716790.json before dispatch, or accept two unavailable cards in the first slice.
 2. Decide whether duplicate AC-01-b is an upstream data defect to fix or something the page should tolerate, and identify the canonical Alpha Centauri file.
 3. Decide the object-count rule: whether moons count and whether Eden's nested moons count.
-4. Decide whether the network graphic is omitted or receives a clearly provisional explanatory treatment. The wiki permits either.
+4. Decide whether the network graphic is omitted or receives a clearly provisional explanatory treatment. The wiki permits either; see [interface and workflows, lines 135 and 150](https://github.com/trmccormick/galaxy-game-ui/blob/main/docs/wiki/interface-and-workflows.md#L135). Do not choose here.
 5. Decide whether unsupported mock items (settlements count, Wormhole Hub badge, Systems Discovered, Wormhole Connections) are omitted or explicitly labeled mock/demo.
 6. Decide the test runner if the authoritative wiki does not settle it.
 
@@ -232,13 +232,13 @@ The Sol fixtures section of docs/wiki/data-integration-and-migration.md describe
 
 ## Acceptance criteria
 
-- [ ] The public landing route renders the five intended entries from the exact local-only source paths, or shows an explicit unavailable state where a source cannot safely be resolved.
+- [ ] The public landing route renders the five intended entries from the exact local-only source paths, or shows an explicit unavailable state where a source cannot safely be resolved. FR-488530 and DJEW-716790 are known malformed inputs; the route must isolate their failures, and none of the source JSON files may be edited.
 - [ ] The synthesis report records each entry's exact path relative to the prototype Rails root, source identifier/key, identity field, count basis, and parse status.
 - [ ] Normal Sol data uses sol-complete.json; sol.json remains a separate smaller fixture. Neither Sol fixture nor any other source JSON is modified or used as a silent fallback.
 - [ ] The reader handles the distinct Sol fixture shapes (category dictionary and flat parent_body list).
 - [ ] All displayed system facts are source-backed; any displayed count has a documented source collection and a rule approved by Tracy.
 - [ ] Rails loads and resolves the JSON; browser code does not fetch or parse source files. The Docker volume exposes the gitignored data directory.
-- [ ] Missing, malformed, and unexpected-shape data is isolated to the affected entry; unaffected entries and the public route remain available. Tests use temporary fixtures rather than gitignored real data. Tests use temporary fixtures, not gitignored real data.
+- [ ] Missing, malformed, and unexpected-shape data is isolated to the affected entry; unaffected entries and the public route remain available. Tests use temporary fixtures rather than gitignored real data.
 - [ ] Unsupported mock metrics/counts, the Wormhole Hub badge, Systems Discovered, and Wormhole Connections are omitted or explicitly labeled mock/demo according to Tracy's pending decision; speculative topology is not presented as fact.
 - [ ] The existing prototype hero image renders using a verified Propshaft-compatible reference; no image copy or replacement occurs. Its hash and dimensions are recorded.
 - [ ] Existing hero cover/positioning behavior is verified at desktop and narrow-mobile sizes.
