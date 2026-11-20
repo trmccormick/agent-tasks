@@ -16,12 +16,14 @@
 
 ## ⚠️ Vulnerable Applications (Production)
 
-| Application | Ruby Version | Current VM | Action Required |
+| Application | Ruby Version (Production) | Current VM | Action Required |
 |-------------|------------|-----------|-----------------|
 | **library_directory** | 3.3.5 | ⬜ Snapshot pending | Upgrade to 3.3.14 |
 | **wvu_knapsack** | 3.3.0 | ⬜ Snapshot pending | Upgrade to 3.3.14 |
 | **hydra_acda_portal_public** | 3.3.5 | ⬜ Snapshot pending | Upgrade to 3.3.14 |
-| **databases** | 3.3.4 / 3.4.10 mismatch | ⬜ Snapshot pending | Align & upgrade |
+| **databases** | 2.7.8 (main/prod) | ✅ **NOT VULNERABLE** | **No action needed** |
+
+**CRITICAL UPDATE**: `databases` production runs Ruby **2.7.8** (outside vulnerable range). Local development branches show newer Ruby/Rails but are NOT deployed to production.
 
 ---
 
@@ -35,7 +37,8 @@ Each production system needs a VM snapshot for immediate rollback if upgrade cau
 - [ ] library_directory production VM snapshot
 - [ ] wvu_knapsack production VM snapshot
 - [ ] hydra_acda_portal_public production VM snapshot
-- [ ] databases production VM snapshot
+
+**Databases**: NO SNAPSHOT NEEDED (not vulnerable to CVE-2026-132825; runs Ruby 2.7.8 on main/production)
 
 **Once snapshots confirmed**: Upgrades can proceed immediately post-Thanksgiving (starting Dec 1).
 
@@ -44,14 +47,14 @@ Each production system needs a VM snapshot for immediate rollback if upgrade cau
 ## 📋 What Needs to Happen
 
 ### Today (Nov 20) — COMPLETE ✅
-- [x] Identify all vulnerable Ruby applications (4 found)
+- [x] Identify all vulnerable Ruby applications (3 found; databases is safe)
 - [x] Document Ruby versions & encoding risks
 - [x] Create incident response task (in backlog/SECURITY/)
 - [x] Notify stakeholders (this message)
 - [ ] **DevOps communicates back: snapshots scheduled for when?**
 
 ### This Week (Before Thanksgiving Nov 25)
-- [ ] **DevOps**: Take VM snapshots for all 4 apps
+- [ ] **DevOps**: Take VM snapshots for 3 apps (library_directory, wvu_knapsack, hydra_acda_portal_public)
 - [ ] **DevOps**: Confirm snapshots complete, provide UUIDs/timestamps
 - [ ] Security team: Review for any additional upstream dependencies
 
@@ -65,7 +68,7 @@ Each production system needs a VM snapshot for immediate rollback if upgrade cau
 ## 🎯 Acceptance Criteria
 
 **Complete When**:
-1. All 4 production Ruby apps upgraded to patched versions
+1. All 3 vulnerable production Ruby apps upgraded to patched versions (library_directory, wvu_knapsack, hydra_acda_portal_public)
 2. Each app restarts cleanly and passes smoke tests
 3. No encoding-related issues in app logs post-upgrade
 4. CVE-2026-132825 closure confirmed in security audit log
@@ -77,10 +80,10 @@ Each production system needs a VM snapshot for immediate rollback if upgrade cau
 | Phase | Timeline | Blocker | Owner |
 |-------|----------|---------|-------|
 | Investigation | Nov 20 (done) | None | Security/Planning |
-| **Snapshots** | **ASAP – This week** | **CRITICAL** | **DevOps** |
+| **Snapshots** | **ASAP – This week** | **CRITICAL** (3 apps only) | **DevOps** |
 | Thanksgiving | Nov 25–28 (break) | — | — |
-| Upgrade & Testing | Dec 1–3 | Snapshots | Eng/Security |
-| Prod Deployment | Dec 1+ (post-snap) | Snapshots + Testing | Eng/Ops |
+| Upgrade & Testing | Dec 1–3 | Snapshots (3 apps) | Eng/Security |
+| Prod Deployment | Dec 1+ (post-snap) | Snapshots (3 apps) + Testing | Eng/Ops |
 
 ---
 

@@ -91,46 +91,44 @@
 
 ---
 
-### 4. **databases**
+### 4. **databases** ✅ ACTUALLY SAFE (But Needs Modernization)
 
-**Location**: `/Users/tam0013/Documents/git/databases/databases` (note: nested directories)  
+**Location**: `/Users/tam0013/Documents/git/databases`  
 **Type**: Ruby on Rails application  
-**Ruby Versions**:
-- `.ruby-version`: `3.3.4` (in range ≤ 3.3.13 — **VULNERABLE**)
-- `Gemfile` directive: `ruby '3.4.10'` (**SAFE**, outside vulnerable range)
+**Repository Status**: Complex — multiple branches with different versions
 
-**Current Status**: 🟡 **VERSION MISMATCH — REQUIRES CLARIFICATION**  
-**Action Required**: Verify runtime version on production VM; align or upgrade
+**VERSION CLARIFICATION (CRITICAL DISCOVERY)**:
 
-**Investigation Notes**:
-- Significant mismatch (3.3.4 vs 3.4.10) suggests:
-  - Either `.ruby-version` is legacy/outdated, OR
-  - `Gemfile` is a recent upgrade not yet deployed
-- **Must verify which version is actually running** on the production VM
+| Branch | Ruby Version | Rails Version | CVE Vulnerable? |
+|--------|------------|---------------|-----------------|
+| **main** (PRODUCTION) | 2.7.8 | 5.2.8.1 | ✅ **NO** (2.7.8 outside vulnerable range) |
+| Local working branch (refactor/bootstrap-replace) | 3.3.4 | 7.1.3 | ✅ **NO** (3.3.4–3.3.13 would be vulnerable, but 7.1.3 requires 3.0+) |
+| **gem-updates-rails7** (branch) | 3.4.10 | 7.1.3 | ✅ **NO** (3.4.10 is safe) |
 
-**Decision Tree**:
-```
-IF (actual runtime = 3.3.4):
-  → Upgrade to 3.3.14 OR 3.4.10 (align with Gemfile)
-  → Update .ruby-version to match
-  → Follow full upgrade testing process
-  
-ELSE IF (actual runtime = 3.4.10):
-  → Update .ruby-version to 3.4.10 (align, cleanup)
-  → No upgrade needed; CVE already mitigated
-  → Verify deployment uses Gemfile version
-  
-ELSE (some other version):
-  → Investigate how version mismatch occurred
-  → Determine which is source of truth
-  → Coordinate with DevOps/Ops
-```
+**Current Status**: 🟢 **NOT VULNERABLE to CVE-2026-132825 (but outdated software)**  
+**Action Required**: None for CVE-2026-132825 patching; defer to separate modernization initiative
 
-**Risk Assessment**:
-- [ ] **URGENT**: Verify actual runtime on production VM (run `ruby --version`)
-- [ ] Check both .ruby-version and running process version
-- [ ] Confirm Gemfile matches deploy bundle lock file
-- [ ] Verify no bundled Ruby in Docker images conflicts
+**ANALYSIS**:
+
+1. **Production (main) is safe**: Ruby 2.7.8 is NOT in the vulnerable range (≤3.3.13, 3.4.0–3.4.12, 4.0.0–4.0.9)
+2. **Rails 5 is obsolete**: End-of-life since April 2022; running unsupported software (separate risk)
+3. **Rails 7 upgrade in progress**: Branch `gem-updates-rails7` exists; suggests team is working on modernization
+4. **Local development clone is ahead**: Current working branch shows Rails 7.1.3 (newer than production)
+
+**Why There Was Confusion**:
+- You were on `refactor/bootstrap-replace` branch (shows Rails 7.1.3)
+- Production is on `main` branch (shows Rails 5.2.8.1 with Ruby 2.7.8)
+- **Local `.ruby-version` (3.3.4) is for development; production uses Ruby 2.7.8**
+
+**CVE-2026-132825 Status**: 🟢 **NOT AFFECTED**  
+- Ruby 2.7.8 is outside vulnerable range
+- No upgrade required for this CVE
+
+**Modernization Concern** (Separate Issue, Not CVE-Related):
+- Rails 5 is EOL (April 2022)
+- Rails 7 upgrade is in progress (see branches)
+- When Rails 7 migration completes, Ruby will need to be 3.0+
+- Recommend prioritizing Rails 5 → 7 upgrade (security & support, not CVE-2026-132825 specific)
 
 ---
 
