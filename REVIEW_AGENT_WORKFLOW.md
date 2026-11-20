@@ -5,6 +5,17 @@
 
 ---
 
+## Roles, independence, and agent selection
+
+- **Creator**: the agent instance that drafted or materially authored the task. It may revise the task but must not review or approve its own work.
+- **Reviewers**: other agent instances. Use multiple independent reviewers where risk or evidence needs justify it; seek different perspectives when practical.
+- **Coordinator**: prepares the review, selects available reviewers, tracks evidence and dispositions, and identifies uncovered verification requirements.
+- **Human authority**: Tracy decides reviewer availability where user-controlled access is involved and retains lifecycle and dispatch approvals.
+
+Select reviewers by the capabilities of the actual session, not by model name: GitHub repository access (repository/branch/commit); local workspace access (checkout and working-tree state); ability to run commands/tests if required; relevant context; current availability and usage/premium constraints. The pool may include different local Ollama model instances, web agents with GitHub access, and models offered through GitHub Copilot in VS Code. Copilot includes multiple models (including Haiku); do not hardcode a roster or assume premium availability. Tracy alone decides whether a premium Copilot model is available. A model's capabilities must be confirmed per session.
+
+The creator cannot count as a reviewer, even if it opens a separate review prompt. Record reviewer instance, model/provider if known, environment, access, exact evidence/commit inspected, and individual disposition.
+
 ## Procedure
 
 ### 1. Confirm the assignment
@@ -13,7 +24,7 @@ Confirm what is being reviewed and the decision requested. Do not broaden scope.
 
 ### 2. Read relevant evidence
 
-Use actual session capabilities (repository access or supplied evidence). Start with the latest relevant handoff; consult older material only where ongoing work needs context. Do not assume written status is current — verify claims against live evidence when possible.
+Use actual session capabilities (GitHub access, local workspace access, execution tools, or supplied evidence). When repository access is available, provide repository paths and branch/commit references; do not require uploads of files the reviewer can read directly. Start with the latest relevant handoff; consult older material only where ongoing work needs context. Do not assume written status is current — verify claims against live evidence when possible.
 
 ### 3. Review for consequential issues
 
@@ -73,7 +84,8 @@ State the disposition and artifact location. Do not paste the full review.
 - Reopen accepted decisions without material new evidence
 - Automatically rewrite tasks, dispatch work, or add reviewers
 - Override specifically authorized checkpoints on existing assignments
-- Assume all reviewers lack filesystem access — capabilities depend on actual session access
+- Assume all reviewers have the same access — capabilities depend on actual session access
+- Allow the task creator to count as an independent reviewer
 - Commit or push code on behalf of the implementation agent
 - Mark a task as complete in status.md or the task file
 
