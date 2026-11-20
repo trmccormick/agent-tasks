@@ -26,16 +26,16 @@ Tracy directs the review and retains approval of task changes and dispatch.
 
 The first coordinated implementation slice is:
 
-1. **Landing page + system JSON reader:** `tasks/drafts/2026-11-19-HIGH-FEATURE-LANDING-PAGE-SYSTEM-OVERVIEW.md`
+1. **Landing page + system JSON reader:** `tasks/backlog/2026-11-19-HIGH-FEATURE-LANDING-PAGE-SYSTEM-OVERVIEW.md`
 2. **Player Planetary data integration:** `tasks/drafts/2026-11-19-MEDIUM-FEATURE-USE-LOADED-DATA-PLAYER-PLANETARY-VIEW.md`
 
-The landing page and its supporting Rails-side JSON reader are one task, not separate sequential tasks. The prototype wiki holds the detailed Sol fixture semantics, system-data boundaries, page layout and network-context decisions. The task file is intentionally thin and points back to those wiki pages.
+The landing page and its supporting Rails-side JSON reader are one task, not separate sequential tasks. The prototype wiki holds the detailed Sol fixture semantics, system-data boundaries, page layout and network-context decisions. The task was promoted from drafts to backlog after Perplexity and Gemini completed document-only technical reviews (both GO). **A final repository-aware review by Claude or Grok is still required**: that reviewer must inspect the actual main GalaxyGame and UI prototype codebases plus relevant wikis, verify task assumptions against current code/data, and issue an explicit final GO before dispatch. The document-only reviews do not substitute for this codebase/wiki review.
 
 The previous Earth-only lookup task has been marked superseded and merged into the combined landing-page task. The legacy 2026-10-23 landing-page task remains in `hold_for_review/` as historical reference; it is not a separate implementation step and must not be dispatched as written.
 
 Player Planetary remains a later, separate view task. Reassess its data dependency after the landing-page reader is implemented and the landing page has been reviewed. Do not assume the landing-page payload is automatically the correct Planetary payload.
 
-This sequence is a planning record, not authorization to dispatch. Dispatch only the single task Tracy explicitly approves.
+This sequence is a planning record, not authorization to dispatch. For the landing-page task, first obtain the repository-aware final GO from Claude or Grok, then dispatch only after Tracy's separate explicit approval.
 
 ## Subsequent view-by-view review
 
@@ -67,7 +67,7 @@ Maintain this section as Tracy reviews and decides each task. Only record a disp
 
 | Order | Task / view | Review disposition | Dependency / dispatch condition |
 |---|---|---|---|
-| 1 | `tasks/drafts/2026-11-19-HIGH-FEATURE-LANDING-PAGE-SYSTEM-OVERVIEW.md` — landing page + JSON reader | **New combined draft; awaiting review** | First; implement the existing landing page using the copied five-system JSON data |
+| 1 | `tasks/backlog/2026-11-19-HIGH-FEATURE-LANDING-PAGE-SYSTEM-OVERVIEW.md` — landing page + JSON reader | **Promoted to backlog; document-only technical reviews GO; repository-aware final review pending** | First; Claude/Grok must inspect both codebases and relevant wikis and issue final GO; then Tracy must separately approve dispatch |
 | 2 | `tasks/drafts/2026-11-19-MEDIUM-FEATURE-USE-LOADED-DATA-PLAYER-PLANETARY-VIEW.md` — Planetary data integration | **Revised; dependency to reassess** | Review after the landing page is implemented and reviewed |
 | Superseded | `tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md` — Earth-only lookup | **Merged into order 1** | Do not dispatch independently |
 | Hold | `tasks/hold_for_review/2026-10-23-CRITICAL-LANDING-PAGE-FOR-PUBLIC-ACCESS.md` — legacy landing task | **Retained as historical reference** | Do not dispatch as written |
@@ -82,11 +82,12 @@ For every reviewed file, record its exact path and one agreed outcome:
 ## Task lifecycle
 
 - `drafts/`: working tasks being reviewed or prepared; not approved for implementation by folder location alone.
+- `backlog/`: tasks promoted with human approval and queued for execution; still not dispatchable until required final reviews and Tracy's explicit dispatch approval are complete.
 - `hold_for_review/`: older or unresolved tasks retained for reference; not dispatchable until brought forward and reviewed.
 - `active/`: only the single task Tracy has explicitly approved for dispatch.
 - `completed/`: tasks whose work and closeout have been verified.
 
-When dispatch is approved, follow the task template and the repository's required agent dispatch/closeout instructions. Move the selected task using the prescribed Git lifecycle, update its status, verify there is only one copy, and report the exact task and commit. Do not change task status or promote files merely because a review is complete.
+A document-only technical review is not the final implementation GO. Where the task requires repository-aware review, inspect the actual codebases and authoritative wikis before dispatch. When dispatch is approved, follow the task template and the repository's required agent dispatch/closeout instructions. Move the selected task using the prescribed Git lifecycle, update its status, verify there is only one copy, and report the exact task and commit. Do not change task status or promote files merely because a review is complete.
 
 ## Approval rule
 
