@@ -26,16 +26,16 @@ Tracy directs the review and retains approval of task changes and dispatch.
 
 The first coordinated implementation slice is:
 
-1. **Landing page + system JSON reader:** `tasks/backlog/2026-11-19-HIGH-FEATURE-LANDING-PAGE-SYSTEM-OVERVIEW.md`
+1. **Landing page + system JSON reader:** `tasks/drafts/2026-11-19-HIGH-FEATURE-LANDING-PAGE-SYSTEM-OVERVIEW.md`
 2. **Player Planetary data integration:** `tasks/drafts/2026-11-19-MEDIUM-FEATURE-USE-LOADED-DATA-PLAYER-PLANETARY-VIEW.md`
 
-The landing page and its supporting Rails-side JSON reader are one task, not separate sequential tasks. The prototype wiki holds the detailed Sol fixture semantics, system-data boundaries, page layout and network-context decisions. The task was promoted from drafts to backlog after Perplexity and Gemini completed document-only technical reviews (both GO). **A final repository-aware review by Claude or Grok is still required**: that reviewer must inspect the actual main GalaxyGame and UI prototype codebases plus relevant wikis, verify task assumptions against current code/data, and issue an explicit final GO before dispatch. The document-only reviews do not substitute for this codebase/wiki review.
+The landing page and its supporting Rails-side JSON reader are one task, not separate sequential tasks. The prototype wiki holds the detailed Sol fixture semantics, system-data boundaries, page layout and network-context decisions. The task is currently back in drafts pending an independent final review. Earlier document-only reviews by Perplexity and Gemini were reported as GO on a supplied three-document package; these are supporting context only and do not establish repository correctness or authorize promotion. **The next review must be performed by an agent instance other than the task creator and must be repository-aware**: inspect the actual main GalaxyGame and UI prototype repositories plus relevant authoritative wikis, verify task assumptions against current code/data, and issue GO/REVISE/STOP. The reviewer may be ChatGPT, Claude, Grok, a local Ollama model, or a currently available GitHub Copilot model, provided this session can inspect the required sources. Tracy decides whether premium Copilot models are available.
 
 The previous Earth-only lookup task has been marked superseded and merged into the combined landing-page task. The legacy 2026-10-23 landing-page task remains in `hold_for_review/` as historical reference; it is not a separate implementation step and must not be dispatched as written.
 
 Player Planetary remains a later, separate view task. Reassess its data dependency after the landing-page reader is implemented and the landing page has been reviewed. Do not assume the landing-page payload is automatically the correct Planetary payload.
 
-This sequence is a planning record, not authorization to dispatch. For the landing-page task, first obtain the repository-aware final GO from Claude or Grok, then dispatch only after Tracy's separate explicit approval.
+This sequence is a planning record, not authorization to promote or dispatch. First obtain the independent repository-aware final GO, then wait for Tracy's separate explicit approval to promote. Dispatch requires a further explicit approval.
 
 ## Subsequent view-by-view review
 
@@ -63,7 +63,7 @@ Keep the established one-view-at-a-time approach. Do not bundle multiple pages i
 
 ## Review record and dispatch order
 
-Maintain this section as Tracy reviews and decides each task. Only record a disposition after it has been discussed and agreed.
+Maintain this section as Tracy reviews and decides each task. Only record a disposition after it has been discussed and agreed. Record reviewer instance, model/provider if known, environment, actual access, exact branches/commits and sources inspected, and individual disposition. The task creator is not eligible to review.
 
 | Order | Task / view | Review disposition | Dependency / dispatch condition |
 |---|---|---|---|
@@ -87,7 +87,7 @@ For every reviewed file, record its exact path and one agreed outcome:
 - `active/`: only the single task Tracy has explicitly approved for dispatch.
 - `completed/`: tasks whose work and closeout have been verified.
 
-A document-only technical review is not the final implementation GO. Where the task requires repository-aware review, inspect the actual codebases and authoritative wikis before dispatch. When dispatch is approved, follow the task template and the repository's required agent dispatch/closeout instructions. Move the selected task using the prescribed Git lifecycle, update its status, verify there is only one copy, and report the exact task and commit. Do not change task status or promote files merely because a review is complete.
+A document-only technical review is not the final repository-aware review. Where required, inspect the actual codebases and authoritative wikis before promotion. The task creator cannot count as a reviewer. Select reviewers by actual session access and availability; model names are not fixed assignments. When dispatch is approved, follow the task template and the repository's required agent dispatch/closeout instructions. Move the selected task using the prescribed Git lifecycle, update its status, verify there is only one copy, and report the exact task and commit. Do not change task status or promote files merely because a review is complete.
 
 ## Approval rule
 
