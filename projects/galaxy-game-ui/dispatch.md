@@ -26,7 +26,7 @@ Tracy directs the review and retains approval of task changes and dispatch.
 
 The first coordinated implementation slice is:
 
-1. **Landing page + system JSON reader:** `tasks/drafts/2026-11-19-HIGH-IMPLEMENT-LANDING-PAGE-SYSTEM-OVERVIEW.md`
+1. **Landing page + system JSON reader:** `tasks/drafts/2026-11-19-HIGH-FEATURE-LANDING-PAGE-SYSTEM-OVERVIEW.md`
 2. **Player Planetary data integration:** `tasks/drafts/2026-11-19-MEDIUM-FEATURE-USE-LOADED-DATA-PLAYER-PLANETARY-VIEW.md`
 
 The landing page and its supporting Rails-side JSON reader are one task, not separate sequential tasks. The prototype wiki holds the detailed Sol fixture semantics, system-data boundaries, page layout and network-context decisions. The task file is intentionally thin and points back to those wiki pages.
@@ -67,7 +67,7 @@ Maintain this section as Tracy reviews and decides each task. Only record a disp
 
 | Order | Task / view | Review disposition | Dependency / dispatch condition |
 |---|---|---|---|
-| 1 | `tasks/drafts/2026-11-19-HIGH-IMPLEMENT-LANDING-PAGE-SYSTEM-OVERVIEW.md` — landing page + JSON reader | **New combined draft; awaiting review** | First; implement the existing landing page using the copied five-system JSON data |
+| 1 | `tasks/drafts/2026-11-19-HIGH-FEATURE-LANDING-PAGE-SYSTEM-OVERVIEW.md` — landing page + JSON reader | **New combined draft; awaiting review** | First; implement the existing landing page using the copied five-system JSON data |
 | 2 | `tasks/drafts/2026-11-19-MEDIUM-FEATURE-USE-LOADED-DATA-PLAYER-PLANETARY-VIEW.md` — Planetary data integration | **Revised; dependency to reassess** | Review after the landing page is implemented and reviewed |
 | Superseded | `tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md` — Earth-only lookup | **Merged into order 1** | Do not dispatch independently |
 | Hold | `tasks/hold_for_review/2026-10-23-CRITICAL-LANDING-PAGE-FOR-PUBLIC-ACCESS.md` — legacy landing task | **Retained as historical reference** | Do not dispatch as written |
