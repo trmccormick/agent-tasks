@@ -138,28 +138,61 @@ The main GalaxyGame app is Rails 7.0.8.7. The separate prototype is Rails 8.1 wi
 
 - Prototype landing files: `app/controllers/landing_controller.rb`, `app/views/landing/index.html.erb`, and `app/assets/stylesheets/pages/landing.css`.
 - The controller currently supplies hard-coded system-card data.
-- The prototype has copied JSON under `json-data/star_systems/` and `json-data/generated_star_systems/`.
-- The five intended entries are Sol, Alpha Centauri, FR-488530, DJEW-716790, and Eden (identifier `AOL-732356`). Verify exact source paths and keys; do not infer them from display names.
-- `sol-complete.json` is the fuller Sol celestial-object collection for normal landing-page use. `sol.json` is a smaller, valid UI fixture containing major worlds including Earth, Mars, Venus, and Titan. Keep both separate and unchanged.
-- These JSON files describe systems and celestial objects, not terrain.
-- The missing landing-page image is `hero-banner.png`, not the logo. The logo has already been fixed. The approved source image is in the main app's `app/assets/images/hero-banner.png`.
+- The prototype's system JSON is local-only, gitignored, and excluded from a fresh clone. Resolve all paths relative to the prototype Rails root, galaxy-game-ui/ (not the repository root):
+  - data/json-data/star_systems/sol.json
+  - data/json-data/star_systems/sol-complete.json
+  - data/json-data/generated_star_systems/aol-732356.json (Eden)
+  - data/json-data/generated_star_systems/fr-488530.json
+  - data/json-data/generated_star_systems/djew-716790.json
+  - data/json-data/generated_star_systems/hybrid_AC-01_20260116_023525.json (Alpha Centauri)
+- Because this data is gitignored, it will not exist on a fresh clone. The Docker volume mapping may need adjustment so the container can see data/json-data under the Rails root; Tracy expects this adjustment to be considered during investigation.
+- The five intended entries are Sol, Alpha Centauri, FR-488530, DJEW-716790, and Eden. Source identifiers include SOL-01, AC-01, and AOL-732356; do not use the mock controller's SOL or ALPHA-C values as source identity. The galaxy identifier (MILKY-WAY versus MILKYWAY-01) is ignored.
+- sol-complete.json is the fuller Sol collection; sol.json is a separate smaller fixture. Keep both files separate and unchanged.
+- These files describe systems and celestial objects, not terrain.
+- The hero image already exists in both apps. The prototype copy is app/assets/images/hero-banner.png; the main-app copy is galaxy_game/app/assets/images/hero-banner.png. Both are PNG blob 9e89572f, 2,536,258 bytes, 1536×1024, SHA-256 30fff39437a409a0e0ce9b9bc2cdbc0c5e71b044b30a81c19793926c22f46d49. Verify the prototype reference renders; do not copy or replace the image.
 - Prototype wiki references:
   - `docs/wiki/interface-and-workflows.md` — public landing page and system overview.
   - `docs/wiki/data-integration-and-migration.md` — JSON folders, Sol fixture roles, and integration boundary.
 
 The prototype wiki is the authority for UI intent. Read it before making presentation choices. If code, wiki, and task disagree, record the conflict rather than silently choosing a new design decision.
 
+## Current state to change
+
+- The prototype controller hard-codes four systems: SOL, ALPHA-C, FR-488530, and DJEW-716790. It supplies settlements_count, celestial_bodies_count, and has_wormhole for each, plus @systems_count = 4 and @wormholes_count = 5.
+- Eden is absent from the controller's hard-coded set.
+- The view renders a Wormhole Hub badge, Settlements and Bodies figures, and a Galaxy Status section using the mock totals.
+- The landing page view itself has no logo. The shared branding partial app/views/shared/_branding.html.erb references logos/GalaxyGame.png.
+- The unsupported settlements count, Wormhole Hub badge, Systems Discovered, and Wormhole Connections require a Tracy decision: omit or label mock/demo. DECISION PENDING (Tracy).
+
+## Source-shape and count facts
+
+Record these source baselines without deciding the display-count rule:
+
+- sol.json contains 16 bodies grouped in a dictionary by category: 4 terrestrial, 4 major moons, 4 gas giants, and 4 dwarf planets.
+- sol-complete.json contains 49 bodies in a flat list with parent_body: 31 moons, 9 dwarf planets, 4 terrestrial, 2 gas giants, 2 ice giants, and 1 protoplanet. It has no solar_system key.
+- Eden (aol-732356.json) contains 26 top-level bodies plus 10 nested moons.
+- Alpha Centauri has four entries; two share identifier AC-01-b.
+- Source identity fields include SOL-01, AC-01, and AOL-732356. The controller's SOL and ALPHA-C values are mock identifiers and are not source identity. Ignore the galaxy identifier (MILKY-WAY versus MILKYWAY-01).
+- The two Sol fixtures have different data shapes and must be handled as such. The correct rule for whether moons or nested moons contribute to the displayed object count is DECISION PENDING (Tracy).
+
+## Known source defects — do not edit source files
+
+- fr-488530.json does not parse: a trailing comma follows the system identifier, and the file is truncated mid-object (33 opening braces versus 29 closing braces).
+- djew-716790.json does not parse: malformed hydrosphere blocks occur around line 74.
+- hybrid_AC-01_20260116_023525.json parses but contains duplicate AC-01-b identifiers; Proxima b and Proxima c have no identifier.
+- Do not repair, regenerate, or otherwise edit any of these JSON files. Failure behavior must isolate an unavailable or ambiguous system. Handling the FR-488530 and DJEW-716790 cards, the duplicate Alpha Centauri identifier, and which Alpha Centauri file is canonical are DECISION PENDING (Tracy).
+
 ## Scope and implementation requirements
 
-1. Inspect the existing landing route, controller, view, stylesheet, asset conventions, test framework, and copied JSON before editing.
-2. Resolve the five intended entries from actual JSON records. Record a compact source table in the synthesis report with display name, exact path, source identifier/key, supported identity fields, and any object-count basis. If a source identity is ambiguous, ask Tracy; do not choose arbitrarily.
+1. Inspect the existing landing route, controller, view, stylesheet, asset conventions, test directories/runners, Docker volume mapping, and local-only JSON before editing.
+2. Resolve the five intended entries from the exact files listed above. Record a compact source table in the synthesis report with display name, exact path relative to the prototype Rails root, source identifier/key, identity field, object-count basis, parse status, and ambiguity. Do not infer identity from display names.
 3. Add the smallest Rails-side reader/controller integration that supplies view-ready data. Keep filesystem access and JSON parsing in Rails. Browser JavaScript must not fetch or parse source JSON, and no public raw-JSON endpoint is needed.
-4. Use `sol-complete.json` for the normal fuller Sol representation. Do not silently fall back to `sol.json` if the complete fixture is missing. Do not merge, rewrite, regenerate, or delete either fixture.
-5. Derive every displayed system-specific fact from the selected source. Define the collection and categories behind any displayed object count. Omit unsupported properties and counts rather than inventing them or showing unavailable data as zero.
-6. Restore the existing `hero-banner.png` by copying it unchanged from the main app into the prototype's Rails asset tree. Inspect the prototype's Propshaft conventions and use a compatible asset reference; do not assume a hard-coded `/assets/hero-banner.png` URL is correct.
-7. Render the hero image as a CSS background with `background-size: cover`, `background-repeat: no-repeat`, and an appropriate position. Preserve its proportions; responsive cropping is acceptable, stretching/distortion is not. Verify desktop and narrow-mobile layouts and adjust positioning only if important content is obscured.
-8. Leave the already-fixed GalaxyGame logo unchanged. Keep any remaining illustrative metrics/activity visibly labeled mock/demo and separate from JSON-backed system facts.
-9. Do not show speculative wormhole connections or topology. Omit the network graphic if confirmed relationships are unavailable.
+4. Use sol-complete.json for normal Sol representation. Do not silently fall back to sol.json if the complete fixture is missing. Do not merge, rewrite, regenerate, or delete either Sol fixture or any other source JSON.
+5. Derive every displayed system-specific fact from the selected source. The Sol fixtures have different shapes: sol.json is a category dictionary; sol-complete.json is a flat list with parent_body. Handle both shapes where required. Do not assume the same object-count rule across systems. Record the count rule only after Tracy decides whether moons and nested moons count.
+6. Verify the existing hero image renders and correct its asset reference if needed. The prototype image is already at app/assets/images/hero-banner.png and is byte-identical to the main-app source. Do not copy, replace, or modify it. The prototype landing.css currently hard-codes url('/assets/hero-banner.png'); inspect Propshaft conventions and use a compatible reference.
+7. The existing hero CSS already specifies center center / cover no-repeat. Verify responsive rendering at desktop and narrow-mobile sizes; preserve proportions and avoid obscuring important content. Do not treat this as new CSS implementation if already satisfied.
+8. Leave the existing logo unchanged. The landing page view itself has no logo; the logo is rendered through app/views/shared/_branding.html.erb at logos/GalaxyGame.png. Verify no diff to that partial or image. Unsupported illustrative metrics/counts must be omitted or labeled mock/demo, pending Tracy's decision.
+9. Do not present speculative wormhole relationships as established facts. The wiki permits either omitting the network graphic or using a clearly provisional explanatory treatment; DECISION PENDING (Tracy).
 
 ## Exclusions and preservation
 
@@ -169,9 +202,10 @@ Do not modify main-app code or source JSON. The only main-repository asset inter
 
 ## Investigation, approval, and verification
 
-- Complete the source-resolution table and identify count semantics before implementation.
-- Verify the main-app hero source exists and inspect the prototype's actual Propshaft asset convention.
-- Identify the prototype's actual test runner and focused commands; do not assume the main app's Docker container or test commands apply.
+- Complete the source-resolution table. Record source defects: fr-488530.json has a trailing comma after the system identifier and is truncated mid-object (33 opening braces versus 29 closing braces); djew-716790.json has malformed hydrosphere blocks around line 74; hybrid_AC-01_20260116_023525.json parses but has duplicate AC-01-b and Proxima b/c lack identifiers. Do not edit these files.
+- Verify the existing prototype hero image and Propshaft reference. Record both asset paths, matching blob 9e89572f, 2,536,258 bytes, 1536×1024, and SHA-256 30fff39437a409a0e0ce9b9bc2cdbc0c5e71b044b30a81c19793926c22f46d49. No copy operation is required.
+- Confirm the Docker volume mapping exposes the gitignored data/json-data directory to the container; it may need adjustment.
+- Inspect both minitest (test/, including the empty landing_controller_test.rb stub) and RSpec (spec/). The runner was confirmed during Stage 2 of review. If the authoritative wiki does not prescribe one, record the runner choice as DECISION PENDING (Tracy).
 - Update the synthesis report with verified paths, source mapping, proposed data flow, asset approach, exact planned edit paths, and test/visual plan. **Wait for Tracy's explicit approval before editing application files.**
 - After implementation, run focused tests only. Verify the public route, source selection, missing/malformed/unexpected JSON behavior, and unchanged source files.
 - Capture desktop and narrow-mobile screenshots and record viewport dimensions. Confirm the hero loads, covers without tiling or distortion, and leaves foreground text readable.
@@ -181,39 +215,63 @@ Do not modify main-app code or source JSON. The only main-repository asset inter
 
 A missing, malformed, or unexpected-shape source for one system must not crash the public route or hide unaffected entries. Show an explicit unavailable state for the affected entry, do not fabricate identity or show zero for an unavailable count, and log the underlying error server-side using the prototype's existing convention. Do not expose filesystem paths or exception details publicly. If all sources fail, the surrounding landing page must still render with unavailable states.
 
+## Decisions for Tracy — do not resolve in this task
+
+1. Fix or regenerate fr-488530.json and djew-716790.json before dispatch, or accept two unavailable cards in the first slice.
+2. Decide whether duplicate AC-01-b is an upstream data defect to fix or something the page should tolerate, and identify the canonical Alpha Centauri file.
+3. Decide the object-count rule: whether moons count and whether Eden's nested moons count.
+4. Decide whether the network graphic is omitted or receives a clearly provisional explanatory treatment. The wiki permits either.
+5. Decide whether unsupported mock items (settlements count, Wormhole Hub badge, Systems Discovered, Wormhole Connections) are omitted or explicitly labeled mock/demo.
+6. Decide the test runner if the authoritative wiki does not settle it.
+
+Each unresolved item remains DECISION PENDING (Tracy) until Tracy decides.
+
+## Wiki conflict to report — do not edit wiki
+
+The Sol fixtures section of docs/wiki/data-integration-and-migration.md describes JSON under a top-level json-data/. The verified local layout is data/json-data/ relative to the prototype Rails root. Record this as a documentation conflict for Tracy; do not edit the wiki or NEEDS_REVIEW.md in this task.
+
 ## Acceptance criteria
 
-- [ ] The public landing route renders the five intended entries, using verified JSON records or an explicit unavailable state where a source cannot safely be resolved.
-- [ ] The synthesis report records each entry's exact source path and identifier/key.
-- [ ] Normal Sol data uses `sol-complete.json`; `sol.json` remains a separate smaller fixture. Neither file is modified or used as a silent fallback.
-- [ ] All displayed system facts are source-backed; any displayed count has a documented source collection and counting rule.
-- [ ] Rails loads and resolves the JSON; browser code does not fetch or parse source files.
-- [ ] Missing, malformed, and unexpected-shape data is isolated to the affected entry; unaffected entries and the public route remain available.
-- [ ] Illustrative metrics/activity are visibly labeled mock/demo; unsupported system properties and speculative topology are not presented as facts.
-- [ ] The existing hero image is copied unchanged and served through the verified Propshaft-compatible asset reference.
-- [ ] The hero uses responsive `cover` without tiling or distortion and is checked at desktop and narrow-mobile sizes.
-- [ ] The existing logo is unchanged.
+- [ ] The public landing route renders the five intended entries from the exact local-only source paths, or shows an explicit unavailable state where a source cannot safely be resolved.
+- [ ] The synthesis report records each entry's exact path relative to the prototype Rails root, source identifier/key, identity field, count basis, and parse status.
+- [ ] Normal Sol data uses sol-complete.json; sol.json remains a separate smaller fixture. Neither Sol fixture nor any other source JSON is modified or used as a silent fallback.
+- [ ] The reader handles the distinct Sol fixture shapes (category dictionary and flat parent_body list).
+- [ ] All displayed system facts are source-backed; any displayed count has a documented source collection and a rule approved by Tracy.
+- [ ] Rails loads and resolves the JSON; browser code does not fetch or parse source files. The Docker volume exposes the gitignored data directory.
+- [ ] Missing, malformed, and unexpected-shape data is isolated to the affected entry; unaffected entries and the public route remain available. Tests use temporary fixtures rather than gitignored real data. Tests use temporary fixtures, not gitignored real data.
+- [ ] Unsupported mock metrics/counts, the Wormhole Hub badge, Systems Discovered, and Wormhole Connections are omitted or explicitly labeled mock/demo according to Tracy's pending decision; speculative topology is not presented as fact.
+- [ ] The existing prototype hero image renders using a verified Propshaft-compatible reference; no image copy or replacement occurs. Its hash and dimensions are recorded.
+- [ ] Existing hero cover/positioning behavior is verified at desktop and narrow-mobile sizes.
+- [ ] No diff exists in app/views/shared/_branding.html.erb or app/assets/images/logos/GalaxyGame.png.
 - [ ] Focused tests, route verification, screenshots, source mapping, and final preservation checks are recorded in the synthesis report.
 - [ ] No main-app code, source JSON, database schema, simulation behavior, or unrelated page is changed.
 
 ## Files and references
 
-**Prototype files to inspect/edit only as needed:** landing controller, landing view, landing stylesheet, prototype asset tree, and existing focused tests.
+**Prototype files to inspect/edit only as needed:** landing controller, landing view, landing stylesheet, Rails asset configuration, Docker volume configuration, and focused tests. JSON paths below are relative to the prototype Rails root (galaxy-game-ui/) and live under data/json-data/. This directory is local-only and gitignored.
 
-**Read-only references:** main-app landing view and stylesheet; main-app `app/assets/images/hero-banner.png`; main-app system JSON; the two prototype wiki pages listed above.
+**Exact local JSON sources:**
+- data/json-data/star_systems/sol.json
+- data/json-data/star_systems/sol-complete.json
+- data/json-data/generated_star_systems/aol-732356.json
+- data/json-data/generated_star_systems/fr-488530.json
+- data/json-data/generated_star_systems/djew-716790.json
+- data/json-data/generated_star_systems/hybrid_AC-01_20260116_023525.json
+
+**Read-only references:** main-app landing view and stylesheet; both existing hero-banner.png copies; main-app system JSON; the two prototype wiki pages listed above.
 
 **Migration**: None.
 
 ## Dependencies and sequencing
 
-- **Prerequisites**: Copied JSON and the approved hero image are expected to exist; verify during investigation.
+- **Prerequisites**: The local-only, gitignored data/json-data files must be present in the developer environment and mounted into Docker if Docker is used. A fresh clone will not contain them. Verify/adjust the Docker volume mapping during investigation. The prototype hero image already exists; verify rendering rather than copying it.
 - **Blocked by**: None known.
 - **Blocks / sequencing**: Review the Player Planetary data-integration task after this landing-page slice is implemented and reviewed. Do not assume this landing-page reader is automatically the correct Planetary data contract.
 - Dispatch one task at a time, only with Tracy's explicit approval.
 
 ## Stop conditions
 
-Stop and ask Tracy before implementation if competing source records require an authoritative choice, the approved hero image cannot be found/restored unchanged, the five identities cannot be represented without fabrication, or implementation would require a material scope expansion (API, migration, generic framework, or simulation work).
+Stop and ask Tracy before implementation if competing source records require an authoritative choice, local-only data is unavailable and cannot be mounted, the five identities cannot be represented without fabrication, or implementation would require a material scope expansion (API, migration, generic framework, or simulation work). Known malformed FR-488530 and DJEW-716790 files, duplicate Alpha Centauri identifier, missing Proxima identifiers, object-count semantics, network graphic treatment, and mock/demo presentation are DECISION PENDING (Tracy); do not resolve them independently.
 
 Do not stop merely because optional properties or future simulation refinements are absent; omit/mark them unavailable and record the gap.
 
@@ -225,17 +283,17 @@ Save under `projects/galaxy-game-ui/summaries/` using the filename pattern in th
 # STATUS SYNTHESIS REPORT
 
 **Task**: 2026-11-19-HIGH-FEATURE-LANDING-PAGE-SYSTEM-OVERVIEW
-**Status**: draft → backlog → active → completed
+**Status**: draft (pending Tracy approval) → backlog → active → completed
 **Date**: YYYY-MM-DD
 
 ## Stage 1 — Initial understanding and Step 0
 Record exact lifecycle commands/results, source/destination verification, YAML status, objective, boundaries, unknowns, and planned evidence.
 
 ## Stage 2 — Investigation findings (before implementation)
-Record verified paths, five-system source mapping, count semantics, asset/Propshaft findings, proposed data flow, planned edit paths, test plan, and unresolved decisions. Wait for Tracy's approval.
+Record verified paths relative to prototype Rails root, five-system source mapping, source shapes and defects, count semantics without deciding Tracy's open count rule, Docker volume mapping, hero hash/Propshaft findings, logo preservation check, proposed data flow, planned edit paths, verified test runner, temporary-fixture test plan, and unresolved decisions. Wait for Tracy's approval.
 
 ## Stage 3 — Implementation and verification
-Record changes, exact test commands/results, route verification, screenshots and viewport dimensions, asset-load verification, final diff/preservation checks, documentation updates, and remaining issues.
+Record changes, exact test commands/results, route verification, screenshots and viewport dimensions, hero asset-load verification, unchanged hero/logo evidence, source JSON preservation checks, temporary-fixture failure tests, final diff/preservation checks, and remaining issues.
 
 ## Final disposition
 List acceptance-criteria results and whether reviewer assessment is requested.
@@ -243,7 +301,7 @@ List acceptance-criteria results and whether reviewer assessment is requested.
 
 ## Review gate, documentation, and closeout
 
-- **Independent pre-promotion final review is mandatory:** before backlog promotion, a reviewer instance other than the task creator must inspect the actual main GalaxyGame repository, the UI prototype repository, and the relevant authoritative wikis. The review must verify the task's stated source paths, existing landing-page implementation, JSON fixture mappings/semantics, hero asset existence and asset-pipeline conventions, current UI behavior, and any code/wiki conflicts. The reviewer must return an explicit GO before Tracy considers backlog promotion. Promotion and dispatch remain separate human approval gates. Record the reviewed branches/commits, files/pages inspected, evidence, findings, and disposition. If repository access is unavailable or the review is incomplete, the task remains in drafts.
+- **Independent pre-promotion final review is mandatory:** before backlog promotion, a reviewer instance other than the task creator must inspect the main GalaxyGame repository, UI prototype repository, and relevant authoritative wikis. Verify source paths, current landing implementation, JSON fixture shapes and defects, existing hero asset and asset-pipeline conventions, logo location, mock metrics, and code/wiki conflicts. The reviewer must return GO before Tracy considers backlog promotion. Promotion and dispatch remain separate human approval gates. Record revisions, files/pages inspected, evidence, findings, and disposition. If repository access is unavailable or review is incomplete, the task remains in drafts.
 - Perplexity and Gemini's earlier document-only GO assessments are supporting reviews only, not the final repository-aware GO. Reviewer selection is capability- and availability-based; no fixed model roster applies.
 - After implementation and verification, stop and request reviewer assessment. A reviewer GO is not commit/push authorization.
 - Do not commit, push, or mark complete without Tracy's separate explicit authorization for each action.
