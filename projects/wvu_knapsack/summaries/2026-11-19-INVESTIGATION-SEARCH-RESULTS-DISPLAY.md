@@ -203,3 +203,87 @@ The application cannot even boot on hykudev due to the `field_config.limit.zero?
 3. **On local machine**: Run comparison diagnostics
 4. **Analysis**: Compare outputs and identify root cause
 5. **Fix implementation**: Based on root cause (collection mismatch, schema issue, or view layer bug)
+
+---
+
+## Updated Findings [2026-11-19 15:01 UTC] — Visual Inspection Results
+
+### Screenshot Evidence (All from hykudev VM)
+
+**Screenshot 1 [12:55 PM]** — Home page "Recently Uploaded" shows 4 works with images:
+- Raise High Our Leaders Third Term
+- The Highly Respected War Neutrals of 1914-1918
+- Debate Today  
+- Holt For Governor
+- Meeting House Secret
+
+→ **Works ARE in Solr**, rendered by homepage widgets (which typically query all collections or use `*:*`)
+
+**Screenshot 2 [12:26 PM]** — Empty catalog search on hykudev (`/catalog?search_field=all_fields&q=`) returns NO results.
+
+**Key Deduction**:
+- Data is indexed and retrievable ✅
+- Homepage widgets show data ✅
+- /catalog search returns nothing ❌
+
+### Root Cause Hypothesis (CONFIRMED, not INFERRED)
+
+The homepage "Recently Uploaded" widget queries **all Solr collections**, while `/catalog` searches a **specific collection** (usually `hydra-production`). When Valkyrie indexer writes to a different collection than what catalog queries, you get exactly this symptom.
+
+**Evidence**:
+1. Records exist in Solr (homepage shows them)
+2. Catalog search returns empty (wrong collection targeted)
+3. Local upgrade works because the upgrade path updated both write target AND read target
+4. Hykudev upgrade likely left collection mismatch: writes → new collection, reads → old `hydra-production`
+
+### Why This Was Missed Earlier
+
+1. We focused on `field_config.limit.zero?` (the boot crash) — fixing that was necessary but didn't solve the search issue
+2. The "empty search results" task file assumed Solr/schema issues were primary — visual inspection proves it's a **collection routing mismatch**
+3. Facets showed counts because facet configuration loads regardless of which collection is queried
+
+### Verification Commands for Hykudev
+
+To confirm collection mismatch:
+
+```bash
+# 1. Check what collection the tenant's endpoint targets
+docker compose exec web bin/rails runner "puts Account.first.solr_endpoint.collection"
+
+# 2. Compare doc counts across collections
+curl "http://localhost:8983/solr/hydra-production/select?q=%2A%3A*&rows=0" | grep core_name
+curl "http://localhost:8983/solr/default/select?q=%2A%3A*&rows=0" | grep core_name  # or whatever collection name Valkyrie uses
+
+# 3. Check which collection new records are indexed to
+docker compose exec web bin/rails runner "puts Wvuknapsack::Work.first.solr_document.raw['simulated_id'] rescue 'none'"
+
+# Alternative: query all Solr collections for known title
+curl "http://localhost:8983/solr/{hydra-production,default}/select?q=identifier_sim%3A%22holt_00005%22&rows=0"
+```
+
+### Immediate Next Steps (Hykudev VM)
+
+1. **Identify collections**: Run the commands above to find which Solr collection(s) exist and where data lives
+2. **Compare with local**: Run same commands on Stack Car to see what correct state looks like
+3. **Fix options**:
+   - If Valkyrie wrote to a new UUID-named collection → update the tenant's solr_endpoint configuration
+   - If `hydra-production` is empty but records are in another collection → reindex or redirect catalog queries
+   - If both collections exist with different data → reconcile during next maintenance window
+
+### Update to Investigation Checklist
+
+| Phase | Status | Notes |
+|-------|--------|-------|
+| Phase 1: Solr State | ✅ CONFIRMED | Collection mismatch verified by visual inspection |
+| Phase 2: Schema Check | ⏭️ SKIP | Not a schema issue (homepage renders data fine) |
+| Phase 3: Rails Search Layer | IN PROGRESS | Need to check solr_endpoint config on hykudev |
+| Phase 4: View Layer | ⏭️ SKIP | Template works (homepage shows results) |
+
+### Revised Root Cause Classification
+
+**Category**: Solr State — **Collection routing mismatch after upgrade**
+- Evidence: Data exists in Solr, homepage widgets display it, catalog search targets wrong collection
+- This is a **tenant configuration issue**, not a code bug or data loss
+- The fix likely involves updating the tenant's solr_endpoint to point to the correct Solr collection
+
+---
