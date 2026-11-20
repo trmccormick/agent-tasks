@@ -132,7 +132,7 @@
 
 ---
 
-## 🟢 Upstream Dependency — Not WVU Responsibility
+## 🟡 Upstream & Planned Retirement (Samvera Ecosystem)
 
 ### **hyku** (Samvera upstream)
 
@@ -143,17 +143,29 @@
 **Status**: 🔴 **VULNERABLE** but **not WVU responsibility**  
 **Action**: Notify Samvera maintainers; monitor for upstream patch
 
-**Investigation Notes**:
-- Samvera team maintains hyku as upstream package
-- wvu_knapsack is WVU's implementation built on hyku
-- Samvera team must release hyku patch; WVU will update knapsack dependency
-- Do NOT patch hyku directly; wait for upstream release
+### **Additional Hydra Heads (Not on This Machine)**
 
-**Recommendation**:
-- [ ] Check Samvera GitHub issues for CVE-2026-132825 tracking
-- [ ] File issue if none exists
-- [ ] Subscribe to Samvera security mailing list for patch notification
-- [ ] Plan wvu_knapsack dependency update when hyku patch released
+**Status**: Multiple Hydra head instances exist on:
+- **GitHub** (code repositories)
+- **2018 MacBook** (development/active work)
+- **NOT** on current machine (not actively developed)
+
+**Planned Action**: Data migration from Hydra heads → Hyku; instances planned for retirement
+
+**Ruby/Rails Versions** (noted by human):
+- Some on Rails 5 (vulnerable if Ruby 3.3.x)
+- Some on Rails 7 (compatible with modern Ruby)
+
+**CVE-2026-132825 Status for Hydra Heads**:
+- **Rails 5 Hydra heads**: IF running Ruby 3.3.x → VULNERABLE (requires investigation on 2018 MacBook/GitHub)
+- **Rails 7 Hydra heads**: Likely not vulnerable (Rails 7 requires Ruby 2.7+, most run 3.1+)
+- **Retirement plan**: Since instances are planned to be retired with data migration to Hyku, evaluate whether immediate patching is justified vs. acceleration of migration timeline
+
+**Recommendation**: 
+- [ ] Audit GitHub repositories for all active Hydra head instances
+- [ ] Check which are Rails 5 vs. Rails 7
+- [ ] For Rails 5 + Ruby 3.3.x instances: Either patch Ruby OR accelerate migration to Hyku
+- [ ] Update incident response task to include decision on Hydra heads (if any are actively serving production data)
 
 ---
 
