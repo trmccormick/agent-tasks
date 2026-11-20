@@ -67,7 +67,7 @@ Maintain this section as Tracy reviews and decides each task. Only record a disp
 
 | Order | Task / view | Review disposition | Dependency / dispatch condition |
 |---|---|---|---|
-| 1 | `tasks/backlog/2026-11-19-HIGH-FEATURE-LANDING-PAGE-SYSTEM-OVERVIEW.md` — landing page + JSON reader | **Promoted to backlog; document-only technical reviews GO; repository-aware final review pending** | First; Claude/Grok must inspect both codebases and relevant wikis and issue final GO; then Tracy must separately approve dispatch |
+| 1 | `tasks/drafts/2026-11-19-HIGH-FEATURE-LANDING-PAGE-SYSTEM-OVERVIEW.md` — landing page + JSON reader | **Returned to drafts; prior document-only reviews reported GO; independent repository-aware review pending** | First; reviewer instance other than creator inspects both codebases and relevant wikis; GO precedes Tracy's separate promotion approval |
 | 2 | `tasks/drafts/2026-11-19-MEDIUM-FEATURE-USE-LOADED-DATA-PLAYER-PLANETARY-VIEW.md` — Planetary data integration | **Revised; dependency to reassess** | Review after the landing page is implemented and reviewed |
 | Superseded | `tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md` — Earth-only lookup | **Merged into order 1** | Do not dispatch independently |
 | Hold | `tasks/hold_for_review/2026-10-23-CRITICAL-LANDING-PAGE-FOR-PUBLIC-ACCESS.md` — legacy landing task | **Retained as historical reference** | Do not dispatch as written |
