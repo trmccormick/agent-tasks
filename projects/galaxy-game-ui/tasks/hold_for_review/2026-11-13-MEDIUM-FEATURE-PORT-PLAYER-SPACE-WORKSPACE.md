@@ -23,6 +23,7 @@ This is a presentation/prototype task. Existing JavaScript may be incomplete or 
 - `agent-tasks/projects/galaxy-game-ui/README.md`
 - `agent-tasks/projects/galaxy-game-ui/SESSION_GUIDANCE.md`
 - `galaxyGame/docs/wiki/ui/02_player_view_architecture.md` — especially “Space context” and “Individual craft tracking workspace and route views”
+- `galaxyGame/docs/wiki/player/space_and_surface_operations.md` — spacecraft autonomy, Space Operations context, and the boundary from planetary Surface Operations
 - Current `galaxy-game-ui` routes, Player navigation, Space-related views, JavaScript, CSS, and existing dashboard patterns.
 
 The main GalaxyGame application is Rails 7. The separate prototype is Rails 8.1. Keep the repositories and runtime assumptions distinct. The main app and EVE Dashboard source are read-only references.
