@@ -1,5 +1,5 @@
 ---
-status: draft
+status: backlog
 resume: false
 priority: HIGH
 type: bug-fix
@@ -139,7 +139,7 @@ After review agent has returned assessment:
 **Last Updated**: 2026-11-21
 **Author**: Claude (draft for human review)
 
-**Revision 1 (2026-11-21)**: author revision after a document-only technical review (Perplexity, REVISE). Changes: expected-failure handling, baseline sequencing, evidence capture, definitions for identifier scope and seed preservation, hybrid and template stimuli, script-call wording, suite and completion-authority wording, report-only documentation gaps. Not changed: dispatch interface block and other template text, scope, pending human decisions. This revision has not been reviewed.
+**Revision 1 (2026-11-21)**: author revision after a document-only technical review (Perplexity, REVISE). Changes: expected-failure handling, baseline sequencing, evidence capture, definitions for identifier scope and seed preservation, hybrid and template stimuli, script-call wording, suite and completion-authority wording, report-only documentation gaps. Not changed: dispatch interface block and other template text, scope, pending human decisions. **Revision 2 (2026-11-21)**: final author edits after independent reviews (document-only reviews: REVISE then GO; repository-read review of this draft at agent-tasks `2c23fe2` and galaxyGame `08f10fa`: GO). Changes: `status` set to `backlog` on Tracy's instruction; the confirmed script call and the additional mixed-key sites added to the notes below. No other text changed; the dispatch interface block is unchanged.
 
 ---
 
@@ -195,7 +195,7 @@ None.
 - Why: specs must pass on a fresh clone and must not read or write the local data tree.
 
 ⚠️ **GOTCHA 3**: Two hybrid completion methods exist
-- `generate_hybrid_system_from_seed` is name-based (hard-coded to Proxima Centauri b). `generate_hybrid_system_from_seed_generic` is data-driven. From the author's read of `scripts/generate_hybrid_system.rb`, it appears to call the name-based one; this is unconfirmed.
+- `generate_hybrid_system_from_seed` is name-based (hard-coded to Proxima Centauri b). `generate_hybrid_system_from_seed_generic` is data-driven. At galaxyGame `08f10fa`, `scripts/generate_hybrid_system.rb` line 27 calls `pg.generate_hybrid_system_from_seed(seed_path)` (the name-based method), confirmed by a repository-read review; re-confirm against the current code.
 - Specs target the generic method. Confirm and report which method each entry point calls; do not change the script.
 
 ⚠️ **GOTCHA 4**: Randomness
@@ -302,7 +302,7 @@ Confirming a command in an agent's own approval prompt counts as authorization o
 Generator output is not guaranteed to be a valid, consistent JSON contract for the loader.
 
 Known problems (line numbers from galaxyGame `08f10fa`; verify before relying on them):
-1. **Duplicate keys.** `procedural_generator.rb` ~lines 558 and 642 set `planet_data[:atmosphere]` on hashes that may already hold `"atmosphere"` (template planets, via `generate_from_template`). Same mixed-key pattern for `:hydrosphere` and `:biosphere`; confirm whether those also collide.
+1. **Duplicate keys.** `procedural_generator.rb` ~lines 558 and 642 set `planet_data[:atmosphere]` on hashes that may already hold `"atmosphere"` (template planets, via `generate_from_template`). Same mixed-key pattern for `:hydrosphere` and `:biosphere`; confirm whether those also collide. The same symbol-key assignments for `:atmosphere` and `:hydrosphere` also appear at about lines 809/812, 865/868 and 918/921 (other body-type builders); check whether those hashes can also already hold string keys. Investigation only, not an asserted bug.
 2. **Hybrid identifiers.** `generate_hybrid_system_from_seed_generic` (~line 169): seed bodies are tagged `from_seed` but never given an `identifier`; the per-star fill (~lines 230 to 240) calls `generate_planet_identifier(identifier, @planet_counter + 1)` without incrementing `@planet_counter`, so two generated planets can share an identifier (observed: two bodies named `AC-01-b`).
 3. **Seed preservation.** The generic method must keep every seed body's fields (for example `notable_traits`) unchanged.
 
