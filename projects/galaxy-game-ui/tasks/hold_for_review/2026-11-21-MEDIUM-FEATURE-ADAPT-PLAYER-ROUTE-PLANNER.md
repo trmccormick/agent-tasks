@@ -37,9 +37,13 @@ The Route Planner must represent two related routing scales:
 
 A planned journey may include an inter-system leg and then an in-system leg to its final destination. The UI should make the transition between scales understandable. Do not assume the EVE Chain Map source already supports both scales; determine what it actually does and document reusable/adaptable portions. Use existing GalaxyGame rendering/components where they provide a better basis for in-system spatial context, without abandoning the Chain Map visual direction.
 
-The player should be able to work with preferred routes: create or edit a route, give it a name, save it in the prototype's mock/client-side presentation state, and select a previously saved route. Show the ordered route/waypoints and relevant connection transitions. Provide a conceptual assignment path for assigning a saved route to an individual craft or using it in a fleet operation. If actual assignment interaction is not practical in this presentation pass, provide a clear mock/stub interaction and document the limitation.
+The player should be able to work with preferred routes: create or edit a route, give it a name, save it in the prototype's mock/client-side presentation state, and select a previously saved route. Show the ordered route/waypoints and relevant connection transitions. Provide a conceptual assignment path for assigning a saved route to an individual craft or using it in a fleet operation. Show that the route can provide inter-system legs and system-specific waypoint paths, while craft-specific activities, market stops, logistics, timing, and rendezvous are planned separately in Fleet Manager. If actual assignment interaction is not practical in this presentation pass, provide a clear mock/stub interaction and document the limitation.
 
 Use clearly identified mock systems, connections, wormholes, in-system locations, routes, saved-route entries, and assignment targets as needed. Keep examples internally consistent across both routing scales. The purpose is to establish the route-planning screen and let its presentation be reviewed, not to build a complete navigation simulator.
+
+
+
+A saved route is a navigation plan, not a complete fleet work schedule. Fleet Manager combines selected route segments with craft-specific activities, local layovers, logistics, dependencies, timing, and rendezvous into an operational assignment. A route may include the inter-system wormhole sequence and associated system-specific waypoint paths, but the actual fleet itinerary can branch: different craft may take different local routes and later rendezvous. Do not expand the Route Planner task into market, harvesting, scheduling, or fleet activity orchestration; those belong to Fleet Manager.
 
 ## Scope boundaries
 
