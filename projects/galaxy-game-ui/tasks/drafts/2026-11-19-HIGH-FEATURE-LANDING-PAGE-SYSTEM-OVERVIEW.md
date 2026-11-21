@@ -130,9 +130,12 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 ## Objective and context
 
-Complete the existing public landing page and its small Rails-side JSON reader as one coordinated slice. The reader exists only to supply this page; do not split it into a separate data-platform task.
+Complete the existing public landing page and its small Rails-side system-data lookup service as one coordinated slice. The service exists initially to supply this page; do not split it into a separate data-platform task. Its implementation direction is to adapt the main app's established `Lookup::StarSystemLookupService` and `GalaxyGame::Paths` pattern for the Rails 8.1 prototype—not to invent a new generic JSON reader or blindly port the entire main-app lookup layer.
 
 The main GalaxyGame app is Rails 7.0.8.7. The separate prototype is Rails 8.1 with Propshaft, importmap, Turbo, Stimulus, Tailwind, and PostgreSQL. Keep their code and runtime assumptions separate. Adapt the existing views and styling rather than redesigning the application.
+
+- Main-app reference inspected at `galaxyGame` `main` (commit `08f10fae801582f14e6de5c5345414e481fea8ca`): `GalaxyGame::Paths::JSON_DATA` supports `GALAXY_JSON_DATA_PATH` and derives separate curated and generated system directories. `Lookup::StarSystemLookupService` already loads those collections separately, adds source metadata, supports lookup by name/identifier/filename, and has focused coverage for Sol and generated Eden (`AOL-732356`). Adapt this service's narrow system-data pattern for the prototype's Rails 8.1 conventions.
+- Do not blindly inherit from or port `Lookup::BaseLookupService`: its initializer independently defaults `@data_path` to `Rails.root/app/data`, bypassing the configured path root. The current star-system service uses explicit `GalaxyGame::Paths` constants, so the path-root issue is not a reason to rewrite the main app as part of this task. The separate BaseLookupService/EarthReferenceService/cache/seed concerns remain review-only.
 
 ## Established project facts
 
@@ -186,7 +189,7 @@ Record these source baselines without deciding the display-count rule:
 
 1. Inspect the existing landing route, controller, view, stylesheet, asset conventions, test directories/runners, Docker volume mapping, and local-only JSON before editing.
 2. Resolve the five intended entries from the exact files listed above. Record a compact source table in the synthesis report with display name, exact path relative to the prototype Rails root, source identifier/key, identity field, object-count basis, parse status, and ambiguity. Do not infer identity from display names.
-3. Add the smallest Rails-side reader/controller integration that supplies view-ready data. Keep filesystem access and JSON parsing in Rails. Browser JavaScript must not fetch or parse source JSON, and no public raw-JSON endpoint is needed.
+3. Add a narrowly scoped Rails-side system lookup service, adapted from the main app's `Lookup::StarSystemLookupService`, plus the smallest controller integration that supplies view-ready data. Keep filesystem access and JSON parsing in Rails. Browser JavaScript must not fetch or parse source JSON, and no public raw-JSON endpoint is needed. Preserve the main service's useful behavior where relevant: separate curated and generated source collections, source metadata, lookup by stable identity/name/filename, and lazy loading or an equivalently simple cache lifecycle. Do not copy unrelated main-app dependencies or introduce a general-purpose provider framework.
 4. Use sol-complete.json for normal Sol representation. Do not silently fall back to sol.json if the complete fixture is missing. Do not merge, rewrite, regenerate, or delete either Sol fixture or any other source JSON.
 5. Derive every displayed system-specific fact from the selected source. The Sol fixtures have different shapes: sol.json is a category dictionary; sol-complete.json is a flat list with parent_body. Handle both shapes where required. Do not assume the same object-count rule across systems. Record the count rule only after Tracy decides whether moons and nested moons count.
 6. Verify the existing hero image renders and correct its asset reference if needed. The prototype image is already at app/assets/images/hero-banner.png and is byte-identical to the main-app source. Do not copy, replace, or modify it. The prototype landing.css currently hard-codes url('/assets/hero-banner.png'); inspect Propshaft conventions and use a compatible reference.
@@ -196,12 +199,15 @@ Record these source baselines without deciding the display-count rule:
 
 ## Exclusions and preservation
 
-No production API, database/model/migration work, generic provider/lookup framework, broad lookup-service port, StarSim execution, system generation, survey/calibration, scientific refinement, terrain/map generation, simulation behavior, or unrelated page redesign.
+No production API, database/model/migration work, generic provider/lookup framework, broad/wholesale lookup-service port, StarSim execution, system generation, survey/calibration, scientific refinement, terrain/map generation, simulation behavior, or unrelated page redesign.
 
 Do not modify main-app code or source JSON. The only main-repository asset interaction is reading and copying the approved hero image. Do not change any copied source JSON.
 
 ## Investigation, approval, and verification
 
+- Before implementation, inspect the main app's `Lookup::StarSystemLookupService`, `GalaxyGame::Paths`, and the focused specs as the reference implementation. Confirm the current prototype's Rails 8.1 conventions and adapt only the needed behavior; do not assume Rails 7 service code can be copied unchanged.
+- Use a prototype-owned path configuration rooted at `Rails.root`, with a configurable data root if the prototype already has or needs one. Keep curated `star_systems/` and generated `generated_star_systems/` paths distinct, following the established `GalaxyGame::Paths` organization. Do not hard-code paths independently in the controller or view. Do not import the main app's `BaseLookupService` unchanged: its `@data_path` initialization bypasses the configured `GalaxyGame::Paths::JSON_DATA` root, and its broader behavior is not required for this slice.
+- Treat the main app's `Lookup::StarSystemLookupService` as the implementation reference for lazy loading, curated/generated separation, source metadata, and lookup behavior. Reuse only the portions needed by this prototype page. Keep the main app's EarthReferenceService fallback paths, blueprint/unit loader cache differences, and Ruby seed-file fallback out of scope; these are recorded separately in `NEEDS_REVIEW.md` for later assessment, not reasons to broaden this task.
 - Complete the source-resolution table. Record source defects: fr-488530.json has a trailing comma after the system identifier and is truncated mid-object (33 opening braces versus 29 closing braces); djew-716790.json has malformed hydrosphere blocks around line 74; hybrid_AC-01_20260116_023525.json parses but has duplicate AC-01-b and Proxima b/c lack identifiers. Do not edit these files.
 - Verify the existing prototype hero image and Propshaft reference. Record both asset paths, matching blob 9e89572f, 2,536,258 bytes, 1536×1024, and SHA-256 30fff39437a409a0e0ce9b9bc2cdbc0c5e71b044b30a81c19793926c22f46d49. No copy operation is required.
 - Confirm the Docker volume mapping exposes the gitignored data/json-data directory to the container; it may need adjustment.
