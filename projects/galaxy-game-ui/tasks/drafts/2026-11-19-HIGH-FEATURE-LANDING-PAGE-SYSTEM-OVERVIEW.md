@@ -200,7 +200,7 @@ Record these source baselines without deciding the display-count rule:
 
 ## Exclusions and preservation
 
-No production API, database/model/migration work, generic provider/lookup framework, broad/wholesale lookup-service port, StarSim execution, system generation, survey/calibration, scientific refinement, terrain/map generation, simulation behavior, or unrelated page redesign.
+No production API, database/model/migration work, generic provider/lookup framework, broad/wholesale lookup-service port, StarSim execution, general-purpose system generation, survey/calibration, scientific refinement, terrain/map generation, simulation behavior, or unrelated page redesign. The only generator-related activity in scope is evaluating or invoking the updated generator against an isolated Alpha Centauri test copy as fixture preparation; do not mutate production or canonical source data.
 
 Do not modify main-app code. Do not silently modify source JSON as part of the landing-page implementation. The only main-repository asset interaction is reading and copying the approved hero image. Any explicitly approved Alpha Centauri fixture repair/regeneration is a separately recorded test-data preparation step, not an incidental loader side effect.
 
