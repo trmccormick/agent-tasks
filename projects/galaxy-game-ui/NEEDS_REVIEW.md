@@ -134,6 +134,15 @@ Short, active list of items that need a second opinion or a human decision. Prim
 
 ---
 
+### 18. Generator option to complete a partially generated star system
+- **State:** OPEN — owner: Tracy; evaluate during the Alpha Centauri fixture test; no generator implementation authorized by this entry.
+- **Context (REPORTED, Tracy, 2026-11-21):** the landing-page source review found two test-generated Alpha Centauri versions. The existing data has duplicate `AC-01-b` identifiers and missing identifiers for Proxima b and Proxima c. Alpha Centauri should be corrected or regenerated if needed; both direct repair and regeneration through the updated generator should be considered.
+- **Candidate capability:** investigate an explicit generator option to complete a partially generated system rather than requiring a full regeneration or leaving an incomplete result. Define what “complete” means from generator invariants and required fields; do not invent identifiers or astrophysical content merely to make validation pass. Determine whether the operation can safely preserve valid existing generated content while filling only genuinely missing/incomplete parts, and how it reports unresolved ambiguity or collisions.
+- **Test approach:** compare the two existing Alpha Centauri test-generated versions, record their provenance and differences, then evaluate direct repair versus running the updated generator (including a completion mode if one exists or is prototyped). Capture before/after validation, identifier uniqueness, required-field completeness, and whether unrelated generated content changes.
+- **Boundary:** this is a review/test candidate arising from the landing-page fixture work, not approval for a broad generator rewrite or production data mutation. Coordinate with the ongoing generator-fix work and keep any experiment confined to test copies.
+- **Next action:** after the updated generator is available, run the Alpha Centauri comparison/test and recommend whether a “complete existing system” option is useful, what its contract should be, and whether a separate implementation task is warranted.
+
+
 ## RESOLVED
 
 - **1. T3a bookkeeping** — closed by agent-tasks `ccd9ca7` (VERIFIED): T3a moved to `tasks/completed/2026-10/`, T3c `status: drafts`, `status.md` refreshed. T3a code is `b1eb0d3`.
