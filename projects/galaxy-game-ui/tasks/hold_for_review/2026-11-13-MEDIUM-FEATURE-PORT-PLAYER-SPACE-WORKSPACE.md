@@ -13,7 +13,7 @@ last_updated: 2026-11-21
 
 ## Objective
 
-Establish the Player Space individual-craft tracking and route-planning screen in the Rails 8.1 prototype by adapting useful existing EVE Dashboard layout and JavaScript behavior. The workspace must show one selected craft at a time, two simultaneously visible vertically stacked route maps, and the selected craft's status/details and planned route.
+Establish the Player Space individual-craft tracking screen in the Rails 8.1 prototype by adapting useful existing EVE Dashboard layout and JavaScript behavior. The workspace must show one selected craft at a time, two simultaneously visible vertically stacked route maps, and the selected craft's status/details and planned route.
 
 This is a presentation/prototype task. Existing JavaScript may be incomplete or require later refinement; preserve and adapt useful code rather than rewriting it wholesale.
 
@@ -26,6 +26,8 @@ This is a presentation/prototype task. Existing JavaScript may be incomplete or 
 - Current `galaxy-game-ui` routes, Player navigation, Space-related views, JavaScript, CSS, and existing dashboard patterns.
 
 The main GalaxyGame application is Rails 7. The separate prototype is Rails 8.1. Keep the repositories and runtime assumptions distinct. The main app and EVE Dashboard source are read-only references.
+
+Route creation and saved-route management are handled by the separate Player Route Planner. This workspace displays the route assigned to the selected craft; it is not the route-authoring interface.
 
 ## Intended full-screen structure
 
@@ -52,9 +54,9 @@ Both maps and the right pane must reflect the same selected craft. Changing craf
 
 ## Scope boundaries
 
-- This is an individual-craft workspace, not Fleet Management. Fleet creation, fleet organization and multi-craft coordination are separate features.
+- This is an individual-craft workspace, not Fleet Management or the Route Planner. Fleet creation, fleet organization and multi-craft coordination are separate features; creating and saving preferred routes belongs to the Route Planner.
 - GalaxyGame craft are autonomous assets. Do not introduce EVE pilots, characters, fleet commanders, combat, EVE terminology, or EVE backend/game rules.
-- Do not implement authoritative route finding, shortest-path logic, navigation simulation, command execution, production API integration, models, migrations, or persistence.
+- Do not implement route authoring, saved-route management, authoritative route finding, shortest-path logic, navigation simulation, command execution, production API integration, models, migrations, or persistence.
 - Do not replace existing Player Planetary work or conflate Player Planetary/Surface/Settlement views with Space.
 - Do not make a complete, working data loader or backend prerequisite for getting the view and layout in place.
 - Do not modify the main GalaxyGame or EVE source repositories.
