@@ -132,7 +132,7 @@ After review agent has returned assessment:
 
 
 # TASK: StarSim Output Contract Specs (tests only)
-**Status**: DRAFT
+**Status**: BACKLOG
 **Priority**: HIGH
 **Type**: bug-fix
 **Created**: 2026-11-20
