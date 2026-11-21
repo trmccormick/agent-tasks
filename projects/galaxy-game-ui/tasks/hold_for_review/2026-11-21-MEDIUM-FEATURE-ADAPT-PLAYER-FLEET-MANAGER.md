@@ -48,7 +48,7 @@ The screen should make it possible to understand:
 
 Retain the useful EVE-inspired fleet list/selection, selected-fleet overview, participant/status presentation, map visualization, and detail-panel patterns where the source supports them. Do not force a specific pane arrangement if the existing view has a useful adaptable structure. The result should clearly communicate the relationship between the shared operation and distributed craft.
 
-Provide a clear way to move from a participating craft to that craft's Individual Craft Tracking view, reusing the route/navigation conventions established there where practical. Fleet Manager and Individual Craft Tracking are separate screens with different organizing principles: fleet objective versus one spacecraft.
+Provide a clear way to move from a participating craft to that craft's Individual Craft Tracking view. Fleet Manager and Individual Craft Tracking are separate screens with different organizing principles: fleet objective versus one spacecraft. Route authoring and saved-route management belong to the separate Player Route Planner; Fleet Manager may select or reference a saved route for an operation but does not become the route-authoring workspace.
 
 ## Reuse and adaptation
 
@@ -62,7 +62,7 @@ Provide a clear way to move from a participating craft to that craft's Individua
 
 - This is the Player Fleet Manager, not the individual-craft tracking workspace and not Admin/AI Manager oversight.
 - Fleet membership represents shared operational purpose, not physical proximity, formation, or a group travelling together.
-- Do not implement fleet persistence, backend APIs, real task orchestration, logistics/resource simulation, authoritative route finding, navigation simulation, or command execution.
+- Do not implement fleet persistence, backend APIs, real task orchestration, logistics/resource simulation, authoritative route finding, route authoring/persistence, navigation simulation, or command execution.
 - Do not add models, migrations, or production data integration.
 - Do not replace existing Player Planetary work or conflate Planetary/Surface/Settlement with Space.
 - Do not modify the main GalaxyGame or EVE source repositories.
