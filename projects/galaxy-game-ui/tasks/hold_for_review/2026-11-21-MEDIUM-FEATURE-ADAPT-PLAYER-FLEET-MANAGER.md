@@ -50,6 +50,23 @@ Retain the useful EVE-inspired fleet list/selection, selected-fleet overview, pa
 
 Provide a clear way to move from a participating craft to that craft's Individual Craft Tracking view. Fleet Manager and Individual Craft Tracking are separate screens with different organizing principles: fleet objective versus one spacecraft. Route authoring and saved-route management belong to the separate Player Route Planner; Fleet Manager may select or reference a saved route for an operation but does not become the route-authoring workspace.
 
+
+
+### Asynchronous fleet activity planning
+
+Fleet Manager must show that a fleet assignment is a planned operational itinerary, not simply one route followed by all craft together. The player can prepare an ordered plan and send it ahead; craft automation/AI Manager may continue authorized work while the player is away. The plan should support different craft assignments, different in-system routes, layovers and activities, dependencies, resource instructions, expected arrivals, rendezvous points, and planned wormhole departure windows.
+
+Use a representative mock scenario that demonstrates:
+- harvesters conducting light EM harvesting at an asteroid belt;
+- a transport craft independently visiting a planet to sell materials and purchase specified fleet supplies while harvesting continues;
+- another slower craft proceeding toward the next departure wormhole;
+- craft returning or converging at a planned rendezvous, with expected arrival/readiness times and a planned next jump;
+- the fleet continuing its inter-system wormhole route, with a separate local itinerary for each visited system.
+
+The UI should distinguish the fleet's inter-system wormhole route from each system's in-system waypoints and activities. Craft can branch to different local destinations and later rendezvous; do not depict the fleet as a single marker or assume all members travel together. Show planned/estimated times separately from actual or last-reported status. Where data is delayed, expose last-known status/data age and avoid implying real-time player visibility or instant command delivery.
+
+For this presentation task, activity sequences, market transactions, dependencies, ETAs, rendezvous readiness, and delayed status can be represented with internally consistent mock data and stub interactions. Do not implement the underlying logistics, market, simulation, scheduling, autonomy, communications, or command-execution systems.
+
 ## Reuse and adaptation
 
 - Identify the exact EVE Dashboard view and JavaScript modules being reused or adapted; verify their paths and dependencies.
@@ -62,7 +79,7 @@ Provide a clear way to move from a participating craft to that craft's Individua
 
 - This is the Player Fleet Manager, not the individual-craft tracking workspace and not Admin/AI Manager oversight.
 - Fleet membership represents shared operational purpose, not physical proximity, formation, or a group travelling together.
-- Do not implement fleet persistence, backend APIs, real task orchestration, logistics/resource simulation, authoritative route finding, route authoring/persistence, navigation simulation, or command execution.
+- Do not implement fleet persistence, backend APIs, real task orchestration, logistics/resource simulation, market transactions, authoritative route finding, route authoring/persistence, navigation simulation, scheduling/ETA calculation, autonomy, communications, or command execution.
 - Do not add models, migrations, or production data integration.
 - Do not replace existing Player Planetary work or conflate Planetary/Surface/Settlement with Space.
 - Do not modify the main GalaxyGame or EVE source repositories.
@@ -76,6 +93,10 @@ Provide a clear way to move from a participating craft to that craft's Individua
 - [ ] Mock data demonstrates one fleet with craft working at separate locations: asteroid construction, remote EM harvesting, and transport/delivery to the build site.
 - [ ] The presentation communicates shared operational purpose without implying physical co-location or formation.
 - [ ] Relevant resource flows, deliveries, task dependencies, and attention items are represented where practical.
+- [ ] Mock assignments demonstrate craft following different local routes and performing different activities within one fleet operation.
+- [ ] Mock activity planning demonstrates a transport craft visiting a planet to sell materials and buy fleet supplies while harvesters continue working.
+- [ ] Mock timing demonstrates a craft proceeding toward a departure wormhole while other craft work, then coordinating at a planned rendezvous before the next jump.
+- [ ] The view distinguishes the inter-system wormhole route from system-specific in-system waypoints/activities, and shows planned/estimated times separately from last-reported status and data age.
 - [ ] A participating craft can be opened in or linked to Individual Craft Tracking, or any missing route is explicitly documented.
 - [ ] Existing EVE/prototype code reuse and all mock/stub/deferred behavior are documented.
 - [ ] The running prototype is visually inspected, console errors are checked, and screenshot evidence is captured.
