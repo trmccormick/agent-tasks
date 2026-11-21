@@ -165,7 +165,7 @@ The prototype wiki is the authority for UI intent. Read it before making present
 - Eden is absent from the controller's hard-coded set.
 - The view renders a Wormhole Hub badge, Settlements and Bodies figures, and a Galaxy Status section using the mock totals.
 - The landing page view itself has no logo. The shared branding partial app/views/shared/_branding.html.erb references logos/GalaxyGame.png.
-- The unsupported settlements count, Wormhole Hub badge, Systems Discovered, and Wormhole Connections require a Tracy decision: omit or label mock/demo. DECISION PENDING (Tracy).
+- The unsupported settlements count, Wormhole Hub badge, Systems Discovered, and Wormhole Connections still require a presentation decision: omit them or label them clearly as mock/demo. This remains open pending Tracy's direction.
 
 ## Source-shape and count facts
 
@@ -176,14 +176,15 @@ Record these source baselines without deciding the display-count rule:
 - Eden (aol-732356.json) contains 26 top-level bodies plus 10 nested moons.
 - Alpha Centauri has four entries; two share identifier AC-01-b.
 - Source identity fields include SOL-01, AC-01, and AOL-732356. The controller's SOL and ALPHA-C values are mock identifiers and are not source identity. Ignore the galaxy identifier (MILKY-WAY versus MILKYWAY-01).
-- The two Sol fixtures have different data shapes and must be handled as such. The correct rule for whether moons or nested moons contribute to the displayed object count is DECISION PENDING (Tracy).
+- The two Sol fixtures have different data shapes and must be handled as such. **Count rule established by Tracy:** every moon is a celestial body and contributes to the celestial-body total, including moons nested under another body. Count the full hierarchy; do not restrict totals to top-level bodies.
 
-## Known source defects — do not edit source files
+## Source-data repair status and Alpha Centauri handling
 
-- fr-488530.json does not parse: a trailing comma follows the system identifier, and the file is truncated mid-object (33 opening braces versus 29 closing braces).
-- djew-716790.json does not parse: malformed hydrosphere blocks occur around line 74.
-- hybrid_AC-01_20260116_023525.json parses but contains duplicate AC-01-b identifiers; Proxima b and Proxima c have no identifier.
-- Do not repair, regenerate, or otherwise edit any of these JSON files. Failure behavior must isolate an unavailable or ambiguous system. Handling the FR-488530 and DJEW-716790 cards, the duplicate Alpha Centauri identifier, and which Alpha Centauri file is canonical are DECISION PENDING (Tracy).
+- The previously identified FR-488530 and DJEW-716790 defects are already being addressed: a Qwen repair is currently running, and the system generator is also being fixed. Do not treat these two known defects as unresolved Tracy decisions or duplicate that repair work in this landing-page slice. During investigation, verify the resulting files and record the actual parse/validation status; if either repair is still in progress or fails, isolate that card as unavailable rather than fabricating data.
+- Alpha Centauri is also expected to be corrected or regenerated if needed. There are two test-generated Alpha Centauri versions. Compare both versions, identify their provenance and structural differences, and consider both direct repair and regeneration using the updated generator. Do not assume either is canonical without evidence; record the selected test fixture and why.
+- As part of the Alpha Centauri test, consider whether the updated generator can complete a partially generated system (for example, fill missing required identifiers or complete missing structures) rather than merely reject it. This is a candidate generator capability for review, not an assumed existing feature or authorization for a broad generator rewrite; record findings in `NEEDS_REVIEW.md`.
+- The existing Alpha Centauri concerns are duplicate `AC-01-b` identifiers and missing identifiers on Proxima b and Proxima c. Verify whether repair or regeneration resolves them without inventing identity values.
+- The landing-page feature must not silently mutate source fixtures. Any direct repair or regeneration of Alpha Centauri test data must be an explicit, separately recorded fixture-preparation/test action, with before/after evidence. The reader must still isolate unavailable or ambiguous input safely.
 
 ## Scope and implementation requirements
 
@@ -195,13 +196,13 @@ Record these source baselines without deciding the display-count rule:
 6. Verify the existing hero image renders and correct its asset reference if needed. The prototype image is already at app/assets/images/hero-banner.png and is byte-identical to the main-app source. Do not copy, replace, or modify it. The prototype landing.css currently hard-codes url('/assets/hero-banner.png'); inspect Propshaft conventions and use a compatible reference.
 7. The existing hero CSS already specifies center center / cover no-repeat. Verify responsive rendering at desktop and narrow-mobile sizes; preserve proportions and avoid obscuring important content. Do not treat this as new CSS implementation if already satisfied.
 8. Leave the existing logo unchanged. The landing page view itself has no logo; the logo is rendered through app/views/shared/_branding.html.erb at logos/GalaxyGame.png. Verify no diff to that partial or image. Unsupported illustrative metrics/counts must be omitted or labeled mock/demo, pending Tracy's decision.
-9. Do not present speculative wormhole relationships as established facts. The wiki permits either omitting the network graphic or using a clearly provisional explanatory treatment; see [interface and workflows, network topology guidance](https://github.com/trmccormick/galaxy-game-ui/blob/main/docs/wiki/interface-and-workflows.md#L135) and [the related topology discussion](https://github.com/trmccormick/galaxy-game-ui/blob/main/docs/wiki/interface-and-workflows.md#L150). DECISION PENDING (Tracy).
+9. Do not present speculative wormhole relationships as established facts. Before deciding whether to show a network graphic, clarify the intended setup: what network/topology is being represented, which systems or endpoints are meant to be connected, whether the graphic describes an established in-game network or an explanatory/proposed concept, and what the landing-page visitor should learn from it. The existing wiki guidance permits omission or a clearly provisional explanatory treatment; see [interface and workflows, network topology guidance](https://github.com/trmccormick/galaxy-game-ui/blob/main/docs/wiki/interface-and-workflows.md#L135) and [the related topology discussion](https://github.com/trmccormick/galaxy-game-ui/blob/main/docs/wiki/interface-and-workflows.md#L150). Do not choose a treatment until that intent is clear.
 
 ## Exclusions and preservation
 
 No production API, database/model/migration work, generic provider/lookup framework, broad/wholesale lookup-service port, StarSim execution, system generation, survey/calibration, scientific refinement, terrain/map generation, simulation behavior, or unrelated page redesign.
 
-Do not modify main-app code or source JSON. The only main-repository asset interaction is reading and copying the approved hero image. Do not change any copied source JSON.
+Do not modify main-app code. Do not silently modify source JSON as part of the landing-page implementation. The only main-repository asset interaction is reading and copying the approved hero image. Any explicitly approved Alpha Centauri fixture repair/regeneration is a separately recorded test-data preparation step, not an incidental loader side effect.
 
 ## Investigation, approval, and verification
 
@@ -211,7 +212,7 @@ Do not modify main-app code or source JSON. The only main-repository asset inter
 - Complete the source-resolution table. Record source defects: fr-488530.json has a trailing comma after the system identifier and is truncated mid-object (33 opening braces versus 29 closing braces); djew-716790.json has malformed hydrosphere blocks around line 74; hybrid_AC-01_20260116_023525.json parses but has duplicate AC-01-b and Proxima b/c lack identifiers. Do not edit these files.
 - Verify the existing prototype hero image and Propshaft reference. Record both asset paths, matching blob 9e89572f, 2,536,258 bytes, 1536×1024, and SHA-256 30fff39437a409a0e0ce9b9bc2cdbc0c5e71b044b30a81c19793926c22f46d49. No copy operation is required.
 - Confirm the Docker volume mapping exposes the gitignored data/json-data directory to the container; it may need adjustment.
-- The prototype has both minitest (test/, including the empty landing_controller_test.rb stub) and RSpec (spec/). Confirm the actual runner during Stage 2 before choosing focused commands. If the authoritative wiki does not prescribe one, leave the runner choice as DECISION PENDING (Tracy).
+- The main GalaxyGame application uses RSpec, and the prototype should use RSpec for this work as well. Inspect the prototype's existing RSpec setup; if it is absent or incomplete, configure it rather than defaulting to Minitest or leaving the runner choice open. Keep the setup consistent with the main application's conventions where compatible with Rails 8.1.
 - Update the synthesis report with verified paths, source mapping, proposed data flow, asset approach, exact planned edit paths, and test/visual plan. **Wait for Tracy's explicit approval before editing application files.**
 - After implementation, run focused tests only. Verify the public route, source selection, missing/malformed/unexpected JSON behavior, and unchanged source files.
 - Capture desktop and narrow-mobile screenshots and record viewport dimensions. Confirm the hero loads, covers without tiling or distortion, and leaves foreground text readable.
@@ -240,8 +241,9 @@ The Sol fixtures section of docs/wiki/data-integration-and-migration.md describe
 
 - [ ] The public landing route renders the five intended entries from the exact local-only source paths, or shows an explicit unavailable state where a source cannot safely be resolved. FR-488530 and DJEW-716790 are known malformed inputs; the route must isolate their failures, and none of the source JSON files may be edited.
 - [ ] The synthesis report records each entry's exact path relative to the prototype Rails root, source identifier/key, identity field, count basis, and parse status.
-- [ ] Normal Sol data uses sol-complete.json; sol.json remains a separate smaller fixture. Neither Sol fixture nor any other source JSON is modified or used as a silent fallback.
-- [ ] The reader handles the distinct Sol fixture shapes (category dictionary and flat parent_body list).
+- [ ] Normal Sol data uses sol-complete.json; sol.json remains a separate smaller fixture. Neither Sol fixture is modified or used as a silent fallback.
+- [ ] FR-488530 and DJEW-716790 are validated against the in-progress Qwen repairs; this task does not duplicate that work. Alpha Centauri's two test-generated versions are compared, and a repaired or updated-generator-generated test fixture is selected with evidence.
+- [ ] The reader handles the distinct Sol fixture shapes (category dictionary and flat parent_body list), and celestial-body totals include all moons, including nested moons.
 - [ ] All displayed system facts are source-backed; any displayed count has a documented source collection and a rule approved by Tracy.
 - [ ] Rails loads and resolves the JSON; browser code does not fetch or parse source files. The Docker volume exposes the gitignored data directory.
 - [ ] Missing, malformed, and unexpected-shape data is isolated to the affected entry; unaffected entries and the public route remain available. Tests use temporary fixtures rather than gitignored real data.
@@ -277,7 +279,7 @@ The Sol fixtures section of docs/wiki/data-integration-and-migration.md describe
 
 ## Stop conditions
 
-Stop and ask Tracy before implementation if competing source records require an authoritative choice, local-only data is unavailable and cannot be mounted, the five identities cannot be represented without fabrication, or implementation would require a material scope expansion (API, migration, generic framework, or simulation work). Known malformed FR-488530 and DJEW-716790 files, duplicate Alpha Centauri identifier, missing Proxima identifiers, object-count semantics, network graphic treatment, and mock/demo presentation are DECISION PENDING (Tracy); do not resolve them independently.
+Stop and ask Tracy before implementation if competing source records require an authoritative choice, local-only data is unavailable and cannot be mounted, the five identities cannot be represented without fabrication, or implementation would require a material scope expansion (API, migration, generic framework, or simulation work). FR-488530 and DJEW-716790 repair work is already underway outside this task and must be verified, not re-decided. Alpha Centauri repair/regeneration and the possible generator completion capability are explicit investigation/test considerations. Moon counting is settled: count every moon as a celestial body, including nested moons. Wormhole graphic treatment remains open until the intended network setup and purpose are clarified. Unsupported mock/demo metrics remain open pending Tracy's direction.
 
 Do not stop merely because optional properties or future simulation refinements are absent; omit/mark them unavailable and record the gap.
 
