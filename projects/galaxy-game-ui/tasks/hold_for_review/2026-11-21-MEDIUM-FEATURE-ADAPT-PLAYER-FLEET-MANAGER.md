@@ -23,13 +23,20 @@ This is a presentation task. Reuse and adapt existing code and patterns; do not 
 - `agent-tasks/projects/galaxy-game-ui/README.md`
 - `agent-tasks/projects/galaxy-game-ui/SESSION_GUIDANCE.md`
 - `galaxyGame/docs/wiki/ui/02_player_view_architecture.md` — “Space context”, “Individual craft tracking workspace and route views”, and “Fleet Manager and distributed fleet operations”
+- `galaxyGame/docs/wiki/player/space_and_surface_operations.md` — authoritative gameplay distinction between spacecraft-based Space Operations and planetary Surface Operations
 - Current Rails 8.1 prototype routes, Player navigation, existing Fleet Manager/EVE Dashboard views and JavaScript, shared layout, CSS, and craft-tracking work.
 
 The main GalaxyGame application is Rails 7; the separate UI prototype is Rails 8.1. Keep the repositories and runtime assumptions distinct. Treat the main app and EVE Dashboard source as read-only references.
 
+## Scope boundary: Space Operations only
+
+This task is specifically the Player interface for spacecraft-based Space Operations. It includes asteroid/small-body harvesting (including EM), atmospheric gas harvesting by spacecraft/skimmers, orbital and asteroid construction/logistics, spacecraft transport, inter-system and in-system travel, and associated rendezvous/resupply.
+
+Planetary Surface Operations are a separate activity model and interface. Surface mining, terrain-based work, surface vehicles/units, settlement/facility surface construction, and surface logistics are out of scope. Shared planning concepts do not make the two contexts one interface. Do not add surface-operation screens or surface-unit management to this Fleet Manager task; the separate Surface Operations design can be addressed independently.
+
 ## Intended behavior and presentation
 
-Use the existing EVE Dashboard Fleet Manager view as the primary layout and interaction reference. Inspect its actual view, scripts, styles, dependencies, and data assumptions before deciding what to reuse. Adapt its labels, content, and behavior to GalaxyGame.
+Use the existing EVE Dashboard Fleet Manager view as the primary layout and interaction reference. EVE Dashboard is the friend's independently developed Python application connected to the EVE Online API; it is not EVE Online itself. Reuse its actual UI/JavaScript patterns, not EVE Online gameplay or backend assumptions. Inspect its actual view, scripts, styles, dependencies, and data assumptions before deciding what to reuse. Adapt its labels, content, and behavior to GalaxyGame.
 
 A GalaxyGame fleet is a group of craft assigned to a shared objective or coordinated operation. Fleet members do not need to be physically together, in formation, or in the same system. They may perform different tasks at separate locations while contributing to the same operation.
 
