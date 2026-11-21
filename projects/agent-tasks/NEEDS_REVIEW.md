@@ -1037,3 +1037,31 @@ Adds to the open questions above; no template or guardrail change is authorized 
 
 **Status**: OPEN. Added for Claude's workflow review. Tracy has emphasized that complete absolute paths are expected in Qwen prompts. The durable placement and any shared-template changes await review; no broader workflow document has been changed in this entry.
 
+---
+
+### 2026-11-20 — Solr security.json credentials in git; credential cycling needed for all Solr projects
+
+**What happened**: While updating `hydra-wvcp` and `hydra_strother` Docker configuration and `.gitignore`, discovered that `solr9-setup/security.json` contains plaintext Solr authentication credentials (user/password hashes) and is committed to git. This applies to both projects. Added to `.gitignore` in both repos to prevent future commits, but existing credentials in git history remain exposed.
+
+**Observed in**: `hydra-wvcp` and `hydra_strother` projects during Docker build fix and `.gitignore` security review (2026-11-20).
+
+**What I already checked**: 
+- Both `hydra-wvcp` and `hydra_strother` have `solr9-setup/security.json` tracked in git
+- Credentials in the file: Solr admin user and Hydra app user with hashed passwords
+- `.gitignore` now excludes `solr9-setup/security.json` going forward
+- Dev/test `.env` files remain in git (intentional; used for local testing setup)
+- Production `.env.hydra` already excluded from git
+- Testing credentials (hydra user password: see the .env.dev files) are confirmed correct in both `.env.dev.local.hydra` and `.env.dev.hydra` files and match the hashed credentials in `security.json`
+
+**What needs a second opinion**: 
+1. **Production credential cycling**: New credentials must be generated and deployed for production use. Testing credentials in the repos can be kept for local Docker development/testing only.
+2. **All Solr projects**: Are there other WVU projects (Hyku, knapsack, etc.) that also have `solr9-setup/security.json` committed? Should they all be audited and gitignored?
+3. **Standard practice**: Should `solr9-setup/security.json` be excluded from git in all future Solr-based projects, with a template file provided instead?
+4. **Template approach**: Would it be better to have `solr9-setup/security.json.example` in git showing the structure, with instructions for local generation/deployment, rather than committing real credentials?
+5. **Git history cleanup**: Should the old test credentials be removed from git history (via force-push or BFG), or are these repos considered low-risk (private, test/dev credentials only)?
+
+**Priority**: MEDIUM-HIGH — security best practice; affects all Solr-based projects; production credentials cycling is immediate action needed.
+
+**Status**: OPEN. `.gitignore` changes applied to both `hydra-wvcp` and `hydra_strother`. Testing credentials confirmed correct and working. Awaiting decision on production credential cycling strategy and audit of other Solr projects.
+
+
