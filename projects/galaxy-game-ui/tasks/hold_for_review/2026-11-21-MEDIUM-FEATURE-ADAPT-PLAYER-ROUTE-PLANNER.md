@@ -23,13 +23,14 @@ The Route Planner is a distinct Player Space capability for creating, saving, an
 - `agent-tasks/projects/galaxy-game-ui/README.md`
 - `agent-tasks/projects/galaxy-game-ui/SESSION_GUIDANCE.md`
 - `galaxyGame/docs/wiki/ui/02_player_view_architecture.md` — “Space context”, “Individual craft tracking workspace and route views”, “Fleet Manager and distributed fleet operations”, and “Player Route Planner”
+- `galaxyGame/docs/wiki/player/space_and_surface_operations.md` — gameplay context for space navigation and the distinction between reusable routes and operational activity plans
 - Current Rails 8.1 prototype routes, Player navigation, existing Chain Map source/view/JavaScript/styles, map components, and any route-related code.
 
 The main GalaxyGame application is Rails 7; the separate UI prototype is Rails 8.1. Keep repositories and runtime assumptions distinct. Treat the main app and EVE Dashboard source as read-only references.
 
 ## Intended presentation and prototype behavior
 
-Use the supplied EVE Dashboard Chain Map screenshot and the actual existing Chain Map implementation as the primary visual and interaction reference. Inspect the source before deciding what to port. Adapt its node-and-connection canvas, pan/zoom, node and connection selection, route highlighting/editing patterns, toolbar, and contextual detail panel where the source supports them.
+Use the supplied EVE Dashboard Chain Map screenshot and the actual existing Chain Map implementation as the primary visual and interaction reference. EVE Dashboard is a separate Python application connected to the EVE Online API; it is a UI/code reference, not a source of EVE Online mechanics or GalaxyGame gameplay rules. Inspect the source before deciding what to port. Adapt its node-and-connection canvas, pan/zoom, node and connection selection, route highlighting/editing patterns, toolbar, and contextual detail panel where the source supports them.
 
 The Route Planner must represent two related routing scales:
 - **Inter-system / wormhole routing:** systems and their available/potential connections, with a route expressed as an ordered sequence of systems and wormhole transitions.
