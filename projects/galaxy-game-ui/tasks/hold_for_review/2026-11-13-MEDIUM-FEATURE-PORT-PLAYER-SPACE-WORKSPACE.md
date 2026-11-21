@@ -27,17 +27,19 @@ This is a presentation/prototype task. Existing JavaScript may be incomplete or 
 
 The main GalaxyGame application is Rails 7. The separate prototype is Rails 8.1. Keep the repositories and runtime assumptions distinct. The main app and EVE Dashboard source are read-only references.
 
-## Intended workspace
+## Intended full-screen structure
+
+Retain the existing persistent GalaxyGame main-game navigation at the far left. Do not replace it with the craft list or duplicate it inside Space. The full screen therefore has four vertical areas: (1) persistent application navigation, followed by the three-pane Space workspace: (2) craft selection, (3) center maps, and (4) selected-craft details. The three workspace panes sit to the right of the persistent navigation.
 
 Use the existing EVE Fleet Manager screenshot as a layout/interaction reference, not as a fleet-management specification.
 
-- **Left pane — craft selection:** selectable list of individual player spacecraft. Do not show two fleets or make fleet grouping the primary selection model.
-- **Center — two stacked maps, both visible simultaneously:**
+- **Left workspace pane — craft selection:** selectable list of individual player spacecraft. Do not show two fleets or make fleet grouping the primary selection model.
+- **Center workspace pane — two stacked maps, both visible simultaneously:**
   1. **Wormhole Network:** inter-system wormhole topology and the selected craft's planned route between systems, including system sequence and wormhole transitions.
   2. **In-System Route:** navigation within the relevant solar system, showing the selected craft, destination, intermediate stops/waypoints and local planned route.
-- **Right pane — selected craft details:** craft identity, operational status, current position, destination, assignment/objective, condition, relevant fuel/resources, cargo, and communication/data freshness where supported. Include the planned route as an ordered list of stops/transitions as well as map lines/markers.
+- **Right workspace pane — selected craft details:** craft identity, operational status, current position, destination, assignment/objective, condition, relevant fuel/resources, cargo, and communication/data freshness where supported. Include the planned route as an ordered list of stops/transitions as well as map lines/markers.
 
-Both maps and the right pane must reflect the same selected craft. Changing craft selection should update the three areas coherently. The maps are independent visualizations with their own map interactions, but are not tabs or mutually exclusive options.
+Both maps and the right pane must reflect the same selected craft. Changing craft selection should update the three areas coherently. The maps are independent visualizations stacked within the center workspace pane, with their own map interactions; they are not full-height columns, tabs, or mutually exclusive options.
 
 ## Reuse and adaptation
 
