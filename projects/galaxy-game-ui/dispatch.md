@@ -61,7 +61,9 @@ Keep the established one-view-at-a-time approach. Do not bundle multiple pages i
 - Do not redo completed work. Verify the current page before writing acceptance criteria.
 - Keep tasks small, direct, and testable. Avoid speculative future scope and generic kickoff/compliance work.
 
-The Player Space workspace task was revised in place while remaining in `hold_for_review/`. Its previous fleet/map assumptions (single Sol map first slice, EVE fleet-map-only fallback, and wormhole map out of scope) are superseded by the current wiki direction: one selected craft, two simultaneously visible vertically stacked maps, and a right-side craft/status/route panel. Do not dispatch the separate general craft-operations-interactions draft as a substitute for this focused Player Space view task.\n\n## Review record and dispatch order
+The Player Space workspace task was revised in place while remaining in `hold_for_review/`. Its previous fleet/map assumptions (single Sol map first slice, EVE fleet-map-only fallback, and wormhole map out of scope) are superseded by the current wiki direction: one selected craft, two simultaneously visible vertically stacked maps, and a right-side craft/status/route panel. Do not dispatch the separate general craft-operations-interactions draft as a substitute for this focused Player Space view task.\n\nThe Player Space individual-craft task remains separate from the new Player Fleet Manager task. The Fleet Manager task captures EVE-inspired fleet-level presentation for distributed operations: fleet membership is based on a shared objective, not physical proximity or formation. Both tasks remain on hold for review and neither is approved for dispatch.
+
+## Review record and dispatch order
 
 Maintain this section as Tracy reviews and decides each task. Only record a disposition after it has been discussed and agreed. Record reviewer instance, model/provider if known, environment, actual access, exact branches/commits and sources inspected, and individual disposition. The task creator is not eligible to review.
 
@@ -72,6 +74,7 @@ Maintain this section as Tracy reviews and decides each task. Only record a disp
 | Superseded | `tasks/drafts/2026-11-19-HIGH-PORT-JSON-LOOKUP-SERVICES.md` — Earth-only lookup | **Merged into order 1** | Do not dispatch independently |
 | Hold | `tasks/hold_for_review/2026-10-23-CRITICAL-LANDING-PAGE-FOR-PUBLIC-ACCESS.md` — legacy landing task | **Retained as historical reference** | Do not dispatch as written |
 | Hold for review | `tasks/hold_for_review/2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-SPACE-WORKSPACE.md` — Player Space individual craft tracking | **Revised 2026-11-21 to match the established stacked-map, single-craft design; not approved for dispatch** | Review the revised task against the updated Player View Architecture wiki before any promotion or dispatch |
+| Hold for review | `tasks/hold_for_review/2026-11-21-MEDIUM-FEATURE-ADAPT-PLAYER-FLEET-MANAGER.md` — Player Fleet Manager distributed operations | **New draft 2026-11-21; not approved for dispatch** | Review against the Fleet Manager section of the Player View Architecture wiki; keep separate from individual craft tracking |
 
 For every reviewed file, record its exact path and one agreed outcome:
 - **Revise in drafts** — update the existing task to reflect current decisions.
