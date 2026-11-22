@@ -163,11 +163,11 @@ State whether the task should be approved for human consideration to move to bac
 
 Copy the block below into every draft-review handoff prompt (human, planning agent, or automated dispatch). It ensures template compliance is always reviewed.
 
-Use `docs/reviews/DRAFT_REVIEW_PROMPT_TEMPLATE.md` as the full dispatch prompt. See `docs/reviews/REVIEWER_ACCESS_GUIDE.md` for choosing the correct access profile and preparing an optional supplied-file package. It includes the block below plus the access block for each agent type (repo-read, repo-read/write, upload-only). Send one draft task per review.
+Use `docs/reviews/DRAFT_REVIEW_PROMPT_TEMPLATE.md` as the full dispatch prompt. See `docs/reviews/REVIEWER_ACCESS_GUIDE.md` for choosing the correct access profile and preparing an optional supplied-file package. It includes the block below plus the access block matching the reviewer's actual session (repository-read, repository-read/write, local checkout, or supplied-package-only). Send one draft task per review.
 
 ```
 5. Template compliance (mandatory): Read TASK_TEMPLATE.md and compare every required section against the draft. Verify: all YAML fields (resume, system_domain, mvp_alignment, local_worker_safe), DRAFT STATUS NOTE, DRAFT REVIEW CHECKLIST, full Agent Dispatch Interface block (not abbreviated), Task Readiness Checklist. Flag any missing sections as REVISE requirements — do not GO if template is non-compliant.
-6. Review package (mandatory): The task file, TASK_TEMPLATE.md and REVIEW_AGENT_GUIDE.md are attached or pasted below, with the commit they came from. If any is missing, ask for it. Do not review from memory or from a link.
+6. Review package (mandatory): The task file, TASK_TEMPLATE.md and REVIEW_AGENT_GUIDE.md must be available from the named repository paths/commit, the identified local checkout, or the supplied package. All three must come from the same agent-tasks commit. If any is unavailable, ask for it. Do not review from memory or an unverified link.
 ```
 
 **Where to use**: Include this in every draft-review dispatch prompt sent to an independent reviewer. Place it alongside your content/architecture review instructions so both are assessed together. If you already have a standard handoff template that ships review prompts (e.g., in PLANNING_AGENT_SESSION_START.md or any handoff template), add the fragment there as well and cross-link from this section.

@@ -76,7 +76,7 @@ PACKAGE (available directly at the named repository paths/commit, in a local che
 If any of the three is missing, ask for it and stop. Follow REVIEW_AGENT_GUIDE.md section "Reviewing Draft Tasks for Scope Approval" exactly: Phase A (template conformance), Phase B (content), and the required ten-section report format. Disposition is GO, REVISE or STOP only. State the package commit in the report.
 
 5. Template compliance (mandatory): Read TASK_TEMPLATE.md and compare every required section against the draft. Verify: all YAML fields (resume, system_domain, mvp_alignment, local_worker_safe), DRAFT STATUS NOTE, DRAFT REVIEW CHECKLIST, full Agent Dispatch Interface block (not abbreviated), Task Readiness Checklist. Flag any missing sections as REVISE requirements. Do not GO if the template is non-compliant.
-6. Review package (mandatory): The task file, TASK_TEMPLATE.md and REVIEW_AGENT_GUIDE.md are attached or pasted, with the commit they came from. If any is missing, ask for it.
+6. Review package (mandatory): The task file, TASK_TEMPLATE.md and REVIEW_AGENT_GUIDE.md must be available from the named repository paths/commit, the identified local checkout, or the supplied package. All three must come from the same agent-tasks commit. If any is unavailable, ask for it.
 
 CONTEXT
 - Objective: [OBJECTIVE: one or two sentences, what the task does and why it exists]
