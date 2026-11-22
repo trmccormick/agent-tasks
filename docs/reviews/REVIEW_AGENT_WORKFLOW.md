@@ -124,4 +124,4 @@ Reviewers control the first step only. Neither reviewer nor implementation agent
 - **Responsibilities and evidence standards**: `<agent-tasks>/REVIEW_AGENT_GUIDE.md`
 - **Closeout procedure**: `<agent-tasks>/SESSION_CLOSEOUT.md`
 
-Do not repeat shared rules here.
+Do not repeat shared rules here. For access-profile selection and optional ZIP packaging, see `REVIEWER_ACCESS_GUIDE.md` in this folder.

@@ -2,7 +2,7 @@
 
 **Applies To**: Any human or planning agent coordinating an independent draft-task review
 **Purpose**: One standard prompt for every reviewer. Access instructions are selected by the actual session capabilities, not by model/provider name.
-**Authority**: Procedure and report format live in `REVIEW_AGENT_GUIDE.md` § "Reviewing Draft Tasks for Scope Approval". This file does not repeat them. It only makes sure the prompt sent is correct.
+**Authority**: Procedure and report format live in the root `REVIEW_AGENT_GUIDE.md` § "Reviewing Draft Tasks for Scope Approval". Access-profile selection and optional ZIP packaging are explained in `REVIEWER_ACCESS_GUIDE.md` in this folder. This file supplies the dispatch prompt; it does not replace either guide.
 
 ---
 
@@ -14,7 +14,7 @@
    2. `TASK_TEMPLATE.md`
    3. `REVIEW_AGENT_GUIDE.md`
 
-   All three must come from the same commit. Repository-capable reviewers can read them at the GitHub paths; do not upload files they can already access. Do not upload `REVIEW_AGENT_WORKFLOW.md` or `REVIEW_REPORT_TEMPLATE.md`; those are for implementation-completion reviews, not draft reviews.
+   All three must come from the same commit. Repository-capable reviewers can read them at the GitHub paths; do not upload files they can already access. Do not add the general review workflow or report template to a draft-review package by default; they are not part of the required three-file draft-review evidence set.
 3. **The prompt is pasted into chat, never uploaded.** It does not count toward the three-file limit.
 4. **Approval target is `backlog/`**, not `active/`. Moving to `active/` happens at dispatch, Step 0 of the Agent Dispatch Interface.
 5. **Reviewers are read-only**, whatever their session permits.
@@ -45,13 +45,17 @@ Tier A and B use the same package. The only difference is how much the reviewer 
 
 ## Pre-send checklist (human or planning agent)
 
-- [ ] Exactly one draft task is attached.
-- [ ] `TASK_TEMPLATE.md` and `REVIEW_AGENT_GUIDE.md` attached, all three from commit `[PACKAGE_COMMIT]`.
+- [ ] Exactly one draft task is under review.
+- [ ] The draft task, `TASK_TEMPLATE.md`, and `REVIEW_AGENT_GUIDE.md` are available from the same `[PACKAGE_COMMIT]` (directly in GitHub/local checkout or in the supplied package).
 - [ ] Every `[PLACEHOLDER]` below is filled. Check: `grep -nE '\[[A-Z_]+\]' <prompt file>` returns nothing.
 - [ ] Exactly one access profile kept, matching the actual session.
 - [ ] Established decisions are separated from open questions.
 
 ---
+
+## Optional supplied ZIP package
+
+Use a ZIP only when the reviewer cannot access the repository in the actual session or when a single packaged upload is materially easier. ZIP is a transport option, not a separate review process. It must contain the same three required artifacts from one agent-tasks commit, plus a short manifest identifying the task, source repository, commit SHA, included files, and any optional supporting files with their own source/revision. Add supporting context only when it materially affects the assigned review; do not routinely include the full wiki, repository, or large code samples. The prompt is still pasted into chat and the reviewer uses Block B. A ZIP does not grant repository access or permit claims of live verification.
 
 ## THE PROMPT (copy from here)
 
@@ -65,7 +69,7 @@ ASSIGNMENT
 - Package commit (all three attached files come from it): [PACKAGE_COMMIT]
 - Decision requested: is this draft ready for Tracy's consideration for promotion from drafts/ to backlog/?
 
-PACKAGE (attached or pasted below; do not review from memory or from a link)
+PACKAGE (available directly at the named repository paths/commit, in a local checkout, or attached as files/a ZIP; do not review from memory or from an unverified link)
 1. [TASK_FILE]
 2. TASK_TEMPLATE.md
 3. REVIEW_AGENT_GUIDE.md
@@ -120,7 +124,7 @@ WRITE LOCK: Your session may allow writing to the repository. You are not author
 ### Block B — supplied-package-only session
 
 ```text
-ACCESS: You have no repository access in this session. Your evidence is limited to the three attached files and this prompt.
+ACCESS: You have no repository access in this session. Your evidence is limited to the three required review artifacts, this prompt, and any optional supporting files explicitly listed in the supplied package manifest.
 - Describe conclusions as "review of supplied evidence." Do not claim to have checked file paths, status.md, other tasks, or the application repo.
 - Mark every path, method name and cross-task dependency you cannot confirm as [FILL IN: needs repo check].
 - If a finding depends on repo state you cannot see, list it under Evidence Boundary and under Human decisions, with the exact file or command a repo-capable session should check.
@@ -131,7 +135,7 @@ ACCESS: You have no repository access in this session. Your evidence is limited 
 
 ## Re-review variant (after REVISE)
 
-Per the guide, the planning agent fixes every listed item in place in `drafts/`, and the reviewer re-checks only the listed items. Use the same package (re-attach the revised task, same template and guide) and replace ASSIGNMENT and the Phase instructions with:
+Per the guide, the planning agent fixes every listed item in place in `drafts/`, and the reviewer re-checks only the listed items. Use the same package method (refresh the revised task, same template and guide; update the manifest/commit if using a ZIP) and replace ASSIGNMENT and the Phase instructions with:
 
 ```text
 RE-REVIEW: Round [1 or 2]. Previous disposition: REVISE on [DATE], package commit [OLD_COMMIT]. Revised draft is from [NEW_COMMIT].

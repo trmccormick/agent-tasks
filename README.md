@@ -99,6 +99,8 @@ Why this matters:
 - `DIRECT_SESSION_TEMPLATE.md` — Standard prompt structure for focused, iterative direct work with a local coding agent
 - `SIMPLE_HANDOFF_TEMPLATE.md` — Minimal dispatch for an already approved formal task
 - `SIMPLE_HANDOFF_TEMPLATE.md` — Concise agent task dispatch format (copy-paste ready)
+- `REVIEW_AGENT_GUIDE.md` — Governing reviewer responsibilities, evidence standards, draft-review procedure, and authority
+- `docs/reviews/` — Review access guidance, optional package/ZIP instructions, prompt, workflow, and report template
 - `COMMUNICATION_PROTOCOL.md` — Agent output formatting rules
 - `SESSION_STRATEGIST.md` — Detailed strategist role definition and workflow
 

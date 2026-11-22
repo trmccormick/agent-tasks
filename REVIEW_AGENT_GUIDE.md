@@ -163,7 +163,7 @@ State whether the task should be approved for human consideration to move to bac
 
 Copy the block below into every draft-review handoff prompt (human, planning agent, or automated dispatch). It ensures template compliance is always reviewed.
 
-Use `templates/DRAFT_REVIEW_PROMPT_TEMPLATE.md` as the full dispatch prompt. It includes the block below plus the access block for each agent type (repo-read, repo-read/write, upload-only). Send one draft task per review.
+Use `docs/reviews/DRAFT_REVIEW_PROMPT_TEMPLATE.md` as the full dispatch prompt. See `docs/reviews/REVIEWER_ACCESS_GUIDE.md` for choosing the correct access profile and preparing an optional supplied-file package. It includes the block below plus the access block for each agent type (repo-read, repo-read/write, upload-only). Send one draft task per review.
 
 ```
 5. Template compliance (mandatory): Read TASK_TEMPLATE.md and compare every required section against the draft. Verify: all YAML fields (resume, system_domain, mvp_alignment, local_worker_safe), DRAFT STATUS NOTE, DRAFT REVIEW CHECKLIST, full Agent Dispatch Interface block (not abbreviated), Task Readiness Checklist. Flag any missing sections as REVISE requirements — do not GO if template is non-compliant.
@@ -279,7 +279,7 @@ Escalate consequential risks and decisions: architectural conflicts, material sc
 ## Referenced Procedures
 
 - **Startup**: `<agent-tasks>/PLANNING_AGENT_SESSION_START.md` — state reconciliation, test-log check, opening briefing
-- **Review workflow**: `<agent-tasks>/REVIEW_AGENT_WORKFLOW.md` — assignment → evidence → targeted review → disposition
+- **Review workflow**: `<agent-tasks>/docs/reviews/REVIEW_AGENT_WORKFLOW.md` — assignment → evidence → targeted review → disposition
 - **Closeout**: `<agent-tasks>/SESSION_CLOSEOUT.md` — status.md maintenance, task lifecycle reconciliation, artifact cleanup
 
 Do not duplicate these procedures in this guide.

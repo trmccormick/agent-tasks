@@ -208,6 +208,7 @@ Optional. They keep the planning agent focused. Not written down elsewhere in ag
 | Planning session start and end | `PLANNING_AGENT_SESSION_START.md`, `PLANNING_AGENT_CLOSEOUT.md` |
 | Research/implementation closeout | `SESSION_CLOSEOUT.md` |
 | Web review agent start | `WEB_AGENT_SESSION_START.md` |
+| Review procedures and access/package guidance | `REVIEW_AGENT_GUIDE.md`, `docs/reviews/README.md` |
 | Task template and dispatch prompts | `TASK_TEMPLATE.md`, `SIMPLE_HANDOFF_TEMPLATE.md` |
 | Current agent and model notes | `notes/AGENT_NOTES.md` |
 | A project's paths and rules | `projects/<project>/SESSION_GUIDANCE.md` |
