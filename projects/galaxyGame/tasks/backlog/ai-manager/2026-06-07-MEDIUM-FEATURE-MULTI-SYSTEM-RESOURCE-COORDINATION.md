@@ -103,7 +103,7 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 ## Local Worker Triage Report
 
 - **Template Conformance**: PASS — updated to the current canonical dispatch and synthesis structure; independent review still required.
-- **Docker Wrapper Check**: NEEDS CONFIRMATION — task provides targeted commands; reconcile the app guide's older `cd /home/galaxy_game` examples with the current task-template instruction that the container working directory is already `/home/galaxy_game`.
+- **Docker Wrapper Check**: PASS — current `rules/GUARDRAILS.md` Rule 1, `projects/galaxyGame/DOCKER_COMMAND_GUIDE.md`, and project Session Guidance specify `docker exec -it web` with the container already at `/home/galaxy_game`; omit `cd`. Older examples in `docs/agent/IMPLEMENTATION_AGENT_README.md` are stale.
 - **MVP Alignment**: VALID — explicitly post-Luna and multi-system; not part of the current Luna operational benchmark.
 - **MVP Impact Note**: Prevents premature network-scale optimization from being built on unvalidated single-settlement and transport scaffolding.
 - **Action Line**: NEEDS MANUAL REVIEW — do not dispatch.
@@ -120,8 +120,9 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 1. Read the agent-tasks repository `README.md` executor guidance and `rules/GUARDRAILS.md`.
 2. Read `projects/galaxyGame/README.md` and `projects/galaxyGame/SESSION_GUIDANCE.md` if present.
 3. Read the GalaxyGame implementation guidance at `docs/agent/IMPLEMENTATION_AGENT_README.md`; resolve the documented Docker-wrapper discrepancy before running specs.
-4. Read the linked wiki pages in the order listed below.
-5. Inspect the current application source and tests at the current `main` commit. Do not rely on this task's historical source snapshot as proof that paths or behavior remain unchanged.
+4. Read `projects/galaxyGame/DOCKER_COMMAND_GUIDE.md` and apply `rules/GUARDRAILS.md` Rules 1 and 3a before running any Rails/RSpec command.
+5. Read the linked wiki pages in the order listed below.
+6. Inspect the current application source and tests at the current `main` commit. Do not rely on this task's historical source snapshot as proof that paths or behavior remain unchanged.
 
 ## Context
 
@@ -397,26 +398,26 @@ These are mandatory; cross-system cases are not optional.
 
 ## Verification Commands
 
-The following targeted spec paths were verified to exist in the repository at the source-review baseline. Reconfirm them against the current branch before execution. The canonical task template currently says the Docker container working directory is already `/home/galaxy_game` and commands must not add a `cd`; the GalaxyGame implementation README contains older examples with `cd /home/galaxy_game`. Resolve this documentation discrepancy against the current project guidance before running tests; do not guess.
+The following targeted spec paths were verified to exist in the repository at the source-review baseline. Reconfirm them against the current branch before execution. The current project guidance and `rules/GUARDRAILS.md` Rule 1 specify that the container working directory is already `/home/galaxy_game`; do not add a `cd`. Older examples in `docs/agent/IMPLEMENTATION_AGENT_README.md` are stale. Use the project Docker command guide and mandatory pre-RSpec check.
 
 Run each command from the host shell. Capture output and preserve the actual exit status:
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec /home/galaxy_game/spec/services/ai_manager/manager_system_orchestrator_integration_spec.rb' > /tmp/rspec-resource-coordination-orchestrator.log 2>&1
+docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/manager_system_orchestrator_integration_spec.rb' > /tmp/rspec-resource-coordination-orchestrator.log 2>&1
 status=$?
 cat /tmp/rspec-resource-coordination-orchestrator.log
 exit "$status"
 ```
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec /home/galaxy_game/spec/services/ai_manager/resource_allocator_spec.rb' > /tmp/rspec-resource-coordination-allocator.log 2>&1
+docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/ai_manager/resource_allocator_spec.rb' > /tmp/rspec-resource-coordination-allocator.log 2>&1
 status=$?
 cat /tmp/rspec-resource-coordination-allocator.log
 exit "$status"
 ```
 
 ```bash
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec /home/galaxy_game/spec/services/logistics/contract_service_spec.rb' > /tmp/rspec-resource-coordination-contracts.log 2>&1
+docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/logistics/contract_service_spec.rb' > /tmp/rspec-resource-coordination-contracts.log 2>&1
 status=$?
 cat /tmp/rspec-resource-coordination-contracts.log
 exit "$status"
@@ -497,6 +498,7 @@ Stop and report evidence; do not improvise or widen scope if:
 
 - **Done so far:** Read the original task and Perplexity's specification review; inspected current GalaxyGame source and wiki on `main`; documented the existing orchestration scaffold and its limitations; updated the coordination wiki and AI Manager wiki on a review branch; rewrote this task on a separate review branch.
 - **Next step:** Independent review of the revised wiki/task package; reconcile any reviewer findings; obtain human approval before merging or dispatching.
+- **Repository path note:** The live task path on GitHub is under `projects/galaxyGame/`; older text inside project guidance refers to `projects/galaxy_game/`. Verify the exact tracked path in the local clone before any lifecycle move; do not create a second project directory.
 - **Last verified fact (with command):** Read-only GitHub source inspection at GalaxyGame commit `9fbb812df08af596e34e5e7d0c3c3055257395b9`; task/template/guide inspection at agent-tasks commit `6803b42be38b4ccd416d00e931cf37eeef949d86`. No application specs or simulation runs were executed.
 - **Local-only commits (git log --oneline origin/main..HEAD):** Not applicable — changes are on GitHub review branches; no local clone inspected.
 - **Owning session / window label:** ChatGPT — multi-system resource coordination modernization, 2026-11-23.
