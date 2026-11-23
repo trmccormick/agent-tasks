@@ -252,6 +252,7 @@ These are verified source paths at the wiki evidence baseline. They are not blan
 | `galaxy_game/app/services/ai_manager/priority_arbitrator.rb` | Request priority arbitration | `arbitrate_requests` |
 | `galaxy_game/app/services/ai_manager/logistics_coordinator.rb` | Candidate transfer optimization/scheduling | `optimize_transfers`, `schedule_transfers` |
 | `galaxy_game/app/services/logistics/contract_service.rb` | Candidate contract execution owner | `create_internal_transfer`, contract execution |
+| `galaxy_game/app/services/logistics/player_contract_service.rb` | Player-visible logistics contract creation called by ContractService | `create_logistics_contract` |
 | `galaxy_game/app/services/logistics/transport_cost_service.rb` | Existing transport cost entry points | `calculate_cost_per_kg`, `calculate_transport_cost` |
 
 ### Reference-only unless the investigation justifies a minimal change
@@ -259,6 +260,7 @@ These are verified source paths at the wiki evidence baseline. They are not blan
 | File | Why |
 |---|---|
 | `galaxy_game/app/services/logistics/internal_transfer_service.rb` | Competing/legacy internal transfer path; determine active call sites and ownership |
+| `galaxy_game/app/services/logistics/player_contract_service.rb` | Player contract path; verify side effects and failure handling |
 | `galaxy_game/app/services/logistics/import_request_generator.rb` | Existing import-request generation; not assumed to be network routing |
 | `galaxy_game/app/services/logistics/route_cost_calculator.rb` | Current simplified route-cost implementation |
 | `galaxy_game/app/models/logistics/contract.rb` | Existing contract state and lifecycle |
