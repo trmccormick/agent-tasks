@@ -12,7 +12,7 @@
 
 This matches the newer [AI Manager module README](https://github.com/trmccormick/galaxyGame/blob/main/galaxy_game/app/services/ai_manager/README.md): cross-settlement and cross-system optimization is deferred until reliable local operations, acquisition, and transport-cost/connectivity inputs exist. The immediate Luna benchmark remains a prerequisite, not a result that can be assumed.
 
-The enduring goal remains valid: coordinate resource surpluses and shortages across settlements and systems without creating a second acquisition system or bypassing logistics, economic, and wormhole rules. The original task should be replaced by smaller dependency-linked drafts after the foundations below are defined.
+The enduring goal remains valid as a later roadmap capability: coordinate resource surpluses and shortages across settlements and systems without creating a second acquisition system or bypassing logistics, economic, and wormhole rules. **This is not the current implementation target.** Multi-system resource coordination remains post-Luna roadmap work and must not drive or pull forward the current AI Manager architecture or Admin workbench prototype.
 
 ## Scope and evidence reviewed
 
@@ -123,22 +123,11 @@ Use these distinctions when preparing successor tasks:
 - Do not change the intra-system TransitEngine boundary or add wormhole physics to this task.
 - Prefer existing SystemOrchestrator and its components over introducing a parallel ResourceCoordinator service without a demonstrated need.
 
-## Recommended successor task sequence
+## Deferred roadmap disposition
 
-Create these as **drafts only**. They are not approved for backlog or dispatch.
+Do not create or dispatch implementation successor tasks from this report now. The current priority is to establish the coherent AI Manager architecture and prototype the Admin AI Manager operational/task-management workflow. Multi-system coordination remains a later roadmap capability, gated by the integrated Luna benchmark and reliable local acquisition, inventory, and transport foundations.
 
-1. **Inventory availability and reservation contract** — define and implement one authoritative available/reserved/committed quantity and atomic reserve/release/consume lifecycle on the existing inventory domain. Decide whether schema is required; remove mock/log-only reservation behavior.  
-   **Unblocks:** acquisition and contract fulfillment.
-2. **Unified per-settlement acquisition pipeline** — reconcile StateAnalyzer → StrategySelector → TaskExecutionEngineV2 → ServiceCoordinator → ResourceAcquisitionService with the pre-player tree and material-data contract. Make shortage detection, facility capability, local production, market/contract acquisition, EAP fallback, and delivery outcomes consistent with the era-specific policy. Do not create a second acquisition engine.  
-   **Depends on:** 1 and the existing material-data contract; the Luna benchmark remains the proof gate.
-3. **Wormhole route/cost input contract** — define a typed, source-grounded interface for route connectivity, direction, stability, remaining capacity, ETA, cost, and failure. Keep it separate from intra-system TransitEngine. No new physical equations or invented constants; stop where current physics leaves inputs unresolved.  
-   **Depends on:** current natural-wormhole design decisions and source-model reconciliation.
-4. **Logistics contract lifecycle** — select one canonical contract model/executor and connect provider selection, inventory reservation, route/cost inputs, cargo movement, delivery/failure, and GCC or NPC/DC ledger settlement. Retire or adapt duplicate status-only paths rather than adding another contract model.  
-   **Depends on:** 1 and 3.
-5. **SystemOrchestrator network coordination** — replace mock state with authoritative settlement snapshots; match surplus/deficit using local priorities and survival buffers; arbitrate against real availability; propose/dispatch through the canonical logistics lifecycle; persist or otherwise explicitly own system state; run once per system tick.  
-   **Depends on:** 2, 3, 4, and a passing single-system Luna benchmark.
-   
-The final task should include an end-to-end acceptance scenario: at least two settlements in one system and two systems connected by a traversable wormhole; a real shortage is fulfilled from a surplus settlement; source stock is reserved; route cost/ETA is grounded; goods arrive and inventory changes; payment/ledger behavior follows policy; and failure/recovery does not duplicate or lose stock.
+When the roadmap is revisited, the prerequisite areas identified here—inventory availability/reservations, per-settlement acquisition, wormhole route inputs, logistics contract fulfillment, and system-level orchestration—can inform a dependency-linked task plan. That future plan must be re-evaluated against the then-current wiki and code; this report is evidence, not authorization to bring the feature forward.
 
 ## Prior audit corrections
 
