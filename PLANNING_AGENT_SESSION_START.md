@@ -133,6 +133,14 @@ tasks/drafts/ → [git commit] → [review agent reads from git] → [human appr
 
 ---
 
+## Legacy Task Modernization and Retirement
+
+When assigned to review or modernize an older task, do not preserve its current structure or scope by default. Treat it as a record of original intent. Follow [TASK_MODERNIZATION_AND_RETIREMENT.md](TASK_MODERNIZATION_AND_RETIREMENT.md): validate the goal against current code, canonical wiki/docs, and project priorities; update authoritative documentation first; route research/design synthesis to a suitable web-based model when that is a better fit than asking Qwen to discover everything; create appropriately sized, dependency-linked replacement tasks in `tasks/drafts/`; then move the original to `tasks/superseded/` with a reason and successor links.
+
+A coherent goal may require several small Qwen tasks. Give Qwen bounded execution tasks with known interfaces, ordered steps, exclusions, and measurable verification. Do not bundle open-ended research, architecture decisions, implementation, documentation, and broad validation into one assignment. Use a web-based model for substantial research, option analysis, requirements clarification, or design planning when useful, and have repository-aware work verify source-specific claims. Do not split tasks mechanically: retain a single task when it is already clear and bounded.
+
+Replacement drafts go through the ordinary independent review and human approval process. Superseding the original does not approve the replacements. Superseded tasks are temporary transition records; periodically remove them once successor work is reviewed and their useful rationale is preserved in canonical docs or a concise history record. The human/planning owner performs cleanup after checking for active references and unresolved dependencies.
+
 ## Synthesis Report Structure — Evidence Framework
 
 A synthesis report proves you understand the project state before taking action. Every claim must be labeled by how it was established:

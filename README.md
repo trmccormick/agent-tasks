@@ -45,6 +45,9 @@ Without reading this first, agents get scope-creep, fabricate results, or miss c
 **Key File**: `status.md` — Living document tracking test baselines, completed work, in-progress tasks, and blockers.
 
 ### Task Files (Shared Backlog Repository)
+
+**Lifecycle and modernization:** New work starts in `tasks/drafts/` and follows independent review plus human approval before backlog. Legacy tasks are modernized by recovering their core intent, updating canonical documentation, decomposing into bounded successor drafts where appropriate, and moving the original to `tasks/superseded/`. Superseded records are transitional and are cleaned up when no longer needed; they are not a permanent archive. See [TASK_MODERNIZATION_AND_RETIREMENT.md](TASK_MODERNIZATION_AND_RETIREMENT.md).
+
 **Location**: `<agent-tasks>/projects/[project_name]/tasks/[backlog|active|completed]/`  
 **Scope**: Formal feature or refactor assignments containing detailed technical specifications.  
 **Status**: Lifecycle tracked via YAML header (`status: backlog` ➔ `status: active` ➔ `status: completed`).
