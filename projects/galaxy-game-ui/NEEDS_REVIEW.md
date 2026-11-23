@@ -143,6 +143,13 @@ Short, active list of items that need a second opinion or a human decision. Prim
 - **Next action:** after the updated generator is available, run the Alpha Centauri comparison/test and recommend whether a “complete existing system” option is useful, what its contract should be, and whether a separate implementation task is warranted.
 
 
+### 19. Git-ignored local JSON copies may duplicate main-game data
+- **State:** OPEN — owner: Tracy; ChatGPT to inspect and recommend; do not delete files until their role is verified.
+- **Detail (REPORTED, Tracy, 2026-11-23):** the UI prototype may still contain locally copied system JSON data even though the relevant paths are now Git-ignored. The remote GitHub tree for `trmccormick/galaxy-game-ui` main was inspected: no tracked top-level `json-data/` tree was found. This remote check cannot reveal ignored or untracked files in Tracy's local checkout.
+- **Architecture decision:** `trmccormick/galaxyGame` remains the authoritative owner of system, celestial-body, generated-system, and mission JSON. The UI prototype uses the main game's API for application integration. Its Docker development mount of the main game's `data/json-data` is read-only and is for local testing/source inspection only; do not copy or maintain a second system-data catalog in the UI repository.
+- **Evidence (VERIFIED, UI prototype main, commit `2270cf0a8595e9e84800f62948cbb58e2cdbfd2e`):** `docs/wiki/interface-and-workflows.md` now states that system views consume data through the main-game API and that local testing may use the main game's `sol-complete.json` and `sol.json` via the read-only mount. `docker-compose.dev.yml` contains a configurable `GALAXY_GAME_REPO_PATH` mount pattern. The complete Compose YAML structure and local path resolution have not yet been verified in Tracy's environment.
+- **Next action:** inspect the local UI checkout with `git status --short --ignored` and list any ignored JSON/data directories. Compare each candidate with `${GALAXY_GAME_REPO_PATH}/data/json-data` (default sibling `../galaxyGame/data/json-data`); classify true duplicates versus legitimate UI-only fixtures. Verify the Compose mount resolves to the authoritative main-game directory and remains read-only. Remove only confirmed duplicate copies after the comparison.
+
 ## RESOLVED
 
 - **1. T3a bookkeeping** — closed by agent-tasks `ccd9ca7` (VERIFIED): T3a moved to `tasks/completed/2026-10/`, T3c `status: drafts`, `status.md` refreshed. T3a code is `b1eb0d3`.
