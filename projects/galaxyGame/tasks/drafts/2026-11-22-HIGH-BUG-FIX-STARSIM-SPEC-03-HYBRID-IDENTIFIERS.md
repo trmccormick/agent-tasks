@@ -136,8 +136,9 @@ After review agent has returned assessment:
 **Priority**: HIGH
 **Type**: bug-fix
 **Created**: 2026-11-22
-**Last Updated**: 2026-11-22
+**Last Updated**: 2026-11-23
 **Author**: Claude (draft for human review)
+**Revision 1 (2026-11-23)**: after review of the four-part set at 50b7d8a: startup reading order now defers to the Agent Dispatch Interface; identifier-scope note; note that the script calls a different hybrid method.
 
 Part 3 of 4. These four parts replace the single task `2026-11-20-HIGH-BUG-FIX-STARSIM-OUTPUT-CONTRACT-SPECS.md`, split into smaller steps. Do the parts in order, one at a time: all four edit the same spec file.
 
@@ -154,8 +155,8 @@ Part 3 of 4. These four parts replace the single task `2026-11-20-HIGH-BUG-FIX-S
 
 ## Prerequisites — READ FIRST (Sequential Order)
 
-1. **Workflow**: `<agent-tasks>/README.md` (EXECUTOR Role section)
-2. **Project Guide**: `<agent-tasks>/projects/galaxyGame/README.md`
+1. **Startup order**: follow the READ FIRST list in the Agent Dispatch Interface above (GUARDRAILS, project README, SESSION_GUIDANCE, then this task file). That list is the mandatory startup contract and takes precedence over any other order.
+2. **Also read**, after those files: `<agent-tasks>/README.md` (EXECUTOR Role section)
 3. **This Task File**: Everything below
 4. **Before starting**: Parts 1 and 2 are finished and the spec file exists in galaxyGame.
 
@@ -398,6 +399,8 @@ Add this `describe` block inside the top-level `RSpec.describe`, after the exist
 ```
 
 Do not edit earlier examples. Do not fix the generator.
+
+Scope notes: the uniqueness example checks all populated identifiers across stars, bodies and moons; the separate "non-empty identifier" example checks only terrestrial planets. Together they do not prove that every body category has an identifier. Also, `scripts/generate_hybrid_system.rb` calls the older name-based `generate_hybrid_system_from_seed`, not the generic method tested here, so these results say nothing about that script's path.
 
 ### Step 3 — Run the file
 

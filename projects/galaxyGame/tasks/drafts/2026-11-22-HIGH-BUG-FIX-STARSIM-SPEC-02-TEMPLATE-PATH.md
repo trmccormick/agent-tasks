@@ -138,7 +138,8 @@ After review agent has returned assessment:
 **Created**: 2026-11-22
 **Last Updated**: 2026-11-23
 **Author**: Claude (draft for human review)
-**Revision 1 (2026-11-23)**: after a review of the four-part set, the sketch now calls the private method `generate_terrestrial_planets` with `send`; no other change.
+**Revision 1 (2026-11-23)**: the sketch calls the private method `generate_terrestrial_planets` with `send`.
+**Revision 2 (2026-11-23)**: after review of the four-part set at 50b7d8a: startup reading order now defers to the Agent Dispatch Interface; the random-stub comment explains the no-argument versus argument calls.
 
 Part 2 of 4. These four parts replace the single task `2026-11-20-HIGH-BUG-FIX-STARSIM-OUTPUT-CONTRACT-SPECS.md`, split into smaller steps. Do the parts in order, one at a time: all four edit the same spec file.
 
@@ -155,8 +156,8 @@ Part 2 of 4. These four parts replace the single task `2026-11-20-HIGH-BUG-FIX-S
 
 ## Prerequisites — READ FIRST (Sequential Order)
 
-1. **Workflow**: `<agent-tasks>/README.md` (EXECUTOR Role section)
-2. **Project Guide**: `<agent-tasks>/projects/galaxyGame/README.md`
+1. **Startup order**: follow the READ FIRST list in the Agent Dispatch Interface above (GUARDRAILS, project README, SESSION_GUIDANCE, then this task file). That list is the mandatory startup contract and takes precedence over any other order.
+2. **Also read**, after those files: `<agent-tasks>/README.md` (EXECUTOR Role section)
 3. **This Task File**: Everything below
 4. **Before starting**: Part 1 is finished and its spec file exists in galaxyGame.
 
@@ -340,8 +341,9 @@ Add this `describe` block inside the existing top-level `RSpec.describe`, after 
     end
 
     before do
-      # `rand < TERRAFORMABLE_CHANCE` is the no-argument call: return 0.0 to take the template
-      # branch, and use real rand for calls with arguments.
+      # `rand < TERRAFORMABLE_CHANCE` is the no-argument call: returning 0.0 takes the template
+      # branch. Calls WITH arguments (ranges, integers) keep using real random numbers. Do not
+      # replace this with a constant return: other code relies on real random values.
       allow(generator).to receive(:rand) { |*args| args.empty? ? 0.0 : Random.rand(*args) }
     end
 

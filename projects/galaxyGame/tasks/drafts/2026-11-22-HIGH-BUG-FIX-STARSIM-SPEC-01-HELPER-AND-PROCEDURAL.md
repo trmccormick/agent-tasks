@@ -136,8 +136,9 @@ After review agent has returned assessment:
 **Priority**: HIGH
 **Type**: bug-fix
 **Created**: 2026-11-22
-**Last Updated**: 2026-11-22
+**Last Updated**: 2026-11-23
 **Author**: Claude (draft for human review)
+**Revision 1 (2026-11-23)**: after review of the four-part set at 50b7d8a: startup reading order now defers to the Agent Dispatch Interface; baseline wording says "before creating the new spec file".
 
 Part 1 of 4. These four parts replace the single task `2026-11-20-HIGH-BUG-FIX-STARSIM-OUTPUT-CONTRACT-SPECS.md`, split into smaller steps. Do the parts in order, one at a time: all four edit the same spec file.
 
@@ -154,8 +155,8 @@ Part 1 of 4. These four parts replace the single task `2026-11-20-HIGH-BUG-FIX-S
 
 ## Prerequisites — READ FIRST (Sequential Order)
 
-1. **Workflow**: `<agent-tasks>/README.md` (EXECUTOR Role section)
-2. **Project Guide**: `<agent-tasks>/projects/galaxyGame/README.md`
+1. **Startup order**: follow the READ FIRST list in the Agent Dispatch Interface above (GUARDRAILS, project README, SESSION_GUIDANCE, then this task file). That list is the mandatory startup contract and takes precedence over any other order.
+2. **Also read**, after those files: `<agent-tasks>/README.md` (EXECUTOR Role section)
 3. **This Task File**: Everything below
 4. **Before starting**: None. This part creates the spec file.
 
@@ -322,7 +323,7 @@ Generated system JSON is not guaranteed to be a valid, consistent contract for t
 
 Follow Step 0 of the Agent Dispatch Interface exactly. Record the outputs in the synthesis report.
 
-### Step 1 — Baseline and environment (before creating any file)
+### Step 1 — Baseline and environment (before creating the new spec file)
 
 Run from the galaxyGame checkout, then record the output in the report:
 
