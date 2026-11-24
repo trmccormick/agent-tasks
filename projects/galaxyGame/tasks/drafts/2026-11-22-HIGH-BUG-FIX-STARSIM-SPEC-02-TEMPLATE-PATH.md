@@ -136,8 +136,9 @@ After review agent has returned assessment:
 **Priority**: HIGH
 **Type**: bug-fix
 **Created**: 2026-11-22
-**Last Updated**: 2026-11-22
+**Last Updated**: 2026-11-23
 **Author**: Claude (draft for human review)
+**Revision 1 (2026-11-23)**: after a review of the four-part set, the sketch now calls the private method `generate_terrestrial_planets` with `send`; no other change.
 
 Part 2 of 4. These four parts replace the single task `2026-11-20-HIGH-BUG-FIX-STARSIM-OUTPUT-CONTRACT-SPECS.md`, split into smaller steps. Do the parts in order, one at a time: all four edit the same spec file.
 
@@ -328,7 +329,7 @@ Confirm `galaxy_game/spec/services/star_sim/procedural_generator_output_contract
 
 ### Step 2 — Add the template-path examples
 
-Add this `describe` block inside the existing top-level `RSpec.describe`, after the existing blocks. Untested sketch: adjust to the real API and say what you changed. If `generate_terrestrial_planets` turns out to be private, call it with `generator.send(:generate_terrestrial_planets, ...)`.
+Add this `describe` block inside the existing top-level `RSpec.describe`, after the existing blocks. Untested sketch: adjust to the real API and say what you changed. `generate_terrestrial_planets` is a private method of the generator (it is defined after the `private` keyword in `procedural_generator.rb`), so the sketch calls it with `send`.
 
 ```ruby
   describe 'template path' do
@@ -345,12 +346,12 @@ Add this `describe` block inside the existing top-level `RSpec.describe`, after 
     end
 
     it 'produces at least one template planet' do
-      planets = generator.generate_terrestrial_planets(3, 'TEST-SYS')
+      planets = generator.send(:generate_terrestrial_planets, 3, 'TEST-SYS')
       expect(planets.select { |p| p['from_template'] }).not_to be_empty
     end
 
     it 'has no key collisions on template planets' do
-      planets = generator.generate_terrestrial_planets(3, 'TEST-SYS')
+      planets = generator.send(:generate_terrestrial_planets, 3, 'TEST-SYS')
       template_planets = planets.select { |p| p['from_template'] }
       expect(template_planets.flat_map { |p| key_collisions(p) }).to eq([])
     end
