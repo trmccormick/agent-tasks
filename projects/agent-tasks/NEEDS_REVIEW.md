@@ -1065,3 +1065,26 @@ Adds to the open questions above; no template or guardrail change is authorized 
 **Status**: OPEN. `.gitignore` changes applied to both `hydra-wvcp` and `hydra_strother`. Testing credentials confirmed correct and working. Awaiting decision on production credential cycling strategy and audit of other Solr projects.
 
 
+
+---
+
+### 2026-11-23 — TASK_TEMPLATE.md: Prerequisites section contradicts the Agent Dispatch Interface
+
+**What happened**: An independent review of four StarSim spec drafts found a startup reading-order conflict. It comes from TASK_TEMPLATE.md itself, so every task created from the template inherits it.
+
+**Observed in**: `TASK_TEMPLATE.md` at origin/main (2026-11-23).
+
+**What I already checked**:
+- Reading order: the Prerequisites section (line 240) lists agent-tasks README, project README, then the task. The dispatch block's READ FIRST (line 124) lists rules/GUARDRAILS.md, project README, SESSION_GUIDANCE.md (if present), then the task. Prerequisites omits GUARDRAILS and SESSION_GUIDANCE.
+- Synthesis report: Prerequisites line 246 says "Synthesis report goes in chat BEFORE starting work". The dispatch block (lines 130, 134) and later sections (lines 348, 374) say to save it as an MD file and give only the path in chat.
+- In the four StarSim drafts the Prerequisites now defer to the dispatch block. The template itself was not changed.
+
+**What needs a second opinion**:
+1. Should the Prerequisites section defer to the dispatch block's READ FIRST list, or be removed as a duplicate?
+2. Which is authoritative for the synthesis report: the MD file (dispatch block) or chat (Prerequisites line 246)?
+3. Should existing backlog and active tasks that copied the old Prerequisites text be corrected, or left as is?
+
+**Priority**: LOW-MEDIUM. Agents follow the dispatch block, so the effect is confusion and conflicting review findings, not wrong work.
+
+**Status**: OPEN. No template or guardrail change is authorized by this entry.
+
