@@ -159,6 +159,19 @@ Short, active list of items that need a second opinion or a human decision. Prim
 - **Current prototype caveat:** the recently added fallback rings are schematic references derived from illustrative fixture positions, not real orbital paths. They must not be mistaken for the target model or treated as validated Sol geometry. Replace/remove that fallback when the real orbital-data path is implemented; actual orbital-element rendering may remain as the shared presentation path.
 - **Next action:** document the domain intent in the main game's astronomy wiki and the prototype-specific rendering/integration intent in the UI wiki; then research authoritative Sol orbital data sources and propose the schema, epoch/frame conventions, generation approach, and validation strategy before implementation tasks are drafted. Keep the main app unchanged until separately authorized.
 
+
+### 21. Craft focus must synchronize the entire Space workspace
+- **State:** OPEN — owner: Tracy; ChatGPT implemented the first UI slice; awaiting Tracy's interaction and visual testing.
+- **Intent confirmed (REPORTED, Tracy, 2026-11-24):** selecting a craft must change the context of the entire Space Operations workspace, not only the selected list row or inspector. In particular, the System View and Galaxy View must follow the craft's reported current system; a system dropdown must not remain a competing context selector.
+- **Prototype implementation (VERIFIED by source read, 2026-11-24):**
+  - Selecting a craft in another system navigates with that craft ID; the controller now gives the selected craft's `location_system_id` precedence over a stale `system_id` parameter and loads that system's fixture.
+  - The toolbar now identifies the active craft and system rather than exposing a separate System focus dropdown.
+  - Galaxy spatial view displays an explicit unavailable state when the focused system has no sourced position in the Sol neighborhood catalog. The Sol-observer constellation chart is also suppressed for non-Sol focus because no observer-specific chart is supplied.
+  - Same-system craft selection refreshes the inspector, network route emphasis, and System View craft marker.
+  - The Wormhole Network retains the broader topology and emphasizes the focused system and craft route; it is not treated as a physical galactic-position map.
+- **Important fixture case:** Eden Scout 01 reports current system `AOL-732356` (Aki Gaia). The fixture provides no sourced galactic coordinates and its local-system fixture has no reported spatial objects. Expected behavior is unavailable Galaxy position, unavailable Sol-observer sky context, and an Aki Gaia System View empty state—not the Sol neighborhood map or stale Sol system objects.
+- **Validation status:** source changes committed to `galaxy-game-ui` main on 2026-11-24. No browser/runtime verification has been performed yet. Confirm selection from both Space Operations and Fleet Manager, switch among Sol-based craft and Eden Scout, verify all panels and the active-focus toolbar, and test return to a Sol craft. Also check contextual map selection after the dropdown removal.
+- **Next action:** Tracy to test the UI and report any remaining context mismatch; then refine selection semantics for system-map navigation and any craft with unknown current location.
 ## RESOLVED
 
 - **1. T3a bookkeeping** — closed by agent-tasks `ccd9ca7` (VERIFIED): T3a moved to `tasks/completed/2026-10/`, T3c `status: drafts`, `status.md` refreshed. T3a code is `b1eb0d3`.
