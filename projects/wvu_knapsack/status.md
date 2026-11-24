@@ -1085,3 +1085,70 @@ Historical work from 2026-08-03 and earlier has been archived to keep status.md 
 
 - **Stop condition:** COMPLETE — Formal implementation session closeout per SESSION_CLOSEOUT.md. All code work finished. Handoff files created for planning agent. No blockers. Ready for planning coordination dispatch.
 
+
+---
+
+## ✅ Session 2026-11-19 — Boot Fix Verified as Pushed; Search Results Investigation Active
+
+**Status**: 🟡 **INVESTIGATION IN PROGRESS** — Root cause (boot error) fixed and pushed; search results diagnosis underway
+
+### VERIFIED FINDINGS [2026-11-19]
+
+#### 1. ✅ `field_config.limit.zero?` Boot Fix Confirmed Pushed
+- **Commit `fb6b56a`** (`fix: Handle boolean limit values in facet configuration check`) is now on `origin/feature/hyku-v7.2.0-upgrade`
+- HEAD matches origin at `4df7de7ef` — all 10+ commits including the fix are pushed
+- **What changed**: `field_config.limit.zero?` → `field_config.limit == 0` in catalog_controller_decorator.rb (line 137)
+- **Why local worked / hykudev failed**: Local was ahead of origin by 4 commits; hykudev tracked `origin/feature/hyku-v7.2.0-upgrade` which didn't have the fix yet
+- **Current status**: Fix is in git — hykudev needs to pull and rebuild using `up` script (not standard docker compose)
+
+#### 2. ✅ Bulkrax Override Committed
+- **Commit `e5d383d`** (`chore: force bulkrax to 10.0.1 via knapsack bundler override`)
+- Created `bundler.d/bulkrax.rb` — overrides bulkrax to 10.0.1 (fixes colon/semicolon metadata separator issue)
+- Wiki entry created at `docs/wiki/BULKRAX_SEPARATOR_ISSUE.md`
+- **Fix**: Bulkrax 10.0.1 resolved the separator issue reported by Sarah
+
+#### 3. ✅ All Recent Commits Pushed to origin/feature/hyku-v7.2.0-upgrade
+```
+4df7de7 docs: Add Hyku 7.2.0 upgrade status and troubleshooting guide
+82d803d docs: document critical production upgrade steps and image caching behavior
+24905e1 docs: document VM permissions for bundler and hyrax-webapp
+e5d383d chore: force bulkrax to 10.0.1 via knapsack bundler override
+7e8a7b0 feat: add safe production upgrade script for Hyku version upgrades
+d37b56b fix: Delete generic_type_sim facet instead of re-adding to avoid Blacklight collision error
+49a69b1 fix: Resolve generic_type_sim race condition and date_created_sim nil safety
+fb6b56a fix: Handle boolean limit values in facet configuration check
+399d4d8 fix: Restore YAML-driven facet configuration and limit application
+f49e39b fix: Restore complete configure_blacklight block in catalog controller decorator
+```
+
+#### 4. 🔍 Search Results Investigation (Active)
+- **Task**: `2026-11-19-HIGH-BUG-HYKU-7.2.0-SEARCH-RESULTS-NOT-DISPLAYING.md` — moved to `active/` by Qwen session
+- **Synthesis report**: `summaries/2026-11-19-INVESTIGATION-SEARCH-RESULTS-DISPLAY.md` (186 lines)
+- **Current blocker**: Boot error must be fixed on hykudev before search results investigation can proceed
+- **Next step for Qwen**: Once hykudev pulls and rebuilds, execute 4-phase investigation: Solr state → Schema → Rails search → View layer
+
+### What Needs Action (Not Auto-Done)
+
+1. **Deploy to hykudev** (human/DevOps): Pull latest `feature/hyku-v7.2.0-upgrade` + rebuild using `up` script
+   ```bash
+   cd /root/wvu_knapsack  # or whatever path hykudev uses
+   git fetch origin
+   git pull origin feature/hyku-v7.2.0-upgrade
+   ./up.sh  # or whatever the up script is named
+   ```
+
+2. **Verify** on hykudev after deploy:
+   - `initialize_app` completes without boot error
+   - Search results display (not just facets)
+
+### Tracking Summary
+
+| Item | Status | Location |
+|------|--------|----------|
+| Boot fix (`fb6b56a`) | ✅ Pushed to origin | `feature/hyku-v7.2.0-upgrade` |
+| Bulkrax override | ✅ Committed | `e5d383d` / `bundler.d/bulkrax.rb` |
+| Search results bug investigation | 🟡 In progress | Task in `active/`, synthesis at 186 lines |
+| Wiki: Bulkrax separator issue | ✅ Created | `docs/wiki/BULKRAX_SEPARATOR_ISSUE.md` |
+| Wiki: HYKU 7.2.0 upgrade status | ✅ Exists | `docs/wiki/HYKU_7.2.0_UPGRADE_STATUS.md` |
+
+---

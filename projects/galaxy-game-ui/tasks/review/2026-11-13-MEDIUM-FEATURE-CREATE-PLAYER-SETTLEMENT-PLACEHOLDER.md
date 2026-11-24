@@ -30,11 +30,11 @@ local_worker_safe: true
 You are **Implementation Agent**.
 
 Project: GalaxyGame UI prototype
-Task: <agent-tasks>/projects/galaxy-game-ui/tasks/backlog/2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-SPACE-WORKSPACE.md
+Task: <agent-tasks>/projects/galaxy-game-ui/tasks/backlog/2026-11-13-MEDIUM-FEATURE-CREATE-PLAYER-SETTLEMENT-PLACEHOLDER.md
 
 STEP 0 — MOVE TASK FILE BEFORE ANYTHING ELSE (no exceptions):
-  git mv projects/galaxy-game-ui/tasks/backlog/2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-SPACE-WORKSPACE.md \
-         projects/galaxy-game-ui/tasks/active/2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-SPACE-WORKSPACE.md
+  git mv projects/galaxy-game-ui/tasks/backlog/2026-11-13-MEDIUM-FEATURE-CREATE-PLAYER-SETTLEMENT-PLACEHOLDER.md \
+         projects/galaxy-game-ui/tasks/active/2026-11-13-MEDIUM-FEATURE-CREATE-PLAYER-SETTLEMENT-PLACEHOLDER.md
   Then open the moved file and change: status: backlog → status: active
   Paste the output of both commands in chat before proceeding.
   Do NOT read the task file content, run any commands, or start synthesis until this is done.
@@ -45,7 +45,7 @@ LIFECYCLE: backlog → active → completed
   - Tracked file: git mv (never cp or plain mv)
   - New/untracked file: mv then git add the final path
   - Never leave stale copies in the source folder
-  - Verify with: find agent-tasks/projects/galaxy-game-ui/tasks -name "2026-11-13-MEDIUM-FEATURE-PORT-PLAYER-SPACE-WORKSPACE.md"
+  - Verify with: find agent-tasks/projects/galaxy-game-ui/tasks -name "2026-11-13-MEDIUM-FEATURE-CREATE-PLAYER-SETTLEMENT-PLACEHOLDER.md"
     Only ONE result should exist. Paste this output before committing.
 
 READ FIRST (after Step 0), in this order:
@@ -64,7 +64,7 @@ Closeout: follow SESSION_CLOSEOUT.md only.
 
 IMPORTANT: Do not modify or abbreviate the text above. The only dispatch-time substitution is <agent-tasks>.
 
-# TASK: Create the Player Space Workspace First Slice
+# TASK: Create the Player Settlement View Placeholder
 **Status**: BACKLOG  
 **Priority**: MEDIUM  
 **Type**: feature  
@@ -90,15 +90,13 @@ The prototype is Rails 8.1 and is separate from the Rails 7 main GalaxyGame appl
 
 ## Context
 
-Build one bounded Sol Space visualization by reusing the existing GalaxyGame renderer where appropriate and adapting only the EVE Dashboard fleet-map behavior that genuinely fits.
+Create a restrained Settlement placeholder for the Player interface. This is a new view; its purpose is to establish a useful visual structure without deciding unfinished gameplay.
 
 ## Relevant Architecture Docs — read before starting
 
 - galaxyGame/docs/wiki/ui/02_player_view_architecture.md
 - galaxy-game-ui/docs/wiki/README.md
-- galaxy-game-ui/docs/wiki/javascript-reuse-and-porting-plan.md
-- galaxy-game-ui/docs/wiki/interface-pattern-references.md
-- galaxy-game-ui/docs/wiki/data-integration-and-migration.md
+- galaxy-game-ui/docs/wiki/screen-concepts-and-wireframes.md
 
 ## Critical Information for This Task
 
@@ -107,15 +105,15 @@ Not required.
 
 ### Architecture Gotchas
 
-**GOTCHA 1:** This is a concrete first slice, not an open-ended audit of EVE Dashboard modules.
+**GOTCHA 1:** Use one planetary sample settlement only; do not design planetary/orbital variants.
 
-**GOTCHA 2:** Use fleet_map.js as the only initial EVE candidate. If it is unavailable or adapting it would require substantial rewriting, skip the EVE interaction pattern and continue with a minimal Sol view using only the GalaxyGame renderer baseline. Report the unavailable source or reason for skipping it; do not invent a substitute.
+**GOTCHA 2:** Keep Settlement, Colony and ownership distinct using current wiki definitions.
 
-**GOTCHA 3:** Do not use chain.js, wealth.js, market.js, assets.js or structures.js.
+**GOTCHA 3:** Do not include leasing NPC connections, outside construction, service-capacity requests, utility trading, surplus power sales or other exploratory concepts, even as labeled mock controls.
 
-**GOTCHA 4:** An in-system solar-system view is distinct from an inter-system wormhole-connection map. Do not substitute one for the other.
+**GOTCHA 4:** Do not introduce district as a defined game concept. Use only grounded terms such as structures, services, utilities and population.
 
-**GOTCHA 5:** Do not import EVE terminology, branding, account data, game rules, backend behavior, route/shortest-path features or fleet gameplay assumptions.
+**GOTCHA 5:** Do not rely on unsettled tier definitions in settlement_infrastructure.md as fixed mechanics.
 
 ### Multi-Domain / Multi-Tenant Routing
 Not applicable. This is a standalone visual prototype task.
@@ -148,7 +146,7 @@ Complete implementation and local verification, then stop and request independen
 
 ## Problem Statement
 
-The Player Space context needs a useful first visual workspace. The main GalaxyGame renderer is the domain baseline; EVE Dashboard may offer a reusable interaction pattern, but its other modules and inter-system map concepts should not be imported indiscriminately.
+The Player interface needs a Settlement destination, but detailed Settlement gameplay and visual rules are still being explored. A placeholder can establish the screen's purpose and layout without turning tentative ideas into requirements.
 
 ## Files Involved
 
@@ -164,10 +162,8 @@ The Player Space context needs a useful first visual workspace. The main GalaxyG
 
 | File | Purpose |
 |---|---|
-| galaxyGame/galaxy_game/app/javascript/system_renderer.js | Read-only reference for GalaxyGame's in-system solar-system rendering baseline. |
-| galaxyGame/galaxy_game/app/assets/javascripts/system_renderer.js | Verify this copy; it was reported as a one-line file and is not presumed to be implementation. |
-| EVE Dashboard checkout: fleet_map.js | Only initial EVE candidate for pan/zoom and marker selection; verify source access and dependencies. |
-| galaxy-game-ui/ current routes, views, assets and navigation | Inspect target prototype and reuse current shell/components. |
+| galaxy-game-ui/ current Player navigation, page layouts and reusable panels | Inspect current conventions and reuse them. |
+| galaxyGame/docs/wiki/ui/02_player_view_architecture.md | Use current wiki as design authority; do not treat exploratory discussion as approved mechanics. |
 
 Do not edit the main GalaxyGame or EVE Dashboard repositories.
 
@@ -188,12 +184,11 @@ Inspect the current prototype branch, routes, layouts, assets and referenced sou
 
 ### Step 2 — Implement the bounded first slice
 
-1. Inspect the prototype and locate the actual GalaxyGame Space/system presentation baseline. Read app/javascript/system_renderer.js; do not assume the similarly named asset-pipeline file is equivalent.
-2. Check whether the EVE Dashboard checkout and fleet_map.js are accessible and whether the relevant interaction code can be adapted without substantial rewriting. If the file is unavailable or would require substantial rewriting, skip the EVE adaptation, continue with the minimal Sol view using only the GalaxyGame renderer baseline, and report the missing path or reason for skipping it. Do not use machine-specific absolute paths or fabricate source.
-3. Create one Sol-focused Space page showing sample bodies, stations and ships. Reuse the GalaxyGame renderer if it fits without substantial rewriting.
-4. If fleet_map.js is available, adapt only its pan/zoom, marker-selection and selected-object-panel interaction pattern. Keep GalaxyGame's in-system representation and terminology.
-5. Use available imported data or clearly labeled mock values. Do not create a new data framework.
-6. Integrate the page into existing Player navigation/shell. Record source provenance, dependencies and EVE-specific terms removed.
+1. Inspect current Player navigation, layouts, reusable panels and visual conventions.
+2. Add a Settlement destination and create one planetary Settlement placeholder page.
+3. Use a high-level management composition: settlement overview, visual/structure area and compact summaries for population, services, utilities and structures only where the wiki supports the terms.
+4. Use clearly marked sample/mock values. Do not create new mechanics, controls, transaction flows or detailed tier rules.
+5. Preserve Settlement/Colony/ownership distinctions and match the existing prototype.
 
 ### Step 3 — Verify
 
@@ -205,20 +200,20 @@ Save required evidence/synthesis artifacts in the task-management repository's p
 
 ## Acceptance Criteria
 
-- [ ] Space is reachable in the Player context.
-- [ ] A Sol view displays representative celestial bodies, stations and ships using GalaxyGame terminology.
-- [ ] If fleet_map.js is available and can be adapted without substantial rewriting, its bounded pan/zoom and selection pattern is used. If it is unavailable or unsuitable, deliver the minimal Sol view using the GalaxyGame renderer baseline alone and report the fallback.
-- [ ] The implementation distinguishes an in-system view from inter-system wormhole connections.
-- [ ] No EVE gameplay rules, backend or live route calculations are introduced.
-- [ ] Record source revisions/provenance and check the page in the running prototype with visual evidence.
+- [ ] Settlement is reachable as one of the four Player contexts.
+- [ ] The page communicates a high-level settlement-management workspace without presenting unfinished mechanics as approved.
+- [ ] Only one planetary sample is shown.
+- [ ] Settlement, Colony and ownership are not conflated.
+- [ ] Mock values are visibly identified.
+- [ ] Check the running prototype at desktop size and report screenshot/evidence and open design questions.
 
 ## Out of Scope
 
-Inter-system wormhole map, chain/pathfinding features, EVE chain/wealth/market/assets/structures modules, orbital simulation, route calculations, backend/API integration and wholesale EVE Dashboard port.
+Finalized Settlement mechanics, leasing/NPC connections, utility markets, power sales, service-capacity rules, orbital variants, backend/API integration, simulation behavior and broad navigation redesign.
 
 ## Stop Conditions — escalate to Tracy immediately if
 
-- A required GalaxyGame source checkout, file or asset is unavailable and no explicitly permitted fallback exists. The EVE Dashboard checkout or fleet_map.js being unavailable is not, by itself, a blocker; use the documented GalaxyGame-only fallback.
+- A required source checkout, file or asset is unavailable and no explicitly permitted fallback exists.
 - Completing the task requires backend/API work, simulation behavior, a new data framework or an unapproved game mechanic.
 - The wiki, code or source data materially conflict about intended behavior.
 - The work requires sourcing/generating/committing new visual assets beyond the stated scope.

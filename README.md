@@ -45,6 +45,9 @@ Without reading this first, agents get scope-creep, fabricate results, or miss c
 **Key File**: `status.md` — Living document tracking test baselines, completed work, in-progress tasks, and blockers.
 
 ### Task Files (Shared Backlog Repository)
+
+**Lifecycle and modernization:** New work starts in `tasks/drafts/` and follows independent review plus human approval before backlog. Legacy tasks are modernized by recovering their core intent, updating canonical documentation, decomposing into bounded successor drafts where appropriate, and moving the original to `tasks/superseded/`. Superseded records are transitional and are cleaned up when no longer needed; they are not a permanent archive. See [TASK_MODERNIZATION_AND_RETIREMENT.md](TASK_MODERNIZATION_AND_RETIREMENT.md).
+
 **Location**: `<agent-tasks>/projects/[project_name]/tasks/[backlog|active|completed]/`  
 **Scope**: Formal feature or refactor assignments containing detailed technical specifications.  
 **Status**: Lifecycle tracked via YAML header (`status: backlog` ➔ `status: active` ➔ `status: completed`).
@@ -99,6 +102,8 @@ Why this matters:
 - `DIRECT_SESSION_TEMPLATE.md` — Standard prompt structure for focused, iterative direct work with a local coding agent
 - `SIMPLE_HANDOFF_TEMPLATE.md` — Minimal dispatch for an already approved formal task
 - `SIMPLE_HANDOFF_TEMPLATE.md` — Concise agent task dispatch format (copy-paste ready)
+- `REVIEW_AGENT_GUIDE.md` — Governing reviewer responsibilities, evidence standards, draft-review procedure, and authority
+- `docs/reviews/` — Review access guidance, optional package/ZIP instructions, prompt, workflow, and report template
 - `COMMUNICATION_PROTOCOL.md` — Agent output formatting rules
 - `SESSION_STRATEGIST.md` — Detailed strategist role definition and workflow
 

@@ -1,6 +1,6 @@
 # Review Report Template — Copy and Customize
 
-Use this template for review artifacts per `REVIEW_AGENT_WORKFLOW.md` §4. Save as `projects/[PROJECT]/summaries/YYYY-MM-DD-REVIEW-[TOPIC].md`. Keep to 1–2 pages.
+Use this template for review artifacts per `docs/reviews/REVIEW_AGENT_WORKFLOW.md` §4. Save as `projects/[PROJECT]/summaries/YYYY-MM-DD-REVIEW-[TOPIC].md`. Keep to 1–2 pages.
 
 ---
 

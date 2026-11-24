@@ -4,9 +4,15 @@
 **Applies To**: Any agent performing planning, research, implementation, or review sessions  
 **Purpose**: Shared responsibilities, authority, and evidence standards
 
-**Agent Selection Note**: Review agents are **web agents** (Claude, Grok, Gemini, ChatGPT, Perplexity). Local models (Qwen/Ollama) and GitHub Copilot are not used for review work. Review requires deep reasoning and judgment over codebase patterns; web agents have superior capabilities for this task.
+**Agent Selection Note**: Reviewers are independent agent instances, not a fixed list of models or providers. Any suitable agent may create or review tasks, including local Ollama models, web agents with GitHub access, and models running through GitHub Copilot in VS Code. Select by the actual session's repository access, local-workspace access, execution tools, context, availability, and required evidence. Model names are examples only; availability changes, and premium Copilot model selection is controlled by Tracy.
 
 ---
+
+## Independent Agent Reviews
+
+The agent instance that creates or materially authors a task is **not eligible to review that task**. It may revise the task in response to findings, but its own assessment is not an independent review and cannot count toward required reviewer coverage. Reviews must be performed by other agent instances. Prefer different models for perspective diversity when practical, but model diversity does not replace instance independence.
+
+The coordinator records each reviewer instance, model/provider when known, environment, actual access, evidence inspected, and disposition. Do not assume a model has a capability merely because another session using it had that capability.
 
 ## Session Activities, Not Permanent Identities
 
@@ -14,15 +20,15 @@ Planning, research, implementation, and review are authorized session activities
 
 ---
 
-## Reviewing Draft Tasks for Scope Approval (Review Agent — Web Agent Only)
+## Reviewing Draft Tasks for Scope Approval (Independent Review Agent)
 
-**When assigned**: Human sends you to review draft task files that planning agents created and committed to git. Planning agent has recommended which review agent would best suit this task based on its needs; you were selected (or human chose from recommendations).
+**When assigned**: You are assigned by the human or review coordinator to review a draft created by a different agent instance. Confirm that you are not the task's creator. Select reviewers based on required evidence coverage and the capabilities actually available in each session; the creator cannot count as a reviewer.
 
 **Your role**: Assess whether the draft task is ready to move from `tasks/drafts/` to `tasks/backlog/`. You provide a GO/REVISE/STOP disposition that informs human approval decision.
 
 ### Review Package (Required Before Review)
 
-Every draft review uses a **three-file package**. The three required artifacts must be attached or pasted into the review request, not supplied as URLs alone:
+Every draft review uses a **three-file package**. The three required artifacts must be available to you. If you have repository access, read them directly from the specified GitHub paths and commit; uploads are not required. If you do not have repository access, they must be attached or pasted:
 
 1. The complete draft task under review.
 2. `TASK_TEMPLATE.md`.
@@ -157,14 +163,14 @@ State whether the task should be approved for human consideration to move to bac
 
 Copy the block below into every draft-review handoff prompt (human, planning agent, or automated dispatch). It ensures template compliance is always reviewed.
 
-Use `templates/DRAFT_REVIEW_PROMPT_TEMPLATE.md` as the full dispatch prompt. It includes the block below plus the access block for each agent type (repo-read, repo-read/write, upload-only). Send one draft task per review.
+Use `docs/reviews/DRAFT_REVIEW_PROMPT_TEMPLATE.md` as the full dispatch prompt. See `docs/reviews/REVIEWER_ACCESS_GUIDE.md` for choosing the correct access profile and preparing an optional supplied-file package. It includes the block below plus the access block matching the reviewer's actual session (repository-read, repository-read/write, local checkout, or supplied-package-only). Send one draft task per review.
 
 ```
 5. Template compliance (mandatory): Read TASK_TEMPLATE.md and compare every required section against the draft. Verify: all YAML fields (resume, system_domain, mvp_alignment, local_worker_safe), DRAFT STATUS NOTE, DRAFT REVIEW CHECKLIST, full Agent Dispatch Interface block (not abbreviated), Task Readiness Checklist. Flag any missing sections as REVISE requirements — do not GO if template is non-compliant.
-6. Review package (mandatory): The task file, TASK_TEMPLATE.md and REVIEW_AGENT_GUIDE.md are attached or pasted below, with the commit they came from. If any is missing, ask for it. Do not review from memory or from a link.
+6. Review package (mandatory): The task file, TASK_TEMPLATE.md and REVIEW_AGENT_GUIDE.md must be available from the named repository paths/commit, the identified local checkout, or the supplied package. All three must come from the same agent-tasks commit. If any is unavailable, ask for it. Do not review from memory or an unverified link.
 ```
 
-**Where to use**: Include this in every draft-review dispatch prompt sent to a web review agent. Place it alongside your content/architecture review instructions so both are assessed together. If you already have a standard handoff template that ships review prompts (e.g., in PLANNING_AGENT_SESSION_START.md or any handoff template), add the fragment there as well and cross-link from this section.
+**Where to use**: Include this in every draft-review dispatch prompt sent to an independent reviewer. Place it alongside your content/architecture review instructions so both are assessed together. If you already have a standard handoff template that ships review prompts (e.g., in PLANNING_AGENT_SESSION_START.md or any handoff template), add the fragment there as well and cross-link from this section.
 
 ---
 
@@ -172,7 +178,7 @@ Use `templates/DRAFT_REVIEW_PROMPT_TEMPLATE.md` as the full dispatch prompt. It 
 
 Tracy (human) authorizes priorities, assignments, dispatch, and scope changes. 
 
-**Planning agents may recommend review agents** based on task needs and agent capabilities. Provide a brief rationale explaining why a particular web agent (Claude, Grok, Gemini, ChatGPT, Perplexity, Office 365 Copilot) would be best suited for assessing a specific draft task. The human can accept the recommendation, select a different agent, or override based on availability/context.
+**Planning agents may recommend independent reviewers** based on required evidence and each candidate session's actual capabilities. Do not restrict recommendations to a fixed model roster. Candidates may include separate Ollama instances, web agents with GitHub access, and currently available GitHub Copilot models in VS Code. State each candidate's environment and verified access. The creator instance is ineligible. Tracy decides whether to use premium Copilot models and may choose a different reviewer based on availability/context.
 
 **Do not assume availability or auto-dispatch** newly drafted tasks — the human makes the dispatch decision.
 
@@ -273,7 +279,7 @@ Escalate consequential risks and decisions: architectural conflicts, material sc
 ## Referenced Procedures
 
 - **Startup**: `<agent-tasks>/PLANNING_AGENT_SESSION_START.md` — state reconciliation, test-log check, opening briefing
-- **Review workflow**: `<agent-tasks>/REVIEW_AGENT_WORKFLOW.md` — assignment → evidence → targeted review → disposition
+- **Review workflow**: `<agent-tasks>/docs/reviews/REVIEW_AGENT_WORKFLOW.md` — assignment → evidence → targeted review → disposition
 - **Closeout**: `<agent-tasks>/SESSION_CLOSEOUT.md` — status.md maintenance, task lifecycle reconciliation, artifact cleanup
 
 Do not duplicate these procedures in this guide.

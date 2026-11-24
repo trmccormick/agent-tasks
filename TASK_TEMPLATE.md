@@ -34,21 +34,19 @@
 #     - Priority = triage at a glance without opening the file.
 #     - No date prefix = task must be reviewed before assignment, may be obsolete.
 #
-# DEPTH GUIDE — how much detail to include per agent tier:
-#   Local Qwen (primary, via GitHub Copilot custom agent config) — explicit file paths,
-#     before/after code, exact docker commands. Has terminal/tool-use access — can run
-#     commands, grep the codebase, and check state beyond just reading this file.
-#   Cloud fallback (paid Copilot agents) — same depth as above, only after two local
-#     failures in fresh local sessions
-#   Claude Sonnet (premium/web) — architecture and strategy only, never implementation.
-#     No filesystem/terminal access — works only from what's pasted into chat.
+# TASK SIZING AND AGENT ROUTING:
+#   One coherent goal may require multiple small, sequential tasks. Do not force a
+#   broad goal into one oversized Qwen assignment. Split work when research, design,
+#   implementation, documentation, or verification are materially distinct.
+#   Qwen tasks should be bounded, explicit, and independently verifiable. Route
+#   substantial research, requirement clarification, option analysis, or architecture
+#   synthesis to a suitable web-based model when that is a better fit; then validate
+#   repository-specific details with a repository-aware agent.
+#   Do not split mechanically: a clear, bounded task may remain one task.
+#   See TASK_MODERNIZATION_AND_RETIREMENT.md.
 #
-# Rule: when in doubt, add more detail. An over-specified task wastes nothing.
-# An under-specified task burns premium requests on clarification.
-#
-# AGENT SELECTION RULE: Always assign to local Qwen (Copilot) first.
-# Only escalate to cloud after two genuine failures in fresh local sessions.
-#
+# DISPATCH INTERFACE STRATEGY (CRITICAL):
+
 # DISPATCH INTERFACE STRATEGY (CRITICAL):
 #   The "Agent Dispatch Interface" section (immediately after YAML) is NOT optional scaffolding.
 #   It is the CONTRACT between human and agent.
