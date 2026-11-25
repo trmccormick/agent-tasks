@@ -1,5 +1,5 @@
 ---
-status: draft
+status: backlog
 resume: false
 priority: HIGH
 type: feature
@@ -129,7 +129,7 @@ After review agent has returned assessment:
 ---
 
 # TASK: Astronomy Shared TAP Base Client
-**Status**: DRAFT  
+**Status**: BACKLOG  
 **Priority**: HIGH  
 **Type**: feature  
 **Created**: 2026-11-25  

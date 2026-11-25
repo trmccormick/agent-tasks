@@ -1,5 +1,5 @@
 ---
-status: draft
+status: backlog
 resume: false
 priority: HIGH
 type: feature
@@ -126,7 +126,7 @@ After independent review and git-aware path verification:
 ---
 
 # TASK: Astronomy NASA Exoplanet Archive Client (Targeted Lookups)
-**Status**: DRAFT  
+**Status**: BACKLOG  
 **Priority**: HIGH  
 **Type**: feature  
 **Created**: 2026-11-25  
