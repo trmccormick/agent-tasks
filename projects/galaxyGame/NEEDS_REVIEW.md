@@ -272,8 +272,6 @@ this file should stay small. Historical detail stays in dated handoffs and the a
 
 **Status**: OPEN — implementation wiring and runtime behavior are not yet verified; no code changes or tests performed in this audit.
 
-
-
 ### 2026-11-24 — Evidence-based game-start snapshot and StarSim initial celestial positions
 
 **Owner clarification**: A new universe should start from known real-world information as of the actual game-creation date/time, then advance on the accelerated game clock. Use authoritative data where available; derive constrained values where possible; generate only unavailable information. Preserve the source, epoch, assumptions, and generation seed. This same baseline principle applies to markets and other real-world starting information where it can be mapped meaningfully to the game economy.
@@ -300,3 +298,22 @@ this file should stay small. Historical detail stays in dated handoffs and the a
 **Scope guardrails**: This is a review/planning item for the main GalaxyGame implementation. Do not implement StarSim ephemeris ingestion, spatial schema changes, runtime position updates, or market-data ingestion as part of the UI prototype task. Keep the UI's temporary orbit-derived starting positions clearly display-only. Do not treat a randomized UI phase as a physical Sol position.
 
 **Status**: OPEN — current importer creates zero placeholders and does not establish authoritative initial/current celestial positions; no main-app implementation changes or tests performed for this item.
+
+### 2026-11-24 — Mk1 skimmer / mixed volatiles: open design items and Item/Inventory code findings (from wiki work)
+**What needs review**: Items left open after the 2026-11-18 and 2026-11-23 wiki sessions on `docs/wiki/logistics/skimmer_and_mixed_volatiles.md`. Related to, but not part of, the 2026-11-10 Venus HLT entry above.
+
+**Owner decisions now in the wiki** (REPORTED, Tracy, 2026-11-23; commit `7f9d392`): the Venus Mk1 fits CO₂ processing and no gas separation (not enough ports for both); a gas separator fit exists only in the draft Titan harvesting configuration, in place of the CO₂ unit; all other captured gases stay in the mixed cargo; the CO from the CO₂ split can be vented, stored in a dedicated tank (reserve one of the four tanks, or add one), or left in the mix; further separation is done at settlements and depots; `gas_handling_policy` applies only to advanced craft, not the Mk1; the Mk2 is expected to process better but is at draft stage.
+
+**Still OPEN (owner/wiki, not code)**:
+1. Dedicated CO tank: add a tank versus reassign one of the four existing tanks (wiki bullet "Optional CO storage configuration").
+2. Mk2 processing design (draft only); the amount of "some variation" in batch composition; `molar_mass` on the Mixed Volatiles item; the home for the generic transfer service (REPORTED in the 2026-11-18 handoff, not rechecked).
+3. Source reconciliation, nothing changed: the Venus mission phase file calls for three gas separators plus two CO₂ splitters, while the recommended fit lists only the splitters; the port limit above supports the recommended fit. The Venus harvester data copy seen in the 2026-11-18 session (REPORTED; source path not confirmed) has `gas_handling_policy` storing O₂/N₂/CO with an empty `vent` list, which the owner says does not apply to the Mk1.
+4. The "Goal arrival state at Luna ... valid commercial loop" paragraph on the skimmer page (from `9b2e870`) still has no DIRECTION/ESTABLISHED INTENT label or date (VERIFIED at galaxyGame `bae387e`, line 58).
+
+**Code findings** (for when backend work resumes; no code changed):
+- VERIFIED at `bae387e`: `Inventory#remove_item` builds `metadata ->> 'key' = 'value'` by string interpolation, so it cannot match a nested `composition` hash and is injectable SQL. `Item#stackable_with?` compares composition only for names starting "Processed". `items.amount` is decimal(10,2) while atmosphere gas masses are floats. `perform_raw_transfer` delivers 98% and treats the rest as "lost in transit".
+- REPORTED (handoff, verified at `8fd62da`, not rechecked): `Inventory#store_in_inventory` matches on exact name, owner and metadata, so two batches with different compositions become two items; `Item#add_quantity` changes only `amount`. Neither merges gas masses per constituent.
+- Decide when backend resumes: merge semantics for the single Mixed Volatiles item (add each gas's mass), parameterized `remove_item` lookup, and rounding.
+
+**Priority**: MEDIUM — wiki items are small; code items matter once the Venus loop work resumes.
+**Status**: OPEN — items 1–4 await owner decisions; code findings ON HOLD while galaxy_game backend work is paused (REPORTED, Tracy, 2026-11-11). Not awaiting Claude review.
