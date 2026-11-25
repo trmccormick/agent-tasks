@@ -1,14 +1,16 @@
 # Galaxy Game — Project Status & Task Tracking
-**Last Updated:** 2026-10-26 — portal wiki consolidation planning task created, approved (Grok GO), moved to backlog/current/, ready for implementation dispatch
+**Last Updated:** 2026-11-21 — StarSim output contract specs task reviewed and approved (GO), status.md updated below
 
 > **NOTE**: Session narrative belongs in handoff docs, not here. This file is a fast
 > snapshot only. Do not add verbose session summaries above Active Tasks.
 
-### Current Snapshot (2026-10-26)
-- **agent-tasks**: clean; `main` == `origin/main` at `2039411` (portal wiki consolidation planning task complete)
-- **galaxyGame**: clean; `main` == `origin/main`; no divergence
+### Current Snapshot (2026-11-21)
+- **agent-tasks**: clean; `main` == `origin/main`; StarSim output contract specs task reviewed (GO), approved for dispatch
+- **galaxyGame**: clean; `main` at `5a348d68` (rake task for batch star system generation); no divergence
 - **Active tasks**: 1 file (`active/asset-ui/2026-09-06-HIGH-FEATURE-ASSET-GENERATION-STANDALONE-EXECUTION.md`)
-- **Backlog/current**: 1 file (`2026-10-26-MEDIUM-DOCUMENTATION-PORTAL-WIKI-CONSOLIDATION.md`, status: backlog, ready for dispatch)
+- **Backlog/current**: 2 files
+  - `2026-10-26-MEDIUM-DOCUMENTATION-PORTAL-WIKI-CONSOLIDATION.md` (status: backlog, ready for dispatch)
+  - `act02-local-bubble-expansion/2026-11-20-HIGH-BUG-FIX-STARSIM-OUTPUT-CONTRACT-SPECS.md` (status: backlog, **READY FOR DISPATCH** — review GO)
 - **Drafts**: 14 files under `tasks/drafts/` (includes 4 catalog_image containment drafts: parent + A/B/C; all backlog, resume false)
 - **Untracked**: 5 items from paused sessions (left untouched per PLANNING_AGENT_CLOSEOUT.md Rule 6)
 
@@ -692,6 +694,7 @@ This section preserves session records, known issues, and completed work from pr
 | Task | Location | Notes |
 |------|----------|-------|
 | ~~**Epoxy Resin Blueprint**~~ | `completed/2026-08/2026-08-20-HIGH-DATA-CREATE-EPOXY-RESIN-BLUEPRINT.md` | ✅ COMPLETED (blueprint created) — sourcing structure insufficient; see rework task below |
+| **StarSim Output Contract Specs** | `backlog/act02-local-bubble-expansion/2026-11-20-HIGH-BUG-FIX-STARSIM-OUTPUT-CONTRACT-SPECS.md` | 🆕 **READY FOR DISPATCH** (review GO) — writes specs that expose duplicate-key and identifier bugs in StarSim procedural generator; test-only task, no application code changes |
 | **Epoxy Resin Sourcing Rework** | `backlog/current/2026-09-02-HIGH-DATA-REWORK-EPOXY-RESIN-SOURCING-STRUCTURE.md` | 🆕 HELD for review — rework flat-string sourcing to per-location structure + add production path placeholder; follows existing `regolith_composite.json` pattern |
 | **Fabrication Plant Blueprint** | `backlog/current/2026-08-20-HIGH-DATA-CREATE-FABRICATION-PLANT-BLUEPRINT.md` | DEFERRED (Phase 11+) — blueprint drafted but premature; git tracking violated standing convention and was reverted; do not re-dispatch until Phase 11+ work begins |
 | **Orbital Mechanics Data Layer** | `completed/2026-09/2026-08-19-HIGH-FEATURE-ORBITAL-MECHANICS-DATA-LAYER.md` | ✅ ALL 5 PHASES COMPLETE (7880f9f6)
