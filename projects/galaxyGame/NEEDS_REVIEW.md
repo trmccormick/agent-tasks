@@ -272,3 +272,31 @@ this file should stay small. Historical detail stays in dated handoffs and the a
 
 **Status**: OPEN — implementation wiring and runtime behavior are not yet verified; no code changes or tests performed in this audit.
 
+
+
+### 2026-11-24 — Evidence-based game-start snapshot and StarSim initial celestial positions
+
+**Owner clarification**: A new universe should start from known real-world information as of the actual game-creation date/time, then advance on the accelerated game clock. Use authoritative data where available; derive constrained values where possible; generate only unavailable information. Preserve the source, epoch, assumptions, and generation seed. This same baseline principle applies to markets and other real-world starting information where it can be mapped meaningfully to the game economy.
+
+**Current source findings (read-only inspection of `trmccormick/galaxyGame` main)**:
+- `StarSim::SystemBuilderService` imports star and celestial-body records but does not calculate current astronomical positions.
+- `CelestialBodies::CelestialBody` creates a `Location::SpatialLocation` record at `(0,0,0)` when one is absent. That is a placeholder, not an ephemeris result.
+- `CelestialBodies::Star` does not currently have a matching spatial-location association/callback.
+- The current `Location::SpatialLocation` schema/model has no explicit position-validity marker or calculated-at/source metadata. Record existence and finite coordinates therefore cannot distinguish a placeholder from a genuine valid origin.
+- Sol source JSON contains orbital elements for many bodies but no current Cartesian coordinates. Generated-system JSON contains orbit definitions and may omit phase information. The importer does not currently turn these inputs into initial positions or persist a coherent current spatial state.
+- Existing source data is heterogeneous: curated Sol may use meter-based `orbital_elements`; generated records may use AU-based `orbits`; distance-only fields also exist. Parent-body references must be respected for moons.
+- The UI prototype now derives temporary display-only starting positions from available orbital distance, using a stable body/system-derived pseudo-random phase when phase is absent. This is a presentation fallback, not StarSim implementation and must not be mistaken for authoritative simulation state.
+
+**What needs review / implementation planning**:
+1. Define the new-universe initialization snapshot and epoch: default to the real-world current date/time at game creation, store it explicitly, and advance from that baseline using the accelerated game clock. Clarify how users may choose a historical/future start date if that becomes supported, without changing the default.
+2. For Sol, identify and ingest authoritative ephemerides for the game-start epoch (Sun, planets, and available moons). Record source/provider, retrieval/validity epoch, coordinate frame, origin, units, precision, and transformations. Known current positions always take precedence over randomized phases.
+3. For bodies without valid current coordinates, calculate a starting position on the available orbit. Use the orbit around the star/system reference for planets and the orbit around the parent planet for moons. If orbital phase/epoch is known, calculate phase for the game-start epoch. If genuinely unknown, select a random phase within the valid orbit and retain the seed/phase for reproducibility. If only orbital distance is known, use a clearly marked circular-orbit approximation; do not invent a period or dynamics without sufficient central-mass/other inputs.
+4. Reconcile supported source schemas and units (`orbital_elements`, `orbits`, `distance_from_star`, `star_distances`, parent/moon nesting). Confirm which distances are heliocentric, which are parent-relative, and their units before converting. Do not mistake a star-distance measurement for a complete orbital solution.
+5. Establish an explicit validity/provenance contract for `Location::SpatialLocation` and its API representation. Distinguish uninitialized placeholders from calculated coordinates, including a genuine valid origin position. Include calculated-at game time, frame/origin/units, and source/derived/generated status as appropriate.
+6. Define runtime position advancement from authoritative game time. Initial snapshot values and evolving current positions must remain distinct from immutable source JSON/orbital inputs. Browser clients consume current positions and frame metadata; they do not calculate authoritative ephemerides.
+7. Apply the same known → derived → generated initialization policy to market/economic starting data where a meaningful real-world mapping exists. Identify defensible sources and normalization for commodity prices, FX, and other indicators; preserve provenance; do not let external feeds continuously overwrite a running universe's simulated markets.
+8. Add tests for source precedence, epoch/phase handling, unit conversions, parent-relative moon placement, reproducible random fallback, explicit position validity, and game-clock advancement. Verify runtime persistence/API behavior rather than relying only on importer unit tests.
+
+**Scope guardrails**: This is a review/planning item for the main GalaxyGame implementation. Do not implement StarSim ephemeris ingestion, spatial schema changes, runtime position updates, or market-data ingestion as part of the UI prototype task. Keep the UI's temporary orbit-derived starting positions clearly display-only. Do not treat a randomized UI phase as a physical Sol position.
+
+**Status**: OPEN — current importer creates zero placeholders and does not establish authoritative initial/current celestial positions; no main-app implementation changes or tests performed for this item.
