@@ -1088,3 +1088,26 @@ Adds to the open questions above; no template or guardrail change is authorized 
 
 **Status**: OPEN. No template or guardrail change is authorized by this entry.
 
+### 2026-11-25 — EVE Dashboard OAuth client secret committed in project documentation
+
+**What happened**: During review of the EVE Dashboard project records, a live-looking EVE OAuth client secret was found in plaintext in three tracked Markdown files in `projects/eve-dashboard/`. This is configuration/credential material and should never have been copied into the codebase or project documentation. The OAuth client secret belongs in a local environment/configuration file (for example, an ignored `.env` file or the application's existing ignored credentials file), with only variable names and non-secret placeholders documented in tracked examples. The credential was not repeated in this entry.
+
+**Observed in**: `trmccormick/agent-tasks`, EVE Dashboard project review, 2026-11-25.
+
+**What I already checked**:
+- **VERIFIED**: GitHub search found the same secret in three tracked files: `projects/eve-dashboard/tasks/backlog/DISPATCH_README.md`, `projects/eve-dashboard/summaries/2026-09-04-PHASE2-INFRASTRUCTURE-SYNTHESIS.md`, and `projects/eve-dashboard/tasks/completed/2026-09-04-MEDIUM-FUNCTIONAL-TEST-EVE-OAUTH-AND-MINING-CONFIG.md`.
+- **VERIFIED**: The secret is present in committed documentation, not merely in a local untracked file. Removing it from the current versions will not remove it from Git history.
+- **NOT YET VERIFIED**: Whether the credential is still active, whether it was also committed to the EVE application repository or other branches, and whether any additional credentials were exposed in related files/history.
+- **NOT YET DONE**: No credential has been rotated; no files, branches, or Git history have been changed.
+
+**What needs a second opinion (security review)**:
+1. Confirm the safest rotation sequence for the EVE developer application: replace/rotate the exposed client secret first, update the local ignored environment/configuration file, and verify OAuth login before treating the old credential as retired.
+2. Audit the EVE Dashboard application repository and the relevant `agent-tasks` files/history for additional secrets or copied credential values. Do not print any discovered secret in review output or new documentation.
+3. Remove the secret from the three current documentation files, replacing it with a variable reference and a clearly non-secret placeholder in any tracked example. Verify that the actual runtime configuration reads the value from an ignored local environment/configuration file; do not introduce or commit a real `.env` file.
+4. Decide whether Git history cleanup is warranted after rotation. If history is rewritten, coordinate all affected repositories/branches and explain the required fetch/reset or reclone steps; do not force-push without explicit approval.
+5. Check ignore rules and templates so future credentials are stored locally and never included in source code, task files, summaries, handoffs, screenshots, or commits.
+
+**Priority**: HIGH — an OAuth client secret is exposed in tracked repository history; rotate promptly if still active.
+
+**Status**: OPEN. Tracy asked to add this to the agent-tasks review queue and cycle it through review. No credential rotation, file cleanup, history rewrite, or application configuration change is authorized by this entry alone.
+
