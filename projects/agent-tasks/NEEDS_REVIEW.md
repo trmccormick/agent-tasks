@@ -1090,7 +1090,7 @@ Adds to the open questions above; no template or guardrail change is authorized 
 
 ### 2026-11-25 — EVE Dashboard OAuth client secret committed in project documentation
 
-**What happened**: During review of the EVE Dashboard project records, a live-looking EVE OAuth client secret was found in plaintext in three tracked Markdown files in `projects/eve-dashboard/`. This is configuration/credential material and should never have been copied into the codebase or project documentation. The OAuth client secret belongs in a local environment/configuration file (for example, an ignored `.env` file or the application's existing ignored credentials file), with only variable names and non-secret placeholders documented in tracked examples. The credential was not repeated in this entry.
+**What happened**: During review of the EVE Dashboard project records, a live-looking EVE OAuth client secret was found in plaintext in three tracked Markdown files in `projects/eve-dashboard/`. Tracy clarified that she did not put the secret there; an agent likely copied it while documenting or configuring OAuth. Her established practice is to keep credentials in a dedicated local environment folder, exclude that folder in `.gitignore`, and have Docker Compose load the local `.env` files. The newly assembled EVE Dashboard Docker setup did not follow that established pattern. The secret should never have been copied into source code, task files, summaries, handoffs, screenshots, or other tracked documentation. The credential was not repeated in this entry.
 
 **Observed in**: `trmccormick/agent-tasks`, EVE Dashboard project review, 2026-11-25.
 
@@ -1105,9 +1105,11 @@ Adds to the open questions above; no template or guardrail change is authorized 
 2. Audit the EVE Dashboard application repository and the relevant `agent-tasks` files/history for additional secrets or copied credential values. Do not print any discovered secret in review output or new documentation.
 3. Remove the secret from the three current documentation files, replacing it with a variable reference and a clearly non-secret placeholder in any tracked example. Verify that the actual runtime configuration reads the value from an ignored local environment/configuration file; do not introduce or commit a real `.env` file.
 4. Decide whether Git history cleanup is warranted after rotation. If history is rewritten, coordinate all affected repositories/branches and explain the required fetch/reset or reclone steps; do not force-push without explicit approval.
-5. Check ignore rules and templates so future credentials are stored locally and never included in source code, task files, summaries, handoffs, screenshots, or commits.
+5. **Restore the established local configuration pattern**: use a dedicated local environment folder, exclude it in `.gitignore`, and load the required files through Docker Compose `env_file` (or the appropriate existing runtime mechanism). Tracked examples should contain placeholders only. Do not create a second, inconsistent credential-storage convention for this project.
+6. **Add preventive safeguards for agent-authored changes**: review the app's configuration and Docker setup, add an automated secret scan (for example, Gitleaks or an equivalent) to the development/commit workflow, and add checks or explicit agent instructions that reject real credential values in tracked files. The safeguard should catch accidental additions before they are committed; do not rely on agents remembering not to paste secrets.
+7. Check ignore rules and templates so future credentials are stored locally and never included in source code, task files, summaries, handoffs, screenshots, or commits.
 
 **Priority**: HIGH — an OAuth client secret is exposed in tracked repository history; rotate promptly if still active.
 
-**Status**: OPEN. Tracy asked to add this to the agent-tasks review queue and cycle it through review. No credential rotation, file cleanup, history rewrite, or application configuration change is authorized by this entry alone.
+**Status**: OPEN. Tracy clarified that the exposure was likely caused by an agent and that the project's established standard is a gitignored local environment folder loaded by Docker Compose; the newly assembled setup should be brought back into line with that standard. Review and propose the code/configuration and agent-workflow safeguards before implementation. No credential rotation, file cleanup, history rewrite, or application configuration change has yet been performed.
 
