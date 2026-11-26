@@ -8,12 +8,17 @@ mvp_alignment: OTHER
 local_worker_safe: true
 ---
 
-## Agent Dispatch Interface
+## 🔴 Agent Dispatch Interface (Required — copy this EXACTLY to send to agent)
+
+**This section is MANDATORY and NON-NEGOTIABLE. Do not edit, abbreviate, paraphrase, or summarize.**
+Agents receive this exact text as the startup contract. Every word matters.
+
+**One allowed substitution:** before dispatch, replace `<agent-tasks>` with the absolute path of the agent-tasks clone on the machine that will run the task (run `pwd` from the repo root). Fill `[project_name]`, `[project]`, `[SUBFOLDER]` and `[FILENAME]` in the file when the task is drafted, so the block carries no other placeholders at dispatch; the only substitution made at dispatch is `<agent-tasks>`. If the project's backlog is flat (no subfolders), omit the `[SUBFOLDER]/` segment from the paths. Change nothing else.
 
 ```
 You are **Implementation Agent**.
 
-Project: eve-dashboard
+Project: EVE Dashboard
 Task: <agent-tasks>/projects/eve-dashboard/tasks/backlog/market/2026-11-26-MEDIUM-DOCUMENTATION-MARKET-RESTORATION-INVENTORY.md
 
 STEP 0 — VERIFY, STAGE IF NEEDED, THEN MOVE WITH GIT MV:
