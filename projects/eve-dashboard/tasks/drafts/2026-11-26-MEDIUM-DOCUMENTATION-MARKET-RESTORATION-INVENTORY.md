@@ -99,6 +99,21 @@ Identify the actual current branch and working-tree state before inspecting file
 
 ## Required investigation
 
+### Expanded application and integration research
+
+Do not treat the old Market page as an isolated feature. The application has continued to evolve, and the Settings page documents several external data flows. Inventory the current application capabilities and shared infrastructure that may already solve, constrain, or inform Market restoration.
+
+Inspect the latest relevant code and commit history available in the local clone, not just the original Market implementation. In particular, trace and classify:
+
+- ESI infrastructure: request cache, ETag/304 handling, per-route rate-limit handling, error-limit protection, retry behavior, user-agent identification, pagination, sync coordination, and live update/event mechanisms.
+- Market-related ESI capabilities: character open orders and history, corporation orders and history, regional orders, regional history, global market prices, structure markets, market groups, and the current scopes/permissions needed for each. Record which capabilities the app currently requests, calls, stores, or does not use.
+- Price providers and consumers: Fuzzwork calls, ESI market prices/history, Jita valuation, PI Planner regional prices/history, Notes item/fit appraisals, Assets, Wealth, and any other price-dependent feature. Follow the actual data path and cache/table used by each consumer. Do not assume the Settings disclosure means all market data is sent to Fuzzwork.
+- Other external services and privacy/data flows named in Settings, including zKillboard, EVE-Scout, and the Pixel Nexus server. Record what data leaves the PC, what is returned, whether character IDs or order-level data are transmitted, and whether the disclosure is broader than the Market feature.
+- Adjacent capabilities that could be reused or affect boundaries: wallet archive/transactions, mining ledger, Notes, PI Planner, asset valuation, names/SDE lookup, notification/alert infrastructure, and multi-character sync.
+- EVE/ESI changes since the Market branch was created, including rate-limit and cache policy changes, API compatibility/versioning guidance, changed scopes or endpoint behavior, and any relevant current SDE/API specification changes. Distinguish official CCP guidance from third-party documentation.
+
+For every finding, identify the exact source path and function (or official source URL), whether it is present on the current local branch, the reference branch, or both, and whether it is directly relevant, reusable infrastructure, a future possibility, or out of scope for initial restoration. Do not expand the initial restoration scope merely because an endpoint or feature exists.
+
 1. Confirm the checked-out branch and working-tree status. Preserve all existing changes.
 2. Compare the current branch with `local/improvements` for Market-specific files and relevant integration points:
    - Market module and templates/static assets.
@@ -123,6 +138,9 @@ Identify the actual current branch and working-tree state before inspecting file
    - unverified / requires runtime reproduction.
    Do not implement fixes.
 7. Produce a narrow, ordered restoration plan. Each proposed follow-on task must have one coherent goal, explicit dependencies, exact likely file boundaries, and a small verification plan suitable for local Qwen.
+8. Inventory the broader current application and its external data flows as described in **Expanded application and integration research**. Explicitly answer whether the old Market page sends any order-level or character-specific data to Fuzzwork; trace the source code rather than relying on the Settings summary.
+9. Identify relevant post-Market-branch changes and shared infrastructure that a restoration must preserve or reuse. Record ESI caching/rate-limit constraints and current API compatibility guidance, and distinguish character-order retrieval from regional market-order retrieval.
+10. List potentially available Market capabilities (including historical orders, corporation orders, regional prices/history, and structure markets) separately from the agreed initial open-orders restoration scope. Note required scopes/roles and any unresolved product decisions without silently adding them to scope.
 
 ## Deliverable
 
@@ -132,6 +150,8 @@ Create `projects/eve-dashboard/summaries/2026-11-26-MARKET-RESTORATION-INVENTORY
 - A branch comparison table listing Market-related paths and their status.
 - A verified end-to-end data-flow description for each branch (or clearly identified gaps).
 - Current ESI scopes and feature-toggle integration points.
+- A broader application/integration inventory showing price data sources and consumers, third-party data flows/privacy boundaries, and reusable adjacent infrastructure.
+- A capability matrix separating currently implemented, available through ESI but unused, reference-branch-only, and future/out-of-scope Market capabilities.
 - Database tables/helpers/indexes involved.
 - Routes, response payloads, UI capabilities, and existing tests.
 - A findings matrix for the four legacy Market records listed above.
@@ -158,6 +178,9 @@ Do not create or edit wiki pages in this task. The existing Market intent page i
 - [ ] Market-related implementation differences are documented with verified paths.
 - [ ] Open-orders data flow is traced end to end or gaps are explicitly named.
 - [ ] ESI scope, feature toggle, DB, sync, route, UI, and test integration points are identified.
+- [ ] Fuzzwork, ESI market data, and all known price consumers are traced; Market order data flow to third parties is explicitly verified or marked unverified.
+- [ ] Relevant ESI rate-limit, caching, and compatibility-date requirements are checked against current official guidance.
+- [ ] Existing adjacent capabilities and possible Market extensions are inventoried separately from initial restoration scope.
 - [ ] Legacy task claims are classified by current evidence and separated from out-of-scope work.
 - [ ] At least one small, ordered follow-on task sequence is proposed and mapped to wiki sections.
 - [ ] No files outside the required synthesis report are changed.
