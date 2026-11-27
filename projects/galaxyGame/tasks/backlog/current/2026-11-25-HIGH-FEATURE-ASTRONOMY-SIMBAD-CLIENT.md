@@ -318,12 +318,15 @@ Follow the Agent Dispatch Interface Step 0 exactly.
 
 ### Step 1 — Stage 2 investigation
 Confirm base client path and public API; propose SIMBAD methods and ADQL shape; confirm no live-network plan. Record in synthesis. **STOP for human approval before Step 2.**
+Propose the result shape (raw response preserved in body; identity fields in a clearly informal structure, no schema) and the response format. State where format and column knowledge comes from. Use stdlib only (Gemfile changes are a stop condition).
 
 ### Step 2 — Implement SIMBAD client
 Targeted lookup only; on HTTP 2xx with zero rows, return successful transport with empty/no-match (unknown)—do not set transport error_kind; retain identity/astrometry fields when present; delegate HTTP to base client.
 
 ### Step 3 — Specs
 Stub base client or HTTP boundary. Cover: success with identity fields; HTTP 2xx empty/no-match (still success, not unavailable); at least one transport failure path via base taxonomy. Zero live SIMBAD calls.
+Inline one sample response in the spec; no new fixture files. Add a case where the base client returns success with a nil body; the SIMBAD client must treat it as empty/unknown.
+Spec the alias case: a response with several aliases keeps all of them, not just the first.
 
 ### Step 4 — Verify
 ```bash
@@ -347,6 +350,7 @@ Do not commit.
 - [ ] `git status --short` evidence shows only Files Involved (+ optional astronomy helper); no star_sim/mapping/lookup edits.
 - [ ] No cache, provenance schema, or DB migration.
 - [ ] Synthesis report saved; no agent commit/push.
+- [ ] Identifiers interpolated into ADQL have single quotes escaped by doubling; no raw interpolation. A spec covers a name containing a single quote.
 
 ---
 

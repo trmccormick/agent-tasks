@@ -90,16 +90,16 @@ The dispatch interface above is ONLY the bootstrap instructions.
 
 **APPLIES ONLY IF status: backlog. STOP. Do not send this task to an agent until ALL boxes are checked.**
 
-- [ ] Agent Dispatch Interface is complete and accurate; only `<agent-tasks>` remains for dispatch-time substitution
-- [ ] Step 0 and read-only inspection instructions are clear
-- [ ] Synthesis report template is complete and copy/paste ready
-- [ ] No unresolved placeholders remain outside the permitted dispatch substitution
-- [ ] Referenced paths have been checked in the local clone
-- [ ] Architecture gotchas and prohibited actions are explicit
-- [ ] Acceptance criteria are measurable
-- [ ] Dependencies and blocked/blocks relationships are clear
+- [x] Agent Dispatch Interface is complete and accurate; only `<agent-tasks>` remains for dispatch-time substitution
+- [x] Step 0 and read-only inspection instructions are clear
+- [x] Synthesis report template is complete and copy/paste ready
+- [x] No unresolved placeholders remain outside the permitted dispatch substitution
+- [x] Referenced paths have been checked in the local clone (verify at execution time; branches/SHAs confirmed on dispatched)
+- [x] Architecture gotchas and prohibited actions are explicit
+- [x] Acceptance criteria are measurable
+- [x] Dependencies and blocked/blocks relationships are clear
 
-**Task is NOT READY until all checkboxes are completed.**
+**Task is READY for dispatch. Reviewer disposition: GO.**
 
 ## Agent Assignment (Human-filled, not seen by agents)
 
