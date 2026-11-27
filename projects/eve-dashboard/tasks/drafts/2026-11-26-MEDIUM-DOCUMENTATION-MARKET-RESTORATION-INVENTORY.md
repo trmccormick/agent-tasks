@@ -267,7 +267,7 @@ Read-only inspection only. First locate and record the application repository pa
 
 ### Allowed commands
 
-Use read-only inspection commands only, for example:
+After the dispatch block's prescribed Step 0 task-file lifecycle move and YAML status update, use read-only inspection commands only, for example:
 - `pwd`, `ls`, `cat`, `grep`
 - `git status --short`, `git rev-parse`, `git log`, `git show`, `git diff`, `git ls-tree`
 - Read-only inspection of tracked files at already available refs, such as `git show <ref>:<path>`
@@ -277,6 +277,8 @@ Record exact commands and relevant outputs in the synthesis report. Do not use c
 ### Prohibited actions
 
 Do not run `git checkout`, `switch`, `restore`, `fetch`, `pull`, `worktree add`, `rebase`, `merge`, `cherry-pick`, `reset`, `stash`, `clean`, `commit`, or `push` during investigation. Do not modify, stage, or delete application files. Do not run Docker, the application, a database, migrations, tests, package installs, build commands, or scripts. Do not make live ESI/API/network requests. Do not inspect or reproduce secret values. Never copy credentials, tokens, cookies, private keys, or `.env` values into the report. Do not edit the Market wiki, existing tasks, `status.md`, or other project records; only the task lifecycle move/YAML and the required synthesis/closeout artifacts are permitted.
+
+## Implementation Steps (Read-only investigation)
 
 ### Investigation steps
 
