@@ -153,7 +153,7 @@ Prefer after Task 1 (and ideally 2–3) exist so paths/class names are accurate;
 1. Dispatch Interface READ FIRST list.
 2. `<agent-tasks>/README.md` (EXECUTOR Role)
 3. This task file
-4. `galaxy_game/docs/wiki/astronomy/system_blueprints.md`
+4. `docs/wiki/astronomy/system_blueprints.md`
 5. `galaxy_game/app/services/star_sim/system_generator_service.rb` and `galaxy_game/app/services/lookup/star_system_lookup_service.rb` (read-only)
 6. Any files under `galaxy_game/app/services/astronomy/` if present
 
@@ -259,7 +259,7 @@ Without an explicit boundaries doc, later agents may wire clients early, invent 
 
 ### In scope
 - Create **one** of:
-  - `galaxy_game/docs/wiki/astronomy/shared_services_integration_boundaries.md` (preferred), or
+  - `docs/wiki/astronomy/shared_services_integration_boundaries.md` (preferred), or
   - `galaxy_game/docs/architecture/astronomy/...` only if that tree is already the project norm — choose one; do not duplicate.
 - Content:
   1. Service inventory (base TAP, SIMBAD, NASA EA) and intended consumers (StarSim, mapping/Galaxy View)
@@ -283,12 +283,12 @@ Without an explicit boundaries doc, later agents may wire clients early, invent 
 ### Primary Files
 | File | Purpose |
 |---|---|
-| `galaxy_game/docs/wiki/astronomy/shared_services_integration_boundaries.md` (or chosen architecture path) | New boundaries doc |
+| `docs/wiki/astronomy/shared_services_integration_boundaries.md` (or chosen architecture path) | New boundaries doc |
 
 ### Reference Files
 | File | Why |
 |---|---|
-| `galaxy_game/docs/wiki/astronomy/system_blueprints.md` | Authority + optional one-line cross-link |
+| `docs/wiki/astronomy/system_blueprints.md` | Authority + optional one-line cross-link |
 | `galaxy_game/app/services/astronomy/*` | Implemented vs planned naming |
 | `galaxy_game/app/services/star_sim/system_generator_service.rb` | Consumer entry context |
 
@@ -342,7 +342,7 @@ Inventory astronomy services; propose exact doc path and outline. **STOP for hum
 > Reviewer GO + explicit human commit auth; separate push auth. Host-only git. Add only the doc file(s) touched.
 
 ```bash
-git add galaxy_game/docs/wiki/astronomy/shared_services_integration_boundaries.md
+git add docs/wiki/astronomy/shared_services_integration_boundaries.md
 git commit -m "docs: astronomy shared services integration boundaries"
 ```
 

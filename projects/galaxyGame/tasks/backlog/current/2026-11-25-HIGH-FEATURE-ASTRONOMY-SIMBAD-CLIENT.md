@@ -151,7 +151,7 @@ Provider client that depends on the shared TAP base client (`2026-11-25-HIGH-FEA
 1. **Startup order**: follow the READ FIRST list in the Agent Dispatch Interface above.
 2. **Also read**: `<agent-tasks>/README.md` (EXECUTOR Role section)
 3. **This Task File**
-4. **Owner architecture**: `galaxy_game/docs/wiki/astronomy/system_blueprints.md` — SIMBAD role, OPEN decisions (schema, cache, matching).
+4. **Owner architecture**: `docs/wiki/astronomy/system_blueprints.md` — SIMBAD role, OPEN decisions (schema, cache, matching).
 5. **Hard dependency**: Shared TAP base client from Task `2026-11-25-HIGH-FEATURE-ASTRONOMY-SHARED-TAP-BASE-CLIENT` must exist under `galaxy_game/app/services/astronomy/`. If missing after Stage 2 investigation, STOP and report — do not reimplement the base client in this task.
 
 ---
@@ -163,7 +163,7 @@ SIMBAD is the owner-confirmed source for object identity and cross-identificatio
 Transport, timeout, and error kinds (`timeout` / `unavailable` / `unsuccessful`) come from the shared base client. Do not invent a second taxonomy unless documenting a pure extension.
 
 **Relevant Architecture Docs**:
-- `galaxy_game/docs/wiki/astronomy/system_blueprints.md`
+- `docs/wiki/astronomy/system_blueprints.md`
 - Base client under `galaxy_game/app/services/astronomy/` from Task 1
 
 ---
@@ -300,7 +300,7 @@ Optional documented helper under `galaxy_game/app/services/astronomy/` only if n
 | File | Why |
 |---|---|
 | `galaxy_game/app/services/astronomy/base_tap_client.rb` | Transport + error taxonomy |
-| `galaxy_game/docs/wiki/astronomy/system_blueprints.md` | Owner constraints |
+| `docs/wiki/astronomy/system_blueprints.md` | Owner constraints |
 | `galaxy_game/spec/services/astronomy/base_tap_client_spec.rb` | Spec conventions from Task 1 |
 
 ### Migration

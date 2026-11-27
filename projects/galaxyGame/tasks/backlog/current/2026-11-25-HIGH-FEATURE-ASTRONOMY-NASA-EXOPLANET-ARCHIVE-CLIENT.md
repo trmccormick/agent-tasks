@@ -151,7 +151,7 @@ Provider client that depends on the shared TAP base client. Independently review
 1. **Startup order**: follow the READ FIRST list in the Agent Dispatch Interface above.
 2. **Also read**: `<agent-tasks>/README.md` (EXECUTOR Role section)
 3. **This Task File**
-4. **Owner architecture**: `galaxy_game/docs/wiki/astronomy/system_blueprints.md` — NASA Exoplanet Archive role, OPEN decisions.
+4. **Owner architecture**: `docs/wiki/astronomy/system_blueprints.md` — NASA Exoplanet Archive role, OPEN decisions.
 5. **Hard dependency**: Shared TAP base client from Task `2026-11-25-HIGH-FEATURE-ASTRONOMY-SHARED-TAP-BASE-CLIENT` must exist under `galaxy_game/app/services/astronomy/`. If missing after Stage 2, STOP — do not reimplement the base client.
 
 ---
@@ -161,7 +161,7 @@ Provider client that depends on the shared TAP base client. Independently review
 NASA Exoplanet Archive supplies confirmed exoplanets and host parameters via TAP. Confirmed tables are not exhaustive; missing planet row ≠ proof no planets exist. Prefer modern TAP tables (e.g. `ps` with `default_flag=1`). Use base-client error taxonomy.
 
 **Relevant Architecture Docs**:
-- `galaxy_game/docs/wiki/astronomy/system_blueprints.md`
+- `docs/wiki/astronomy/system_blueprints.md`
 - Base client under `galaxy_game/app/services/astronomy/`
 
 ---
@@ -297,7 +297,7 @@ Optional documented helper under `galaxy_game/app/services/astronomy/` only if n
 | File | Why |
 |---|---|
 | `galaxy_game/app/services/astronomy/base_tap_client.rb` | Transport + errors |
-| `galaxy_game/docs/wiki/astronomy/system_blueprints.md` | Owner constraints |
+| `docs/wiki/astronomy/system_blueprints.md` | Owner constraints |
 | `galaxy_game/app/services/import/nasa_dem_importer.rb` | Confirm non-coupling (read only) |
 
 ### Migration
