@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 resume: false
 priority: HIGH
 type: feature
