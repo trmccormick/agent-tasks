@@ -317,3 +317,16 @@ this file should stay small. Historical detail stays in dated handoffs and the a
 
 **Priority**: MEDIUM — wiki items are small; code items matter once the Venus loop work resumes.
 **Status**: OPEN — items 1–4 await owner decisions; code findings ON HOLD while galaxy_game backend work is paused (REPORTED, Tracy, 2026-11-11). Not awaiting Claude review.
+
+
+### 2026-11-27 — Structure equipment engineering and Surface drill-down draft tasks
+**What happened**: Four new draft tasks were created for the GalaxyGame project: (1) installed equipment and operational data audit, (2) structure and settlement engineering aggregation, (3) power and thermal capacity research, and (4) Player Surface structure selection and equipment drill-down research. These capture the agreed distinction between equipment-level properties, an individual structure's aggregate readout, and the separate settlement-wide roll-up. A structure is a reusable equipment container whether it is an orbital station, surface building, factory, agricultural dome, or installation inside a lava tube.
+**What I already checked**: The task files were created on main in projects/galaxyGame/tasks/drafts/ by commit 4154aac6377df20f26b4c32b3d54a17dc1060861 (VERIFIED in the preceding session). All are marked draft; none was dispatched or authorized for implementation. The engineering sequence is data audit first, aggregation second, then power/thermal capacity research. The Surface UI task is research-only and must remain aligned with the shared structure/equipment hierarchy.
+**What needs a second opinion**: Review whether the four scopes are narrow and correctly separated; confirm the dependency order and whether any task overlaps existing work; ensure structure-level aggregation is not conflated with settlement-level aggregation; and check that the Surface task researches how the existing Player Surface experience exposes the reusable hierarchy without prematurely specifying a different data model. Coordinate the structure-level data contract with the separate galaxy-game-ui prototype task.
+**Task files**:
+- [Installed equipment and operational data audit](tasks/drafts/2026-11-27-MEDIUM-ARCHITECTURE-INSTALLED-EQUIPMENT-DATA-AUDIT.md)
+- [Structure and settlement engineering aggregation](tasks/drafts/2026-11-27-MEDIUM-ARCHITECTURE-STRUCTURE-SETTLEMENT-AGGREGATION.md)
+- [Power and thermal capacity research](tasks/drafts/2026-11-27-MEDIUM-ARCHITECTURE-POWER-THERMAL-CAPACITY-RESEARCH.md)
+- [Player Surface structure selection and equipment drill-down research](tasks/drafts/2026-11-27-MEDIUM-RESEARCH-PLAYER-SURFACE-STRUCTURE-DRILLDOWN.md)
+**Next action**: Review the data-audit task first. Use its verified findings to refine the aggregation and power/thermal tasks before dispatch. Review the Surface task against the current Player Surface architecture and coordinate with the prototype task; do not dispatch either UI task until their boundaries and shared hierarchy are clear.
+**Status**: OPEN — draft review only; no task dispatched and no implementation authorized.
