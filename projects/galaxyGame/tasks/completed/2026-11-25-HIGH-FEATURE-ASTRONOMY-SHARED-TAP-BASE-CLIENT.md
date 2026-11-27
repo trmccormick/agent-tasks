@@ -1,5 +1,5 @@
 ---
-status: active
+status: completed
 resume: false
 priority: HIGH
 type: feature
