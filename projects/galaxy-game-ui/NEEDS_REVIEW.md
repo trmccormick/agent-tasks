@@ -174,6 +174,16 @@ Short, active list of items that need a second opinion or a human decision. Prim
 - **Validation status:** JavaScript syntax and source checks pass. No browser/runtime rendering or Rails controller tests have been performed. Confirm selection from Space Operations and Fleet Manager; verify Sol and Aki Gaia neighborhood states, star-centered Aki map, planet rings, moon-parent ring, and return to Sol.
 - **Next action:** Tracy to test the current UI and report visual mismatches. Before presenting Aki Gaia's rings as physical orbital paths, load verified generated-system orbital elements with provenance; do not promote schematic fixture positions into physical data.
 
+
+### 2026-11-27 — Reusable structure detail and equipment drill-down draft task
+- **State:** OPEN — draft review only; not approved for dispatch or implementation.
+- **What happened:** A separate prototype task was created to research a reusable Structure Detail workspace for the galaxy-game-ui application. It covers selecting a structure and drilling down through its installed units, modules, rigs, and equipment, with structure-level engineering summaries and navigation back to its containing installation/settlement. The same experience should apply to orbital stations, surface buildings, factories, agricultural domes, and lava-tube installations; location changes the environmental context, not the fundamental equipment hierarchy.
+- **What I already checked:** The task file was created on main in projects/galaxy-game-ui/tasks/drafts/ by commit 4154aac6377df20f26b4c32b3d54a17dc1060861 (VERIFIED in the preceding session). It is marked draft and has not been dispatched. The main GalaxyGame project has a corresponding Surface structure drill-down research task, while three other GalaxyGame drafts establish the underlying equipment data, aggregation, and power/thermal requirements.
+- **What needs a second opinion:** Confirm that this prototype task stays focused on UI research and screen/workspace behavior; it must consume the shared engineering hierarchy and distinguish an individual structure's readout from settlement-wide totals. Check that it does not duplicate the existing Space workspace task or the main-app Surface research task, and that mock data is not presented as an approved backend/API contract. Coordinate its information hierarchy with the GalaxyGame engineering tasks without blocking independent prototype research.
+- **Task file:** [Reusable structure detail and equipment drill-down workspace](tasks/drafts/2026-11-27-MEDIUM-RESEARCH-REUSABLE-STRUCTURE-DETAIL-WORKSPACE.md)
+- **Next action:** Review the task boundary against existing prototype workspaces and the GalaxyGame Surface research task. Keep it in draft until reviewed; no implementation or API contract is authorized.
+- **Status:** OPEN — draft only.
+
 ## RESOLVED
 
 - **1. T3a bookkeeping** — closed by agent-tasks `ccd9ca7` (VERIFIED): T3a moved to `tasks/completed/2026-10/`, T3c `status: drafts`, `status.md` refreshed. T3a code is `b1eb0d3`.
