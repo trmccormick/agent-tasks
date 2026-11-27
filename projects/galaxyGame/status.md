@@ -1091,3 +1091,10 @@ This section preserves session records, known issues, and completed work from pr
 - **Committed:** galaxyGame `7fbc1baa`; agent-tasks `2bec64b` (task start and report). `d1b19ed0` (rake task for batch star system generation) was already committed locally by Tracy before this session and went out in the same push; not this session's work (`git log --oneline cab2f621..7fbc1baa`). Spec result 37 examples, 0 failures from the Docker command in the report (REPORTED from Tracy's pasted output and `~/scratch/tap-rspec.txt`).
 - **Not committed:** this entry and the move to `completed/`, until Tracy commits them. `generate_systems.sh` is untracked in the galaxyGame root, left as-is, not this task.
 - **Stop condition:** none; the task is finished. Next: the SIMBAD client, NASA Exoplanet Archive client and integration-boundaries tasks in `backlog/current/` depend on this client; dispatch only when Tracy decides. Owner: Tracy.
+
+---
+## 📝 Session Log — 2026-11-27 (Astronomy shared services integration boundaries doc — written, reviewed, committed)
+- **Changed:** galaxyGame `docs/wiki/astronomy/shared_services_integration_boundaries.md` (new, 87 lines) and a see-also line in `docs/wiki/astronomy/system_blueprints.md` (`git show --stat 5ec5d4df`: 2 files, 89 insertions). agent-tasks: synthesis report `projects/galaxyGame/summaries/2026-11-26-DOCUMENTATION-ASTRONOMY-INTEGRATION-BOUNDARIES.md` and the task moved to `completed/`. Also fixed `galaxy_game/docs/wiki` to `docs/wiki` in the three astronomy API task files.
+- **Committed:** galaxyGame `5ec5d4df` (pushed). This entry, the report and the task move are committed together in agent-tasks.
+- **Not committed:** none from this task. `generate_systems.sh` is untracked in the galaxyGame root, left as-is.
+- **Stop condition:** none; the task is finished. Next: review the SIMBAD and NASA Exoplanet Archive client tasks in `backlog/current/` and dispatch one at a time. Owner: Tracy.
