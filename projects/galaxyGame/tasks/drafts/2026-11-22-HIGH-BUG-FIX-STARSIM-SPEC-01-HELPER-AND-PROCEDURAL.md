@@ -137,6 +137,7 @@ After review agent has returned assessment:
 **Type**: bug-fix
 **Created**: 2026-11-22
 **Last Updated**: 2026-11-27
+**Revision 3 (2026-11-27)**: Address independent review M1–M4 — Part 1 failure model (not expected-fail), Gotcha 2 aligned with sketch, AC relative to Step 1 baseline, Stage 2 human approval before creating the spec.
 **Revision 2 (2026-11-27)**: Post shared-astronomy-API landing. Backlog destination set to `tasks/backlog/current/`. Explicit non-goals: no SIMBAD/NASA/StarSim enrichment wiring; contract specs only. Notes relationship to completed astronomy clients and still-OPEN design items.
 **Author**: Claude (draft for human review)
 **Revision 1 (2026-11-23)**: after review of the four-part set at 50b7d8a: startup reading order now defers to the Agent Dispatch Interface; baseline wording says "before creating the new spec file".
@@ -179,11 +180,16 @@ This four-part series remains **generator output-contract specs only**. Do **not
 
 ## Context
 
-StarSim (`galaxy_game/app/services/star_sim/procedural_generator.rb`) writes star-system JSON that a UI data loader will read. Generated systems have shown duplicate JSON keys (`"atmosphere"` and `:atmosphere` on the same hash) and duplicate or missing identifiers in the hybrid (known data plus generator) path. This task writes specs only; fixing the generator is a separate, later task. Specs that expose a bug are EXPECTED to fail on current code.
+StarSim (`galaxy_game/app/services/star_sim/procedural_generator.rb`) writes star-system JSON that a UI data loader will read. Generated systems have shown duplicate JSON keys (`"atmosphere"` and `:atmosphere` on the same hash) and duplicate or missing identifiers in the hybrid (known data plus generator) path. This task writes specs only; fixing the generator is a separate, later task.
 
 **What this part does**: Create the new spec file with a duplicate-key helper and check that the procedural (no template) path has no key collisions.
 
-**Expected result on current code**: All three examples PASS on current code. They are the helper and regression guards for later parts.
+**Expected result on current code (Part 1 only)**: All three examples **PASS**. They are helper and regression guards for later parts.
+
+**Failure model (Part 1)**: Do **not** use the series-wide “expected to fail” language here. That applies to **Parts 2–4** where contract examples may expose known generator bugs. For Part 1:
+- A failure of a **helper** example is a **spec defect** — fix it inside the spec file only (do not change application code).
+- A failure of the **procedural-path** example is an **unexpected finding** — report the exact message, escalate, and do **not** fix the generator or commit.
+- Do not mark examples pending or skipped to force a green run.
 
 **Relevant Architecture Docs** (context only): `docs/architecture/starsim/OVERVIEW.md`, `docs/architecture/starsim/PROCEDURAL_INTENT.md` (galaxyGame).
 
@@ -196,12 +202,17 @@ None.
 
 ### Architecture Gotchas
 
-⚠️ **GOTCHA 1**: Specs only
-- Do not change application code. A reproducible, expected failure is a valid result, not a reason to stop, retry or repair. Do not mark examples pending or skipped.
+⚠️ **GOTCHA 1**: Specs only (Part 1 failure model)
+- Do not change application code.
+- Part 1 expects all three examples to **PASS**. “Expected failure is valid” applies to **Parts 2–4**, not this part.
+- Helper failure → fix the **spec** only. Procedural-path failure → report and escalate; do not fix the generator or commit.
+- Do not mark examples pending or skipped.
 
-⚠️ **GOTCHA 2**: No local data files
-- The spec must not read or write `data/json-data`. Seeds are written to a temporary directory and templates are inline (the generator normally loads templates from local, untracked JSON files, so `load_terraformable_templates` is stubbed in the shared setup).
-- Do not copy the existing spec's `allow(File).to receive(:open)` line.
+⚠️ **GOTCHA 2**: No local data files / align stubs with the sketch
+- The spec must not read or write `data/json-data` (or leave new files under tracked paths).
+- The **starting sketch** uses `templates { [] }`, stubs `load_terraformable_templates`, and stubs `FileUtils.mkdir_p` only — it does **not** require a real tmpdir or inline template files unless investigation shows the generator writes seeds during `generate_system_seed`.
+- If the procedural example triggers real file writes, add the **smallest** stub or tmpdir isolation needed so the run leaves no files under `data/json-data` or other tracked paths; record that in the synthesis report. Mark generator write behavior UNVERIFIED until observed.
+- Do not copy the existing `procedural_generator_spec.rb` `allow(File).to receive(:open)` line unless required and documented.
 
 ⚠️ **GOTCHA 3**: Report what you did not do
 - If you could not run or verify something, say so. Do not report results you did not get.
@@ -338,7 +349,7 @@ Follow Step 0 of the Agent Dispatch Interface exactly. Record the outputs in the
 
 ### Step 1 — Baseline and environment (before creating the new spec file)
 
-Run from the galaxyGame checkout, then record the output in the report:
+Run from the galaxyGame checkout, then record the output in the report. After Step 1, update Stage 2 of the synthesis report (paths, baseline counts, proposed sketch adaptations). **STOP and obtain human approval of the approach before Step 2** (creating the spec file). Do not create the spec file until approved.
 
 ```bash
 git rev-parse HEAD
@@ -357,7 +368,7 @@ If Docker reports the input device is not a TTY, rerun the identical command wit
 
 Record the example counts, failure counts, and the exit status.
 
-### Step 2 — Create the spec file
+### Step 2 — Create the spec file (only after human approval of Stage 2)
 
 Create `galaxy_game/spec/services/star_sim/procedural_generator_output_contract_spec.rb` with the starting point below. It is an untested sketch based on the existing `procedural_generator_spec.rb`: if a mock raises "received unexpected message", copy the smallest matching `allow(...)` from that spec; if a method name or signature differs, adjust and say so in the report. Do not copy the existing spec's `allow(File).to receive(:open)` line.
 
@@ -422,14 +433,19 @@ end
 
 ### Step 3 — Run the new file
 
+Run **three** times; save each run to a separate file so “same across three runs” is auditable:
+
 ```bash
 mkdir -p ~/scratch
-docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/star_sim/procedural_generator_output_contract_spec.rb --format documentation 2>&1' > ~/scratch/starsim-spec-01-run.txt; echo "rspec exit status: $?"
-tail -40 ~/scratch/starsim-spec-01-run.txt
+for i in 1 2 3; do
+  docker exec -it web bash -c 'unset DATABASE_URL && RAILS_ENV=test bundle exec rspec spec/services/star_sim/procedural_generator_output_contract_spec.rb --format documentation 2>&1' > ~/scratch/starsim-spec-01-run-$i.txt
+  echo "run $i exit status: $?"
+  tail -20 ~/scratch/starsim-spec-01-run-$i.txt
+done
 ```
-If Docker reports the input device is not a TTY, rerun the identical command without `-it` and say so in the report.
+If Docker reports the input device is not a TTY, rerun the identical commands without `-it` and say so in the report.
 
-Run it twice more and confirm the same results. Record pass or fail for each example with the exact failure message.
+Confirm the same results across all three runs. Record pass or fail for each example with the exact failure message. Apply the Part 1 failure model (helper vs procedural-path) if anything fails.
 
 ### Final Step — Synthesis Report
 
@@ -438,12 +454,14 @@ Save the final stage of the synthesis report with the results above and request 
 ---
 
 ## Acceptance Criteria
-- [ ] `galaxy_game/spec/services/star_sim/procedural_generator_output_contract_spec.rb` exists and `git status` in galaxyGame shows no other changed file
-- [ ] The baseline of `procedural_generator_spec.rb` was captured before the file was created, with example counts and exit status
-- [ ] galaxyGame `git rev-parse HEAD`, `git status --short` and the machine name are in the report
+- [ ] `galaxy_game/spec/services/star_sim/procedural_generator_output_contract_spec.rb` exists
+- [ ] Relative to the Step 1 `git status --short` baseline, the only new or changed path under galaxyGame for this task is the new spec file (no other task-introduced changes)
+- [ ] The baseline of `procedural_generator_spec.rb` was captured **before** the file was created, with example counts and exit status
+- [ ] galaxyGame `git rev-parse HEAD`, Step 1 and post-run `git status --short`, and the machine name are in the report
 - [ ] Three examples exist: two helper examples and one procedural-path example
-- [ ] Results are the same across three runs; all three PASS (any failure is reported with its exact message, not fixed)
-- [ ] No application, seed, or data file was modified
+- [ ] Results are the same across three runs (separate log files); all three examples PASS
+- [ ] If any example fails: helper failures fixed in the spec only; procedural-path failure reported and escalated — generator not modified; no commit
+- [ ] No application, seed, or data file was modified relative to the Step 1 baseline
 - [ ] The report states which machine ran the specs
 
 ---
@@ -455,7 +473,9 @@ Save the final stage of the synthesis report with the results above and request 
 - Other specs start failing
 - The sketch cannot be adapted without changing application code
 - Any architectural decision is required
-- (Not a stop condition: a reproducible, expected failure of the new examples.)
+- The **procedural-path** example fails (unexpected for Part 1 — report exact message; do not fix the generator)
+- (Not a stop condition by itself: fixing a **helper** example failure inside the spec file only.)
+- (Parts 2–4 only, not Part 1: reproducible expected contract failures against known generator bugs.)
 
 ---
 
