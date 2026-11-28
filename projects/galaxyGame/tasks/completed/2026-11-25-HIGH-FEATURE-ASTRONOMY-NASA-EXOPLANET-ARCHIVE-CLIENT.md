@@ -1,5 +1,5 @@
 ---
-status: backlog
+status: completed
 resume: false
 priority: HIGH
 type: feature
@@ -384,9 +384,9 @@ Class comments only; no schema/cache design docs.
 
 ```
 resume: false
-last_completed_step: none
-next_step: Step 0 when dispatched
-notes: Revised after series review feedback; depends on Task 1 in code.
+last_completed_step: all steps complete
+next_step: none — task completed
+notes: Client + stubbed specs implemented; 22 examples, 0 failures. Committed to galaxyGame main branch (942b90e8). Awaiting human push authorization.
 ```
 
 ---
