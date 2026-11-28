@@ -19,26 +19,26 @@ Agents receive this exact text as the startup contract. Every word matters.
 You are **Implementation Agent**.
 
 Project: Galaxy Game
-Task: <agent-tasks>/projects/galaxyGame/tasks/backlog/act02-local-bubble-expansion/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md
+Task: <agent-tasks>/projects/galaxyGame/tasks/backlog/current/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md
 
 STEP 0 — VERIFY, STAGE IF NEEDED, THEN MOVE WITH GIT MV:
   Run from the agent-tasks repository root.
 
   1. Inspect the source Git state:
-       git status --short -- projects/galaxyGame/tasks/backlog/act02-local-bubble-expansion/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md
-       git ls-files --error-unmatch projects/galaxyGame/tasks/backlog/act02-local-bubble-expansion/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md
+       git status --short -- projects/galaxyGame/tasks/backlog/current/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md
+       git ls-files --error-unmatch projects/galaxyGame/tasks/backlog/current/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md
      If the source is not tracked, stage the source first:
-       git add projects/galaxyGame/tasks/backlog/act02-local-bubble-expansion/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md
+       git add projects/galaxyGame/tasks/backlog/current/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md
      Preserve all pre-existing changes; do not discard or overwrite them.
 
   2. Move the task:
-       git mv projects/galaxyGame/tasks/backlog/act02-local-bubble-expansion/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md \
+       git mv projects/galaxyGame/tasks/backlog/current/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md \
               projects/galaxyGame/tasks/active/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md
 
   3. Verify the move:
        git status --short
        git ls-files --error-unmatch projects/galaxyGame/tasks/active/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md
-       test ! -e projects/galaxyGame/tasks/backlog/act02-local-bubble-expansion/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md && test -f projects/galaxyGame/tasks/active/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md
+       test ! -e projects/galaxyGame/tasks/backlog/current/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md && test -f projects/galaxyGame/tasks/active/2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESERVATION.md
      Confirm the source is absent, destination exists, and Git tracks the destination.
 
   4. Open the active task file and change YAML status from backlog to active. Verify the updated status.
@@ -107,7 +107,7 @@ After review agent has returned assessment:
 - [ ] Architecture aligns with current codebase patterns (review agent verified)
 - [ ] Review agent disposition is GO (not REVISE or STOP)
 
-**Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/act02-local-bubble-expansion/` and changing `status: draft → status: backlog`.
+**Once ALL boxes checked:** Approve by moving task from `tasks/drafts/` to `tasks/backlog/current/` and changing `status: draft → status: backlog`.
 
 ---
 
@@ -136,11 +136,24 @@ After review agent has returned assessment:
 **Priority**: HIGH
 **Type**: bug-fix
 **Created**: 2026-11-22
-**Last Updated**: 2026-11-23
+**Last Updated**: 2026-11-27
+**Revision 2 (2026-11-27)**: Post shared-astronomy-API landing. Backlog destination set to `tasks/backlog/current/`. Explicit non-goals: no SIMBAD/NASA/StarSim enrichment wiring; contract specs only. Notes relationship to completed astronomy clients and still-OPEN design items.
 **Author**: Claude (draft for human review)
 **Revision 1 (2026-11-23)**: after review of the four-part set at 50b7d8a: startup reading order now defers to the Agent Dispatch Interface; the final report must state that the script calls a different hybrid method than the one tested.
 
 Part 4 of 4. These four parts replace the single task `2026-11-20-HIGH-BUG-FIX-STARSIM-OUTPUT-CONTRACT-SPECS.md`, split into smaller steps. Do the parts in order, one at a time: all four edit the same spec file.
+
+### Shared astronomy services (context only — out of scope for this task)
+
+As of 2026-11-27 the shared main-game astronomy clients exist in galaxyGame:
+
+- `Astronomy::BaseTapClient` + `Astronomy::Result`
+- `Astronomy::SimbadClient`
+- `Astronomy::NasaExoplanetArchiveClient`
+- Doc: `docs/wiki/astronomy/shared_services_integration_boundaries.md`
+
+This four-part series remains **generator output-contract specs only**. Do **not** wire SIMBAD/NASA into StarSim, add enrichment calls, invent provenance schema, cache policy, or matching thresholds here. Optional enrichment is a separate future task after the output contract is stable.
+
 
 ---
 
@@ -398,6 +411,7 @@ Save the final stage of the synthesis report with the results above and request 
 ---
 
 ## Stop Conditions — escalate to user immediately if:
+- Adding SIMBAD, NASA Exoplanet Archive, or any shared astronomy enrichment calls to the generator or these specs
 - A load or syntax error, or a missing constant, that you cannot fix by editing the spec file
 - Results differ across the three runs
 - Other specs start failing
@@ -448,14 +462,19 @@ git commit -m "chore: move 2026-11-22-HIGH-BUG-FIX-STARSIM-SPEC-04-HYBRID-PRESER
 ## Human Decisions (do not decide)
 
 - **DECISION PENDING (Tracy)**: how to land specs that fail by design (known-bug tag, or hold the commit until the generator fix task is ready). Until decided, no commit of failing examples.
-- **DECISION PENDING (Tracy)**: backlog subfolder (`act02-local-bubble-expansion` is a placeholder choice).
+- **DECIDED (Tracy, 2026-11-27)**: backlog subfolder is `tasks/backlog/current/` (not act-specific).
 
 ---
 
 ## Dependencies
 **Blocked by**: Part 3 (`...STARSIM-SPEC-03-HYBRID-IDENTIFIERS`)
 **Blocks**: nothing (last part); the generator fix task will be drafted from these results
-**Related tasks**: `2026-11-20-HIGH-BUG-FIX-STARSIM-OUTPUT-CONTRACT-SPECS.md` (to be superseded by these four parts)
+**Related tasks**: `2026-11-20-HIGH-BUG-FIX-STARSIM-OUTPUT-CONTRACT-SPECS.md` (still `active/`; these four parts supersede it — human should close or supersede that monolith when this series is approved).
+
+**Related (completed astronomy stack — do not expand this task into enrichment):**
+- Completed: shared TAP base client, SIMBAD client, NASA Exoplanet Archive client, integration boundaries doc
+- Future (not these four parts): optional StarSim/mapping enrichment using those clients; provenance schema; cache/mirror; matching thresholds
+
 
 ---
 
